@@ -1,0 +1,36 @@
+{
+	"name": "@bentley/presentation-rules-editor",
+	"description": "iTwin.js Presentation Rules Editor components",
+	"version": "0.0.1",
+	"license": "MIT",
+	"private": true,
+	"author": {
+    "name": "Bentley Systems, Inc.",
+    "url": "https://www.bentley.com"
+  },
+	"repository": {
+    "type": "git",
+    "url": "https://github.com/imodeljs/presentation-rules-editor/tree/master/editor-components"
+  },
+	"keywords": [
+		"Bentley",
+		"BIM",
+		"iModel",
+		"iTwin",
+		"EC",
+		"Presenation"
+	],
+	"main": "lib/index.js",
+	"browser": "lib/index.js",
+	"types": "lib/index.d.ts",
+	"scripts": {
+		"typecheck": "tsc --noEmit"
+	},
+	"peerDependencies": {
+		"react": "^16.14.0"
+	},
+	"devDependencies": {
+		"@types/react": "^16.0.0",
+		"react": "^16.14.0"
+	}
+}
