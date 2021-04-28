@@ -2,11 +2,11 @@
   "scripts": {
     "preinstall": "npx -y only-allow pnpm",
     "start": "run-p start:backend start:frontend --silent",
-    "start:backend": "npm run start --prefix ./backend/",
-    "start:frontend": "npm run start --prefix ./frontend/",
+    "start:backend": "npm run start --prefix ./app/backend/",
+    "start:frontend": "npm run start --prefix ./app/frontend/",
     "typecheck": "run-p typecheck:backend typecheck:frontend --silent",
-    "typecheck:backend": "npm run typecheck --prefix ./backend/",
-    "typecheck:frontend": "npm run typecheck --prefix ./frontend/"
+    "typecheck:backend": "npm run typecheck --prefix ./app/backend/",
+    "typecheck:frontend": "npm run typecheck --prefix ./app/frontend/"
   },
   "dependencies": {
     "npm-run-all": "^4.1.5"

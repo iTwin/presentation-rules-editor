@@ -8,7 +8,7 @@ importers:
     dependencies:
       npm-run-all: 4.1.5
 
-  backend:
+  app/backend:
     specifiers:
       '@bentley/backend-itwin-client': ^2.14.4
       '@bentley/bentleyjs-core': ^2.14.4
@@ -52,7 +52,7 @@ importers:
       ts-node-dev: 1.1.6_typescript@4.2.4
       typescript: 4.2.4
 
-  common:
+  app/common:
     specifiers:
       '@bentley/bentleyjs-core': ^2.14.4
       '@bentley/frontend-authorization-client': ^2.14.4
@@ -74,15 +74,7 @@ importers:
       '@bentley/presentation-common': 2.14.4_ea9872fa6eb43b9a69be6cab29b6a7e2
       '@bentley/rbac-client': 2.14.4_@bentley+itwin-client@2.14.4
 
-  editor-components:
-    specifiers:
-      '@types/react': ^16.0.0
-      react: ^16.14.0
-    devDependencies:
-      '@types/react': 16.14.5
-      react: 16.14.0
-
-  frontend:
+  app/frontend:
     specifiers:
       '@bentley/bentleyjs-core': ^2.14.4
       '@bentley/frontend-authorization-client': ^2.14.4
@@ -141,7 +133,7 @@ importers:
       '@bentley/presentation-common': 2.14.4_ea9872fa6eb43b9a69be6cab29b6a7e2
       '@bentley/presentation-components': 2.14.4_b44e43a25ba67a2a6f0dddc462212173
       '@bentley/presentation-frontend': 2.14.4_0a1569b795ebde6489d0f890c4fd810d
-      '@bentley/presentation-rules-editor': link:../editor-components
+      '@bentley/presentation-rules-editor': link:../../components
       '@bentley/product-settings-client': 2.14.4_3a034e65ed0a272f8ff8b300e208e480
       '@bentley/rbac-client': 2.14.4_@bentley+itwin-client@2.14.4
       '@bentley/telemetry-client': 2.14.4_@bentley+itwin-client@2.14.4
@@ -171,6 +163,14 @@ importers:
       webpack: 5.33.2_webpack-cli@4.6.0
       webpack-cli: 4.6.0_e76446921634d3db13de3304ba5e6109
       webpack-dev-server: 3.11.2_webpack-cli@4.6.0+webpack@5.33.2
+
+  components:
+    specifiers:
+      '@types/react': ^16.0.0
+      react: ^16.14.0
+    devDependencies:
+      '@types/react': 16.14.5
+      react: 16.14.0
 
 packages:
 
@@ -233,12 +233,6 @@ packages:
       '@babel/helper-validator-identifier': 7.12.11
       chalk: 2.4.2
       js-tokens: 4.0.0
-    dev: false
-
-  /@babel/runtime/7.13.10:
-    resolution: {integrity: sha512-4QPkjJq6Ns3V/RgpEahRk+AGfL0eO6RHHtTWoNNr5mO49G6B5+X6d6THgWEAvTrznU5xYpbAlVKRYcsCgh/Akw==}
-    dependencies:
-      regenerator-runtime: 0.13.7
     dev: false
 
   /@babel/runtime/7.13.17:
@@ -771,7 +765,7 @@ packages:
     peerDependencies:
       react: '>=16.3.0'
     dependencies:
-      '@babel/runtime': 7.13.10
+      '@babel/runtime': 7.13.17
       '@emotion/cache': 10.0.29
       '@emotion/css': 10.0.27
       '@emotion/serialize': 0.11.16
@@ -872,7 +866,7 @@ packages:
     dependencies:
       '@types/http-cache-semantics': 4.0.0
       '@types/keyv': 3.1.1
-      '@types/node': 14.14.41
+      '@types/node': 15.0.0
       '@types/responselike': 1.0.0
     dev: false
 
@@ -898,13 +892,13 @@ packages:
     resolution: {integrity: sha512-SEYeGAIQIQX8NN6LDKprLjbrd5dARM5EXsd8GI/A5l0apYI1fGMWgPHSe4ZKL4eozlAyI+doUE9XbYS4xCkQ1w==}
     dependencies:
       '@types/minimatch': 3.0.4
-      '@types/node': 14.14.41
+      '@types/node': 15.0.0
     dev: false
 
   /@types/got/9.6.11:
     resolution: {integrity: sha512-dr3IiDNg5TDesGyuwTrN77E1Cd7DCdmCFtEfSGqr83jMMtcwhf/SGPbN2goY4JUWQfvxwY56+e5tjfi+oXeSdA==}
     dependencies:
-      '@types/node': 14.14.41
+      '@types/node': 15.0.0
       '@types/tough-cookie': 4.0.0
       form-data: 2.5.1
     dev: false
@@ -931,15 +925,11 @@ packages:
   /@types/keyv/3.1.1:
     resolution: {integrity: sha512-MPtoySlAZQ37VoLaPcTHCu1RWJ4llDkULYZIzOYxlhxBqYPB0RsRlmMU0R6tahtFe27mIdkHV+551ZWV4PLmVw==}
     dependencies:
-      '@types/node': 14.14.41
+      '@types/node': 15.0.0
     dev: false
 
   /@types/minimatch/3.0.4:
     resolution: {integrity: sha512-1z8k4wzFnNjVK/tlxvrWuK5WMt6mydWWP7+zvH5eFep4oj+UkrfiJTRtjCeBXNpwaA/FYqqtb4/QS4ianFpIRA==}
-    dev: false
-
-  /@types/node/14.14.41:
-    resolution: {integrity: sha512-dueRKfaJL4RTtSa7bWeTK1M+VH+Gns73oCgzvYfHZywRCoPSd8EkXBL0mZ9unPTveBn+D9phZBaxuzpwjWkW0g==}
     dev: false
 
   /@types/node/15.0.0:
@@ -969,7 +959,7 @@ packages:
   /@types/responselike/1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
-      '@types/node': 14.14.41
+      '@types/node': 15.0.0
     dev: false
 
   /@types/scheduler/0.16.1:
@@ -1383,7 +1373,7 @@ packages:
   /babel-plugin-macros/2.8.0:
     resolution: {integrity: sha512-SEP5kJpfGYqYKpBrj5XU3ahw5p5GOHJ0U5ssOSQ/WBVdwkD2Dzlce95exQTs3jOVWPPKLBN2rlEWkCK7dSmLvg==}
     dependencies:
-      '@babel/runtime': 7.13.10
+      '@babel/runtime': 7.13.17
       cosmiconfig: 6.0.0
       resolve: 1.20.0
     dev: false
@@ -2246,7 +2236,7 @@ packages:
   /dom-helpers/5.2.0:
     resolution: {integrity: sha512-Ru5o9+V8CpunKnz5LGgWXkmrH/20cGKwcHwS4m73zIvs54CN9epEmT/HLqFJW3kXpakAFkEdzgy1hzlJe3E4OQ==}
     dependencies:
-      '@babel/runtime': 7.13.10
+      '@babel/runtime': 7.13.17
       csstype: 3.0.7
     dev: false
 
@@ -3642,7 +3632,7 @@ packages:
     resolution: {integrity: sha512-KWYVV1c4i+jbMpaBC+U++4Va0cp8OisU185o73T1vo99hqi7w8tSJfUXYswwqqrjzwxa6KpRK54WhPvwf5w6PQ==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 14.14.41
+      '@types/node': 15.0.0
       merge-stream: 2.0.0
       supports-color: 7.2.0
     dev: false
@@ -4370,10 +4360,6 @@ packages:
     resolution: {integrity: sha512-gz58rdPpadwztRrPjZE9DZLOABUpTGdcANUgOwBFO1C+HZZhePoP83M65WGDmbpwFYJSWqavbl4SgDn4k8RYTA==}
     dev: false
 
-  /object-inspect/1.9.0:
-    resolution: {integrity: sha512-i3Bp9iTqwhaLZBxGkRfo5ZbE07BQRT7MGu8+nNgwW9ItGp1TzCTw2DLEoWwjClxBjOFI/hWljTAmYGCEwmtnOw==}
-    dev: false
-
   /object-is/1.1.5:
     resolution: {integrity: sha512-3cyDsyHgtmi7I7DfSSI2LDp6SK2lwvtbg0p0R1e0RvTqF5ceGx+K2dfSjm1bKDMVCFEDAQvy+o8c6a7VujOddw==}
     engines: {node: '>= 0.4'}
@@ -5029,7 +5015,7 @@ packages:
     peerDependencies:
       react: ^16.3.0
     dependencies:
-      '@babel/runtime': 7.13.10
+      '@babel/runtime': 7.13.17
       d3-array: 1.2.4
       prop-types: 15.7.2
       react: 16.14.0
@@ -5125,7 +5111,7 @@ packages:
       react: ^16.8.0
       react-dom: ^16.8.0
     dependencies:
-      '@babel/runtime': 7.13.10
+      '@babel/runtime': 7.13.17
       '@emotion/cache': 10.0.29
       '@emotion/core': 10.1.1_react@16.14.0
       '@emotion/css': 10.0.27
@@ -5149,7 +5135,7 @@ packages:
       react: '>=16.6.0'
       react-dom: '>=16.6.0'
     dependencies:
-      '@babel/runtime': 7.13.10
+      '@babel/runtime': 7.13.17
       dom-helpers: 5.2.0
       loose-envify: 1.4.0
       prop-types: 15.7.2
@@ -5174,7 +5160,7 @@ packages:
       react: ^15.3.0 || ^16.0.0-alpha
       react-dom: ^15.3.0 || ^16.0.0-alpha
     dependencies:
-      '@babel/runtime': 7.13.10
+      '@babel/runtime': 7.13.17
       clsx: 1.1.1
       dom-helpers: 5.2.0
       loose-envify: 1.4.0
@@ -5191,7 +5177,7 @@ packages:
       react: ^15.0.0 || ^16.0.0 || ^17.0.0
       react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      '@babel/runtime': 7.13.10
+      '@babel/runtime': 7.13.17
       memoize-one: 5.1.1
       react: 16.14.0
       react-dom: 16.14.0_react@16.14.0
@@ -5686,7 +5672,7 @@ packages:
     dependencies:
       call-bind: 1.0.2
       get-intrinsic: 1.1.1
-      object-inspect: 1.9.0
+      object-inspect: 1.10.2
     dev: false
 
   /signal-exit/3.0.3:
