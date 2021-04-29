@@ -11,22 +11,22 @@ importers:
   app/backend:
     specifiers:
       '@app/common': workspace:*
-      '@bentley/backend-itwin-client': ^2.14.4
-      '@bentley/bentleyjs-core': ^2.14.4
-      '@bentley/ecschema-metadata': ^2.14.4
-      '@bentley/express-server': ^2.14.4
-      '@bentley/frontend-authorization-client': ^2.14.4
-      '@bentley/geometry-core': ^2.14.4
-      '@bentley/imodelhub-client': ^2.14.4
-      '@bentley/imodeljs-backend': ^2.14.4
-      '@bentley/imodeljs-common': ^2.14.4
-      '@bentley/imodeljs-i18n': ^2.14.4
-      '@bentley/imodeljs-quantity': ^2.14.4
-      '@bentley/itwin-client': ^2.14.4
-      '@bentley/presentation-backend': ^2.14.4
-      '@bentley/presentation-common': ^2.14.4
-      '@bentley/rbac-client': ^2.14.4
-      '@bentley/telemetry-client': ^2.14.4
+      '@bentley/backend-itwin-client': ~2.14.4
+      '@bentley/bentleyjs-core': ~2.14.4
+      '@bentley/ecschema-metadata': ~2.14.4
+      '@bentley/express-server': ~2.14.4
+      '@bentley/frontend-authorization-client': ~2.14.4
+      '@bentley/geometry-core': ~2.14.4
+      '@bentley/imodelhub-client': ~2.14.4
+      '@bentley/imodeljs-backend': ~2.14.4
+      '@bentley/imodeljs-common': ~2.14.4
+      '@bentley/imodeljs-i18n': ~2.14.4
+      '@bentley/imodeljs-quantity': ~2.14.4
+      '@bentley/itwin-client': ~2.14.4
+      '@bentley/presentation-backend': ~2.14.4
+      '@bentley/presentation-common': ~2.14.4
+      '@bentley/rbac-client': ~2.14.4
+      '@bentley/telemetry-client': ~2.14.4
       '@types/node': ^15.0.0
       ts-node-dev: ^1.1.6
       typescript: ^4.2.4
@@ -54,15 +54,15 @@ importers:
 
   app/common:
     specifiers:
-      '@bentley/bentleyjs-core': ^2.14.4
-      '@bentley/frontend-authorization-client': ^2.14.4
-      '@bentley/geometry-core': ^2.14.4
-      '@bentley/imodelhub-client': ^2.14.4
-      '@bentley/imodeljs-common': ^2.14.4
-      '@bentley/imodeljs-quantity': ^2.14.4
-      '@bentley/itwin-client': ^2.14.4
-      '@bentley/presentation-common': ^2.14.4
-      '@bentley/rbac-client': ^2.14.4
+      '@bentley/bentleyjs-core': ~2.14.4
+      '@bentley/frontend-authorization-client': ~2.14.4
+      '@bentley/geometry-core': ~2.14.4
+      '@bentley/imodelhub-client': ~2.14.4
+      '@bentley/imodeljs-common': ~2.14.4
+      '@bentley/imodeljs-quantity': ~2.14.4
+      '@bentley/itwin-client': ~2.14.4
+      '@bentley/presentation-common': ~2.14.4
+      '@bentley/rbac-client': ~2.14.4
     dependencies:
       '@bentley/bentleyjs-core': 2.14.4
       '@bentley/frontend-authorization-client': 2.14.4_3a034e65ed0a272f8ff8b300e208e480
@@ -77,27 +77,27 @@ importers:
   app/frontend:
     specifiers:
       '@app/common': workspace:*
-      '@bentley/bentleyjs-core': ^2.14.4
-      '@bentley/frontend-authorization-client': ^2.14.4
-      '@bentley/geometry-core': ^2.14.4
-      '@bentley/imodelhub-client': ^2.14.4
-      '@bentley/imodeljs-common': ^2.14.4
-      '@bentley/imodeljs-frontend': ^2.14.4
-      '@bentley/imodeljs-i18n': ^2.14.4
-      '@bentley/imodeljs-quantity': ^2.14.4
-      '@bentley/itwin-client': ^2.14.4
-      '@bentley/orbitgt-core': ^2.14.4
-      '@bentley/presentation-common': ^2.14.4
-      '@bentley/presentation-components': ^2.14.4
-      '@bentley/presentation-frontend': ^2.14.4
+      '@bentley/bentleyjs-core': ~2.14.4
+      '@bentley/frontend-authorization-client': ~2.14.4
+      '@bentley/geometry-core': ~2.14.4
+      '@bentley/imodelhub-client': ~2.14.4
+      '@bentley/imodeljs-common': ~2.14.4
+      '@bentley/imodeljs-frontend': ~2.14.4
+      '@bentley/imodeljs-i18n': ~2.14.4
+      '@bentley/imodeljs-quantity': ~2.14.4
+      '@bentley/itwin-client': ~2.14.4
+      '@bentley/orbitgt-core': ~2.14.4
+      '@bentley/presentation-common': ~2.14.4
+      '@bentley/presentation-components': ~2.14.4
+      '@bentley/presentation-frontend': ~2.14.4
       '@bentley/presentation-rules-editor': workspace:*
-      '@bentley/product-settings-client': ^2.14.4
-      '@bentley/rbac-client': ^2.14.4
-      '@bentley/telemetry-client': ^2.14.4
-      '@bentley/ui-abstract': ^2.14.4
-      '@bentley/ui-components': ^2.14.4
-      '@bentley/ui-core': ^2.14.4
-      '@bentley/webgl-compatibility': ^2.14.4
+      '@bentley/product-settings-client': ~2.14.4
+      '@bentley/rbac-client': ~2.14.4
+      '@bentley/telemetry-client': ~2.14.4
+      '@bentley/ui-abstract': ~2.14.4
+      '@bentley/ui-components': ~2.14.4
+      '@bentley/ui-core': ~2.14.4
+      '@bentley/webgl-compatibility': ~2.14.4
       '@types/react': ^16.0.0
       '@types/react-dom': ^16.0.0
       buffer: ^6.0.3
