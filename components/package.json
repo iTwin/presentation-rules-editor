@@ -2,6 +2,10 @@
   "name": "@bentley/presentation-rules-editor",
   "description": "iTwin.js Presentation Rules Editor components",
   "version": "0.0.1",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch"
+  },
   "license": "MIT",
   "private": true,
   "author": {
@@ -21,13 +25,11 @@
     "Presentation",
     "Rules"
   ],
-  "main": "lib/index.js",
+  "engines": {
+    "node": ">=12"
+  },
   "browser": "lib/index.js",
   "types": "lib/index.d.ts",
-  "scripts": {
-    "typecheck": "tsc --noEmit",
-    "typecheck:watch": "tsc --noEmit --watch"
-  },
   "peerDependencies": {
     "react": "^16.14.0"
   },
