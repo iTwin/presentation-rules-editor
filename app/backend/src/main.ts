@@ -18,15 +18,15 @@ import { PresentationRulesEditorRpcImpl } from "./PresentationRulesEditorRpcImpl
   Logger.setLevel(PresentationBackendNativeLoggerCategory.ECObjects, LogLevel.Warning);
   Logger.setLevel(PresentationBackendNativeLoggerCategory.ECPresentation, LogLevel.Info);
   Logger.setLevel(PresentationBackendLoggerCategory.Package, LogLevel.Info);
-  
+
   await IModelHost.startup();
-  
+
   Presentation.initialize({
     mode: PresentationManagerMode.ReadOnly,
     taskAllocationsMap: { [RequestPriority.Max]: 1 },
     useMmap: true,
   });
-  
+
   RpcConfiguration.developmentMode = true;
   PresentationRulesEditorRpcImpl.register();
 

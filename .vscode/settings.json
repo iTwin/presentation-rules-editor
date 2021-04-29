@@ -1,13 +1,28 @@
 {
-  "editor.defaultFormatter": "vscode.typescript-language-features",
-  "editor.tabSize": 2,
   "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.trimAutoWhitespace": true,
 
   "files.exclude": {
     "**/node_modules": true,
   },
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
 
   "typescript.format.semicolons": "insert",
+
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features",
+  },
+
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features",
+  },
+
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features",
+  },
 
   "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.count": 120,
   "importSorter.importStringConfiguration.quoteMark": "double",
