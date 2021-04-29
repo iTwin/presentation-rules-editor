@@ -36,14 +36,14 @@ async function initializeApp(): Promise<BackendApi> {
     Config.App.set("imjs_dev_cors_proxy_server", `http://${window.location.hostname}:3001`);
   }
 
-  const appFrontend = new BackendApi();
+  const backendApi = new BackendApi();
   await Promise.all([
     IModelApp.i18n.registerNamespace("App").readFinished,
-    initializePresentation(appFrontend),
+    initializePresentation(backendApi),
     UiComponents.initialize(IModelApp.i18n),
   ]);
 
-  return appFrontend;
+  return backendApi;
 }
 
 async function initializePresentation(appFrontend: BackendApi): Promise<void> {
