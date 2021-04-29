@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { rpcInterfaces } from "common";
+import { rpcInterfaces } from "@app/common";
 import { Logger, LogLevel } from "@bentley/bentleyjs-core";
 import { IModelHost } from "@bentley/imodeljs-backend";
 import { RpcConfiguration } from "@bentley/imodeljs-common";

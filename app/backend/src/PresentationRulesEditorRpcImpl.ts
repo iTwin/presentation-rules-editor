@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { PresentationRulesEditorRpcInterface } from "common";
 import * as fs from "fs";
 import * as path from "path";
+import { PresentationRulesEditorRpcInterface } from "@app/common";
 import { IModelHost } from "@bentley/imodeljs-backend";
 import { RpcManager } from "@bentley/imodeljs-common";
 

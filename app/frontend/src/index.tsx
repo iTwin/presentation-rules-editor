@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "./index.css";
-import { rpcInterfaces } from "common";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { rpcInterfaces } from "@app/common";
 import { Config, Logger, LogLevel } from "@bentley/bentleyjs-core";
 import { IModelApp, WebViewerApp } from "@bentley/imodeljs-frontend";
 import { PresentationUnitSystem } from "@bentley/presentation-common";
