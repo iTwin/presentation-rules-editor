@@ -67,6 +67,7 @@ const config: Configuration & { devServer: any; } = {
     contentBase: [
       path.join(__dirname, "public/"),
       path.join(__dirname, "node_modules/@bentley/imodeljs-frontend/lib/public/"),
+      path.join(__dirname, "node_modules/@bentley/presentation-common/lib/public/"),
       path.join(__dirname, "node_modules/@bentley/presentation-components/lib/public/"),
       path.join(__dirname, "node_modules/@bentley/ui-abstract/lib/public/"),
       path.join(__dirname, "node_modules/@bentley/ui-components/lib/public/"),
