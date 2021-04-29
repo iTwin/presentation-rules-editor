@@ -25,7 +25,6 @@ import { PresentationRulesEditorRpcImpl } from "./PresentationRulesEditorRpcImpl
     mode: PresentationManagerMode.ReadOnly,
     taskAllocationsMap: { [RequestPriority.Max]: 1 },
     useMmap: true,
-    updatesPollInterval: 20,
   });
   
   RpcConfiguration.developmentMode = true;
