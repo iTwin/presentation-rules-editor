@@ -25,7 +25,8 @@
   "browser": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch"
   },
   "peerDependencies": {
     "react": "^16.14.0"

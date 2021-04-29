@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "webpack serve",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
     "@app/common": "workspace:*",

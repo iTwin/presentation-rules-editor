@@ -9,8 +9,8 @@
   },
   "scripts": {
     "start": "ts-node-dev --transpile-only --quiet -- src/main.ts",
-    "start:typecheck": "ts-node-dev --quiet -- src/main.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch"
   },
   "type": "module",
   "dependencies": {
