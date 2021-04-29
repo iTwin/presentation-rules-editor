@@ -18,7 +18,8 @@
     "iModel",
     "iTwin",
     "EC",
-    "Presenation"
+    "Presenation",
+    "Rules"
   ],
   "main": "lib/index.js",
   "browser": "lib/index.js",
