@@ -4,7 +4,9 @@
   "version": "0.0.1",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "typecheck:watch": "tsc --noEmit --watch"
+    "typecheck:watch": "tsc --noEmit --watch",
+    "test": "jest",
+    "test:cover": "jest --coverage"
   },
   "license": "MIT",
   "private": true,
@@ -34,7 +36,11 @@
     "react": "^16.14.0"
   },
   "devDependencies": {
+    "@testing-library/react": "^11.2.6",
+    "@types/jest": "^26.0.23",
     "@types/react": "^16.0.0",
-    "react": "^16.14.0"
+    "jest": "^26.6.3",
+    "react": "^16.14.0",
+    "ts-jest": "^26.5.5"
   }
 }

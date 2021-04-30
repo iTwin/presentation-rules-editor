@@ -4,6 +4,7 @@
   "editor.trimAutoWhitespace": true,
 
   "files.exclude": {
+    "**/coverage": true,
     "**/node_modules": true,
   },
   "files.insertFinalNewline": true,
