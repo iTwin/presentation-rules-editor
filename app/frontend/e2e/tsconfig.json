@@ -1,0 +1,7 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["jest", "jest-playwright-preset", "expect-playwright"],
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+}
