@@ -2,10 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { page } from "./setup";
 import { loadHomepage } from "./utils";
 
 describe("index", () => {
-  beforeAll(async () => {
+  before(async () => {
     await loadHomepage(page);
   });
 
