@@ -3,6 +3,9 @@
   "editor.tabSize": 2,
   "editor.trimAutoWhitespace": true,
 
+  "files.associations": {
+    ".nycrc": "json",
+  },
   "files.exclude": {
     "**/coverage": true,
     "**/node_modules": true,

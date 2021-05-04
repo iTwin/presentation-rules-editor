@@ -1,0 +1,21 @@
+{
+  "check-coverage": true,
+  "statements": 100,
+  "functions": 100,
+  "branches": 100,
+  "lines": 100,
+  "extension": [
+    ".ts",
+    ".tsx"
+  ],
+  "exclude": [
+    "**/*.test.ts",
+     "**/*.test.tsx"
+  ],
+  "reporter": [
+    "lcov",
+    "text-summary"
+  ],
+  "temp-dir": "./coverage/.nyc_output",
+  "report-dir": "./coverage"
+}
