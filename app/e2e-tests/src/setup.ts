@@ -50,7 +50,7 @@ async function setupServers({ backendPort, frontendPort, debug }: SetupServersAr
   if (await isPortAvailable(8080)) {
     console.log("Launching frontend server...");
     servers.push({
-      command: "npm start",
+      command: "npm start --prefix ../frontend",
       protocol: "http",
       port: frontendPort,
       usedPortAction: "error",

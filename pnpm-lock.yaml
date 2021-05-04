@@ -74,6 +74,26 @@ importers:
       '@bentley/presentation-common': 2.14.4_ea9872fa6eb43b9a69be6cab29b6a7e2
       '@bentley/rbac-client': 2.14.4_@bentley+itwin-client@2.14.4
 
+  app/e2e-tests:
+    specifiers:
+      '@types/jest-dev-server': ^4.2.0
+      '@types/mocha': ^8.2.2
+      cross-env: ^7.0.3
+      jest-dev-server: ^5.0.3
+      mocha: ^8.3.2
+      playwright: ^1.10.0
+      ts-node: ^9.1.1
+      typescript: ^4.2.4
+    dependencies:
+      '@types/jest-dev-server': 4.2.0
+      '@types/mocha': 8.2.2
+      cross-env: 7.0.3
+      jest-dev-server: 5.0.3
+      mocha: 8.3.2
+      playwright: 1.10.0
+      ts-node: 9.1.1_typescript@4.2.4
+      typescript: 4.2.4
+
   app/frontend:
     specifiers:
       '@app/common': workspace:*
@@ -98,22 +118,15 @@ importers:
       '@bentley/ui-components': ~2.14.4
       '@bentley/ui-core': ~2.14.4
       '@bentley/webgl-compatibility': ~2.14.4
-      '@types/jest-dev-server': ^4.2.0
-      '@types/mocha': ^8.2.2
       '@types/react': ^16.0.0
       '@types/react-dom': ^16.0.0
       buffer: ^6.0.3
-      cross-env: ^7.0.3
       css-loader: ^5.2.4
-      dotenv: ^8.2.0
       esbuild-loader: ^2.12.0
       expect-playwright: ^0.3.4
       html-webpack-plugin: ^5.3.1
       https-browserify: ^1.0.0
-      jest-dev-server: ^5.0.3
-      mocha: ^8.3.2
       npm-run-all: ^4.1.5
-      playwright: ^1.10.0
       process: ^0.11.10
       react: ^16.14.0
       react-dom: ^16.14.0
@@ -150,22 +163,15 @@ importers:
       '@bentley/ui-components': 2.14.4_45e332f84a73b294d93d7ac7f9098e44
       '@bentley/ui-core': 2.14.4_bf4c89edecae92d6e30f03e17f8b654b
       '@bentley/webgl-compatibility': 2.14.4_@bentley+bentleyjs-core@2.14.4
-      '@types/jest-dev-server': 4.2.0
-      '@types/mocha': 8.2.2
       '@types/react': 16.14.5
       '@types/react-dom': 16.9.12
       buffer: 6.0.3
-      cross-env: 7.0.3
       css-loader: 5.2.4_webpack@5.33.2
-      dotenv: 8.2.0
       esbuild-loader: 2.12.0_webpack@5.33.2
       expect-playwright: 0.3.4
       html-webpack-plugin: 5.3.1_webpack@5.33.2
       https-browserify: 1.0.0
-      jest-dev-server: 5.0.3
-      mocha: 8.3.2
       npm-run-all: 4.1.5
-      playwright: 1.10.0
       process: 0.11.10
       react: 16.14.0
       react-dom: 16.14.0_react@16.14.0
@@ -2845,11 +2851,6 @@ packages:
     dependencies:
       no-case: 3.0.4
       tslib: 2.2.0
-    dev: false
-
-  /dotenv/8.2.0:
-    resolution: {integrity: sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==}
-    engines: {node: '>=8'}
     dev: false
 
   /duplexer3/0.1.4:

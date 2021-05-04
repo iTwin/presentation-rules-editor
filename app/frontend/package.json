@@ -10,9 +10,7 @@
   "scripts": {
     "start": "webpack serve",
     "typecheck": "tsc --noEmit",
-    "typecheck:watch": "tsc --noEmit --watch",
-    "test": "mocha -r ts-node/register --timeout 10000 **/*.test.ts",
-    "test:debug": "cross-env PWDEBUG=1 mocha -r ts-node/register --timeout 99999999 **/*.test.ts"
+    "typecheck:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
     "@app/common": "workspace:*",
@@ -37,22 +35,15 @@
     "@bentley/ui-components": "~2.14.4",
     "@bentley/ui-core": "~2.14.4",
     "@bentley/webgl-compatibility": "~2.14.4",
-    "@types/jest-dev-server": "^4.2.0",
-    "@types/mocha": "^8.2.2",
     "@types/react": "^16.0.0",
     "@types/react-dom": "^16.0.0",
     "buffer": "^6.0.3",
-    "cross-env": "^7.0.3",
     "css-loader": "^5.2.4",
-    "dotenv": "^8.2.0",
     "esbuild-loader": "^2.12.0",
     "expect-playwright": "^0.3.4",
     "html-webpack-plugin": "^5.3.1",
     "https-browserify": "^1.0.0",
-    "jest-dev-server": "^5.0.3",
-    "mocha": "^8.3.2",
     "npm-run-all": "^4.1.5",
-    "playwright": "^1.10.0",
     "process": "^0.11.10",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
