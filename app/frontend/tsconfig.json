@@ -5,7 +5,6 @@
     "isolatedModules": true,
     "lib": ["DOM"],
     "jsx": "react",
-    "skipLibCheck": true,
     "experimentalDecorators": true,
   },
   "include": ["src/index.tsx"],

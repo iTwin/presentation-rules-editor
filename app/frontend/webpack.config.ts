@@ -73,7 +73,6 @@ const config: Configuration & { devServer: any; } = {
       path.join(__dirname, "node_modules/@bentley/ui-components/lib/public/"),
       path.join(__dirname, "node_modules/@bentley/ui-core/lib/public/"),
     ],
-    open: true,
   },
 };
 

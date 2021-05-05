@@ -2,12 +2,16 @@
   "scripts": {
     "start": "run-p start:backend start:frontend --silent",
     "start:backend": "npm run start --prefix ./app/backend/",
-    "start:frontend": "npm run start --prefix ./app/frontend/",
-    "typecheck": "run-p typecheck:backend typecheck:frontend --silent",
+    "start:frontend": "npm run start --prefix ./app/frontend/ -- --open",
+    "typecheck": "run-p typecheck:backend typecheck:components typecheck:e2e-tests typecheck:frontend --silent",
     "typecheck:backend": "npm run typecheck --prefix ./app/backend/",
+    "typecheck:components": "npm run typecheck --prefix ./components",
+    "typecheck:e2e-tests": "npm run typecheck --prefix ./app/e2e-tests",
     "typecheck:frontend": "npm run typecheck --prefix ./app/frontend/",
-    "typecheck:watch": "run-p typecheck:watch:frontend typecheck:watch:backend",
+    "typecheck:watch": "run-p typecheck:watch:frontend typecheck:watch:components typecheck:watch:e2e-tests typecheck:watch:backend --silent",
     "typecheck:watch:frontend": "npm run typecheck:watch --prefix ./app/frontend",
+    "typecheck:watch:components": "npm run typecheck:watch --prefix ./components",
+    "typecheck:watch:e2e-tests": "npm run typecheck:watch --prefix ./app/e2e-tests",
     "typecheck:watch:backend": "npm run typecheck:watch --prefix ./app/backend"
   },
   "engines": {
