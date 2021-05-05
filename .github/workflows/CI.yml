@@ -10,6 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     strategy:
       matrix:
@@ -39,3 +40,4 @@ jobs:
       run: npm test --prefix ./components
     - name: Run end-to-end tests
       run: npm test --prefix ./app/e2e-tests
+      timeout-minutes: 5
