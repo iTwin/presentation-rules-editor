@@ -35,7 +35,7 @@ jobs:
       run: pnpm install
   
     - name: Download test assets
-      run: curl --location --output-dir app/backend/assets/imodels --remote-name https://github.com/imodeljs/desktop-starter/raw/master/assets/Baytown.bim
+      run: curl --location --output app/backend/assets/imodels/Baytown.bim https://github.com/imodeljs/desktop-starter/raw/master/assets/Baytown.bim
 
     - name: Typecheck
       run: npm run typecheck
