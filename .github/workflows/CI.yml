@@ -39,8 +39,8 @@ jobs:
 
     - name: Typecheck
       run: npm run typecheck
-    - name: Run unit tests
-      run: npm test --prefix ./components
+    - name: Check unit test coverage
+      run: npm run test:cover --prefix ./components
     - name: Run end-to-end tests
       run: npm test --prefix ./app/e2e-tests
       timeout-minutes: 5
