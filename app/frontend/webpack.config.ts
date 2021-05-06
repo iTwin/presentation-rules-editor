@@ -35,6 +35,10 @@ const config: Configuration & { devServer: any; } = {
       },
     ],
   },
+  output: {
+    // Source maps are not being found on Windows due to non-Unix path separator
+    devtoolModuleFilenameTemplate: (info: any) => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
+  },
   plugins: [
     new HtmlWebpackPlugin({
       title: "iTwin.js Presentation Rules Editor",
@@ -74,6 +78,7 @@ const config: Configuration & { devServer: any; } = {
       path.join(__dirname, "node_modules/@bentley/ui-core/lib/public/"),
     ],
   },
+  devtool: "cheap-module-source-map",
 };
 
 export default config;
