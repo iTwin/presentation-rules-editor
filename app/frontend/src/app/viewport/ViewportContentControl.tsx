@@ -28,7 +28,7 @@ export const ViewportContentComponent: React.FC<ViewportContentComponentProps> =
 
   React.useEffect(
     () => {
-      (async () => {
+      void (async () => {
         const definitions = await backendApi.getViewDefinitions(props.imodel);
         if (definitions.length > 0) {
           setSelectedViewDefinitionId(definitions[0].id);

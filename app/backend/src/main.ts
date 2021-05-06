@@ -12,7 +12,7 @@ import {
 import { RequestPriority } from "@bentley/presentation-common";
 import { PresentationRulesEditorRpcImpl } from "./PresentationRulesEditorRpcImpl";
 
-(async () => {
+void (async () => {
   Logger.initializeToConsole();
   Logger.setLevelDefault(LogLevel.Warning);
   Logger.setLevel(PresentationBackendNativeLoggerCategory.ECObjects, LogLevel.Warning);
@@ -31,7 +31,8 @@ import { PresentationRulesEditorRpcImpl } from "./PresentationRulesEditorRpcImpl
   PresentationRulesEditorRpcImpl.register();
 
   const init = (await import("./web/BackendServer")).default;
-  init(rpcInterfaces);
+  await init(rpcInterfaces);
 
+  // eslint-disable-next-line no-console
   console.log(`Backend process id: ${process.pid}`);
 })();

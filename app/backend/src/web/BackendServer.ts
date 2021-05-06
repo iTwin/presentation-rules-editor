@@ -17,5 +17,6 @@ export default async function initialize(rpcs: RpcInterfaceDefinition[]): Promis
   const port = Number(process.env.PORT || 3001);
   const server = new IModelJsExpressServer(rpcConfig.protocol);
   await server.initialize(port);
+  // eslint-disable-next-line no-console
   console.log(`Web backend for presentation-rules-editor listening on port ${port}`);
 }
