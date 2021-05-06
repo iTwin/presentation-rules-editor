@@ -9,15 +9,18 @@
   },
   "scripts": {
     "start": "npm test",
+    "lint": "eslint ./src/**/*.{ts,tsx}",
     "test": "mocha -r ts-node/register --timeout 10000 **/*.test.ts",
     "test:debug": "cross-env PWDEBUG=1 mocha -r ts-node/register --timeout 99999999 **/*.test.ts",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
+    "@bentley/eslint-plugin": "^2.15.1",
     "@types/jest-dev-server": "^4.2.0",
     "@types/mocha": "^8.2.2",
     "cross-env": "^7.0.3",
+    "eslint": "^6.8.0",
     "jest-dev-server": "^5.0.3",
     "mocha": "^8.3.2",
     "playwright": "^1.10.0",

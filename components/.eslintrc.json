@@ -1,0 +1,20 @@
+{
+  "extends": "plugin:@bentley/ui",
+  "parserOptions": {
+    "project": "tsconfig.test.json"
+  },
+  "plugins": [
+    "@bentley"
+  ],
+  "rules": {
+    "@typescript-eslint/member-delimiter-style": [
+      "error",
+      {
+        "singleline": {
+          "delimiter": "semi",
+          "requireLast": true
+        }
+      }
+    ]
+  }
+}

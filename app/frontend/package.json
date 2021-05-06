@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "webpack serve",
+    "lint": "eslint ./src/**/*.{ts,tsx}",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch"
   },
@@ -40,6 +41,7 @@
     "buffer": "^6.0.3",
     "css-loader": "^5.2.4",
     "esbuild-loader": "^2.12.0",
+    "eslint": "^6.8.0",
     "html-webpack-plugin": "^5.3.1",
     "https-browserify": "^1.0.0",
     "npm-run-all": "^4.1.5",

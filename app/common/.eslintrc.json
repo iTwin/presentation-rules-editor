@@ -1,0 +1,17 @@
+{
+  "extends": "plugin:@bentley/imodeljs-recommended",
+  "plugins": [
+    "@bentley"
+  ],
+  "rules": {
+    "@typescript-eslint/member-delimiter-style": [
+      "error",
+      {
+        "singleline": {
+          "delimiter": "semi",
+          "requireLast": true
+        }
+      }
+    ]
+  }
+}

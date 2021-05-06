@@ -3,6 +3,7 @@
   "description": "iTwin.js Presentation Rules Editor components",
   "version": "0.0.1",
   "scripts": {
+    "lint": "eslint **/*.{ts,tsx}",
     "typecheck": "tsc --noEmit --project tsconfig.test.json",
     "typecheck:watch": "tsc --noEmit --watch --project tsconfig.test.json",
     "test": "mocha -r ts-node/register -r jsdom-global/register -r ignore-styles **/*.test.ts **/*.test.tsx",
@@ -36,6 +37,7 @@
     "react": "^16.14.0"
   },
   "devDependencies": {
+    "@bentley/eslint-plugin": "^2.15.1",
     "@testing-library/react": "^11.2.6",
     "@types/chai": "^4.2.17",
     "@types/chai-as-promised": "^7.1.3",
@@ -45,6 +47,7 @@
     "@types/sinon-chai": "^3.2.5",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
+    "eslint": "^6.8.0",
     "ignore-styles": "^5.0.1",
     "jsdom": "^16.5.3",
     "jsdom-global": "^3.0.2",

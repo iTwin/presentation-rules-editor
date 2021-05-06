@@ -28,6 +28,12 @@
     "editor.defaultFormatter": "vscode.typescript-language-features",
   },
 
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+
   "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.count": 120,
   "importSorter.importStringConfiguration.quoteMark": "double",
   "importSorter.importStringConfiguration.tabSize": 2,
