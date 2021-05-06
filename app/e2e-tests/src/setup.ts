@@ -2,6 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { exec } from "child_process";
+import * as fs from "fs";
 import { JestDevServerOptions, setup as setupDevServers, teardown as teardownDevServers } from "jest-dev-server";
 import { Socket } from "net";
 import { chromium, ChromiumBrowser, Page } from "playwright";
@@ -12,12 +14,56 @@ export let page: Page;
 before(async function () {
   this.timeout(60000);
   const debug = !!process.env.PWDEBUG;
-  await Promise.all([setupBrowser({ debug }), setupServers({ backendPort: 3001, frontendPort: 8080, debug })]);
+
+  // mocha will hang if teardownDevServers is called before dev server finishes initialising
+  await settleAllPromises([
+    setupIModel(),
+    setupBrowser({ debug }),
+    setupServers({ backendPort: 3001, frontendPort: 8080, debug }),
+  ]);
 });
 
 after(async () => {
   await teardownDevServers();
 });
+
+/** Implements Promise.allSettled behaviour */
+async function settleAllPromises(args: Array<Promise<unknown>>): Promise<void> {
+  type WrappedPromise<T> = Promise<{ status: "fulfilled"; value: T; } | { status: "rejected", error: unknown; }>;
+
+  function wrapPromise<T>(promise: Promise<T>): WrappedPromise<T> {
+    return promise
+      .then((value) => ({ status: "fulfilled" as const, value }))
+      .catch((error) => ({ status: "rejected" as const, error }));
+  }
+
+  const results = await Promise.all(args.map((promise) => wrapPromise(promise)));
+  for (const result of results) {
+    if (result.status === "rejected") {
+      throw result.error;
+    }
+  }
+}
+
+async function setupIModel(): Promise<void> {
+  const testIModelPath = "../backend/assets/imodels/Baytown.bim";
+  const testIModelUrl = "https://github.com/imodeljs/desktop-starter/raw/master/assets/Baytown.bim";
+
+  if (!await isFileOnDisk(testIModelPath)) {
+    console.log("Downloading test imodel...");
+    await execute(`curl --location --fail --silent --output ${testIModelPath} ${testIModelUrl}`);
+  }
+}
+
+async function isFileOnDisk(filepath: string): Promise<boolean> {
+  return await new Promise((resolve) => {
+    fs.stat(filepath, (err, stats) => resolve(!err && stats.isFile()));
+  });
+}
+
+async function execute(command: string): Promise<void> {
+  await new Promise((resolve, reject) => exec(command, (error) => error ? reject(error) : resolve(undefined)));
+}
 
 async function setupBrowser({ debug }: { debug: boolean; }): Promise<void> {
   browser = await chromium.launch({ headless: !debug, slowMo: debug ? 1000 : undefined });
