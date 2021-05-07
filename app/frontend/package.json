@@ -16,6 +16,7 @@
   "dependencies": {
     "@app/common": "workspace:*",
     "@bentley/bentleyjs-core": "~2.15.0",
+    "@bentley/eslint-plugin": "~2.15.0",
     "@bentley/frontend-authorization-client": "~2.15.0",
     "@bentley/geometry-core": "~2.15.0",
     "@bentley/imodelhub-client": "~2.15.0",

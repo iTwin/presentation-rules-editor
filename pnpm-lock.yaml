@@ -110,6 +110,7 @@ importers:
     specifiers:
       '@app/common': workspace:*
       '@bentley/bentleyjs-core': ~2.15.0
+      '@bentley/eslint-plugin': ~2.15.0
       '@bentley/frontend-authorization-client': ~2.15.0
       '@bentley/geometry-core': ~2.15.0
       '@bentley/imodelhub-client': ~2.15.0
@@ -155,6 +156,7 @@ importers:
     dependencies:
       '@app/common': link:../common
       '@bentley/bentleyjs-core': 2.15.0
+      '@bentley/eslint-plugin': 2.15.1_eslint@6.8.0
       '@bentley/frontend-authorization-client': 2.15.0_0a9f925d10614b055e1f839b546aa0a4
       '@bentley/geometry-core': 2.15.0_@bentley+bentleyjs-core@2.15.0
       '@bentley/imodelhub-client': 2.15.0_ece8efd2f626b904b5c80537b6769462
@@ -1419,7 +1421,7 @@ packages:
       '@typescript-eslint/types': 3.10.1
       '@typescript-eslint/visitor-keys': 3.10.1
       debug: 4.3.1
-      glob: 7.1.6
+      glob: 7.1.7
       is-glob: 4.0.1
       lodash: 4.17.21
       semver: 7.3.5
@@ -4157,6 +4159,16 @@ packages:
 
   /glob/7.1.6:
     resolution: {integrity: sha512-LwaxwyZ72Lk7vZINtNNrywX0ZuLyStrdDtabefZKAY5ZGJhVtgdznluResxNmPitE0SAO+O26sWTHeKSI2wMBA==}
+    dependencies:
+      fs.realpath: 1.0.0
+      inflight: 1.0.6
+      inherits: 2.0.4
+      minimatch: 3.0.4
+      once: 1.4.0
+      path-is-absolute: 1.0.1
+
+  /glob/7.1.7:
+    resolution: {integrity: sha512-OvD9ENzPLbegENnYP5UUfJIirTg4+XwMWGaQfQTY0JenxNvvIKP3U3/tAQSPIu/lHxXYSZmpXlUHeqAIdKzBLQ==}
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
