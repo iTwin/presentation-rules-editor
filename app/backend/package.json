@@ -19,7 +19,7 @@
     "@bentley/backend-itwin-client": "~2.15.0",
     "@bentley/bentleyjs-core": "~2.15.0",
     "@bentley/ecschema-metadata": "~2.15.0",
-    "@bentley/eslint-plugin": "^2.15.1",
+    "@bentley/eslint-plugin": "~2.15.0",
     "@bentley/express-server": "~2.15.0",
     "@bentley/frontend-authorization-client": "~2.15.0",
     "@bentley/geometry-core": "~2.15.0",
