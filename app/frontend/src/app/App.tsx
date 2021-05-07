@@ -15,15 +15,15 @@ interface AppProps {
   initializer: () => Promise<BackendApi>;
 }
 
-export const App: React.FC<AppProps> = (props) => {
+export const App: React.FC<AppProps> = ({ initializer }) => {
   const [backendApi, setBackendApi] = React.useState<BackendApi>();
   const [imodel, setImodel] = React.useState<IModelConnection>();
 
   React.useEffect(
     () => {
-      (async () => { setBackendApi(await props.initializer()); })();
+      void (async () => { setBackendApi(await initializer()); })();
     },
-    [],
+    [initializer],
   );
 
   if (backendApi === undefined) {

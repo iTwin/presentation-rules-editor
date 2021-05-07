@@ -18,13 +18,13 @@ export const IModelSelector: React.FC<IModelSelectorProps> = (props) => {
 
   React.useEffect(
     () => {
-      (async () => {
+      void (async () => {
         const imodels = await backendApi.getAvailableIModels();
         imodels.splice(0, 0, "");
         setAvailableImodels(imodels);
       })();
     },
-    [],
+    [backendApi],
   );
 
   async function handleOnImodelSelected(e: React.ChangeEvent<HTMLSelectElement>): Promise<void> {
@@ -41,7 +41,7 @@ export const IModelSelector: React.FC<IModelSelectorProps> = (props) => {
       return;
     }
 
-    let imodel: IModelConnection | undefined = undefined;
+    let imodel: IModelConnection | undefined;
     try {
       imodel = await backendApi.openIModel(imodelPath);
       setError(undefined);

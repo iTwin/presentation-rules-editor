@@ -1,0 +1,9 @@
+{
+  "extends": "plugin:@bentley/ui",
+  "plugins": [
+    "@bentley"
+  ],
+  "rules": {
+    "jsx-a11y/no-onchange": "off"
+  }
+}

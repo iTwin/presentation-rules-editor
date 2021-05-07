@@ -29,15 +29,15 @@ after(async () => {
 
 /** Implements Promise.allSettled behaviour */
 async function settleAllPromises(args: Array<Promise<unknown>>): Promise<void> {
-  type WrappedPromise<T> = Promise<{ status: "fulfilled"; value: T; } | { status: "rejected", error: unknown; }>;
+  type WrappedPromise<T> = Promise<{ status: "fulfilled", value: T } | { status: "rejected", error: unknown }>;
 
-  function wrapPromise<T>(promise: Promise<T>): WrappedPromise<T> {
+  async function wrapPromise<T>(promise: Promise<T>): WrappedPromise<T> {
     return promise
       .then((value) => ({ status: "fulfilled" as const, value }))
       .catch((error) => ({ status: "rejected" as const, error }));
   }
 
-  const results = await Promise.all(args.map((promise) => wrapPromise(promise)));
+  const results = await Promise.all(args.map(async (promise) => wrapPromise(promise)));
   for (const result of results) {
     if (result.status === "rejected") {
       throw result.error;
@@ -50,13 +50,14 @@ async function setupIModel(): Promise<void> {
   const testIModelUrl = "https://github.com/imodeljs/desktop-starter/raw/master/assets/Baytown.bim";
 
   if (!await isFileOnDisk(testIModelPath)) {
+    // eslint-disable-next-line no-console
     console.log("Downloading test imodel...");
     await execute(`curl --location --fail --silent --output ${testIModelPath} ${testIModelUrl}`);
   }
 }
 
 async function isFileOnDisk(filepath: string): Promise<boolean> {
-  return await new Promise((resolve) => {
+  return new Promise((resolve) => {
     fs.stat(filepath, (err, stats) => resolve(!err && stats.isFile()));
   });
 }
@@ -65,7 +66,7 @@ async function execute(command: string): Promise<void> {
   await new Promise((resolve, reject) => exec(command, (error) => error ? reject(error) : resolve(undefined)));
 }
 
-async function setupBrowser({ debug }: { debug: boolean; }): Promise<void> {
+async function setupBrowser({ debug }: { debug: boolean }): Promise<void> {
   browser = await chromium.launch({ headless: !debug, slowMo: debug ? 1000 : undefined });
   page = await browser.newPage();
 }
@@ -80,6 +81,7 @@ async function setupServers({ backendPort, frontendPort, debug }: SetupServersAr
   const servers: JestDevServerOptions[] = [];
 
   if (await isPortAvailable(3001)) {
+    // eslint-disable-next-line no-console
     console.log("Launching backend server...");
     servers.push({
       command: "npm start --prefix ../backend",
@@ -90,10 +92,12 @@ async function setupServers({ backendPort, frontendPort, debug }: SetupServersAr
       debug,
     });
   } else {
+    // eslint-disable-next-line no-console
     console.log(`Backend server port (${backendPort}) is already taken.`);
   }
 
   if (await isPortAvailable(8080)) {
+    // eslint-disable-next-line no-console
     console.log("Launching frontend server...");
     servers.push({
       command: "npm start --prefix ../frontend",
@@ -104,18 +108,18 @@ async function setupServers({ backendPort, frontendPort, debug }: SetupServersAr
       debug,
     });
   } else {
+    // eslint-disable-next-line no-console
     console.log(`Frontend server port (${frontendPort}) is already taken.`);
   }
 
   await setupDevServers(servers);
 }
 
-
 async function isPortAvailable(port: number) {
   const socket = new Socket();
 
   const result = await new Promise((resolve) => {
-    socket.once('error', () => resolve(true));
+    socket.once("error", () => resolve(true));
     socket.connect(port, "localhost", () => resolve(false));
   });
 

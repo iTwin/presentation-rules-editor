@@ -7,8 +7,12 @@
     "name": "Bentley Systems, Inc.",
     "url": "https://www.bentley.com"
   },
+  "scripts": {
+    "lint": "eslint **/*.{ts,tsx}"
+  },
   "dependencies": {
     "@bentley/bentleyjs-core": "~2.15.0",
+    "@bentley/eslint-plugin": "~2.15.0",
     "@bentley/frontend-authorization-client": "~2.15.0",
     "@bentley/geometry-core": "~2.15.0",
     "@bentley/imodelhub-client": "~2.15.0",
@@ -16,6 +20,7 @@
     "@bentley/imodeljs-quantity": "~2.15.0",
     "@bentley/itwin-client": "~2.15.0",
     "@bentley/presentation-common": "~2.15.0",
-    "@bentley/rbac-client": "~2.15.0"
+    "@bentley/rbac-client": "~2.15.0",
+    "eslint": "^6.8.0"
   }
 }

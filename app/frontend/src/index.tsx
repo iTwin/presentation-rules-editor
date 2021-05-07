@@ -14,18 +14,16 @@ import { UiComponents } from "@bentley/ui-components";
 import { BackendApi } from "./api/BackendApi";
 import { App } from "./app/App";
 
-(async () => {
-  const div = document.createElement("div");
-  document.body.appendChild(div);
-  ReactDOM.render(<App initializer={initializeApp} />, div);
-})();
+const div = document.createElement("div");
+document.body.appendChild(div);
+ReactDOM.render(<App initializer={initializeApp} />, div);
 
 async function initializeApp(): Promise<BackendApi> {
   Logger.initializeToConsole();
   Logger.setLevelDefault(LogLevel.Warning);
 
   await WebViewerApp.startup({
-    iModelApp: { rpcInterfaces: rpcInterfaces },
+    iModelApp: { rpcInterfaces },
     webViewerApp: {
       rpcParams: { info: { title: "presentation-rules-editor", version: "v1.0" }, uriPrefix: "http://localhost:3001" },
     },

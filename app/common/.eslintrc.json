@@ -1,0 +1,6 @@
+{
+  "extends": "plugin:@bentley/imodeljs-recommended",
+  "plugins": [
+    "@bentley"
+  ]
+}
