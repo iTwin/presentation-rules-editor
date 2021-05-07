@@ -7,15 +7,6 @@
     "@bentley"
   ],
   "rules": {
-    "@typescript-eslint/member-delimiter-style": [
-      "error",
-      {
-        "singleline": {
-          "delimiter": "semi",
-          "requireLast": true
-        }
-      }
-    ],
     "jsx-a11y/no-onchange": "off"
   }
 }

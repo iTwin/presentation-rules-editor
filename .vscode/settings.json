@@ -17,17 +17,18 @@
   "typescript.format.semicolons": "insert",
 
   "[javascript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features",
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   },
 
   "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features",
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   },
 
   "[typescriptreact]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features",
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   },
 
+  "eslint.format.enable": true,
   "eslint.workingDirectories": [
     {
       "mode": "auto"

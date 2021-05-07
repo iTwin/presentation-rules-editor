@@ -29,7 +29,7 @@ after(async () => {
 
 /** Implements Promise.allSettled behaviour */
 async function settleAllPromises(args: Array<Promise<unknown>>): Promise<void> {
-  type WrappedPromise<T> = Promise<{ status: "fulfilled"; value: T; } | { status: "rejected"; error: unknown; }>;
+  type WrappedPromise<T> = Promise<{ status: "fulfilled", value: T } | { status: "rejected", error: unknown }>;
 
   async function wrapPromise<T>(promise: Promise<T>): WrappedPromise<T> {
     return promise
@@ -66,7 +66,7 @@ async function execute(command: string): Promise<void> {
   await new Promise((resolve, reject) => exec(command, (error) => error ? reject(error) : resolve(undefined)));
 }
 
-async function setupBrowser({ debug }: { debug: boolean; }): Promise<void> {
+async function setupBrowser({ debug }: { debug: boolean }): Promise<void> {
   browser = await chromium.launch({ headless: !debug, slowMo: debug ? 1000 : undefined });
   page = await browser.newPage();
 }
