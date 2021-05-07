@@ -3,5 +3,5 @@
   "compilerOptions": {
     "experimentalDecorators": true,
   },
-  "include": ["src/main.ts"],
+  "include": ["src"],
 }
