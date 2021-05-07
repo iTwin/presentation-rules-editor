@@ -6,7 +6,7 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import path from "path";
 import { Configuration, ProvidePlugin } from "webpack";
 
-const config: Configuration & { devServer: any; } = {
+const config: Configuration & { devServer: any } = {
   mode: "development",
   entry: {
     app: "./src/index.tsx",
@@ -37,7 +37,7 @@ const config: Configuration & { devServer: any; } = {
   },
   output: {
     // Source maps are not being found on Windows due to non-Unix path separator
-    devtoolModuleFilenameTemplate: (info: any) => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
+    devtoolModuleFilenameTemplate: (info: any) => path.resolve(info.absoluteResourcePath).replace(/\\/g, "/"),
   },
   plugins: [
     new HtmlWebpackPlugin({
