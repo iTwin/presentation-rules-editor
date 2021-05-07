@@ -5,6 +5,7 @@
     "start:frontend": "npm run start --prefix ./app/frontend/ -- --open",
     "lint": "run-p --silent --continue-on-error lint:*",
     "lint:backend": "npm run lint --prefix ./app/backend",
+    "lint:common": "npm run lint --prefix ./app/common",
     "lint:components": "npm run lint --prefix ./components",
     "lint:e2e-tests": "npm run lint --prefix ./app/e2e-tests",
     "lint:frontend": "npm run lint --prefix ./app/frontend",
