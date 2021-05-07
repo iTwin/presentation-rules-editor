@@ -1,8 +1,5 @@
 {
   "extends": "plugin:@bentley/ui",
-  "parserOptions": {
-    "project": "tsconfig.test.json"
-  },
   "plugins": [
     "@bentley"
   ],
