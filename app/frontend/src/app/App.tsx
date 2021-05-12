@@ -4,17 +4,22 @@
 *--------------------------------------------------------------------------------------------*/
 import "./App.scss";
 import * as React from "react";
-import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import {
   ChildNodeSpecificationTypes, ContentSpecificationTypes, RegisteredRuleset, Ruleset, RuleTypes,
 } from "@bentley/presentation-common";
+import { viewWithUnifiedSelection } from "@bentley/presentation-components";
 import { Presentation } from "@bentley/presentation-frontend";
-import { TestComponent } from "@bentley/presentation-rules-editor";
+import { ViewportComponent } from "@bentley/ui-components";
 import { BackendApi } from "../api/BackendApi";
+import { Frontstage } from "../ui-framework/Frontstage";
+import { StagePanel } from "../ui-framework/StagePanel";
+import { TabView, TabViewItem } from "../ui-framework/TabView";
+import { UIFramework } from "../ui-framework/UIFramework";
+import { Widget } from "../ui-framework/Widget";
 import { backendApiContext } from "./AppContext";
 import { IModelSelector } from "./imodel-selector/IModelSelector";
 import { Tree } from "./tree/Tree";
-import { ViewportContentComponent } from "./viewport/ViewportContentControl";
 
 interface AppProps {
   initializer: () => Promise<BackendApi>;
@@ -33,13 +38,31 @@ export const App: React.FC<AppProps> = ({ initializer }) => {
   React.useEffect(
     () => {
       if (backendApi !== undefined) {
-        void (async () => setRuleset(await Presentation.presentation.rulesets().add(defaultRuleset)))();
+        void (async () => {
+          setRuleset(await Presentation.presentation.rulesets().add(defaultRuleset));
+        })();
       }
     },
     [backendApi],
   );
 
-  const [imodel, setImodel] = React.useState<IModelConnection>();
+  const [imodel, setIModel] = React.useState<IModelConnection>();
+  const [viewState, setViewState] = React.useState<ViewState>();
+  React.useEffect(
+    () => {
+      if (imodel === undefined) {
+        return;
+      }
+
+      void (async () => {
+        const viewId = await imodel.views.queryDefaultViewId();
+        if (viewId) {
+          setViewState(await imodel.views.load(viewId));
+        }
+      })();
+    },
+    [imodel],
+  );
 
   if (backendApi === undefined) {
     return <span>Initializing...</span>;
@@ -48,17 +71,36 @@ export const App: React.FC<AppProps> = ({ initializer }) => {
   return (
     <div className="app">
       <backendApiContext.Provider value={backendApi}>
-        <div className="app-header">
-          <h2>{IModelApp.i18n.translate("App:banner-message")}</h2>
-          <TestComponent />
+        <IModelSelector onIModelSelected={setIModel} />
+        <div>
+          <UIFramework>
+            <Frontstage
+              rightPanel={
+                <StagePanel size={370}>
+                  <Widget id="TreeWidget">
+                    {imodel && ruleset && <Tree imodel={imodel} rulesetId={ruleset.id} />}
+                  </Widget>
+                </StagePanel>
+              }>
+              <TabView>
+                <TabViewItem label="Editor">
+                  <div style={{ width: "100%", height: "100%", padding: 11, boxSizing: "border-box" }}>
+                    <textarea style={{ width: "100%", height: "100%", boxSizing: "border-box" }} />
+                  </div>
+                </TabViewItem>
+                <TabViewItem label="Viewport">
+                  {imodel && viewState && <UnifiedSelectionViewport imodel={imodel} viewState={viewState} />}
+                </TabViewItem>
+              </TabView>
+            </Frontstage>
+          </UIFramework>
         </div>
-        <IModelSelector onIModelSelected={setImodel} />
-        {imodel && <ViewportContentComponent imodel={imodel} />}
-        {imodel && ruleset && <Tree imodel={imodel} rulesetId={ruleset.id} />}
       </backendApiContext.Provider>
     </div>
   );
 };
+
+const UnifiedSelectionViewport = viewWithUnifiedSelection(ViewportComponent);
 
 const defaultRuleset: Ruleset = {
   id: "presentation_rules_editor:default_ruleset",
