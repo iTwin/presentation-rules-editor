@@ -2,6 +2,7 @@
   "error": "Error",
   "label": {
     "editor": "Editor",
+    "tree-widget": "Tree",
     "viewport": "Viewport"
   },
   "select-imodel": "Select iModel",

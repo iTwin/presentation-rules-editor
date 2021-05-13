@@ -5,7 +5,11 @@
 import * as React from "react";
 
 export interface WidgetProps {
+  /** Unique widget identifier */
   id: string;
+  /** Widget label */
+  label: string;
+  /** Widget contents */
   children?: React.ReactElement;
 }
 

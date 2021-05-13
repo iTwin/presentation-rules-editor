@@ -66,7 +66,7 @@ export const App: React.FC<AppProps> = ({ initializer }) => {
             <Frontstage
               rightPanel={
                 <StagePanel size={370}>
-                  <Widget id="TreeWidget">
+                  <Widget id="TreeWidget" label={IModelApp.i18n.translate("App:label:tree-widget")}>
                     {imodel && ruleset && <Tree imodel={imodel} rulesetId={ruleset.id} />}
                   </Widget>
                 </StagePanel>

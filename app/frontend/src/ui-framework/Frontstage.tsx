@@ -78,6 +78,7 @@ class CustomFrontstageProvider extends FrontstageProvider {
       (widget) => (
         <FrameworkWidget
           key={widget?.props.id}
+          label={widget?.props.label}
           control={WidgetControlShim}
           applicationData={{ id: widget?.props.id }}
         />
