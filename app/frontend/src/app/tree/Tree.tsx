@@ -13,7 +13,12 @@ export interface TreeProps {
 }
 
 export const Tree: React.FC<TreeProps> = (props) => {
-  const { nodeLoader } = usePresentationTreeNodeLoader({ imodel: props.imodel, ruleset: props.rulesetId, pagingSize: 10 });
+  const { nodeLoader, onItemsRendered } = usePresentationTreeNodeLoader({
+    imodel: props.imodel,
+    ruleset: props.rulesetId,
+    pagingSize: 10,
+    enableHierarchyAutoUpdate: true,
+  });
   const eventHandler = useUnifiedSelectionTreeEventHandler({ nodeLoader });
   const visibleNodes = useVisibleTreeNodes(nodeLoader.modelSource);
 
@@ -23,6 +28,7 @@ export const Tree: React.FC<TreeProps> = (props) => {
       treeEvents={eventHandler}
       nodeLoader={nodeLoader}
       selectionMode={SelectionMode.Extended}
+      onItemsRendered={onItemsRendered}
     />
   );
 };

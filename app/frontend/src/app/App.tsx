@@ -4,7 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import "./App.scss";
 import * as React from "react";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { Id64 } from "@bentley/bentleyjs-core";
+import { IModelApp, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import {
   ChildNodeSpecificationTypes, ContentSpecificationTypes, RegisteredRuleset, Ruleset, RuleTypes,
 } from "@bentley/presentation-common";
@@ -18,6 +19,7 @@ import { TabView, TabViewItem } from "../ui-framework/TabView";
 import { UIFramework } from "../ui-framework/UIFramework";
 import { Widget } from "../ui-framework/Widget";
 import { backendApiContext } from "./AppContext";
+import { Editor } from "./editor/Editor";
 import { IModelSelector } from "./imodel-selector/IModelSelector";
 import { Tree } from "./tree/Tree";
 
@@ -26,13 +28,7 @@ interface AppProps {
 }
 
 export const App: React.FC<AppProps> = ({ initializer }) => {
-  const [backendApi, setBackendApi] = React.useState<BackendApi>();
-  React.useEffect(
-    () => {
-      void (async () => { setBackendApi(await initializer()); })();
-    },
-    [initializer],
-  );
+  const backendApi = useBackendApi(initializer);
 
   const [ruleset, setRuleset] = React.useState<RegisteredRuleset>();
   React.useEffect(
@@ -47,25 +43,18 @@ export const App: React.FC<AppProps> = ({ initializer }) => {
   );
 
   const [imodel, setIModel] = React.useState<IModelConnection>();
-  const [viewState, setViewState] = React.useState<ViewState>();
-  React.useEffect(
-    () => {
-      if (imodel === undefined) {
-        return;
-      }
+  const viewState = useViewState(imodel);
 
-      void (async () => {
-        const viewId = await imodel.views.queryDefaultViewId();
-        if (viewId) {
-          setViewState(await imodel.views.load(viewId));
-        }
-      })();
-    },
-    [imodel],
-  );
+  const [initialRulesetText] = React.useState(() => JSON.stringify(defaultRuleset, undefined, 2));
 
   if (backendApi === undefined) {
     return <span>Initializing...</span>;
+  }
+
+  function submitRuleset(rulesetText: string): void {
+    if (ruleset !== undefined) {
+      void Presentation.presentation.rulesets().modify(ruleset, JSON.parse(rulesetText));
+    }
   }
 
   return (
@@ -81,14 +70,13 @@ export const App: React.FC<AppProps> = ({ initializer }) => {
                     {imodel && ruleset && <Tree imodel={imodel} rulesetId={ruleset.id} />}
                   </Widget>
                 </StagePanel>
-              }>
+              }
+            >
               <TabView>
-                <TabViewItem label="Editor">
-                  <div style={{ width: "100%", height: "100%", padding: 11, boxSizing: "border-box" }}>
-                    <textarea style={{ width: "100%", height: "100%", boxSizing: "border-box" }} />
-                  </div>
+                <TabViewItem label={IModelApp.i18n.translate("App:label:editor")}>
+                  <Editor initialText={initialRulesetText} onTextSubmitted={submitRuleset} />
                 </TabViewItem>
-                <TabViewItem label="Viewport">
+                <TabViewItem label={IModelApp.i18n.translate("App:label:viewport")}>
                   {imodel && viewState && <UnifiedSelectionViewport imodel={imodel} viewState={viewState} />}
                 </TabViewItem>
               </TabView>
@@ -100,10 +88,47 @@ export const App: React.FC<AppProps> = ({ initializer }) => {
   );
 };
 
+function useBackendApi(initializer: () => Promise<BackendApi>): BackendApi | undefined {
+  const [backendApi, setBackendApi] = React.useState<BackendApi>();
+  React.useEffect(
+    () => {
+      void (async () => { setBackendApi(await initializer()); })();
+    },
+    [initializer],
+  );
+
+  return backendApi;
+}
+
+function useViewState(imodel: IModelConnection | undefined): ViewState | undefined {
+  const [viewState, setViewState] = React.useState<ViewState>();
+  React.useEffect(
+    () => {
+      if (imodel === undefined) {
+        return;
+      }
+
+      void (async () => {
+        let viewId = await imodel.views.queryDefaultViewId();
+        if (viewId === Id64.invalid) {
+          viewId = (await imodel.views.queryProps({ wantPrivate: false, limit: 1 }))[0]?.id ?? Id64.invalid;
+        }
+
+        if (viewId !== Id64.invalid) {
+          setViewState(await imodel.views.load(viewId));
+        }
+      })();
+    },
+    [imodel],
+  );
+
+  return viewState;
+}
+
 const UnifiedSelectionViewport = viewWithUnifiedSelection(ViewportComponent);
 
 const defaultRuleset: Ruleset = {
-  id: "presentation_rules_editor:default_ruleset",
+  id: "Ruleset1",
   supportedSchemas: {
     schemaNames: [
       "BisCore",
