@@ -1,0 +1,20 @@
+{
+  "version": "0.0.1",
+  "license": "MIT",
+  "private": true,
+  "author": {
+    "name": "Bentley Systems, Inc.",
+    "url": "https://www.bentley.com"
+  },
+  "scripts": {
+    "link": "ts-node -- src/linkIModeljsRepo.ts link",
+    "unlink": "ts-node -- src/linkIModeljsRepo.ts unlink"
+  },
+  "dependencies": {
+    "@bentley/eslint-plugin": "~2.15.1",
+    "eslint": "^6.8.0",
+    "npm-run-all": "^4.1.5",
+    "ts-node": "^9.1.1",
+    "yargs": "^17.0.1"
+  }
+}

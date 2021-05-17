@@ -22,6 +22,11 @@ const config: Configuration & { devServer: any } = {
         },
       },
       {
+        test: /\.js$/,
+        enforce: "pre",
+        use: ["source-map-loader"],
+      },
+      {
         test: /\.(s[ac]ss|css)$/,
         use: [
           "style-loader",
