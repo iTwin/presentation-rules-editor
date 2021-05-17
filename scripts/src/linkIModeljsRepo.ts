@@ -176,13 +176,13 @@ function unlinkPackage(sourceLocation: string, destinationLocation: string): voi
 }
 
 interface PackageLocations {
-  /** Path to the package being replaced. */
+  /** Package's node_modules folder in this repository. */
   localNodeModules: string;
   /** Original package that was installed in this repository. */
   localPackageBackup: string;
   /** Package's node_modules folder in imodeljs repository. */
   remoteNodeModules: string;
-  /** Pacakge's original node_modules folder in imodeljs repository. */
+  /** Package's original node_modules folder in imodeljs repository. */
   remoteNodeModulesBackup: string;
 }
 
