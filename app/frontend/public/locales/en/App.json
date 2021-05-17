@@ -1,5 +1,10 @@
 {
-  "banner-message": "Welcome to Presentation Rules Editor App",
   "error": "Error",
-  "select-imodel": "Select an iModel"
+  "label": {
+    "editor": "Editor",
+    "tree-widget": "Tree",
+    "viewport": "Viewport"
+  },
+  "select-imodel": "Select iModel",
+  "submit": "Submit"
 }

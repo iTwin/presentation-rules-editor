@@ -76,6 +76,7 @@ const config: Configuration & { devServer: any } = {
       path.join(__dirname, "node_modules/@bentley/ui-abstract/lib/public/"),
       path.join(__dirname, "node_modules/@bentley/ui-components/lib/public/"),
       path.join(__dirname, "node_modules/@bentley/ui-core/lib/public/"),
+      path.join(__dirname, "node_modules/@bentley/ui-framework/lib/public/"),
     ],
   },
   devtool: "cheap-module-source-map",

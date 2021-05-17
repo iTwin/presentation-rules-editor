@@ -3,8 +3,20 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-.app {
-  display: grid;
-  grid-template-rows: 33px auto;
+.rules-editor {
+  width: 100%;
   height: 100%;
+  padding: 11px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: 44px auto;
+  gap: 11px;
+
+  button {
+    width: 70px;
+  }
+
+  textarea {
+    resize: none;
+  }
 }

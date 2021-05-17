@@ -10,9 +10,12 @@ import { Config, Logger, LogLevel } from "@bentley/bentleyjs-core";
 import { IModelApp, WebViewerApp } from "@bentley/imodeljs-frontend";
 import { PresentationUnitSystem } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
-import { UiComponents } from "@bentley/ui-components";
 import { BackendApi } from "./api/BackendApi";
 import { App } from "./app/App";
+import { ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework } from "@bentley/ui-framework";
+
+// Shim Node.js API
+globalThis.setImmediate = setTimeout as any;
 
 const div = document.createElement("div");
 document.body.appendChild(div);
@@ -38,9 +41,8 @@ async function initializeApp(): Promise<BackendApi> {
   await Promise.all([
     IModelApp.i18n.registerNamespace("App").readFinished,
     initializePresentation(backendApi),
-    UiComponents.initialize(IModelApp.i18n),
+    initializeUIFramework(),
   ]);
-
   return backendApi;
 }
 
@@ -52,4 +54,10 @@ async function initializePresentation(appFrontend: BackendApi): Promise<void> {
   });
 
   Presentation.selection.scopes.activeScope = "top-assembly";
+}
+
+async function initializeUIFramework(): Promise<void> {
+  await UiFramework.initialize(undefined, IModelApp.i18n);
+  new StateManager({ frameworkState: FrameworkReducer });
+  ConfigurableUiManager.initialize();
 }
