@@ -138,6 +138,12 @@ function findPackageDestinationLocations(packageNames: Iterable<string>): Map<st
     const folderNameWithoutVersionSuffix = folderName.slice(0, folderName.indexOf("@", 1));
     const originalPackageName = normalizedPackageNameToOriginalName.get(folderNameWithoutVersionSuffix);
     if (originalPackageName !== undefined) {
+      if (packageDestinationMap.has(originalPackageName)) {
+        console.error(`Error: multiple versions of '${originalPackageName}' have been detected in this repository.`);
+        console.error("Hint: running 'pnpm prune' might resolve this issue.");
+        process.exit(1);
+      }
+
       const packageNameWithoutScope = originalPackageName.slice(originalPackageName.indexOf("/") + 1);
       packageDestinationMap.set(
         originalPackageName,
