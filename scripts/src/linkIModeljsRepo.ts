@@ -156,70 +156,53 @@ function findPackageDestinationLocations(packageNames: Iterable<string>): Map<st
 }
 
 function linkPackage(sourceLocation: string, destinationLocation: string): void {
-  const locations = getLocationsForPackage(sourceLocation, destinationLocation);
+  const { sourceLib, destinationLib, destinationLibBackup } = getPathsForPackage(sourceLocation, destinationLocation);
 
-  // Make a backup for the package in this repository
-  if (!fs.existsSync(locations.localPackageBackup)) {
-    fs.renameSync(destinationLocation, locations.localPackageBackup);
+  // Make a backup of the lib folder in the locally installed package
+  if (!fs.existsSync(destinationLibBackup) && fs.existsSync(destinationLib)) {
+    fs.renameSync(destinationLib, destinationLibBackup);
   }
 
-  // Link the imodeljs package to this repository
-  if (!fs.existsSync(destinationLocation)) {
-    fs.symlinkSync(sourceLocation, destinationLocation);
+  // Move external package's lib folder into our repository
+  if (!fs.existsSync(destinationLib) && fs.existsSync(sourceLib)) {
+    fs.renameSync(sourceLib, destinationLib);
   }
 
-  // Make a backup for node_modules in imodeljs repository in temporary location
-  if (!fs.existsSync(locations.remoteNodeModulesBackupTemp) && fs.existsSync(locations.remoteNodeModules)) {
-    fs.renameSync(locations.remoteNodeModules, locations.remoteNodeModulesBackupTemp);
-  }
-
-  // Replace imodeljs node_modules with our node_modules
-  if (!fs.existsSync(locations.remoteNodeModules) && fs.existsSync(locations.remoteNodeModulesBackupTemp)) {
-    fs.symlinkSync(locations.localNodeModules, locations.remoteNodeModules);
-  }
-
-  // Move backup inside node_modules to hide it from git
-  if (fs.existsSync(locations.remoteNodeModulesBackupTemp)) {
-    fs.renameSync(locations.remoteNodeModulesBackupTemp, locations.remoteNodeModulesBackup);
+  // Symlink the moved lib folder back into its original place
+  if (!fs.existsSync(sourceLib) && fs.existsSync(destinationLib)) {
+    fs.symlinkSync(destinationLib, sourceLib);
   }
 }
 
 function unlinkPackage(sourceLocation: string, destinationLocation: string): void {
-  const locations = getLocationsForPackage(sourceLocation, destinationLocation);
+  const { sourceLib, destinationLib, destinationLibBackup } = getPathsForPackage(sourceLocation, destinationLocation);
 
-  // Restore the package from backup in this repository
-  if (fs.existsSync(locations.localPackageBackup)) {
-    fs.unlinkSync(destinationLocation);
-    fs.renameSync(locations.localPackageBackup, destinationLocation);
+  if (fs.existsSync(sourceLib) && fs.lstatSync(sourceLib).isSymbolicLink()) {
+    fs.unlinkSync(sourceLib);
   }
 
-  // Restore the package's node_modules from backup in imodeljs repository
-  if (fs.existsSync(locations.remoteNodeModulesBackup)) {
-    fs.renameSync(locations.remoteNodeModulesBackup, locations.remoteNodeModulesBackupTemp);
-    fs.unlinkSync(locations.remoteNodeModules);
-    fs.renameSync(locations.remoteNodeModulesBackupTemp, locations.remoteNodeModules);
+  if (!fs.existsSync(sourceLib) && fs.existsSync(destinationLib)) {
+    fs.renameSync(destinationLib, sourceLib);
+  }
+
+  if (!fs.existsSync(destinationLib) && fs.existsSync(destinationLibBackup)) {
+    fs.renameSync(destinationLibBackup, destinationLib);
   }
 }
 
 interface PackageLocations {
-  /** Package's node_modules folder in this repository. */
-  localNodeModules: string;
-  /** Original package that was installed in this repository. */
-  localPackageBackup: string;
-  /** Package's node_modules folder in imodeljs repository. */
-  remoteNodeModules: string;
-  /** Package's original node_modules folder in imodeljs repository, hidden from git. */
-  remoteNodeModulesBackup: string;
-  /** Package's original node_modules folder in imodeljs repository in its temporary location. */
-  remoteNodeModulesBackupTemp: string;
+  /** lib folder of the package in imodeljs repository */
+  sourceLib: string;
+  /** lib folder of the package in this repository */
+  destinationLib: string;
+  /** lib folder that holds the original package files that were installed in this repository */
+  destinationLibBackup: string;
 }
 
-function getLocationsForPackage(sourceLocation: string, destinationLocation: string): PackageLocations {
+function getPathsForPackage(sourceLocation: string, destinationLocation: string): PackageLocations {
   return {
-    localNodeModules: path.resolve(destinationLocation, "../../"),
-    localPackageBackup: path.join(path.dirname(destinationLocation), `${path.basename(destinationLocation)}_original`),
-    remoteNodeModules: path.join(sourceLocation, "node_modules"),
-    remoteNodeModulesBackup: path.join(sourceLocation, "node_modules/node_modules_original"),
-    remoteNodeModulesBackupTemp: path.join(sourceLocation, "node_modules_original"),
+    sourceLib: path.join(sourceLocation, "lib"),
+    destinationLib: path.join(destinationLocation, "lib"),
+    destinationLibBackup: path.join(destinationLocation, "lib_original"),
   };
 }
