@@ -92,8 +92,16 @@ function isIModeljsRepository(pathToRepository: string): boolean {
   return fs.existsSync(path.join(pathToRepository, "rush.json"));
 }
 
+interface RushJson {
+  projects: Array<{
+    packageName: string;
+    projectFolder: string;
+  }>;
+}
+
 function findPackageSourceLocations(pathToRepository: string, packageNames: Set<string>): Map<string, string> {
-  const rushJson = JSON.parse(fs.readFileSync(path.join(pathToRepository, "rush.json"), { encoding: "utf-8" }));
+  const rushJsonPath = path.join(pathToRepository, "rush.json");
+  const rushJson: RushJson = JSON.parse(fs.readFileSync(rushJsonPath, { encoding: "utf-8" }));
   const sourceLocations = new Map<string, string>(rushJson.projects
     .filter((project: any) => packageNames.has(project.packageName))
     .map((project: any) => [project.packageName, path.resolve(pathToRepository, project.projectFolder)]),
@@ -101,9 +109,15 @@ function findPackageSourceLocations(pathToRepository: string, packageNames: Set<
 
   // @bentley/imodeljs-native does not have a project in imodeljs monorepo
   if (packageNames.has("@bentley/imodeljs-native")) {
+    const backendProject = rushJson.projects.find((project) => project.packageName === "@bentley/imodeljs-backend");
+    if (backendProject === undefined) {
+      console.error(`'@bentley/imodeljs-backend' is not present in '${rushJsonPath}'`);
+      process.exit(1);
+    }
+
     sourceLocations.set(
       "@bentley/imodeljs-native",
-      path.join(pathToRepository, "core/backend/node_modules/@bentley/imodeljs-native"),
+      path.join(pathToRepository, backendProject.projectFolder, "node_modules/@bentley/imodeljs-native"),
     );
   }
 
