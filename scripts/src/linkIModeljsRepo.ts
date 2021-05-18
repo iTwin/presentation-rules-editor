@@ -162,14 +162,19 @@ function linkPackage(sourceLocation: string, destinationLocation: string): void 
     fs.symlinkSync(sourceLocation, destinationLocation);
   }
 
-  // Make a backup for node_modules in imodeljs repository
-  if (!fs.existsSync(locations.remoteNodeModulesBackup) && fs.existsSync(locations.remoteNodeModules)) {
-    fs.renameSync(locations.remoteNodeModules, locations.remoteNodeModulesBackup);
+  // Make a backup for node_modules in imodeljs repository in temporary location
+  if (!fs.existsSync(locations.remoteNodeModulesBackupTemp) && fs.existsSync(locations.remoteNodeModules)) {
+    fs.renameSync(locations.remoteNodeModules, locations.remoteNodeModulesBackupTemp);
   }
 
   // Replace imodeljs node_modules with our node_modules
-  if (!fs.existsSync(locations.remoteNodeModules)) {
+  if (!fs.existsSync(locations.remoteNodeModules) && fs.existsSync(locations.remoteNodeModulesBackupTemp)) {
     fs.symlinkSync(locations.localNodeModules, locations.remoteNodeModules);
+  }
+
+  // Move backup inside node_modules to hide it from git
+  if (fs.existsSync(locations.remoteNodeModulesBackupTemp)) {
+    fs.renameSync(locations.remoteNodeModulesBackupTemp, locations.remoteNodeModulesBackup);
   }
 }
 
@@ -184,8 +189,9 @@ function unlinkPackage(sourceLocation: string, destinationLocation: string): voi
 
   // Restore the package's node_modules from backup in imodeljs repository
   if (fs.existsSync(locations.remoteNodeModulesBackup)) {
+    fs.renameSync(locations.remoteNodeModulesBackup, locations.remoteNodeModulesBackupTemp);
     fs.unlinkSync(locations.remoteNodeModules);
-    fs.renameSync(locations.remoteNodeModulesBackup, locations.remoteNodeModules);
+    fs.renameSync(locations.remoteNodeModulesBackupTemp, locations.remoteNodeModules);
   }
 }
 
@@ -196,8 +202,10 @@ interface PackageLocations {
   localPackageBackup: string;
   /** Package's node_modules folder in imodeljs repository. */
   remoteNodeModules: string;
-  /** Package's original node_modules folder in imodeljs repository. */
+  /** Package's original node_modules folder in imodeljs repository, hidden from git. */
   remoteNodeModulesBackup: string;
+  /** Package's original node_modules folder in imodeljs repository in its temporary location. */
+  remoteNodeModulesBackupTemp: string;
 }
 
 function getLocationsForPackage(sourceLocation: string, destinationLocation: string): PackageLocations {
@@ -205,6 +213,7 @@ function getLocationsForPackage(sourceLocation: string, destinationLocation: str
     localNodeModules: path.resolve(destinationLocation, "../../"),
     localPackageBackup: path.join(path.dirname(destinationLocation), `${path.basename(destinationLocation)}_original`),
     remoteNodeModules: path.join(sourceLocation, "node_modules"),
-    remoteNodeModulesBackup: path.join(sourceLocation, "node_modules_original"),
+    remoteNodeModulesBackup: path.join(sourceLocation, "node_modules/node_modules_original"),
+    remoteNodeModulesBackupTemp: path.join(sourceLocation, "node_modules_original"),
   };
 }
