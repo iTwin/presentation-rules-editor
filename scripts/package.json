@@ -8,7 +8,10 @@
   },
   "scripts": {
     "link": "ts-node -- src/linkIModeljsRepo.ts link",
-    "unlink": "ts-node -- src/linkIModeljsRepo.ts unlink"
+    "unlink": "ts-node -- src/linkIModeljsRepo.ts unlink",
+    "lint": "eslint **/*.{ts,tsx}",
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
     "@bentley/eslint-plugin": "~2.15.1",
