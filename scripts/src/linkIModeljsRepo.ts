@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as fs from "fs";
 import * as path from "path";
+import * as rimraf from "rimraf";
 import * as yargs from "yargs";
 
 const packagesToLink = new Set([
@@ -177,15 +178,22 @@ function linkPackage(sourceLocation: string, destinationLocation: string): void 
 function unlinkPackage(sourceLocation: string, destinationLocation: string): void {
   const { sourceLib, destinationLib, destinationLibBackup } = getPathsForPackage(sourceLocation, destinationLocation);
 
+  // Remove lib folder from the external repository if it is a symbolic link
   if (fs.existsSync(sourceLib) && fs.lstatSync(sourceLib).isSymbolicLink()) {
     fs.unlinkSync(sourceLib);
   }
 
+  // Move lib folder back into its original location in the external repository
   if (!fs.existsSync(sourceLib) && fs.existsSync(destinationLib)) {
     fs.renameSync(destinationLib, sourceLib);
   }
 
-  if (!fs.existsSync(destinationLib) && fs.existsSync(destinationLibBackup)) {
+  // Restore locally installed lib folder from backup
+  if (fs.existsSync(destinationLibBackup)) {
+    if (fs.existsSync(destinationLib)) {
+      rimraf.sync(destinationLib);
+    }
+
     fs.renameSync(destinationLibBackup, destinationLib);
   }
 }
