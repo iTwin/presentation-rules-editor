@@ -51,9 +51,9 @@ export const App: React.FC<AppProps> = ({ initializer }) => {
     return <span>Initializing...</span>;
   }
 
-  function submitRuleset(rulesetText: string): void {
+  async function submitRuleset(rulesetText: string): Promise<void> {
     if (ruleset !== undefined) {
-      void Presentation.presentation.rulesets().modify(ruleset, JSON.parse(rulesetText));
+      setRuleset(await Presentation.presentation.rulesets().modify(ruleset, JSON.parse(rulesetText)));
     }
   }
 
@@ -67,7 +67,7 @@ export const App: React.FC<AppProps> = ({ initializer }) => {
               rightPanel={
                 <StagePanel size={370}>
                   <Widget id="TreeWidget" label={IModelApp.i18n.translate("App:label:tree-widget")}>
-                    {imodel && ruleset && <Tree imodel={imodel} rulesetId={ruleset.id} />}
+                    {imodel && ruleset && <Tree imodel={imodel} ruleset={ruleset} />}
                   </Widget>
                 </StagePanel>
               }
@@ -145,7 +145,7 @@ const defaultRuleset: Ruleset = {
           classNames: ["FunctionalElement"],
         },
         arePolymorphic: true,
-        groupByClass: false,
+        groupByClass: true,
         groupByLabel: false,
       }],
     },
