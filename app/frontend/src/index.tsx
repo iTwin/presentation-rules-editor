@@ -14,9 +14,6 @@ import { BackendApi } from "./api/BackendApi";
 import { App } from "./app/App";
 import { ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework } from "@bentley/ui-framework";
 
-// Shim Node.js API
-globalThis.setImmediate = setTimeout as any;
-
 const div = document.createElement("div");
 document.body.appendChild(div);
 ReactDOM.render(<App initializer={initializeApp} />, div);
