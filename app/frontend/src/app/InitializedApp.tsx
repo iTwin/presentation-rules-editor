@@ -113,20 +113,28 @@ function useIModel(backendApi: BackendApi, path: string): IModelConnection | und
 
   React.useEffect(
     () => {
-      let imodelPromise: Promise<IModelConnection>;
+      let disposed = false;
+      let imodelPromise: Promise<IModelConnection | undefined>;
       void (async () => {
         try {
-          const openedIModel = await (path === "" ? Promise.resolve(undefined) : backendApi.openIModel(path));
-          setIModel(openedIModel);
+          imodelPromise = (path === "" ? Promise.resolve(undefined) : backendApi.openIModel(path));
+          const openedIModel = await imodelPromise;
+          if (!disposed) {
+            setIModel(openedIModel);
+          }
         } catch (error) {
           displayErrorToast(IModelApp.i18n.translate("App:error:imodel-open", { imodel: path }), error.message);
         }
       })();
 
       return () => {
+        disposed = true;
         void (async () => {
           try {
-            await (await imodelPromise).close();
+            const openedIModel = await imodelPromise;
+            if (openedIModel !== undefined) {
+              await openedIModel.close();
+            }
           } catch (error) {
             displayErrorToast(IModelApp.i18n.translate("App:error:imodel-close", { imodel: path }), error.message);
           }
