@@ -6,7 +6,11 @@
   "label": {
     "editor": "Editor",
     "tree-widget": "Tree",
+    "property-grid-widget": "Properties",
     "viewport": "Viewport"
+  },
+  "property-grid": {
+    "over-limit": "Too many elements selected"
   },
   "select-imodel": "Select iModel",
   "submit": "Submit"

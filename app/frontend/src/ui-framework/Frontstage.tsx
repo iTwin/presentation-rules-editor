@@ -8,10 +8,11 @@ import {
   ConfigurableCreateInfo, ConfigurableUiContent, ContentControl as FrameworkContentControl, ContentGroup,
   ContentLayoutDef, CoreTools, Frontstage as FrameworkFrontstage, FrontstageManager,
   FrontstageProps as FrameworkFrontstageProps, FrontstageProvider, StagePanel as FrameworkStagePanel,
-  StagePanelProps as FrameworkStagePanelProps, UiSettingsProvider, Widget as FrameworkWidget, WidgetControl,
+  StagePanelProps as FrameworkStagePanelProps, StagePanelZoneProps as FrameworkStagePanelZoneProps,
+  StagePanelZonesProps as FrameworkStagePanelZonesProps, UiSettingsProvider, Widget as FrameworkWidget, WidgetControl,
 } from "@bentley/ui-framework";
 import { MemoryUISettingsStorage } from "../app/MemoryUISettingsStorage";
-import { StagePanelProps } from "./StagePanel";
+import { StagePanelProps, StagePanelZoneProps } from "./StagePanel";
 
 export interface FrontstageProps {
   /** Widgets on the right-hand side */
@@ -53,10 +54,15 @@ function gatherWidgetContents(props: FrontstageProps): Map<string, ReactElement 
   // Collect all widgets from frontstage panels
   React.Children.forEach(
     props.rightPanel?.props.children,
-    (widget) => {
-      if (widget !== undefined) {
-        widgetContents.set(widget.props.id, widget.props.children ?? null);
-      }
+    (stagePanelZone) => {
+      React.Children.forEach(
+        stagePanelZone?.props.children,
+        (widget) => {
+          if (widget !== undefined) {
+            widgetContents.set(widget.props.id, widget.props.children ?? null);
+          }
+        },
+      );
     },
   );
 
@@ -73,18 +79,12 @@ class CustomFrontstageProvider extends FrontstageProvider {
   constructor(rightPanel: React.ReactElement<StagePanelProps> | undefined) {
     super();
 
-    const widgets = React.Children.map(
-      rightPanel?.props.children,
-      (widget) => (
-        <FrameworkWidget
-          key={widget?.props.id}
-          label={widget?.props.label}
-          control={WidgetControlShim}
-          applicationData={{ id: widget?.props.id }}
-        />
-      ),
+    this.rightPanel = (
+      <FrameworkStagePanel
+        size={rightPanel?.props.size}
+        panelZones={getStagePanelZones(rightPanel?.props.children)}
+      />
     );
-    this.rightPanel = <FrameworkStagePanel size={rightPanel?.props.size} widgets={widgets} />;
 
     this.contentGroup = new ContentGroup({
       contents: [{ classId: ContentControlShim }],
@@ -101,6 +101,38 @@ class CustomFrontstageProvider extends FrontstageProvider {
         rightPanel={this.rightPanel}
       />
     );
+  }
+}
+
+function getStagePanelZones(panelChildren: StagePanelProps["children"]): FrameworkStagePanelZonesProps {
+  if (panelChildren === undefined) {
+    return {};
+  }
+
+  const children = React.Children.toArray(panelChildren) as Array<React.ReactElement<StagePanelZoneProps>>;
+  if (children.length === 1) {
+    return { middle: makeZone(children[0]) };
+  } else if (children.length === 2) {
+    return { start: makeZone(children[0]), end: makeZone(children[1]) };
+  } else if (children.length === 3) {
+    return { start: makeZone(children[0]), middle: makeZone(children[1]), end: makeZone(children[2]) };
+  }
+
+  return {};
+
+  function makeZone(stagePanelZone?: React.ReactElement<StagePanelZoneProps>): FrameworkStagePanelZoneProps {
+    return {
+      widgets: React.Children.map(
+        stagePanelZone?.props.children,
+        (widget) => (
+          <FrameworkWidget
+            {...widget?.props}
+            applicationData={{ id: widget?.props.id }}
+            control={WidgetControlShim}
+          />
+        ),
+      ) ?? [],
+    };
   }
 }
 

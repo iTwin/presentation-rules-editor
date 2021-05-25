@@ -10,16 +10,18 @@ import {
   ChildNodeSpecificationTypes, ContentSpecificationTypes, RegisteredRuleset, Ruleset, RuleTypes,
 } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
+import { WidgetState } from "@bentley/ui-abstract";
 import { MessageManager, MessageRenderer } from "@bentley/ui-framework";
 import { BackendApi } from "../api/BackendApi";
 import { Frontstage } from "../ui-framework/Frontstage";
-import { StagePanel } from "../ui-framework/StagePanel";
+import { StagePanel, StagePanelZone } from "../ui-framework/StagePanel";
 import { TabView, TabViewItem } from "../ui-framework/TabView/TabView";
 import { UIFramework } from "../ui-framework/UIFramework";
 import { Widget } from "../ui-framework/Widget";
 import { backendApiContext } from "./AppContext";
 import { Editor } from "./editor/Editor";
 import { IModelSelector } from "./imodel-selector/IModelSelector";
+import { PropertyGrid } from "./property-grid/PropertyGrid";
 import { Tree } from "./tree/Tree";
 import { Viewport } from "./viewport/Viewport";
 
@@ -53,10 +55,25 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
         <UIFramework>
           <Frontstage
             rightPanel={
-              <StagePanel size={370}>
-                <Widget id="TreeWidget" label={IModelApp.i18n.translate("App:label:tree-widget")}>
-                  {imodel && ruleset && <Tree imodel={imodel} ruleset={ruleset} />}
-                </Widget>
+              <StagePanel size={450}>
+                <StagePanelZone>
+                  <Widget
+                    id="TreeWidget"
+                    label={IModelApp.i18n.translate("App:label:tree-widget")}
+                    defaultState={WidgetState.Open}
+                  >
+                    {imodel && ruleset && <Tree imodel={imodel} ruleset={ruleset} />}
+                  </Widget>
+                </StagePanelZone>
+                <StagePanelZone>
+                  <Widget
+                    id="PropertyGridWidget"
+                    label={IModelApp.i18n.translate("App:label:property-grid-widget")}
+                    defaultState={WidgetState.Open}
+                  >
+                    {imodel && ruleset && <PropertyGrid imodel={imodel} ruleset={ruleset} />}
+                  </Widget>
+                </StagePanelZone>
               </StagePanel>
             }
           >
