@@ -1,5 +1,8 @@
 {
-  "error": "Error",
+  "error": {
+    "imodel-open": "Failed to open iModel \"{{imodel}}\"",
+    "imodel-close": "Failed to close iModel \"{{imodel}}\""
+  },
   "label": {
     "editor": "Editor",
     "tree-widget": "Tree",

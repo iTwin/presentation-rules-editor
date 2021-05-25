@@ -4,16 +4,16 @@
 *--------------------------------------------------------------------------------------------*/
 import "./IModelSelector.scss";
 import * as React from "react";
-import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelApp } from "@bentley/imodeljs-frontend";
 import { backendApiContext } from "../AppContext";
 
 export interface IModelSelectorProps {
-  onIModelSelected: (imodel?: IModelConnection) => void;
+  selectedIModelPath: string;
+  setSelectedIModelPath: (imodel: string) => void;
 }
 
-export const IModelSelector: React.FC<IModelSelectorProps> = (props) => {
+export function IModelSelector(props: IModelSelectorProps): React.ReactElement {
   const [availableImodels, setAvailableImodels] = React.useState<string[]>([]);
-  const [error, setError] = React.useState<string>();
   const backendApi = React.useContext(backendApiContext);
 
   React.useEffect(
@@ -27,38 +27,16 @@ export const IModelSelector: React.FC<IModelSelectorProps> = (props) => {
     [backendApi],
   );
 
-  async function handleOnImodelSelected(e: React.ChangeEvent<HTMLSelectElement>): Promise<void> {
-    // Save relevant React synthetic event values
-    const imodelPath = e.currentTarget.value;
-
-    if (backendApi.iModel !== undefined) {
-      await backendApi.iModel.close();
-    }
-
-    if (imodelPath === "") {
-      setError(undefined);
-      props.onIModelSelected(undefined);
-      return;
-    }
-
-    let imodel: IModelConnection | undefined;
-    try {
-      imodel = await backendApi.openIModel(imodelPath);
-      setError(undefined);
-    } catch (err) {
-      setError(err.message);
-    }
-
-    props.onIModelSelected(imodel);
+  function handleIModelSelection(e: React.ChangeEvent<HTMLSelectElement>): void {
+    props.setSelectedIModelPath(e.currentTarget.value);
   }
 
   return (
     <div className="IModelSelector">
       {IModelApp.i18n.translate("App:select-imodel")}:
-      <select onChange={handleOnImodelSelected}>
+      <select onChange={handleIModelSelection} value={props.selectedIModelPath}>
         {availableImodels.map((path: string) => <option key={path} value={path}>{path.split(/[\\/]/).pop()}</option>)}
       </select>
-      {error && <div className="Error">{IModelApp.i18n.translate("App:error")}</div>}
     </div>
   );
-};
+}
