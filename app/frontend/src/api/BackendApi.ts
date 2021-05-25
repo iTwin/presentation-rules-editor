@@ -14,20 +14,15 @@ export interface ViewDefinition {
 }
 
 export class BackendApi {
-  public iModel: IModelConnection | undefined = undefined;
-
   public async getAvailableIModels(): Promise<string[]> {
     return PresentationRulesEditorRpcInterface.getClient().getAvailableIModels();
   }
 
   public async openIModel(path: string): Promise<IModelConnection> {
-    if (this.iModel === undefined) {
-      Logger.logInfo("presentation", `Opening snapshot: ${path}`);
-      this.iModel = await SnapshotConnection.openFile(path);
-      Logger.logInfo("presentation", `Opened snapshot: ${this.iModel.name}`);
-    }
-
-    return this.iModel;
+    Logger.logInfo("presentation", `Opening snapshot: ${path}`);
+    const imodel = await SnapshotConnection.openFile(path);
+    Logger.logInfo("presentation", `Opened snapshot: ${imodel.name}`);
+    return imodel;
   }
 
   public getClientId(): string {

@@ -10,9 +10,11 @@ import { Config, Logger, LogLevel } from "@bentley/bentleyjs-core";
 import { IModelApp, WebViewerApp } from "@bentley/imodeljs-frontend";
 import { PresentationUnitSystem } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
+import {
+  AppNotificationManager, ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework,
+} from "@bentley/ui-framework";
 import { BackendApi } from "./api/BackendApi";
 import { App } from "./app/App";
-import { ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework } from "@bentley/ui-framework";
 
 // Shim Node.js API
 globalThis.setImmediate = setTimeout as any;
@@ -26,7 +28,7 @@ async function initializeApp(): Promise<BackendApi> {
   Logger.setLevelDefault(LogLevel.Warning);
 
   await WebViewerApp.startup({
-    iModelApp: { rpcInterfaces },
+    iModelApp: { rpcInterfaces, notifications: new AppNotificationManager() },
     webViewerApp: {
       rpcParams: { info: { title: "presentation-rules-editor", version: "v1.0" }, uriPrefix: "http://localhost:3001" },
     },
