@@ -16,9 +16,6 @@ import {
 import { BackendApi } from "./api/BackendApi";
 import { App } from "./app/App";
 
-// Shim Node.js API
-globalThis.setImmediate = setTimeout as any;
-
 const div = document.createElement("div");
 document.body.appendChild(div);
 ReactDOM.render(<App initializer={initializeApp} />, div);

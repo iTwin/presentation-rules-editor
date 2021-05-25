@@ -43,9 +43,9 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
   const viewState = useViewState(imodel);
   const [initialRulesetText] = React.useState(() => JSON.stringify(defaultRuleset, undefined, 2));
 
-  function submitRuleset(rulesetText: string): void {
+  async function submitRuleset(rulesetText: string): Promise<void> {
     if (ruleset !== undefined) {
-      void Presentation.presentation.rulesets().modify(ruleset, JSON.parse(rulesetText));
+      setRuleset(await Presentation.presentation.rulesets().modify(ruleset, JSON.parse(rulesetText)));
     }
   }
 
@@ -58,7 +58,7 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
             rightPanel={
               <StagePanel size={370}>
                 <Widget id="TreeWidget" label={IModelApp.i18n.translate("App:label:tree-widget")}>
-                  {imodel && ruleset && <Tree imodel={imodel} rulesetId={ruleset.id} />}
+                  {imodel && ruleset && <Tree imodel={imodel} ruleset={ruleset} />}
                 </Widget>
               </StagePanel>
             }
@@ -97,7 +97,7 @@ const defaultRuleset: Ruleset = {
           classNames: ["FunctionalElement"],
         },
         arePolymorphic: true,
-        groupByClass: false,
+        groupByClass: true,
         groupByLabel: false,
       }],
     },
