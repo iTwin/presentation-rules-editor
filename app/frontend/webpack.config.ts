@@ -35,7 +35,7 @@ const config: Configuration & { devServer: any } = {
         ],
       },
       {
-        test: /\.(svg|eot|ttf|woff|woff2)\??/,
+        test: /\.(svg|eot|ttf|woff|woff2)$/,
         type: "asset/inline",
       },
     ],
@@ -57,6 +57,7 @@ const config: Configuration & { devServer: any } = {
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
     fallback: {
+      assert: false,
       buffer: "buffer",
       http: "stream-http",
       https: "https-browserify",
@@ -64,6 +65,7 @@ const config: Configuration & { devServer: any } = {
       path: false,
       process: "process/browser",
       stream: "stream-browserify",
+      timers: "timers-browserify",
     },
   },
   cache: {
