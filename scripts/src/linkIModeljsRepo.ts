@@ -157,52 +157,66 @@ function findPackageDestinationLocations(packageNames: Iterable<string>): Map<st
 }
 
 function linkPackage(sourceLocation: string, destinationLocation: string): void {
-  const { sourceLib, destinationLib, destinationLibBackup } = getPathsForPackage(sourceLocation, destinationLocation);
+  const paths = getPathsForPackage(sourceLocation, destinationLocation);
 
   // Make a backup of the lib folder in the locally installed package
-  if (!fs.existsSync(destinationLibBackup) && fs.existsSync(destinationLib)) {
-    fs.renameSync(destinationLib, destinationLibBackup);
+  if (!fs.existsSync(paths.destinationLibBackup) && fs.existsSync(paths.destinationLib)) {
+    fs.renameSync(paths.destinationLib, paths.destinationLibBackup);
   }
 
   // Move external package's lib folder into our repository
-  if (!fs.existsSync(destinationLib) && fs.existsSync(sourceLib)) {
-    fs.renameSync(sourceLib, destinationLib);
+  if (!fs.existsSync(paths.destinationLib) && fs.existsSync(paths.sourceLib)) {
+    fs.renameSync(paths.sourceLib, paths.destinationLib);
+  }
+
+  // Symlink external package's src folder into our repository for sourcemap support
+  if (!fs.existsSync(paths.destinationSrc) && fs.existsSync(paths.sourceSrc)) {
+    fs.symlinkSync(paths.sourceSrc, paths.destinationSrc);
   }
 
   // Symlink the moved lib folder back into its original place
-  if (!fs.existsSync(sourceLib) && fs.existsSync(destinationLib)) {
-    fs.symlinkSync(destinationLib, sourceLib);
+  if (!fs.existsSync(paths.sourceLib) && fs.existsSync(paths.destinationLib)) {
+    fs.symlinkSync(paths.destinationLib, paths.sourceLib);
   }
 }
 
 function unlinkPackage(sourceLocation: string, destinationLocation: string): void {
-  const { sourceLib, destinationLib, destinationLibBackup } = getPathsForPackage(sourceLocation, destinationLocation);
+  const paths = getPathsForPackage(sourceLocation, destinationLocation);
 
   // Remove lib folder from the external repository if it is a symbolic link
-  if (fs.existsSync(sourceLib) && fs.lstatSync(sourceLib).isSymbolicLink()) {
-    fs.unlinkSync(sourceLib);
+  if (fs.existsSync(paths.sourceLib) && fs.lstatSync(paths.sourceLib).isSymbolicLink()) {
+    fs.unlinkSync(paths.sourceLib);
   }
 
   // Move lib folder back into its original location in the external repository
-  if (!fs.existsSync(sourceLib) && fs.existsSync(destinationLib)) {
-    fs.renameSync(destinationLib, sourceLib);
+  if (!fs.existsSync(paths.sourceLib) && fs.existsSync(paths.destinationLib)) {
+    fs.renameSync(paths.destinationLib, paths.sourceLib);
+  }
+
+  // Remove src symlink
+  if (fs.existsSync(paths.destinationSrc)) {
+    fs.unlinkSync(paths.destinationSrc);
   }
 
   // Restore locally installed lib folder from backup
-  if (fs.existsSync(destinationLibBackup)) {
-    if (fs.existsSync(destinationLib)) {
-      rimraf.sync(destinationLib);
+  if (fs.existsSync(paths.destinationLibBackup)) {
+    if (fs.existsSync(paths.destinationLib)) {
+      rimraf.sync(paths.destinationLib);
     }
 
-    fs.renameSync(destinationLibBackup, destinationLib);
+    fs.renameSync(paths.destinationLibBackup, paths.destinationLib);
   }
 }
 
 interface PackageLocations {
   /** lib folder of the package in imodeljs repository */
   sourceLib: string;
+  /** src folder of the package in imodeljs repository */
+  sourceSrc: string;
   /** lib folder of the package in this repository */
   destinationLib: string;
+  /** src folder of the package in this repository */
+  destinationSrc: string;
   /** lib folder that holds the original package files that were installed in this repository */
   destinationLibBackup: string;
 }
@@ -210,7 +224,9 @@ interface PackageLocations {
 function getPathsForPackage(sourceLocation: string, destinationLocation: string): PackageLocations {
   return {
     sourceLib: path.join(sourceLocation, "lib"),
+    sourceSrc: path.join(sourceLocation, "src"),
     destinationLib: path.join(destinationLocation, "lib"),
+    destinationSrc: path.join(destinationLocation, "src"),
     destinationLibBackup: path.join(destinationLocation, "lib_original"),
   };
 }
