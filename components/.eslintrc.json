@@ -1,5 +1,8 @@
 {
-  "extends": "plugin:@bentley/ui",
+  "extends": [
+    "plugin:@bentley/ui",
+    "../eslintrc.base.json"
+  ],
   "parserOptions": {
     "project": "tsconfig.test.json"
   },

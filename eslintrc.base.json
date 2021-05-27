@@ -1,0 +1,13 @@
+{
+  "plugins": [
+    "@bentley"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "off",
+    "jsx-a11y/no-onchange": "off",
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ]
+  }
+}
