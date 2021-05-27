@@ -1,9 +1,9 @@
 {
-  "extends": "plugin:@bentley/ui",
+  "extends": [
+    "plugin:@bentley/ui",
+    "../../eslintrc.base.json"
+  ],
   "plugins": [
     "@bentley"
-  ],
-  "rules": {
-    "jsx-a11y/no-onchange": "off"
-  }
+  ]
 }
