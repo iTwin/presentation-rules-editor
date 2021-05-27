@@ -28,6 +28,10 @@
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   },
 
+  "[markdown]": {
+    "editor.tabSize": 4,
+  },
+
   "eslint.format.enable": true,
   "eslint.workingDirectories": [
     {

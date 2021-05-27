@@ -1,0 +1,9 @@
+{
+  "extends": "plugin:@bentley/imodeljs-recommended",
+  "plugins": [
+    "@bentley"
+  ],
+  "rules": {
+    "no-console": "off"
+  }
+}

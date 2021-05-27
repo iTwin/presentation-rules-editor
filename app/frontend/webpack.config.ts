@@ -2,6 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import fs from "fs";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import path from "path";
 import { Configuration, ProvidePlugin } from "webpack";
@@ -22,6 +23,11 @@ const config: Configuration & { devServer: any } = {
         },
       },
       {
+        test: /\.js$/,
+        enforce: "pre",
+        use: ["source-map-loader"],
+      },
+      {
         test: /\.(s[ac]ss|css)$/,
         use: [
           "style-loader",
@@ -36,8 +42,12 @@ const config: Configuration & { devServer: any } = {
     ],
   },
   output: {
-    // Source maps are not being found on Windows due to non-Unix path separator
-    devtoolModuleFilenameTemplate: (info: any) => path.resolve(info.absoluteResourcePath).replace(/\\/g, "/"),
+    devtoolModuleFilenameTemplate: (info: any) => {
+      // Source maps are not being found on Windows due to non-Unix path separator
+      const fixedPath = path.resolve(info.absoluteResourcePath).replace(/\\/g, "/");
+      // Resolve real path to make source maps work with symlinked imodeljs repository
+      return fs.existsSync(fixedPath) ? fs.realpathSync(fixedPath) : fixedPath;
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
