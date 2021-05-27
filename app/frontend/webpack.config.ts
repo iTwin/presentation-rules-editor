@@ -90,6 +90,7 @@ const config: Configuration & { devServer: any } = {
       path.join(__dirname, "node_modules/@bentley/ui-core/lib/public/"),
       path.join(__dirname, "node_modules/@bentley/ui-framework/lib/public/"),
     ],
+    hot: true,
     proxy: {
       // IModelApp always requests PSEUDO localizations in dev builds but we do not have one for the app
       "/locales/en-PSEUDO": {
