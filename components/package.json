@@ -37,7 +37,7 @@
     "react": "^16.14.0"
   },
   "devDependencies": {
-    "@bentley/eslint-plugin": "2.17.0-dev.11",
+    "@bentley/eslint-plugin": "2.17.0-dev.22",
     "@testing-library/react": "^11.2.6",
     "@types/chai": "^4.2.17",
     "@types/chai-as-promised": "^7.1.3",
