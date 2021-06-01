@@ -29,7 +29,7 @@ function ViewportForIModel(props: ViewportForIModelProps): React.ReactElement | 
     return null;
   }
 
-  return < ViewportWithUnifiedSelection imodel = { props.imodel } viewDefinitionId = { viewDefinitionId } />;
+  return <ViewportWithUnifiedSelection imodel={props.imodel} viewDefinitionId={viewDefinitionId} />;
 }
 
 function useViewDefinitionId(imodel: IModelConnection): Id64String | undefined {
