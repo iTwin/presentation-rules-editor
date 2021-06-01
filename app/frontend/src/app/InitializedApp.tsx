@@ -16,7 +16,7 @@ import { BackendApi } from "../api/BackendApi";
 import { Frontstage } from "../ui-framework/Frontstage";
 import { StagePanel, StagePanelZone } from "../ui-framework/StagePanel";
 import { UIFramework } from "../ui-framework/UIFramework";
-import { Widget } from "../ui-framework/Widget";
+import { Widget } from "../ui-framework/Widget/Widget";
 import { AppLayoutContext, appLayoutContext, AppTab, backendApiContext } from "./AppContext";
 import { ContentTabs } from "./ContentTabs";
 import { IModelSelector } from "./imodel-selector/IModelSelector";

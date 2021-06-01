@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { WidgetProps } from "./Widget";
+import { WidgetProps } from "./Widget/Widget";
 
 export interface StagePanelProps {
   /** Initial stage panel size */
