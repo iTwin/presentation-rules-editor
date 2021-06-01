@@ -3,18 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-.rules-editor {
-  padding: 11px;
-  box-sizing: border-box;
+.tab-view {
   display: grid;
-  grid-template-rows: 44px auto;
-  gap: 11px;
-
-  button {
-    width: 70px;
-  }
-
-  textarea {
-    resize: none;
-  }
+  height: 100%;
+  grid-template-rows: min-content auto;
 }
