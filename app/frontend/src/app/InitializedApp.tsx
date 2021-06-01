@@ -3,16 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { Id64 } from "@bentley/bentleyjs-core";
 import {
-  IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, OutputMessageType, ViewState,
+  IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, OutputMessageType,
 } from "@bentley/imodeljs-frontend";
 import {
   ChildNodeSpecificationTypes, ContentSpecificationTypes, RegisteredRuleset, Ruleset, RuleTypes,
 } from "@bentley/presentation-common";
-import { viewWithUnifiedSelection } from "@bentley/presentation-components";
 import { Presentation } from "@bentley/presentation-frontend";
-import { ViewportComponent } from "@bentley/ui-components";
 import { MessageManager, MessageRenderer } from "@bentley/ui-framework";
 import { BackendApi } from "../api/BackendApi";
 import { Frontstage } from "../ui-framework/Frontstage";
@@ -24,6 +21,7 @@ import { backendApiContext } from "./AppContext";
 import { Editor } from "./editor/Editor";
 import { IModelSelector } from "./imodel-selector/IModelSelector";
 import { Tree } from "./tree/Tree";
+import { Viewport } from "./viewport/Viewport";
 
 export interface InitializedAppProps {
   backendApi: BackendApi;
@@ -40,7 +38,6 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
 
   const [imodelPath, setIModelPath] = React.useState("");
   const imodel = useIModel(props.backendApi, imodelPath);
-  const viewState = useViewState(imodel);
   const [initialRulesetText] = React.useState(() => JSON.stringify(defaultRuleset, undefined, 2));
 
   async function submitRuleset(rulesetText: string): Promise<void> {
@@ -68,7 +65,7 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
                 <Editor initialText={initialRulesetText} onTextSubmitted={submitRuleset} />
               </TabViewItem>
               <TabViewItem label={IModelApp.i18n.translate("App:label:viewport")}>
-                {imodel && viewState && <UnifiedSelectionViewport imodel={imodel} viewState={viewState} />}
+                {imodel && <Viewport imodel={imodel} />}
               </TabViewItem>
             </TabView>
           </Frontstage>
@@ -146,33 +143,6 @@ function useIModel(backendApi: BackendApi, path: string): IModelConnection | und
 
   return imodel;
 }
-
-function useViewState(imodel: IModelConnection | undefined): ViewState | undefined {
-  const [viewState, setViewState] = React.useState<ViewState>();
-  React.useEffect(
-    () => {
-      if (imodel === undefined) {
-        return;
-      }
-
-      void (async () => {
-        let viewId = await imodel.views.queryDefaultViewId();
-        if (viewId === Id64.invalid) {
-          viewId = (await imodel.views.queryProps({ wantPrivate: false, limit: 1 }))[0]?.id ?? Id64.invalid;
-        }
-
-        if (viewId !== Id64.invalid) {
-          setViewState(await imodel.views.load(viewId));
-        }
-      })();
-    },
-    [imodel],
-  );
-
-  return viewState;
-}
-
-const UnifiedSelectionViewport = viewWithUnifiedSelection(ViewportComponent);
 
 function displayErrorToast(messageShort: string, messageDetail: string): void {
   const messageDetails = new NotifyMessageDetails(

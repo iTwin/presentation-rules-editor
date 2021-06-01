@@ -3,15 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { PresentationRulesEditorRpcInterface } from "@app/common";
-import { Guid, Logger } from "@bentley/bentleyjs-core";
-import { ViewQueryParams } from "@bentley/imodeljs-common";
+import { Guid, Id64, Id64String, Logger } from "@bentley/bentleyjs-core";
 import { IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";
-
-export interface ViewDefinition {
-  id: string;
-  class: string;
-  label: string;
-}
 
 export class BackendApi {
   public async getAvailableIModels(): Promise<string[]> {
@@ -36,15 +29,13 @@ export class BackendApi {
     return value;
   }
 
-  public async getViewDefinitions(imodel: IModelConnection): Promise<ViewDefinition[]> {
-    const viewQueryParams: ViewQueryParams = { wantPrivate: false };
-    const viewSpecs = await imodel.views.queryProps(viewQueryParams);
-    return viewSpecs
-      .filter((spec) => !spec.isPrivate)
-      .map((spec) => ({
-        id: spec.id!,
-        class: spec.classFullName,
-        label: spec.userLabel ?? spec.code.value!,
-      }));
+  public async getViewDefinition(imodel: IModelConnection): Promise<Id64String> {
+    const viewId = await imodel.views.queryDefaultViewId();
+    if (viewId !== Id64.invalid) {
+      return viewId;
+    }
+
+    const viewDefinitionProps = await imodel.views.queryProps({ wantPrivate: false, limit: 1 });
+    return viewDefinitionProps[0].id ?? Id64.invalid;
   }
 }
