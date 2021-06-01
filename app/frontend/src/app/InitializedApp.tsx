@@ -17,7 +17,7 @@ import { MessageManager, MessageRenderer } from "@bentley/ui-framework";
 import { BackendApi } from "../api/BackendApi";
 import { Frontstage } from "../ui-framework/Frontstage";
 import { StagePanel } from "../ui-framework/StagePanel";
-import { TabView, TabViewItem } from "../ui-framework/TabView";
+import { TabView, TabViewItem } from "../ui-framework/TabView/TabView";
 import { UIFramework } from "../ui-framework/UIFramework";
 import { Widget } from "../ui-framework/Widget";
 import { backendApiContext } from "./AppContext";
