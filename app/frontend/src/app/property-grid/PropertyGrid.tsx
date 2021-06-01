@@ -9,7 +9,9 @@ import {
   PresentationPropertyDataProvider, usePropertyDataProviderWithUnifiedSelection,
 } from "@bentley/presentation-components";
 import { PropertyCategory, PropertyData, VirtualizedPropertyGridWithDataProvider } from "@bentley/ui-components";
-import { FillCentered, Orientation, useDisposable } from "@bentley/ui-core";
+import { Button, ButtonType, Orientation, useDisposable } from "@bentley/ui-core";
+import { appLayoutContext, AppTab } from "../AppContext";
+import { VerticalStack } from "../shared/VerticalStack";
 
 export interface PropertyGridProps {
   imodel: IModelConnection;
@@ -17,6 +19,8 @@ export interface PropertyGridProps {
 }
 
 export function PropertyGrid(props: PropertyGridProps): React.ReactElement {
+  const appLayout = React.useContext(appLayoutContext);
+
   const dataProvider = useDisposable(React.useCallback(
     () => {
       const provider = new AutoExpandingPropertyDataProvider({ imodel: props.imodel, ruleset: props.ruleset });
@@ -26,9 +30,23 @@ export function PropertyGrid(props: PropertyGridProps): React.ReactElement {
     [props.imodel, props.ruleset],
   ));
 
-  const { isOverLimit } = usePropertyDataProviderWithUnifiedSelection({ dataProvider });
+  const { isOverLimit, numSelectedElements } = usePropertyDataProviderWithUnifiedSelection({ dataProvider });
+  if (numSelectedElements === 0) {
+    return (
+      <VerticalStack>
+        <span>{IModelApp.i18n.translate("App:property-grid.no-elements-selected")}</span>
+        {
+          appLayout.activeTab !== AppTab.Viewport &&
+          <Button buttonType={ButtonType.Hollow} onClick={() => appLayout.setActiveTab(AppTab.Viewport)}>
+            {IModelApp.i18n.translate("App:property-grid.show-viewport")}
+          </Button>
+        }
+      </VerticalStack>
+    );
+  }
+
   if (isOverLimit) {
-    return <FillCentered>{IModelApp.i18n.translate("App:property-grid.over-limit")}</FillCentered>;
+    return <VerticalStack>{IModelApp.i18n.translate("App:property-grid.over-limit")}</VerticalStack>;
   }
 
   return (

@@ -1,7 +1,7 @@
 {
   "error": {
-    "imodel-open": "Failed to open iModel \"{{imodel}}\"",
-    "imodel-close": "Failed to close iModel \"{{imodel}}\""
+    "imodel-open": "Failed to open iModel \"{{imodel}}\".",
+    "imodel-close": "Failed to close iModel \"{{imodel}}\"."
   },
   "label": {
     "editor": "Editor",
@@ -10,7 +10,9 @@
     "viewport": "Viewport"
   },
   "property-grid": {
-    "over-limit": "Too many elements selected"
+    "no-elements-selected": "Select element(s) to view properties.",
+    "over-limit": "Too many elements selected.",
+    "show-viewport": "Show viewport"
   },
   "select-imodel": "Select iModel",
   "submit": "Submit"
