@@ -7,27 +7,35 @@ import * as React from "react";
 import { HorizontalTabs } from "@bentley/ui-core";
 
 export interface TabViewProps {
-  /** One or more TabViewItem(s) */
+  /** Index of currently active tab. */
+  activeTab: number;
+  /** Invoked when user clicks on a tab label. */
+  setActiveTab: (activeTab: number) => void;
+  /** One or more TabViewItem(s). */
   children: React.ReactElement<TabViewItemProps> | React.ReactElement<TabViewItemProps>[];
 }
 
 /** Displays a set of horizontal tabs and active tab's contents. */
 export const TabView: React.FC<TabViewProps> = (props: TabViewProps) => {
   const tabLabels = React.Children.map(props.children, (item) => item.props.label);
-  const [activeTab, setActiveTab] = React.useState(0);
+
+  function handleOnActivateTab(index: number): void {
+    props.setActiveTab(index);
+  }
+
   return (
     <div className="tab-view">
-      <HorizontalTabs labels={tabLabels} onActivateTab={(index) => setActiveTab(index)} />
-      {React.Children.toArray(props.children)[activeTab]}
+      <HorizontalTabs labels={tabLabels} activeIndex={props.activeTab} onActivateTab={handleOnActivateTab} />
+      {React.Children.toArray(props.children)[props.activeTab]}
     </div>
   );
 };
 
 export interface TabViewItemProps {
-  /** Displayed tab label */
+  /** Displayed tab label. */
   label: string;
 
-  /** Tab contents */
+  /** Tab contents. */
   children?: React.ReactElement | null;
 }
 

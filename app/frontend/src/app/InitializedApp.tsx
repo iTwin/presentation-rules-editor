@@ -15,15 +15,13 @@ import { MessageManager, MessageRenderer } from "@bentley/ui-framework";
 import { BackendApi } from "../api/BackendApi";
 import { Frontstage } from "../ui-framework/Frontstage";
 import { StagePanel, StagePanelZone } from "../ui-framework/StagePanel";
-import { TabView, TabViewItem } from "../ui-framework/TabView/TabView";
 import { UIFramework } from "../ui-framework/UIFramework";
 import { Widget } from "../ui-framework/Widget";
-import { backendApiContext } from "./AppContext";
-import { Editor } from "./editor/Editor";
+import { AppLayoutContext, appLayoutContext, AppTab, backendApiContext } from "./AppContext";
+import { ContentTabs } from "./ContentTabs";
 import { IModelSelector } from "./imodel-selector/IModelSelector";
 import { PropertyGrid } from "./property-grid/PropertyGrid";
 import { Tree } from "./tree/Tree";
-import { Viewport } from "./viewport/Viewport";
 
 export interface InitializedAppProps {
   backendApi: BackendApi;
@@ -48,47 +46,44 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
     }
   }
 
+  const appLayoutContextValue = useAppLayout();
+
   return (
     <backendApiContext.Provider value={props.backendApi}>
-      <IModelSelector selectedIModelPath={imodelPath} setSelectedIModelPath={setIModelPath} />
-      <div>
-        <UIFramework>
-          <Frontstage
-            rightPanel={
-              <StagePanel size={450}>
-                <StagePanelZone>
-                  <Widget
-                    id="TreeWidget"
-                    label={IModelApp.i18n.translate("App:label:tree-widget")}
-                    defaultState={WidgetState.Open}
-                  >
-                    {imodel && ruleset && <Tree imodel={imodel} ruleset={ruleset} />}
-                  </Widget>
-                </StagePanelZone>
-                <StagePanelZone>
-                  <Widget
-                    id="PropertyGridWidget"
-                    label={IModelApp.i18n.translate("App:label:property-grid-widget")}
-                    defaultState={WidgetState.Open}
-                  >
-                    {imodel && ruleset && <PropertyGrid imodel={imodel} ruleset={ruleset} />}
-                  </Widget>
-                </StagePanelZone>
-              </StagePanel>
-            }
-          >
-            <TabView>
-              <TabViewItem label={IModelApp.i18n.translate("App:label:editor")}>
-                <Editor initialText={initialRulesetText} onTextSubmitted={submitRuleset} />
-              </TabViewItem>
-              <TabViewItem label={IModelApp.i18n.translate("App:label:viewport")}>
-                {imodel && <Viewport imodel={imodel} />}
-              </TabViewItem>
-            </TabView>
-          </Frontstage>
-        </UIFramework>
-        <MessageRenderer />
-      </div>
+      <appLayoutContext.Provider value={appLayoutContextValue}>
+        <IModelSelector selectedIModelPath={imodelPath} setSelectedIModelPath={setIModelPath} />
+        <div>
+          <UIFramework>
+            <Frontstage
+              rightPanel={
+                <StagePanel size={450}>
+                  <StagePanelZone>
+                    <Widget
+                      id="TreeWidget"
+                      label={IModelApp.i18n.translate("App:label:tree-widget")}
+                      defaultState={WidgetState.Open}
+                    >
+                      {imodel && ruleset && <Tree imodel={imodel} ruleset={ruleset} />}
+                    </Widget>
+                  </StagePanelZone>
+                  <StagePanelZone>
+                    <Widget
+                      id="PropertyGridWidget"
+                      label={IModelApp.i18n.translate("App:label:property-grid-widget")}
+                      defaultState={WidgetState.Open}
+                    >
+                      {imodel && ruleset && <PropertyGrid imodel={imodel} ruleset={ruleset} />}
+                    </Widget>
+                  </StagePanelZone>
+                </StagePanel>
+              }
+            >
+              <ContentTabs imodel={imodel} defaultRuleset={initialRulesetText} submitRuleset={submitRuleset} />
+            </Frontstage>
+          </UIFramework>
+          <MessageRenderer />
+        </div>
+      </appLayoutContext.Provider>
     </backendApiContext.Provider>
   );
 }
@@ -121,6 +116,11 @@ const defaultRuleset: Ruleset = {
     },
   ],
 };
+
+function useAppLayout(): AppLayoutContext {
+  const [activeTab, setActiveTab] = React.useState(AppTab.Editor);
+  return React.useMemo(() => ({ activeTab, setActiveTab }), [activeTab]);
+}
 
 function useIModel(backendApi: BackendApi, path: string): IModelConnection | undefined {
   const [imodel, setIModel] = React.useState<IModelConnection>();
