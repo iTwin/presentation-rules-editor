@@ -1,0 +1,11 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
+.nz-widget-content {
+  // Make widget content occupy 100% of the height by default
+  display: grid;
+  // Work-around AutoSizer issue on Chrome
+  overflow: hidden;
+}

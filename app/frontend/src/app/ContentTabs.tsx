@@ -1,0 +1,30 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+import * as React from "react";
+import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
+import { TabView, TabViewItem } from "../ui-framework/TabView/TabView";
+import { appLayoutContext } from "./AppContext";
+import { Editor } from "./editor/Editor";
+import { Viewport } from "./viewport/Viewport";
+
+export interface ContentTabsProps {
+  imodel?: IModelConnection;
+  defaultRuleset: string;
+  submitRuleset: (ruleset: string) => void;
+}
+
+export function ContentTabs(props: ContentTabsProps): React.ReactElement {
+  const appLayout = React.useContext(appLayoutContext);
+  return (
+    <TabView activeTab={appLayout.activeTab} setActiveTab={appLayout.setActiveTab}>
+      <TabViewItem label={IModelApp.i18n.translate("App:label:editor")}>
+        <Editor initialText={props.defaultRuleset} onTextSubmitted={props.submitRuleset} />
+      </TabViewItem>
+      <TabViewItem label={IModelApp.i18n.translate("App:label:viewport")}>
+        {props.imodel && <Viewport imodel={props.imodel} />}
+      </TabViewItem>
+    </TabView>
+  );
+}
