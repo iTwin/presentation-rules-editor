@@ -143,6 +143,8 @@ importers:
       eslint: ^6.8.0
       html-webpack-plugin: ^5.3.1
       https-browserify: ^1.0.0
+      monaco-editor: ^0.24.0
+      monaco-editor-webpack-plugin: ^3.1.0
       npm-run-all: ^4.1.5
       process: ^0.11.10
       react: ^16.14.0
@@ -197,6 +199,8 @@ importers:
       eslint: 6.8.0
       html-webpack-plugin: 5.3.1_webpack@5.36.2
       https-browserify: 1.0.0
+      monaco-editor: 0.24.0
+      monaco-editor-webpack-plugin: 3.1.0_4412be29c650dca267745c4785ba0bf5
       npm-run-all: 4.1.5
       process: 0.11.10
       react: 16.14.0
@@ -6068,6 +6072,21 @@ packages:
       yargs-parser: 20.2.4
       yargs-unparser: 2.0.0
 
+  /monaco-editor-webpack-plugin/3.1.0_4412be29c650dca267745c4785ba0bf5:
+    resolution: {integrity: sha512-TP5NkCAV0OeFTry5k/d60KR7CkhTXL4kgJKtE3BzjgbDb5TGEPEhoKmHBrSa6r7Oc0sNbPLZhKD/TP2ig7A+/A==}
+    peerDependencies:
+      monaco-editor: 0.22.x || 0.23.x || 0.24.x
+      webpack: ^4.5.0 || 5.x
+    dependencies:
+      loader-utils: 2.0.0
+      monaco-editor: 0.24.0
+      webpack: 5.36.2_webpack-cli@4.6.0
+    dev: false
+
+  /monaco-editor/0.24.0:
+    resolution: {integrity: sha512-o1f0Lz6ABFNTtnEqqqvlY9qzNx24rQZx1RgYNQ8SkWkE+Ka63keHH/RqxQ4QhN4fs/UYOnvAtEUZsPrzccH++A==}
+    dev: false
+
   /ms/2.0.0:
     resolution: {integrity: sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=}
 
@@ -8974,6 +8993,7 @@ packages:
 
   /uuid/3.4.0:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
+    deprecated: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
     hasBin: true
 
   /uuid/7.0.3:

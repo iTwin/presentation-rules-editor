@@ -6,5 +6,6 @@
 .tab-view {
   display: grid;
   height: 100%;
-  grid-template-rows: min-content auto;
+  grid-template-rows: min-content minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
 }

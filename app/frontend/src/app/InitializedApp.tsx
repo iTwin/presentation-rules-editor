@@ -28,25 +28,18 @@ export interface InitializedAppProps {
 }
 
 export function InitializedApp(props: InitializedAppProps): React.ReactElement {
-  const [ruleset, setRuleset] = React.useState<RegisteredRuleset>();
-  React.useEffect(
-    () => {
-      void (async () => { setRuleset(await Presentation.presentation.rulesets().add(defaultRuleset)); })();
-    },
-    [],
-  );
+  const appLayoutContextValue = useAppLayout();
 
   const [imodelPath, setIModelPath] = React.useState("");
   const imodel = useIModel(props.backendApi, imodelPath);
+
   const [initialRulesetText] = React.useState(() => JSON.stringify(defaultRuleset, undefined, 2));
+  const [ruleset, setRuleset] = React.useState(defaultRuleset);
+  const registeredRuleset = useRegisteredRuleset(ruleset);
 
-  async function submitRuleset(rulesetText: string): Promise<void> {
-    if (ruleset !== undefined) {
-      setRuleset(await Presentation.presentation.rulesets().modify(ruleset, JSON.parse(rulesetText)));
-    }
+  async function submitRuleset(newRuleset: Ruleset): Promise<void> {
+    setRuleset(newRuleset);
   }
-
-  const appLayoutContextValue = useAppLayout();
 
   return (
     <backendApiContext.Provider value={props.backendApi}>
@@ -63,7 +56,7 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
                       label={IModelApp.i18n.translate("App:label:tree-widget")}
                       defaultState={WidgetState.Open}
                     >
-                      {imodel && ruleset && <Tree imodel={imodel} ruleset={ruleset} />}
+                      {imodel && registeredRuleset && <Tree imodel={imodel} ruleset={registeredRuleset} />}
                     </Widget>
                   </StagePanelZone>
                   <StagePanelZone>
@@ -72,7 +65,7 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
                       label={IModelApp.i18n.translate("App:label:property-grid-widget")}
                       defaultState={WidgetState.Open}
                     >
-                      {imodel && ruleset && <PropertyGrid imodel={imodel} ruleset={ruleset} />}
+                      {imodel && registeredRuleset && <PropertyGrid imodel={imodel} ruleset={registeredRuleset} />}
                     </Widget>
                   </StagePanelZone>
                 </StagePanel>
@@ -116,6 +109,35 @@ const defaultRuleset: Ruleset = {
     },
   ],
 };
+
+function useRegisteredRuleset(ruleset: Ruleset): RegisteredRuleset | undefined {
+  const [registeredRuleset, setRegisteredRuleset] = React.useState<RegisteredRuleset>();
+  React.useEffect(
+    () => {
+      setRegisteredRuleset(undefined);
+
+      let disposed = false;
+      let registeredRulesetPromise: Promise<RegisteredRuleset>;
+
+      void (async () => {
+        registeredRulesetPromise = Presentation.presentation.rulesets().add(ruleset);
+        if (!disposed) {
+          setRegisteredRuleset(await registeredRulesetPromise);
+        }
+      })();
+
+      return () => {
+        disposed = true;
+        void (async () => {
+          await Presentation.presentation.rulesets().remove(await registeredRulesetPromise);
+        })();
+      };
+    },
+    [ruleset],
+  );
+
+  return registeredRuleset;
+}
 
 function useAppLayout(): AppLayoutContext {
   const [activeTab, setActiveTab] = React.useState(AppTab.Editor);

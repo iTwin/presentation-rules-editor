@@ -4,7 +4,7 @@
     "imodel-close": "Failed to close iModel \"{{imodel}}\"."
   },
   "label": {
-    "editor": "Editor",
+    "editor": "Ruleset",
     "tree-widget": "Tree",
     "property-grid-widget": "Properties",
     "viewport": "Viewport"
@@ -15,5 +15,5 @@
     "show-viewport": "Show viewport"
   },
   "select-imodel": "Select iModel",
-  "submit": "Submit"
+  "submit-ruleset": "Submit Ruleset"
 }

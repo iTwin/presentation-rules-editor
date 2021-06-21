@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
+import { Ruleset } from "@bentley/presentation-common";
 import { TabView, TabViewItem } from "../ui-framework/TabView/TabView";
 import { appLayoutContext } from "./AppContext";
 import { Editor } from "./editor/Editor";
@@ -12,7 +13,7 @@ import { Viewport } from "./viewport/Viewport";
 export interface ContentTabsProps {
   imodel?: IModelConnection;
   defaultRuleset: string;
-  submitRuleset: (ruleset: string) => void;
+  submitRuleset: (ruleset: Ruleset) => void;
 }
 
 export function ContentTabs(props: ContentTabsProps): React.ReactElement {
@@ -20,7 +21,7 @@ export function ContentTabs(props: ContentTabsProps): React.ReactElement {
   return (
     <TabView activeTab={appLayout.activeTab} setActiveTab={appLayout.setActiveTab}>
       <TabViewItem label={IModelApp.i18n.translate("App:label:editor")}>
-        <Editor initialText={props.defaultRuleset} onTextSubmitted={props.submitRuleset} />
+        <Editor initialText={props.defaultRuleset} submitRuleset={props.submitRuleset} />
       </TabViewItem>
       <TabViewItem label={IModelApp.i18n.translate("App:label:viewport")}>
         {props.imodel && <Viewport imodel={props.imodel} />}

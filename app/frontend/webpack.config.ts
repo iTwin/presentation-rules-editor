@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import fs from "fs";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
 import path from "path";
 import { Configuration, ProvidePlugin } from "webpack";
 
@@ -58,6 +59,7 @@ const config: Configuration & { devServer: any } = {
       Buffer: ["buffer", "Buffer"],
       process: "process/browser",
     }),
+    new MonacoWebpackPlugin({ languages: ["json"] }),
   ],
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
