@@ -6,4 +6,6 @@
 .nz-widget-content {
   // Make widget content occupy 100% of the height by default
   display: grid;
+  // Work-around AutoSizer issue on Chrome
+  overflow: hidden;
 }
