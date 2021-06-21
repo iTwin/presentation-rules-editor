@@ -4,6 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import "./App.scss";
 import * as React from "react";
+import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
+import { Footer, Header, HeaderBreadcrumbs, HeaderLogo } from "@itwin/itwinui-react";
 import { BackendApi } from "../api/BackendApi";
 import { InitializedApp } from "./InitializedApp";
 
@@ -13,14 +15,20 @@ interface AppProps {
 
 export const App: React.FC<AppProps> = ({ initializer }) => {
   const backendApi = useBackendApi(initializer);
-
-  if (backendApi === undefined) {
-    return <span>Initializing...</span>;
-  }
+  const firstBreadcrumbRef = React.useRef<HTMLDivElement>(null);
 
   return (
     <div className="app">
-      <InitializedApp backendApi={backendApi} />
+      <Header
+        appLogo={<HeaderLogo logo={<SvgImodelHollow />}>Presentation Rules Editor</HeaderLogo>}
+        breadcrumbs={<HeaderBreadcrumbs items={[<div key="imodel-selector" ref={firstBreadcrumbRef} />]} />}
+      />
+      {
+        backendApi !== undefined && firstBreadcrumbRef.current !== null
+          ? <InitializedApp backendApi={backendApi} firstBreadcrumbElement={firstBreadcrumbRef.current} />
+          : <span>Initializing...</span>
+      }
+      <Footer />
     </div>
   );
 };

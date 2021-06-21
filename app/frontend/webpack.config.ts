@@ -51,7 +51,7 @@ const config: Configuration & { devServer: any } = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "iTwin.js Presentation Rules Editor",
+      title: "Presentation Rules Editor",
       favicon: "public/favicon.ico",
     }),
     new ProvidePlugin({

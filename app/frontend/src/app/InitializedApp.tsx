@@ -2,7 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import "./InitializedApp.scss";
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 import {
   IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, OutputMessageType,
 } from "@bentley/imodeljs-frontend";
@@ -25,6 +27,7 @@ import { Tree } from "./tree/Tree";
 
 export interface InitializedAppProps {
   backendApi: BackendApi;
+  firstBreadcrumbElement: HTMLElement;
 }
 
 export function InitializedApp(props: InitializedAppProps): React.ReactElement {
@@ -51,8 +54,13 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
   return (
     <backendApiContext.Provider value={props.backendApi}>
       <appLayoutContext.Provider value={appLayoutContextValue}>
-        <IModelSelector selectedIModelPath={imodelPath} setSelectedIModelPath={setIModelPath} />
-        <div>
+        <div className="content">
+          {
+            ReactDOM.createPortal(
+              <IModelSelector selectedIModelPath={imodelPath} setSelectedIModelPath={setIModelPath} />,
+              props.firstBreadcrumbElement,
+            )
+          }
           <UIFramework>
             <Frontstage
               rightPanel={
