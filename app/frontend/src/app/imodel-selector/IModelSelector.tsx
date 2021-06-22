@@ -31,10 +31,13 @@ export function IModelSelector(props: IModelSelectorProps): React.ReactElement {
 
   function buildMenuItems(close: () => void): React.ReactElement[] {
     async function openSnapshotFolder() {
-      setSnapshotFolderIsOpening(true);
-      await backendApi.openIModelsDirectory();
-      setSnapshotFolderIsOpening(false);
-      close();
+      try {
+        setSnapshotFolderIsOpening(true);
+        await backendApi.openIModelsDirectory();
+      } finally {
+        setSnapshotFolderIsOpening(false);
+        close();
+      }
     }
 
     function selectIModel(value: any) {
