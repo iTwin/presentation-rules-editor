@@ -19,4 +19,7 @@ export abstract class PresentationRulesEditorRpcInterface extends RpcInterface {
 
   @RpcOperation.setRoutingProps(localDeploymentOnly)
   public async getAvailableIModels(): Promise<string[]> { return this.forward(arguments); }
+
+  @RpcOperation.setRoutingProps(localDeploymentOnly)
+  public async openIModelsDirectory(): Promise<void> { return this.forward(arguments); }
 }

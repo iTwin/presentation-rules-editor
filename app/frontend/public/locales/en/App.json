@@ -3,6 +3,10 @@
     "imodel-open": "Failed to open iModel \"{{imodel}}\".",
     "imodel-close": "Failed to close iModel \"{{imodel}}\"."
   },
+  "imodel-selector": {
+    "open-snapshot-folder": "Open snapshot folder...",
+    "select-imodel": "Select iModel"
+  },
   "label": {
     "editor": "Ruleset",
     "tree-widget": "Tree",
@@ -14,6 +18,5 @@
     "over-limit": "Too many elements selected.",
     "show-viewport": "Show viewport"
   },
-  "select-imodel": "Select iModel",
   "submit-ruleset": "Submit Ruleset"
 }
