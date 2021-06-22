@@ -10,7 +10,7 @@ import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Ruleset } from "@bentley/presentation-common";
 import presentationRulesetSchema from "@bentley/presentation-common/Ruleset.schema.json";
 import { Button } from "@bentley/ui-core";
-import { AutoSizer, Size } from "../utils/AutoSizer";
+import { AutoSizer, Size } from "../../utils/AutoSizer";
 
 export interface EditorProps {
   initialText: string;

@@ -11,7 +11,7 @@ import {
   StagePanelProps as FrameworkStagePanelProps, StagePanelZoneProps as FrameworkStagePanelZoneProps,
   StagePanelZonesProps as FrameworkStagePanelZonesProps, UiSettingsProvider, Widget as FrameworkWidget, WidgetControl,
 } from "@bentley/ui-framework";
-import { MemoryUISettingsStorage } from "../app/MemoryUISettingsStorage";
+import { MemoryUISettingsStorage } from "./MemoryUISettingsStorage";
 import { StagePanelProps, StagePanelZoneProps } from "./StagePanel";
 
 export interface FrontstageProps {
