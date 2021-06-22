@@ -12,7 +12,7 @@ export let browser: ChromiumBrowser;
 export let page: Page;
 
 before(async function () {
-  this.timeout(60000);
+  this.timeout(90000);
   const debug = !!process.env.PWDEBUG;
 
   // mocha will hang if teardownDevServers is called before dev server finishes initialising
