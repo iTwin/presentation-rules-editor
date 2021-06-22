@@ -20,10 +20,10 @@ import { StagePanel, StagePanelZone } from "../ui-framework/StagePanel";
 import { UIFramework } from "../ui-framework/UIFramework";
 import { Widget } from "../ui-framework/Widget/Widget";
 import { AppLayoutContext, appLayoutContext, AppTab, backendApiContext } from "./AppContext";
-import { ContentTabs } from "./ContentTabs";
+import { ContentTabs } from "./content-tabs/ContentTabs";
 import { IModelSelector } from "./imodel-selector/IModelSelector";
-import { PropertyGrid } from "./property-grid/PropertyGrid";
-import { Tree } from "./tree/Tree";
+import { PropertyGrid } from "./widgets/PropertyGrid";
+import { Tree } from "./widgets/Tree";
 
 export interface InitializedAppProps {
   backendApi: BackendApi;

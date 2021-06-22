@@ -11,7 +11,7 @@ import {
 import { PropertyCategory, PropertyData, VirtualizedPropertyGridWithDataProvider } from "@bentley/ui-components";
 import { Button, ButtonType, Orientation, useDisposable } from "@bentley/ui-core";
 import { appLayoutContext, AppTab } from "../AppContext";
-import { VerticalStack } from "../shared/VerticalStack";
+import { VerticalStack } from "../utils/VerticalStack";
 
 export interface PropertyGridProps {
   imodel: IModelConnection;
