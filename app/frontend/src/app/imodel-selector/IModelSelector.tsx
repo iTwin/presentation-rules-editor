@@ -26,7 +26,7 @@ export function IModelSelector(props: IModelSelectorProps): React.ReactElement {
         setAvailableIModels(imodels);
       })();
     },
-    [backendApi, setSelectedIModelPath],
+    [backendApi],
   );
 
   function buildMenuItems(close: () => void): React.ReactElement[] {
