@@ -7,6 +7,7 @@ import * as fs from "fs";
 import { JestDevServerOptions, setup as setupDevServers, teardown as teardownDevServers } from "jest-dev-server";
 import { Socket } from "net";
 import { chromium, ChromiumBrowser, Page } from "playwright";
+import { loadHomepage } from "./utils";
 
 export let browser: ChromiumBrowser;
 export let page: Page;
@@ -21,6 +22,11 @@ before(async function () {
     setupBrowser({ debug }),
     setupServers({ backendPort: 3001, frontendPort: 8080, debug }),
   ]);
+
+  // Make sure the server is responding before beginning any tests
+  // eslint-disable-next-line no-console
+  console.log("Preloading homepage...");
+  await loadHomepage(page);
 });
 
 after(async () => {
@@ -80,7 +86,7 @@ interface SetupServersArgs {
 async function setupServers({ backendPort, frontendPort, debug }: SetupServersArgs): Promise<void> {
   const servers: JestDevServerOptions[] = [];
 
-  if (await isPortAvailable(3001)) {
+  if (await isPortAvailable(backendPort)) {
     // eslint-disable-next-line no-console
     console.log("Launching backend server...");
     servers.push({
@@ -96,7 +102,7 @@ async function setupServers({ backendPort, frontendPort, debug }: SetupServersAr
     console.log(`Backend server port (${backendPort}) is already taken.`);
   }
 
-  if (await isPortAvailable(8080)) {
+  if (await isPortAvailable(frontendPort)) {
     // eslint-disable-next-line no-console
     console.log("Launching frontend server...");
     servers.push({
@@ -104,7 +110,7 @@ async function setupServers({ backendPort, frontendPort, debug }: SetupServersAr
       protocol: "http",
       port: frontendPort,
       usedPortAction: "error",
-      launchTimeout: 60000,
+      launchTimeout: 90000,
       debug,
     });
   } else {
