@@ -86,7 +86,7 @@ interface SetupServersArgs {
 async function setupServers({ backendPort, frontendPort, debug }: SetupServersArgs): Promise<void> {
   const servers: JestDevServerOptions[] = [];
 
-  if (await isPortAvailable(3001)) {
+  if (await isPortAvailable(backendPort)) {
     // eslint-disable-next-line no-console
     console.log("Launching backend server...");
     servers.push({
@@ -102,7 +102,7 @@ async function setupServers({ backendPort, frontendPort, debug }: SetupServersAr
     console.log(`Backend server port (${backendPort}) is already taken.`);
   }
 
-  if (await isPortAvailable(8080)) {
+  if (await isPortAvailable(frontendPort)) {
     // eslint-disable-next-line no-console
     console.log("Launching frontend server...");
     servers.push({
