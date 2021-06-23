@@ -9,7 +9,9 @@ export const backendApiContext = React.createContext<BackendApi>(new BackendApi(
 
 export interface AppLayoutContext {
   activeTab: AppTab;
-  setActiveTab: (actveTab: AppTab) => void;
+  setActiveTab: (action: React.SetStateAction<AppTab>) => void;
+  breadcrumbs: React.ReactNode[];
+  setBreadcrumbs: (action: React.SetStateAction<React.ReactNode[]>) => void;
 }
 
 export enum AppTab {
@@ -19,5 +21,7 @@ export enum AppTab {
 
 export const appLayoutContext = React.createContext<AppLayoutContext>({
   activeTab: AppTab.Editor,
-  setActiveTab: () => {},
+  setActiveTab: (tab) => tab,
+  breadcrumbs: [],
+  setBreadcrumbs: (breadcrumbs) => breadcrumbs,
 });

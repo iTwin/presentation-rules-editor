@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import "./InitializedApp.scss";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import {
   IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, OutputMessageType,
 } from "@bentley/imodeljs-frontend";
@@ -19,7 +18,7 @@ import { Frontstage } from "../ui-framework/Frontstage";
 import { StagePanel, StagePanelZone } from "../ui-framework/StagePanel";
 import { UIFramework } from "../ui-framework/UIFramework";
 import { Widget } from "../ui-framework/Widget/Widget";
-import { AppLayoutContext, appLayoutContext, AppTab, backendApiContext } from "./AppContext";
+import { appLayoutContext, backendApiContext } from "./AppContext";
 import { ContentTabs } from "./content-tabs/ContentTabs";
 import { IModelSelector } from "./imodel-selector/IModelSelector";
 import { PropertyGrid } from "./widgets/PropertyGrid";
@@ -27,12 +26,9 @@ import { Tree } from "./widgets/Tree";
 
 export interface InitializedAppProps {
   backendApi: BackendApi;
-  firstBreadcrumbElement: HTMLElement;
 }
 
 export function InitializedApp(props: InitializedAppProps): React.ReactElement {
-  const appLayoutContextValue = useAppLayout();
-
   const [imodelPath, setIModelPath] = React.useState("");
   const imodel = useIModel(props.backendApi, imodelPath);
 
@@ -44,47 +40,49 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
     setRuleset(newRuleset);
   }
 
+  const { setBreadcrumbs } = React.useContext(appLayoutContext);
+  React.useEffect(
+    () => {
+      setBreadcrumbs([
+        <IModelSelector key="imodel-selector" selectedIModelPath={imodelPath} setSelectedIModelPath={setIModelPath} />,
+      ]);
+    },
+    [imodelPath, setBreadcrumbs],
+  );
+
   return (
     <backendApiContext.Provider value={props.backendApi}>
-      <appLayoutContext.Provider value={appLayoutContextValue}>
-        <div className="content">
-          {
-            ReactDOM.createPortal(
-              <IModelSelector selectedIModelPath={imodelPath} setSelectedIModelPath={setIModelPath} />,
-              props.firstBreadcrumbElement,
-            )
-          }
-          <UIFramework>
-            <Frontstage
-              rightPanel={
-                <StagePanel size={450}>
-                  <StagePanelZone>
-                    <Widget
-                      id="TreeWidget"
-                      label={IModelApp.i18n.translate("App:label:tree-widget")}
-                      defaultState={WidgetState.Open}
-                    >
-                      {imodel && registeredRuleset && <Tree imodel={imodel} ruleset={registeredRuleset} />}
-                    </Widget>
-                  </StagePanelZone>
-                  <StagePanelZone>
-                    <Widget
-                      id="PropertyGridWidget"
-                      label={IModelApp.i18n.translate("App:label:property-grid-widget")}
-                      defaultState={WidgetState.Open}
-                    >
-                      {imodel && registeredRuleset && <PropertyGrid imodel={imodel} ruleset={registeredRuleset} />}
-                    </Widget>
-                  </StagePanelZone>
-                </StagePanel>
-              }
-            >
-              <ContentTabs imodel={imodel} defaultRuleset={initialRulesetText} submitRuleset={submitRuleset} />
-            </Frontstage>
-          </UIFramework>
-          <MessageRenderer />
-        </div>
-      </appLayoutContext.Provider>
+      <div className="content">
+        <UIFramework>
+          <Frontstage
+            rightPanel={
+              <StagePanel size={450}>
+                <StagePanelZone>
+                  <Widget
+                    id="TreeWidget"
+                    label={IModelApp.i18n.translate("App:label:tree-widget")}
+                    defaultState={WidgetState.Open}
+                  >
+                    {imodel && registeredRuleset && <Tree imodel={imodel} ruleset={registeredRuleset} />}
+                  </Widget>
+                </StagePanelZone>
+                <StagePanelZone>
+                  <Widget
+                    id="PropertyGridWidget"
+                    label={IModelApp.i18n.translate("App:label:property-grid-widget")}
+                    defaultState={WidgetState.Open}
+                  >
+                    {imodel && registeredRuleset && <PropertyGrid imodel={imodel} ruleset={registeredRuleset} />}
+                  </Widget>
+                </StagePanelZone>
+              </StagePanel>
+            }
+          >
+            <ContentTabs imodel={imodel} defaultRuleset={initialRulesetText} submitRuleset={submitRuleset} />
+          </Frontstage>
+        </UIFramework>
+        <MessageRenderer />
+      </div>
     </backendApiContext.Provider>
   );
 }
@@ -145,11 +143,6 @@ function useRegisteredRuleset(ruleset: Ruleset): RegisteredRuleset | undefined {
   );
 
   return registeredRuleset;
-}
-
-function useAppLayout(): AppLayoutContext {
-  const [activeTab, setActiveTab] = React.useState(AppTab.Editor);
-  return React.useMemo(() => ({ activeTab, setActiveTab }), [activeTab]);
 }
 
 function useIModel(backendApi: BackendApi, path: string): IModelConnection | undefined {

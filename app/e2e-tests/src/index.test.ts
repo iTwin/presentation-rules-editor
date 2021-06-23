@@ -12,7 +12,8 @@ describe("index", () => {
 
   it("displays an iModel", async () => {
     await page.click("text=Viewport");
-    await page.selectOption(".IModelSelector select", { index: 1 });
+    await page.click("text=Select iModel");
+    await page.click("text=Baytown.bim");
     await page.waitForSelector("data-testid=viewport-component", { state: "visible" });
   });
 });

@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "./IModelSelector.scss";
 import * as React from "react";
 import { IModelApp } from "@bentley/imodeljs-frontend";
+import { HeaderButton, MenuItem, ProgressRadial } from "@itwin/itwinui-react";
 import { backendApiContext } from "../AppContext";
 
 export interface IModelSelectorProps {
@@ -13,30 +13,73 @@ export interface IModelSelectorProps {
 }
 
 export function IModelSelector(props: IModelSelectorProps): React.ReactElement {
-  const [availableImodels, setAvailableImodels] = React.useState<string[]>([]);
+  const [availableIModels, setAvailableIModels] = React.useState<string[]>([]);
+  const [snapshotFolderIsOpening, setSnapshotFolderIsOpening] = React.useState(false);
   const backendApi = React.useContext(backendApiContext);
+
+  const { selectedIModelPath, setSelectedIModelPath } = props;
 
   React.useEffect(
     () => {
       void (async () => {
         const imodels = await backendApi.getAvailableIModels();
-        imodels.splice(0, 0, "");
-        setAvailableImodels(imodels);
+        setAvailableIModels(imodels);
       })();
     },
     [backendApi],
   );
 
-  function handleIModelSelection(e: React.ChangeEvent<HTMLSelectElement>): void {
-    props.setSelectedIModelPath(e.currentTarget.value);
+  function buildMenuItems(close: () => void): React.ReactElement[] {
+    async function openSnapshotFolder() {
+      try {
+        setSnapshotFolderIsOpening(true);
+        await backendApi.openIModelsDirectory();
+      } finally {
+        setSnapshotFolderIsOpening(false);
+        close();
+      }
+    }
+
+    function selectIModel(value: any) {
+      setSelectedIModelPath(value);
+      close();
+    }
+
+    return [
+      <MenuItem
+        key="open-snapshot-folder"
+        badge={snapshotFolderIsOpening ? <ProgressRadial indeterminate={true} /> : undefined}
+        onClick={openSnapshotFolder}
+      >
+        {IModelApp.i18n.translate("App:imodel-selector:open-snapshot-folder")}
+      </MenuItem>,
+      ...availableIModels.map((path: string) => (
+        <MenuItem key={path} value={path} onClick={selectIModel}>
+          {getBasename(path)}
+        </MenuItem>
+      )),
+    ];
   }
 
   return (
-    <div className="IModelSelector">
-      {IModelApp.i18n.translate("App:select-imodel")}:
-      <select onChange={handleIModelSelection} value={props.selectedIModelPath}>
-        {availableImodels.map((path: string) => <option key={path} value={path}>{path.split(/[\\/]/).pop()}</option>)}
-      </select>
-    </div>
+    <HeaderButton
+      name={getBasename(selectedIModelPath)}
+      description={IModelApp.i18n.translate("App:imodel-selector:select-imodel")}
+      menuItems={buildMenuItems}
+    />
   );
+}
+
+function getBasename(path: string): string {
+  const lastForward = path.lastIndexOf("/");
+  if (lastForward !== -1) {
+    return path.substr(lastForward + 1);
+  }
+
+  const lastBackward = path.lastIndexOf("\\");
+  if (lastBackward !== -1) {
+    return path.substr(lastBackward + 1);
+  }
+
+  return path;
 }

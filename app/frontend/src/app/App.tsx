@@ -7,6 +7,7 @@ import * as React from "react";
 import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
 import { Footer, Header, HeaderBreadcrumbs, HeaderLogo } from "@itwin/itwinui-react";
 import { BackendApi } from "../api/BackendApi";
+import { appLayoutContext, AppLayoutContext, AppTab } from "./AppContext";
 import { InitializedApp } from "./InitializedApp";
 
 interface AppProps {
@@ -15,21 +16,19 @@ interface AppProps {
 
 export const App: React.FC<AppProps> = ({ initializer }) => {
   const backendApi = useBackendApi(initializer);
-  const firstBreadcrumbRef = React.useRef<HTMLDivElement>(null);
+  const appLayoutContextValue = useAppLayout();
 
   return (
-    <div className="app">
-      <Header
-        appLogo={<HeaderLogo logo={<SvgImodelHollow />}>Presentation Rules Editor</HeaderLogo>}
-        breadcrumbs={<HeaderBreadcrumbs items={[<div key="imodel-selector" ref={firstBreadcrumbRef} />]} />}
-      />
-      {
-        backendApi !== undefined && firstBreadcrumbRef.current !== null
-          ? <InitializedApp backendApi={backendApi} firstBreadcrumbElement={firstBreadcrumbRef.current} />
-          : <span>Initializing...</span>
-      }
-      <Footer />
-    </div>
+    <appLayoutContext.Provider value={appLayoutContextValue}>
+      <div className="app">
+        <Header
+          appLogo={<HeaderLogo logo={<SvgImodelHollow />}>Presentation Rules Editor</HeaderLogo>}
+          breadcrumbs={<Breadcrumbs />}
+        />
+        {backendApi !== undefined ? <InitializedApp backendApi={backendApi} /> : <span>Initializing...</span>}
+        <Footer />
+      </div>
+    </appLayoutContext.Provider>
   );
 };
 
@@ -43,4 +42,15 @@ function useBackendApi(initializer: () => Promise<BackendApi>): BackendApi | und
   );
 
   return backendApi;
+}
+
+function useAppLayout(): AppLayoutContext {
+  const [activeTab, setActiveTab] = React.useState(AppTab.Editor);
+  const [breadcrumbs, setBreadcrumbs] = React.useState<React.ReactNode[]>([]);
+  return { activeTab, setActiveTab, breadcrumbs, setBreadcrumbs };
+}
+
+function Breadcrumbs(): React.ReactElement {
+  const appLayout = React.useContext(appLayoutContext);
+  return <HeaderBreadcrumbs items={appLayout.breadcrumbs} />;
 }

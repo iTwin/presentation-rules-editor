@@ -11,6 +11,10 @@ export class BackendApi {
     return PresentationRulesEditorRpcInterface.getClient().getAvailableIModels();
   }
 
+  public async openIModelsDirectory(): Promise<void> {
+    return PresentationRulesEditorRpcInterface.getClient().openIModelsDirectory();
+  }
+
   public async openIModel(path: string): Promise<IModelConnection> {
     Logger.logInfo("presentation", `Opening snapshot: ${path}`);
     const imodel = await SnapshotConnection.openFile(path);
