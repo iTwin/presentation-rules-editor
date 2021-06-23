@@ -23,7 +23,7 @@ before(async function () {
     setupServers({ backendPort: 3001, frontendPort: 8080, debug }),
   ]);
 
-  // Make sure the bundle is built before beginning any tests
+  // Make sure the server is responding before beginning any tests
   // eslint-disable-next-line no-console
   console.log("Preloading homepage...");
   await loadHomepage(page);
