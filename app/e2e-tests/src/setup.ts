@@ -110,7 +110,7 @@ async function setupServers({ backendPort, frontendPort, debug }: SetupServersAr
       protocol: "http",
       port: frontendPort,
       usedPortAction: "error",
-      launchTimeout: 60000,
+      launchTimeout: 90000,
       debug,
     });
   } else {
