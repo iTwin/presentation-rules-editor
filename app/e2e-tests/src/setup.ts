@@ -7,6 +7,7 @@ import * as fs from "fs";
 import { JestDevServerOptions, setup as setupDevServers, teardown as teardownDevServers } from "jest-dev-server";
 import { Socket } from "net";
 import { chromium, ChromiumBrowser, Page } from "playwright";
+import { loadHomepage } from "./utils";
 
 export let browser: ChromiumBrowser;
 export let page: Page;
@@ -21,6 +22,11 @@ before(async function () {
     setupBrowser({ debug }),
     setupServers({ backendPort: 3001, frontendPort: 8080, debug }),
   ]);
+
+  // Make sure the bundle is built before beginning any tests
+  // eslint-disable-next-line no-console
+  console.log("Preloading homepage...");
+  await loadHomepage(page);
 });
 
 after(async () => {
