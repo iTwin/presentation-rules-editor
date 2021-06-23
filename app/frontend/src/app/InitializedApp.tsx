@@ -101,12 +101,11 @@ const defaultRuleset: Ruleset = {
       specifications: [{
         specType: ChildNodeSpecificationTypes.InstanceNodesOfSpecificClasses,
         classes: {
-          schemaName: "Functional",
-          classNames: ["FunctionalElement"],
+          schemaName: "BisCore",
+          classNames: ["Element"],
         },
         arePolymorphic: true,
         groupByClass: true,
-        groupByLabel: false,
       }],
     },
     {
