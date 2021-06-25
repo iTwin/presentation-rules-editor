@@ -6,4 +6,5 @@ import { Page } from "playwright";
 
 export async function loadHomepage(page: Page): Promise<void> {
   await page.goto("http://localhost:8080");
+  await page.waitForSelector("text=Select iModel");
 }
