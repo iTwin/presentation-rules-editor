@@ -7,6 +7,7 @@ import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { Ruleset } from "@bentley/presentation-common";
 import { TabView, TabViewItem } from "../../ui-framework/TabView/TabView";
 import { appLayoutContext } from "../AppContext";
+import { SelectIModelHint } from "../utils/SelectIModelHint";
 import { Editor } from "./editor/Editor";
 import { Viewport } from "./viewport/Viewport";
 
@@ -24,7 +25,7 @@ export function ContentTabs(props: ContentTabsProps): React.ReactElement {
         <Editor initialText={props.defaultRuleset} submitRuleset={props.submitRuleset} />
       </TabViewItem>
       <TabViewItem label={IModelApp.i18n.translate("App:label:viewport")}>
-        {props.imodel && <Viewport imodel={props.imodel} />}
+        {props.imodel !== undefined ? <Viewport imodel={props.imodel} /> : <SelectIModelHint />}
       </TabViewItem>
     </TabView>
   );

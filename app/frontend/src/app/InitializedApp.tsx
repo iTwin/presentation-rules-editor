@@ -21,6 +21,7 @@ import { Widget } from "../ui-framework/Widget/Widget";
 import { appLayoutContext, backendApiContext } from "./AppContext";
 import { ContentTabs } from "./content-tabs/ContentTabs";
 import { IModelSelector } from "./imodel-selector/IModelSelector";
+import { SelectIModelHint } from "./utils/SelectIModelHint";
 import { PropertyGrid } from "./widgets/PropertyGrid";
 import { Tree } from "./widgets/Tree";
 
@@ -63,7 +64,11 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
                     label={IModelApp.i18n.translate("App:label:tree-widget")}
                     defaultState={WidgetState.Open}
                   >
-                    {imodel && registeredRuleset && <Tree imodel={imodel} ruleset={registeredRuleset} />}
+                    {
+                      imodel !== undefined
+                        ? registeredRuleset && <Tree imodel={imodel} ruleset={registeredRuleset} />
+                        : <SelectIModelHint />
+                    }
                   </Widget>
                 </StagePanelZone>
                 <StagePanelZone>
@@ -72,7 +77,11 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
                     label={IModelApp.i18n.translate("App:label:property-grid-widget")}
                     defaultState={WidgetState.Open}
                   >
-                    {imodel && registeredRuleset && <PropertyGrid imodel={imodel} ruleset={registeredRuleset} />}
+                    {
+                      imodel !== undefined
+                        ? registeredRuleset && <PropertyGrid imodel={imodel} ruleset={registeredRuleset} />
+                        : <SelectIModelHint />
+                    }
                   </Widget>
                 </StagePanelZone>
               </StagePanel>
@@ -89,24 +98,17 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
 
 const defaultRuleset: Ruleset = {
   id: "Ruleset1",
-  supportedSchemas: {
-    schemaNames: [
-      "BisCore",
-      "Functional",
-    ],
-  },
   rules: [
     {
       ruleType: RuleTypes.RootNodes,
       specifications: [{
         specType: ChildNodeSpecificationTypes.InstanceNodesOfSpecificClasses,
         classes: {
-          schemaName: "Functional",
-          classNames: ["FunctionalElement"],
+          schemaName: "BisCore",
+          classNames: ["Element"],
         },
         arePolymorphic: true,
         groupByClass: true,
-        groupByLabel: false,
       }],
     },
     {

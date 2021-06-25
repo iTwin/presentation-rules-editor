@@ -4,6 +4,7 @@
     "imodel-close": "Failed to close iModel \"{{imodel}}\"."
   },
   "imodel-selector": {
+    "no-imodel-selected": "Select an iModel to view content.",
     "open-snapshot-folder": "Open snapshot folder...",
     "select-imodel": "Select iModel"
   },
