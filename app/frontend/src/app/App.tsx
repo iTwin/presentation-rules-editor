@@ -5,10 +5,11 @@
 import "./App.scss";
 import * as React from "react";
 import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
-import { Footer, Header, HeaderBreadcrumbs, HeaderLogo } from "@itwin/itwinui-react";
+import { Footer, Header, HeaderBreadcrumbs, HeaderLogo, Leading, ProgressRadial } from "@itwin/itwinui-react";
 import { BackendApi } from "../api/BackendApi";
 import { appLayoutContext, AppLayoutContext, AppTab } from "./AppContext";
 import { InitializedApp } from "./InitializedApp";
+import { VerticalStack } from "./utils/VerticalStack";
 
 interface AppProps {
   initializer: () => Promise<BackendApi>;
@@ -25,7 +26,7 @@ export const App: React.FC<AppProps> = ({ initializer }) => {
           appLogo={<HeaderLogo logo={<SvgImodelHollow />}>Presentation Rules Editor</HeaderLogo>}
           breadcrumbs={<Breadcrumbs />}
         />
-        {backendApi !== undefined ? <InitializedApp backendApi={backendApi} /> : <span>Initializing...</span>}
+        {backendApi !== undefined ? <InitializedApp backendApi={backendApi} /> : <InitializationIndicator />}
         <Footer />
       </div>
     </appLayoutContext.Provider>
@@ -53,4 +54,13 @@ function useAppLayout(): AppLayoutContext {
 function Breadcrumbs(): React.ReactElement {
   const appLayout = React.useContext(appLayoutContext);
   return <HeaderBreadcrumbs items={appLayout.breadcrumbs} />;
+}
+
+function InitializationIndicator(): React.ReactElement {
+  return (
+    <VerticalStack>
+      <ProgressRadial size="large" indeterminate={true} />
+      <Leading>Initializing...</Leading>
+    </VerticalStack>
+  );
 }
