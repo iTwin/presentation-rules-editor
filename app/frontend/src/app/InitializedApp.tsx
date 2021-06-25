@@ -98,24 +98,17 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
 
 const defaultRuleset: Ruleset = {
   id: "Ruleset1",
-  supportedSchemas: {
-    schemaNames: [
-      "BisCore",
-      "Functional",
-    ],
-  },
   rules: [
     {
       ruleType: RuleTypes.RootNodes,
       specifications: [{
         specType: ChildNodeSpecificationTypes.InstanceNodesOfSpecificClasses,
         classes: {
-          schemaName: "Functional",
-          classNames: ["FunctionalElement"],
+          schemaName: "BisCore",
+          classNames: ["Element"],
         },
         arePolymorphic: true,
         groupByClass: true,
-        groupByLabel: false,
       }],
     },
     {
