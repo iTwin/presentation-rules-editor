@@ -89,12 +89,6 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
 
 const defaultRuleset: Ruleset = {
   id: "Ruleset1",
-  supportedSchemas: {
-    schemaNames: [
-      "BisCore",
-      "Functional",
-    ],
-  },
   rules: [
     {
       ruleType: RuleTypes.RootNodes,
