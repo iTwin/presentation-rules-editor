@@ -30,6 +30,7 @@ before(async function () {
 });
 
 after(async () => {
+  await browser.close();
   await teardownDevServers();
 });
 
@@ -132,7 +133,3 @@ async function isPortAvailable(port: number) {
   socket.destroy();
   return result;
 }
-
-after(async () => {
-  await browser.close();
-});

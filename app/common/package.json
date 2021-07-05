@@ -11,16 +11,17 @@
     "lint": "eslint **/*.{ts,tsx}"
   },
   "dependencies": {
-    "@bentley/bentleyjs-core": "2.17.0-dev.22",
-    "@bentley/eslint-plugin": "2.17.0-dev.22",
-    "@bentley/frontend-authorization-client": "2.17.0-dev.22",
-    "@bentley/geometry-core": "2.17.0-dev.22",
-    "@bentley/imodelhub-client": "2.17.0-dev.22",
-    "@bentley/imodeljs-common": "2.17.0-dev.22",
-    "@bentley/imodeljs-quantity": "2.17.0-dev.22",
-    "@bentley/itwin-client": "2.17.0-dev.22",
-    "@bentley/presentation-common": "2.17.0-dev.22",
-    "@bentley/rbac-client": "2.17.0-dev.22",
-    "eslint": "^6.8.0"
+    "@bentley/bentleyjs-core": "2.19.0-dev.6",
+    "@bentley/eslint-plugin": "2.19.0-dev.6",
+    "@bentley/frontend-authorization-client": "2.19.0-dev.6",
+    "@bentley/geometry-core": "2.19.0-dev.6",
+    "@bentley/imodelhub-client": "2.19.0-dev.6",
+    "@bentley/imodeljs-common": "2.19.0-dev.6",
+    "@bentley/imodeljs-quantity": "2.19.0-dev.6",
+    "@bentley/itwin-client": "2.19.0-dev.6",
+    "@bentley/presentation-common": "2.19.0-dev.6",
+    "@bentley/rbac-client": "2.19.0-dev.6",
+    "eslint": "^7.30.0",
+    "typescript": "^4.3.5"
   }
 }
