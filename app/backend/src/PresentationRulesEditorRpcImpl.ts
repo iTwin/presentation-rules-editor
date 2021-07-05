@@ -15,7 +15,7 @@ export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcIn
     RpcManager.registerImpl(PresentationRulesEditorRpcInterface, PresentationRulesEditorRpcImpl);
   }
 
-  public async getAvailableIModels(): Promise<string[]> {
+  public override async getAvailableIModels(): Promise<string[]> {
     const dir = getIModelsDirectory();
     const files = fs.readdirSync(dir);
     return files
@@ -23,7 +23,7 @@ export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcIn
       .map((name) => path.resolve(dir, name));
   }
 
-  public async openIModelsDirectory(): Promise<void> {
+  public override async openIModelsDirectory(): Promise<void> {
     let command: string;
     switch (process.platform) {
       case "darwin":

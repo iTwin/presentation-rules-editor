@@ -47,7 +47,7 @@
     "@types/react-dom": "^16.0.0",
     "buffer": "^6.0.3",
     "css-loader": "^5.2.4",
-    "esbuild-loader": "^2.12.0",
+    "esbuild-loader": "^2.13.1",
     "eslint": "^7.30.0",
     "html-webpack-plugin": "^5.3.1",
     "https-browserify": "^1.0.0",
@@ -67,7 +67,7 @@
     "style-loader": "^2.0.0",
     "timers-browserify": "^2.0.12",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.4",
+    "typescript": "^4.3.5",
     "webpack": "^5.33.2",
     "webpack-cli": "^4.6.0",
     "webpack-dev-server": "^3.11.2"
