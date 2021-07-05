@@ -2,34 +2,12 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as asyncHooks from "async_hooks";
 import { exec } from "child_process";
 import * as fs from "fs";
 import { JestDevServerOptions, setup as setupDevServers, teardown as teardownDevServers } from "jest-dev-server";
 import { Socket } from "net";
 import { chromium, ChromiumBrowser, Page } from "playwright";
 import { loadHomepage } from "./utils";
-
-interface Resource {
-  type: string;
-  stack: string | undefined;
-  resource: object;
-}
-
-const activeResources = new Map<number, Resource>();
-
-asyncHooks.createHook({
-  init(asyncId, type, _triggerAsyncId, resource) {
-    if (type === "TIMERWRAP" || type === "PROMISE") {
-      return;
-    }
-
-    activeResources.set(asyncId, { type, stack: new Error().stack, resource });
-  },
-  destroy(asyncId) {
-    activeResources.delete(asyncId);
-  },
-}).enable();
 
 export let browser: ChromiumBrowser;
 export let page: Page;
@@ -54,11 +32,6 @@ before(async function () {
 after(async () => {
   await browser.close();
   await teardownDevServers();
-
-  setTimeout(() => {
-    // eslint-disable-next-line no-console
-    console.log(activeResources);
-  }, 5000);
 });
 
 /** Implements Promise.allSettled behaviour */
