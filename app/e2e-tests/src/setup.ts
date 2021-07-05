@@ -56,6 +56,7 @@ after(async () => {
   await teardownDevServers();
 
   setTimeout(() => {
+    // eslint-disable-next-line no-console
     console.log(activeResources);
   }, 5000);
 });
