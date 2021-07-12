@@ -69,10 +69,10 @@ for (const packageName of packagesToLink) {
 
   if (args._[0] === "link") {
     console.log(`Symlinking ${packageName} => ${sourceLocation}`);
-    linkPackage(sourceLocation, destinationLocation);
+    linkPackage(packageName, sourceLocation, destinationLocation);
   } else {
     console.log(`Unsymlinking ${packageName} => ${sourceLocation}`);
-    unlinkPackage(sourceLocation, destinationLocation);
+    unlinkPackage(packageName, sourceLocation, destinationLocation);
   }
 }
 
@@ -156,13 +156,22 @@ function findPackageDestinationLocations(packageNames: Iterable<string>): Map<st
   return packageDestinationMap;
 }
 
-function linkPackage(sourceLocation: string, destinationLocation: string): void {
+function linkPackage(packageName: string, sourceLocation: string, destinationLocation: string): void {
+  if (packageName === "@bentley/imodeljs-native") {
+    moveToBackup(destinationLocation, `${destinationLocation}_original`);
+
+    // Symlink external @bentley/imodeljs-native package into our repository
+    if (!fs.existsSync(destinationLocation) && fs.existsSync(sourceLocation)) {
+      fs.symlinkSync(sourceLocation, destinationLocation);
+    }
+
+    return;
+  }
+
   const paths = getPathsForPackage(sourceLocation, destinationLocation);
 
   // Make a backup of the lib folder in the locally installed package
-  if (!fs.existsSync(paths.destinationLibBackup) && fs.existsSync(paths.destinationLib)) {
-    fs.renameSync(paths.destinationLib, paths.destinationLibBackup);
-  }
+  moveToBackup(paths.destinationLib, paths.destinationLibBackup);
 
   // Move external package's lib folder into our repository
   if (!fs.existsSync(paths.destinationLib) && fs.existsSync(paths.sourceLib)) {
@@ -178,9 +187,26 @@ function linkPackage(sourceLocation: string, destinationLocation: string): void 
   if (!fs.existsSync(paths.sourceLib) && fs.existsSync(paths.destinationLib)) {
     fs.symlinkSync(paths.destinationLib, paths.sourceLib);
   }
+
+  /** Moves `pathToBackup` into `backupLocation`. */
+  function moveToBackup(pathToBackup: string, backupLocation: string): void {
+    if (!fs.existsSync(backupLocation) && fs.existsSync(pathToBackup)) {
+      fs.renameSync(pathToBackup, backupLocation);
+    }
+  }
 }
 
-function unlinkPackage(sourceLocation: string, destinationLocation: string): void {
+function unlinkPackage(packageName: string, sourceLocation: string, destinationLocation: string): void {
+  if (packageName === "@bentley/imodeljs-native") {
+    // Remove @bentley/imodeljs-native symlink from our repository
+    if (fs.existsSync(destinationLocation) && fs.lstatSync(destinationLocation).isSymbolicLink()) {
+      fs.unlinkSync(destinationLocation);
+    }
+
+    restoreFromBackup(destinationLocation, `${destinationLocation}_original`);
+    return;
+  }
+
   const paths = getPathsForPackage(sourceLocation, destinationLocation);
 
   // Remove lib folder from the external repository if it is a symbolic link
@@ -199,12 +225,17 @@ function unlinkPackage(sourceLocation: string, destinationLocation: string): voi
   }
 
   // Restore locally installed lib folder from backup
-  if (fs.existsSync(paths.destinationLibBackup)) {
-    if (fs.existsSync(paths.destinationLib)) {
-      rimraf.sync(paths.destinationLib);
-    }
+  restoreFromBackup(paths.destinationLib, paths.destinationLibBackup);
 
-    fs.renameSync(paths.destinationLibBackup, paths.destinationLib);
+  /** Deletes `pathToRestore` and moves `backupLocation` in its place. */
+  function restoreFromBackup(pathToRestore: string, backupLocation: string): void {
+    if (fs.existsSync(backupLocation)) {
+      if (fs.existsSync(pathToRestore)) {
+        rimraf.sync(pathToRestore);
+      }
+
+      fs.renameSync(backupLocation, pathToRestore);
+    }
   }
 }
 
