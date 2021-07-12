@@ -160,7 +160,7 @@ function linkPackage(packageName: string, sourceLocation: string, destinationLoc
   if (packageName === "@bentley/imodeljs-native") {
     moveToBackup(destinationLocation, `${destinationLocation}_original`);
 
-    // Symlink external @bentley/imodeljs=native package into our repository
+    // Symlink external @bentley/imodeljs-native package into our repository
     if (!fs.existsSync(destinationLocation) && fs.existsSync(sourceLocation)) {
       fs.symlinkSync(sourceLocation, destinationLocation);
     }
@@ -227,7 +227,7 @@ function unlinkPackage(packageName: string, sourceLocation: string, destinationL
   // Restore locally installed lib folder from backup
   restoreFromBackup(paths.destinationLib, paths.destinationLibBackup);
 
-  /** Deletes `pathToRestore` moves `backupLocation` in its place. */
+  /** Deletes `pathToRestore` and moves `backupLocation` in its place. */
   function restoreFromBackup(pathToRestore: string, backupLocation: string): void {
     if (fs.existsSync(backupLocation)) {
       if (fs.existsSync(pathToRestore)) {
