@@ -16,7 +16,7 @@
     "typecheck:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
-    "@bentley/eslint-plugin": "2.19.0-dev.6",
+    "@bentley/eslint-plugin": "3.0.0-dev.1",
     "@types/jest-dev-server": "^4.2.0",
     "@types/mocha": "^8.2.2",
     "cross-env": "^7.0.3",
