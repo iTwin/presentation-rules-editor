@@ -9,7 +9,8 @@ import {
   PresentationPropertyDataProvider, usePropertyDataProviderWithUnifiedSelection,
 } from "@bentley/presentation-components";
 import { PropertyCategory, PropertyData, VirtualizedPropertyGridWithDataProvider } from "@bentley/ui-components";
-import { Button, ButtonType, Orientation, useDisposable } from "@bentley/ui-core";
+import { Orientation, useDisposable } from "@bentley/ui-core";
+import { Button } from "@itwin/itwinui-react";
 import { appLayoutContext, AppTab } from "../AppContext";
 import { VerticalStack } from "../utils/VerticalStack";
 
@@ -37,7 +38,7 @@ export function PropertyGrid(props: PropertyGridProps): React.ReactElement {
         <span>{IModelApp.i18n.translate("App:property-grid.no-elements-selected")}</span>
         {
           appLayout.activeTab !== AppTab.Viewport &&
-          <Button buttonType={ButtonType.Hollow} onClick={() => appLayout.setActiveTab(AppTab.Viewport)}>
+          <Button onClick={() => appLayout.setActiveTab(AppTab.Viewport)}>
             {IModelApp.i18n.translate("App:property-grid.show-viewport")}
           </Button>
         }
