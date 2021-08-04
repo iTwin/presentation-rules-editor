@@ -1,6 +1,6 @@
 # Presentation Rules Editor
 
-[![Build status](https://github.com/imodeljs/presentation-rules-editor/actions/workflows/CI.yml/badge.svg?branch=master)](https://github.com/imodeljs/presentation-rules-editor/actions/workflows/CI.yml?query=branch%3Amaster)
+[![Build status](https://github.com/iTwin/presentation-rules-editor/actions/workflows/CI.yml/badge.svg?branch=master)](https://github.com/iTwin/presentation-rules-editor/actions/workflows/CI.yml?query=branch%3Amaster)
 
 A monorepo for [Presentation](https://www.itwinjs.org/learning/presentation/) ruleset editing application and its components.
 
@@ -26,4 +26,4 @@ To start using the editing application, you will need to build it and supply a s
 
 ## Contributing
 
-You can submit feature requests or bugs by creating [issues](https://github.com/imodeljs/presentation-rules-editor/issues).
+You can submit feature requests or bugs by creating [issues](https://github.com/iTwin/presentation-rules-editor/issues).
