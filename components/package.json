@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/imodeljs/presentation-rules-editor/tree/master/components"
+    "url": "https://github.com/iTwin/presentation-rules-editor/tree/master/components"
   },
   "keywords": [
     "Bentley",
