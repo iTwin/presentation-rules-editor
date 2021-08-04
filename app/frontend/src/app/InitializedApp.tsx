@@ -12,7 +12,7 @@ import {
 } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
 import { WidgetState } from "@bentley/ui-abstract";
-import { MessageManager, MessageRenderer } from "@bentley/ui-framework";
+import { MessageManager, StatusMessageRenderer } from "@bentley/ui-framework";
 import { BackendApi } from "../api/BackendApi";
 import { Frontstage } from "../ui-framework/Frontstage";
 import { StagePanel, StagePanelZone } from "../ui-framework/StagePanel";
@@ -90,7 +90,7 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
             <ContentTabs imodel={imodel} defaultRuleset={initialRulesetText} submitRuleset={submitRuleset} />
           </Frontstage>
         </UIFramework>
-        <MessageRenderer />
+        <StatusMessageRenderer />
       </div>
     </backendApiContext.Provider>
   );

@@ -9,7 +9,7 @@ import { assert } from "@bentley/bentleyjs-core";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Ruleset } from "@bentley/presentation-common";
 import presentationRulesetSchema from "@bentley/presentation-common/Ruleset.schema.json";
-import { Button } from "@bentley/ui-core";
+import { Button } from "@itwin/itwinui-react";
 import { AutoSizer, Size } from "../../utils/AutoSizer";
 
 export interface EditorProps {
@@ -97,7 +97,7 @@ function SizedEditor(props: SizedEditorProps): React.ReactElement {
       <div ref={buttonWidgetRef} className="widget-submit-ruleset">
         {
           buttonIsVisible &&
-          <Button title={`${textSubmitRuleset} (Alt + Enter)`} onClick={handleSubmitButtonClick}>
+          <Button styleType={"cta"} title={`${textSubmitRuleset} (Alt + Enter)`} onClick={handleSubmitButtonClick}>
             {textSubmitRuleset}
           </Button>
         }

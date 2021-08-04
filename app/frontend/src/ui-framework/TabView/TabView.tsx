@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "./TabView.scss";
 import * as React from "react";
-import { HorizontalTabs } from "@bentley/ui-core";
+import { HorizontalTabs } from "@itwin/itwinui-react";
 
 export interface TabViewProps {
   /** Index of currently active tab. */
@@ -18,14 +18,14 @@ export interface TabViewProps {
 /** Displays a set of horizontal tabs and active tab's contents. */
 export const TabView: React.FC<TabViewProps> = (props: TabViewProps) => {
   const tabLabels = React.Children.map(props.children, (item) => item.props.label);
-
-  function handleOnActivateTab(index: number): void {
-    props.setActiveTab(index);
-  }
-
   return (
     <div className="tab-view">
-      <HorizontalTabs labels={tabLabels} activeIndex={props.activeTab} onActivateTab={handleOnActivateTab} />
+      <HorizontalTabs
+        type={"borderless"}
+        labels={tabLabels}
+        activeIndex={props.activeTab}
+        onTabSelected={props.setActiveTab}
+      />
       {React.Children.toArray(props.children)[props.activeTab]}
     </div>
   );
