@@ -12,6 +12,7 @@ import { PropertyCategory, PropertyData, VirtualizedPropertyGridWithDataProvider
 import { Orientation, useDisposable } from "@bentley/ui-core";
 import { Button } from "@itwin/itwinui-react";
 import { appLayoutContext, AppTab } from "../AppContext";
+import { AutoSizer } from "../utils/AutoSizer";
 import { VerticalStack } from "../utils/VerticalStack";
 
 export interface PropertyGridProps {
@@ -51,12 +52,18 @@ export function PropertyGrid(props: PropertyGridProps): React.ReactElement {
   }
 
   return (
-    <VirtualizedPropertyGridWithDataProvider
-      dataProvider={dataProvider}
-      orientation={Orientation.Horizontal}
-      horizontalOrientationMinWidth={400}
-      minLabelWidth={150}
-    />
+    <AutoSizer>
+      {({ width, height }) =>
+        <VirtualizedPropertyGridWithDataProvider
+          dataProvider={dataProvider}
+          width={width}
+          height={height}
+          orientation={Orientation.Horizontal}
+          horizontalOrientationMinWidth={400}
+          minLabelWidth={150}
+        />
+      }
+    </AutoSizer>
   );
 }
 
