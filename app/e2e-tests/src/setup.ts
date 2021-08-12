@@ -7,13 +7,12 @@ import * as fs from "fs";
 import { JestDevServerOptions, setup as setupDevServers, teardown as teardownDevServers } from "jest-dev-server";
 import { Socket } from "net";
 import { chromium, ChromiumBrowser, Page } from "playwright";
-import { loadHomepage } from "./utils";
 
 export let browser: ChromiumBrowser;
 export let page: Page;
 
 before(async function () {
-  this.timeout(90000);
+  this.timeout(120000);
   const debug = !!process.env.PWDEBUG;
 
   // mocha will hang if teardownDevServers is called before dev server finishes initialising
@@ -22,11 +21,6 @@ before(async function () {
     setupBrowser({ debug }),
     setupServers({ backendPort: 3001, frontendPort: 8080, debug }),
   ]);
-
-  // Make sure the server is responding before beginning any tests
-  // eslint-disable-next-line no-console
-  console.log("Preloading homepage...");
-  await loadHomepage(page);
 });
 
 after(async () => {
@@ -111,7 +105,7 @@ async function setupServers({ backendPort, frontendPort, debug }: SetupServersAr
       protocol: "http",
       port: frontendPort,
       usedPortAction: "error",
-      launchTimeout: 90000,
+      launchTimeout: 120000,
       debug,
     });
   } else {
