@@ -43,6 +43,7 @@ const config: Configuration & { devServer: any } = {
     ],
   },
   output: {
+    filename: "[name].bundle.js",
     devtoolModuleFilenameTemplate: (info: any) => {
       // Source maps are not being found on Windows due to non-Unix path separator
       const fixedPath = path.resolve(info.absoluteResourcePath).replace(/\\/g, "/");

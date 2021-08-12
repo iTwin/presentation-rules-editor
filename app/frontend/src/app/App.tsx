@@ -5,44 +5,28 @@
 import "./App.scss";
 import * as React from "react";
 import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
-import { Footer, Header, HeaderBreadcrumbs, HeaderLogo, Leading, ProgressRadial } from "@itwin/itwinui-react";
-import { BackendApi } from "../api/BackendApi";
+import { Footer, Header, HeaderBreadcrumbs, HeaderLogo } from "@itwin/itwinui-react";
 import { appLayoutContext, AppLayoutContext, AppTab } from "./AppContext";
-import { InitializedApp } from "./InitializedApp";
-import { VerticalStack } from "./utils/VerticalStack";
+import { InitializationIndicator } from "./utils/InitializationIndicator";
 
-interface AppProps {
-  initializer: () => Promise<BackendApi>;
-}
+const ITwinJsApp = React.lazy(async () => import("./ITwinJsApp/ITwinJsApp"));
 
-export const App: React.FC<AppProps> = ({ initializer }) => {
-  const backendApi = useBackendApi(initializer);
+export function App(): React.ReactElement {
   const appLayoutContextValue = useAppLayout();
-
   return (
-    <appLayoutContext.Provider value={appLayoutContextValue}>
-      <div className="app">
+    <div className="app">
+      <appLayoutContext.Provider value={appLayoutContextValue}>
         <Header
           appLogo={<HeaderLogo logo={<SvgImodelHollow />}>Presentation Rules Editor</HeaderLogo>}
           breadcrumbs={<Breadcrumbs />}
         />
-        {backendApi !== undefined ? <InitializedApp backendApi={backendApi} /> : <InitializationIndicator />}
+        <React.Suspense fallback={<InitializationIndicator />}>
+          <ITwinJsApp />
+        </React.Suspense>
         <Footer />
-      </div>
-    </appLayoutContext.Provider>
+      </appLayoutContext.Provider>
+    </div>
   );
-};
-
-function useBackendApi(initializer: () => Promise<BackendApi>): BackendApi | undefined {
-  const [backendApi, setBackendApi] = React.useState<BackendApi>();
-  React.useEffect(
-    () => {
-      void (async () => { setBackendApi(await initializer()); })();
-    },
-    [initializer],
-  );
-
-  return backendApi;
 }
 
 function useAppLayout(): AppLayoutContext {
@@ -54,13 +38,4 @@ function useAppLayout(): AppLayoutContext {
 function Breadcrumbs(): React.ReactElement {
   const appLayout = React.useContext(appLayoutContext);
   return <HeaderBreadcrumbs items={appLayout.breadcrumbs} />;
-}
-
-function InitializationIndicator(): React.ReactElement {
-  return (
-    <VerticalStack>
-      <ProgressRadial size="large" indeterminate={true} />
-      <Leading>Initializing...</Leading>
-    </VerticalStack>
-  );
 }

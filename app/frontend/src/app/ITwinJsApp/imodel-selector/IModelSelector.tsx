@@ -5,7 +5,7 @@
 import * as React from "react";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { HeaderButton, MenuItem, ProgressRadial } from "@itwin/itwinui-react";
-import { backendApiContext } from "../AppContext";
+import { backendApiContext } from "../ITwinJsAppContext";
 
 export interface IModelSelectorProps {
   selectedIModelPath: string;
