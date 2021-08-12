@@ -13,7 +13,7 @@ export let browser: ChromiumBrowser;
 export let page: Page;
 
 before(async function () {
-  this.timeout(90000);
+  this.timeout(120000);
   const debug = !!process.env.PWDEBUG;
 
   // mocha will hang if teardownDevServers is called before dev server finishes initialising
@@ -111,7 +111,7 @@ async function setupServers({ backendPort, frontendPort, debug }: SetupServersAr
       protocol: "http",
       port: frontendPort,
       usedPortAction: "error",
-      launchTimeout: 90000,
+      launchTimeout: 120000,
       debug,
     });
   } else {

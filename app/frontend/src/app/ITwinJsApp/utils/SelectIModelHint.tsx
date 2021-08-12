@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { VerticalStack } from "./VerticalStack";
+import { VerticalStack } from "../../utils/VerticalStack";
 
 export function SelectIModelHint(): React.ReactElement {
   return (
