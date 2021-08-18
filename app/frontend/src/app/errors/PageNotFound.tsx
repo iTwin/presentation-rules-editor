@@ -3,14 +3,14 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { Leading, ProgressRadial } from "@itwin/itwinui-react";
-import { VerticalStack } from "./VerticalStack";
+import { Svg404 } from "@itwin/itwinui-illustrations-react";
+import { ErrorPage } from "./ErrorPage";
 
-export function InitializationIndicator(): React.ReactElement {
+/** Component to display in case of 404: Page not found error. */
+export function PageNotFound(): React.ReactElement {
   return (
-    <VerticalStack>
-      <ProgressRadial size="large" indeterminate={true} />
-      <Leading>Initializing...</Leading>
-    </VerticalStack>
+    <ErrorPage illustration={Svg404} title={"Page Not Found"}>
+      The current URL does not match any application path.
+    </ErrorPage>
   );
 }

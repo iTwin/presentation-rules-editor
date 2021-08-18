@@ -2,11 +2,19 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import dotenv from "dotenv";
 import fs from "fs";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
 import path from "path";
-import { Configuration, ProvidePlugin } from "webpack";
+import { Configuration, DefinePlugin, ProvidePlugin } from "webpack";
+
+dotenv.config({ path: "../../.env" });
+if (process.env.OAUTH_CLIENT_ID === "spa-xxxxxxxxxxxxxxxxxxxxxxxxx") {
+  // eslint-disable-next-line no-console
+  console.error("Error: Environment variable OAUTH_CLIENT_ID has not been set. Instructions in .env.example file will guide you through the setup.");
+  process.exit(1);
+}
 
 const config: Configuration & { devServer: any } = {
   mode: "development",
@@ -43,6 +51,7 @@ const config: Configuration & { devServer: any } = {
     ],
   },
   output: {
+    publicPath: "/",
     filename: "[name].bundle.js",
     devtoolModuleFilenameTemplate: (info: any) => {
       // Source maps are not being found on Windows due to non-Unix path separator
@@ -61,6 +70,10 @@ const config: Configuration & { devServer: any } = {
       process: "process/browser",
     }),
     new MonacoWebpackPlugin({ languages: ["json"] }),
+    new DefinePlugin({
+      ["process.env.OAUTH_AUTHORITY"]: JSON.stringify(process.env.OAUTH_AUTHORITY),
+      ["process.env.OAUTH_CLIENT_ID"]: JSON.stringify(process.env.OAUTH_CLIENT_ID),
+    }),
   ],
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
@@ -93,6 +106,8 @@ const config: Configuration & { devServer: any } = {
       path.join(__dirname, "node_modules/@bentley/ui-core/lib/public/"),
       path.join(__dirname, "node_modules/@bentley/ui-framework/lib/public/"),
     ],
+    // Always serve /index.html instead of 404 status code
+    historyApiFallback: true,
     hot: true,
     proxy: {
       // IModelApp always requests PSEUDO localizations in dev builds but we do not have one for the app

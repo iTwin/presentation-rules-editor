@@ -11,7 +11,7 @@ import { Presentation } from "@bentley/presentation-frontend";
 import {
   AppNotificationManager, ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework,
 } from "@bentley/ui-framework";
-import { InitializationIndicator } from "../utils/InitializationIndicator";
+import { LoadingIndicator } from "../utils/LoadingIndicator";
 import { BackendApi } from "./api/BackendApi";
 import { InitializedApp } from "./InitializedApp";
 
@@ -28,7 +28,9 @@ export function ITwinJsApp(): React.ReactElement {
     [],
   );
 
-  return backendApi !== undefined ? <InitializedApp backendApi={backendApi} /> : <InitializationIndicator />;
+  return backendApi !== undefined
+    ? <InitializedApp backendApi={backendApi} />
+    : <LoadingIndicator>Initializing...</LoadingIndicator>;
 }
 
 async function initializeApp(): Promise<BackendApi> {

@@ -17,3 +17,8 @@ body {
 body > div {
   height: 100%;
 }
+
+// Fix for silent authorization iframe causing body to overflow
+iframe {
+  border: 0;
+}
