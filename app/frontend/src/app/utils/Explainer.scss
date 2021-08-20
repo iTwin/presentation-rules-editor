@@ -3,10 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-.vertical-stack {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 11px;
+.explainer {
+  padding: 6px;
+  vertical-align: middle;
+  fill: var(--iui-icons-color-actionable);
 }

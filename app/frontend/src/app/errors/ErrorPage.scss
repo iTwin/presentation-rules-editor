@@ -3,10 +3,27 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-.vertical-stack {
+.error-page {
+  display: grid;
+  grid-template-columns: minmax(auto, 960px);
+  gap: 22px;
+  margin-top: 55px;
+  align-content: start;
+  justify-content: center;
+  justify-items: center;
+}
+
+.error-illustration {
+  max-width: 220px;
+  max-height: 242px;
+}
+
+.error-details {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 11px;
+}
+
+.error-troubleshooting {
+  width: 100%;
 }
