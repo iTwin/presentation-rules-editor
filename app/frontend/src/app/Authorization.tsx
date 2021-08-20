@@ -50,33 +50,47 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
 
     React.useEffect(
       () => {
+        const handleUserLoaded = (user: User) => {
+          setAuthorizationContextValue({
+            userManager,
+            state: AuthorizationState.SignedIn,
+            user,
+            signIn,
+            signOut,
+          });
+        };
+
+        const handleUserUnloaded = () => {
+          setAuthorizationContextValue({
+            userManager,
+            state: AuthorizationState.SignedOut,
+            user: undefined,
+            signIn,
+            signOut,
+          });
+        };
+
+        userManager.events.addUserLoaded(handleUserLoaded);
+        userManager.events.addUserUnloaded(handleUserUnloaded);
+
+        return () => {
+          userManager.events.removeUserLoaded(handleUserLoaded);
+          userManager.events.removeUserUnloaded(handleUserUnloaded);
+        };
+      },
+      [],
+    );
+
+    React.useEffect(
+      () => {
+        if (window.self !== window.top) {
+          // It could be that parent document has already initiated silent sign-in in an invisible iframe, and now the
+          // identity provider has redirected the iframe back to the app.
+          return;
+        }
+
         let disposed = false;
         void (async () => {
-          userManager.events.addUserLoaded((user) => {
-            setAuthorizationContextValue({
-              userManager,
-              state: AuthorizationState.SignedIn,
-              user,
-              signIn,
-              signOut,
-            });
-          });
-          userManager.events.addUserUnloaded(() => {
-            setAuthorizationContextValue({
-              userManager,
-              state: AuthorizationState.SignedOut,
-              user: undefined,
-              signIn,
-              signOut,
-            });
-          });
-
-          if (window.self !== window.top) {
-            // It could be that parent document has already initiated silent sign-in in an invisible iframe, and now the
-            // identity provider has redirected the iframe back to the app.
-            return;
-          }
-
           try {
             await userManager.signinSilent();
             await userManager.clearStaleState();
