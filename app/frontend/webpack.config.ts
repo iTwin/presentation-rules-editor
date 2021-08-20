@@ -11,7 +11,7 @@ import { Configuration, ProvidePlugin } from "webpack";
 const config: Configuration & { devServer: any } = {
   mode: "development",
   entry: {
-    app: "./src/index.tsx",
+    app: "./src/index.ts",
   },
   module: {
     rules: [
