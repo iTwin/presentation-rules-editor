@@ -105,6 +105,7 @@ const config: Configuration & { devServer: any } = {
       path.join(__dirname, "node_modules/@bentley/ui-components/lib/public/"),
       path.join(__dirname, "node_modules/@bentley/ui-core/lib/public/"),
       path.join(__dirname, "node_modules/@bentley/ui-framework/lib/public/"),
+      path.join(__dirname, "node_modules/@bentley/ui-imodel-components/lib/public/"),
     ],
     // Always serve /index.html instead of 404 status code
     historyApiFallback: true,
