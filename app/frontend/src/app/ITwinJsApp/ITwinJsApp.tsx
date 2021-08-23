@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { rpcInterfaces } from "@app/common";
-import { Config, Logger, LogLevel } from "@bentley/bentleyjs-core";
+import { Logger, LogLevel } from "@bentley/bentleyjs-core";
 import { IModelApp, WebViewerApp } from "@bentley/imodeljs-frontend";
 import { PresentationUnitSystem } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
@@ -43,11 +43,6 @@ async function initializeApp(): Promise<BackendApi> {
       rpcParams: { info: { title: "presentation-rules-editor", version: "v1.0" }, uriPrefix: "http://localhost:3001" },
     },
   });
-
-  // Configure a CORS proxy in development mode.
-  if (process.env.NODE_ENV === "development") {
-    Config.App.set("imjs_dev_cors_proxy_server", `http://${window.location.hostname}:3001`);
-  }
 
   const backendApi = new BackendApi();
   await Promise.all([
