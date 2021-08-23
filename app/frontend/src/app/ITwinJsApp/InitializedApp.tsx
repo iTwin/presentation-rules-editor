@@ -14,6 +14,7 @@ import { Presentation } from "@bentley/presentation-frontend";
 import { WidgetState } from "@bentley/ui-abstract";
 import { MessageManager, StatusMessageRenderer } from "@bentley/ui-framework";
 import { appLayoutContext } from "../AppContext";
+import { LoadingIndicator } from "../utils/LoadingIndicator";
 import { BackendApi } from "./api/BackendApi";
 import { ContentTabs } from "./content-tabs/ContentTabs";
 import { IModelSelector } from "./imodel-selector/IModelSelector";
@@ -33,14 +34,7 @@ export interface InitializedAppProps {
 export function InitializedApp(props: InitializedAppProps): React.ReactElement {
   const [imodelPath, setIModelPath] = React.useState("");
   const imodel = useIModel(props.backendApi, imodelPath);
-
-  const [initialRulesetText] = React.useState(() => JSON.stringify(defaultRuleset, undefined, 2));
-  const [ruleset, setRuleset] = React.useState(defaultRuleset);
-  const registeredRuleset = useRegisteredRuleset(ruleset);
-
-  async function submitRuleset(newRuleset: Ruleset): Promise<void> {
-    setRuleset(newRuleset);
-  }
+  const [rulesetId, modifyRuleset] = useRegisteredRuleset();
 
   const { setBreadcrumbs } = React.useContext(appLayoutContext);
   React.useEffect(
@@ -67,7 +61,9 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
                   >
                     {
                       imodel !== undefined
-                        ? registeredRuleset && <Tree imodel={imodel} ruleset={registeredRuleset} />
+                        ? rulesetId !== undefined
+                          ? <Tree imodel={imodel} rulesetId={rulesetId} />
+                          : <LoadingIndicator>Loading...</LoadingIndicator>
                         : <SelectIModelHint />
                     }
                   </Widget>
@@ -80,7 +76,9 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
                   >
                     {
                       imodel !== undefined
-                        ? registeredRuleset && <PropertyGrid imodel={imodel} ruleset={registeredRuleset} />
+                        ? rulesetId !== undefined
+                          ? <PropertyGrid imodel={imodel} rulesetId={rulesetId} />
+                          : <LoadingIndicator>Loading...</LoadingIndicator>
                         : <SelectIModelHint />
                     }
                   </Widget>
@@ -88,7 +86,7 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
               </StagePanel>
             }
           >
-            <ContentTabs imodel={imodel} defaultRuleset={initialRulesetText} submitRuleset={submitRuleset} />
+            <ContentTabs imodel={imodel} defaultRuleset={defaultRulesetText} submitRuleset={modifyRuleset} />
           </Frontstage>
         </UIFramework>
         <StatusMessageRenderer />
@@ -119,33 +117,64 @@ const defaultRuleset: Ruleset = {
   ],
 };
 
-function useRegisteredRuleset(ruleset: Ruleset): RegisteredRuleset | undefined {
-  const [registeredRuleset, setRegisteredRuleset] = React.useState<RegisteredRuleset>();
+const defaultRulesetText = JSON.stringify(defaultRuleset, undefined, 2);
+
+function useRegisteredRuleset(): [string | undefined, (newRuleset: Ruleset) => Promise<void>] {
+  interface MutableState {
+    lastRegisteredRuleset: RegisteredRuleset | undefined;
+    componentIsDisposed: boolean;
+  }
+
+  const mutableState = React.useRef<MutableState>({
+    lastRegisteredRuleset: undefined,
+    componentIsDisposed: false,
+  }).current;
+
+  const [rulesetId, setRulesetId] = React.useState<string>();
+
   React.useEffect(
     () => {
-      setRegisteredRuleset(undefined);
-
-      let disposed = false;
-      let registeredRulesetPromise: Promise<RegisteredRuleset>;
-
+      // On mount, register the default ruleset
       void (async () => {
-        registeredRulesetPromise = Presentation.presentation.rulesets().add(ruleset);
-        if (!disposed) {
-          setRegisteredRuleset(await registeredRulesetPromise);
+        const addedRuleset = await Presentation.presentation.rulesets().add(defaultRuleset);
+        if (mutableState.componentIsDisposed) {
+          await Presentation.presentation.rulesets().remove(addedRuleset);
+          return;
         }
+
+        mutableState.lastRegisteredRuleset = addedRuleset;
+        setRulesetId(addedRuleset.id);
       })();
 
+      // On unmount, unregister the last registered ruleset
       return () => {
-        disposed = true;
-        void (async () => {
-          await Presentation.presentation.rulesets().remove(await registeredRulesetPromise);
-        })();
+        mutableState.componentIsDisposed = true;
+        if (mutableState.lastRegisteredRuleset !== undefined) {
+          void Presentation.presentation.rulesets().remove(mutableState.lastRegisteredRuleset);
+          mutableState.lastRegisteredRuleset = undefined;
+        }
       };
     },
-    [ruleset],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
-  return registeredRuleset;
+  const modifyRuleset = async (newRuleset: Ruleset) => {
+    if (mutableState.lastRegisteredRuleset === undefined) {
+      return;
+    }
+
+    const modifiedRuleset = await Presentation.presentation.rulesets()
+      .modify(mutableState.lastRegisteredRuleset, newRuleset);
+    if (mutableState.componentIsDisposed) {
+      await Presentation.presentation.rulesets().remove(modifiedRuleset);
+      return;
+    }
+
+    mutableState.lastRegisteredRuleset = modifiedRuleset;
+  };
+
+  return [rulesetId, modifyRuleset];
 }
 
 function useIModel(backendApi: BackendApi, path: string): IModelConnection | undefined {

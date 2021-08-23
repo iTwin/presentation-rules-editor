@@ -39,6 +39,9 @@ function SizedEditor(props: SizedEditorProps): React.ReactElement {
   const textSubmitRuleset = IModelApp.i18n.translate("App:submit-ruleset");
   const [buttonIsVisible, setButtonIsVisible] = React.useState(false);
 
+  const submitRulesetRef = React.useRef(props.submitRuleset);
+  submitRulesetRef.current = props.submitRuleset;
+
   React.useLayoutEffect(
     () => {
       assert(divRef.current !== null);
@@ -73,7 +76,10 @@ function SizedEditor(props: SizedEditorProps): React.ReactElement {
         getPosition: () => ({ preference: monaco.editor.OverlayWidgetPositionPreference.TOP_RIGHT_CORNER }),
       });
 
-      contributeToMonacoEditor(editorRef.current, { actions: { submitRuleset: props.submitRuleset } });
+      contributeToMonacoEditor(
+        editorRef.current,
+        { actions: { submitRuleset: (ruleset) => submitRulesetRef.current(ruleset) } },
+      );
 
       return () => {
         assert(editorRef.current !== undefined);
