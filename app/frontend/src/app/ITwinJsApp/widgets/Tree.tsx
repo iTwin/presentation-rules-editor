@@ -4,22 +4,21 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { RegisteredRuleset } from "@bentley/presentation-common";
 import { usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@bentley/presentation-components";
 import { ControlledTree, SelectionMode, useVisibleTreeNodes } from "@bentley/ui-components";
 import { AutoSizer } from "../utils/AutoSizer";
 
 export interface TreeProps {
   imodel: IModelConnection;
-  ruleset: RegisteredRuleset;
+  rulesetId: string;
 }
 
 export const Tree: React.FC<TreeProps> = (props) => {
   const { nodeLoader, onItemsRendered } = usePresentationTreeNodeLoader({
     imodel: props.imodel,
-    ruleset: props.ruleset,
+    ruleset: props.rulesetId,
     pagingSize: 10,
-    enableHierarchyAutoUpdate: false,
+    enableHierarchyAutoUpdate: true,
   });
   const eventHandler = useUnifiedSelectionTreeEventHandler({ nodeLoader });
   const visibleNodes = useVisibleTreeNodes(nodeLoader.modelSource);

@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
-import { RegisteredRuleset } from "@bentley/presentation-common";
 import {
   PresentationPropertyDataProvider, usePropertyDataProviderWithUnifiedSelection,
 } from "@bentley/presentation-components";
@@ -17,7 +16,7 @@ import { AutoSizer } from "../utils/AutoSizer";
 
 export interface PropertyGridProps {
   imodel: IModelConnection;
-  ruleset: RegisteredRuleset;
+  rulesetId: string;
 }
 
 export function PropertyGrid(props: PropertyGridProps): React.ReactElement {
@@ -25,11 +24,11 @@ export function PropertyGrid(props: PropertyGridProps): React.ReactElement {
 
   const dataProvider = useDisposable(React.useCallback(
     () => {
-      const provider = new AutoExpandingPropertyDataProvider({ imodel: props.imodel, ruleset: props.ruleset });
+      const provider = new AutoExpandingPropertyDataProvider({ imodel: props.imodel, ruleset: props.rulesetId });
       provider.isNestedPropertyCategoryGroupingEnabled = true;
       return provider;
     },
-    [props.imodel, props.ruleset],
+    [props.imodel, props.rulesetId],
   ));
 
   const { isOverLimit, numSelectedElements } = usePropertyDataProviderWithUnifiedSelection({ dataProvider });
