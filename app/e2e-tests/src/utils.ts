@@ -17,3 +17,12 @@ export async function selectIModel(page: Page): Promise<void> {
 export async function getWidget(page: Page, widget: string): Promise<ElementHandle<HTMLElement>> {
   return page.waitForSelector(`.nz-widget-widget:has([role=tab][title=${widget}]) .nz-widget-content`);
 }
+
+export async function getEditor(page: Page): Promise<ElementHandle<HTMLElement>> {
+  const element = await page.$("[role=code]");
+  if (element === null) {
+    throw new Error("Failed to get editor element.");
+  }
+
+  return element;
+}

@@ -2,8 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { Page } from "playwright";
 import { page } from "../setup";
-import { getWidget, loadHomepage, selectIModel } from "../utils";
+import { getEditor, getWidget, loadHomepage, selectIModel } from "../utils";
 
 describe("properties widget", () => {
   before(async () => {
@@ -17,9 +18,30 @@ describe("properties widget", () => {
     await selectIModel(page);
     await propertiesWidget.waitForSelector("text=Select element(s) to view properties.");
 
+    await selectECElement(page);
+    await propertiesWidget.waitForSelector("text=Selected Item(s)");
+  });
+
+  it("updates properties when ruleset changes", async () => {
+    await selectIModel(page);
+    await selectECElement(page);
+
+    const editor = await getEditor(page);
+    await page.click('text=""SelectedNodeInstances""');
+    await editor.press("End");
+    await editor.type(`,
+"propertyOverrides": [{ "name": "*", "categoryId": "custom" }],
+"propertyCategories": [{ "id": "custom", "label": "custom_category" }]`);
+    await editor.press("Alt+Enter");
+
+    const propertiesWidget = await getWidget(page, "Properties");
+    await propertiesWidget.waitForSelector("text=custom_category");
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  async function selectECElement(page: Page): Promise<void> {
     const treeWidget = await getWidget(page, "Tree");
     await treeWidget.waitForSelector(".core-tree-node");
     await (await treeWidget.$(".core-tree-node"))!.click();
-    await propertiesWidget.waitForSelector("text=Selected Item(s)");
-  });
+  }
 });

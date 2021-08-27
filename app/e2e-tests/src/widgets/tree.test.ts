@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { page } from "../setup";
-import { getWidget, loadHomepage, selectIModel } from "../utils";
+import { getEditor, getWidget, loadHomepage, selectIModel } from "../utils";
 
 describe("tree widget", () => {
   before(async () => {
@@ -16,5 +16,18 @@ describe("tree widget", () => {
 
     await selectIModel(page);
     await treeWidget.waitForSelector(".core-tree-node");
+  });
+
+  it("updates tree when ruleset changes", async () => {
+    await selectIModel(page);
+
+    const editor = await getEditor(page);
+    await page.click('text=""rules""');
+    await editor.press("Control+Enter");
+    await editor.type('{ "ruleType": "CheckBox" },');
+    await editor.press("Alt+Enter");
+
+    const treeWidget = await getWidget(page, "Tree");
+    await treeWidget.waitForSelector("input[type=checkbox]", { state: "attached" });
   });
 });
