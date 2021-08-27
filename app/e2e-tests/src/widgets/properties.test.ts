@@ -18,13 +18,13 @@ describe("properties widget", () => {
     await selectIModel(page);
     await propertiesWidget.waitForSelector("text=Select element(s) to view properties.");
 
-    await selectECElement(page);
+    await selectAnyTreeNode(page);
     await propertiesWidget.waitForSelector("text=Selected Item(s)");
   });
 
   it("updates properties when ruleset changes", async () => {
     await selectIModel(page);
-    await selectECElement(page);
+    await selectAnyTreeNode(page);
 
     const editor = await getEditor(page);
     await page.click('text=""SelectedNodeInstances""');
@@ -39,7 +39,7 @@ describe("properties widget", () => {
   });
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
-  async function selectECElement(page: Page): Promise<void> {
+  async function selectAnyTreeNode(page: Page): Promise<void> {
     const treeWidget = await getWidget(page, "Tree");
     await treeWidget.waitForSelector(".core-tree-node");
     await (await treeWidget.$(".core-tree-node"))!.click();
