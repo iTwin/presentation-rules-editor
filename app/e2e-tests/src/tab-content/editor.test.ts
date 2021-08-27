@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { expect } from "chai";
 import { page } from "../setup";
-import { getWidget, loadHomepage, selectIModel } from "../utils";
+import { getEditor, getWidget, loadHomepage, selectIModel } from "../utils";
 
 describe("editor", () => {
   before(async () => {
@@ -12,11 +12,12 @@ describe("editor", () => {
   });
 
   it("is populated with template ruleset", async () => {
-    expect(await page.textContent("[role=code]")).to.contain('"Ruleset1"');
+    const editor = await getEditor(page);
+    expect(await editor.textContent()).to.contain('"Ruleset1"');
   });
 
   it("suggests completions based on ruleset schema", async () => {
-    const editor = (await page.$("[role=code]"))!;
+    const editor = await getEditor(page);
 
     await (await editor.$("text=true"))!.dblclick();
     await editor.press("Backspace");
@@ -36,7 +37,7 @@ describe("editor", () => {
     });
 
     it("submits ruleset when button is clicked", async () => {
-      const editor = (await page.$("[role=code]"))!;
+      const editor = await getEditor(page);
 
       await (await editor.$("text=Element"))!.dblclick();
       await editor.press("Backspace");
@@ -47,7 +48,7 @@ describe("editor", () => {
     });
 
     it("submits ruleset when keyboard shortcut is pressed", async () => {
-      const editor = (await page.$("[role=code]"))!;
+      const editor = await getEditor(page);
 
       await (await editor.$("text=Element"))!.dblclick();
       await editor.press("Backspace");
@@ -58,7 +59,7 @@ describe("editor", () => {
     });
 
     it("submits ruleset when command is invoked from the command palette", async () => {
-      const editor = (await page.$("[role=code]"))!;
+      const editor = await getEditor(page);
 
       await (await editor.$("text=Element"))!.dblclick();
       await editor.press("Backspace");

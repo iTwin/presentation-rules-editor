@@ -34,7 +34,7 @@ export interface InitializedAppProps {
 export function InitializedApp(props: InitializedAppProps): React.ReactElement {
   const [imodelPath, setIModelPath] = React.useState("");
   const imodel = useIModel(props.backendApi, imodelPath);
-  const [rulesetId, modifyRuleset] = useRegisteredRuleset();
+  const [registeredRuleset, modifyRuleset] = useRegisteredRuleset();
 
   const { setBreadcrumbs } = React.useContext(appLayoutContext);
   React.useEffect(
@@ -61,8 +61,8 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
                   >
                     {
                       imodel !== undefined
-                        ? rulesetId !== undefined
-                          ? <Tree imodel={imodel} rulesetId={rulesetId} />
+                        ? registeredRuleset !== undefined
+                          ? <Tree imodel={imodel} rulesetId={registeredRuleset.id} />
                           : <LoadingIndicator>Loading...</LoadingIndicator>
                         : <SelectIModelHint />
                     }
@@ -76,8 +76,8 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
                   >
                     {
                       imodel !== undefined
-                        ? rulesetId !== undefined
-                          ? <PropertyGrid imodel={imodel} rulesetId={rulesetId} />
+                        ? registeredRuleset !== undefined
+                          ? <PropertyGrid imodel={imodel} ruleset={registeredRuleset} />
                           : <LoadingIndicator>Loading...</LoadingIndicator>
                         : <SelectIModelHint />
                     }
@@ -119,7 +119,7 @@ const defaultRuleset: Ruleset = {
 
 const defaultRulesetText = JSON.stringify(defaultRuleset, undefined, 2);
 
-function useRegisteredRuleset(): [string | undefined, (newRuleset: Ruleset) => Promise<void>] {
+function useRegisteredRuleset(): [RegisteredRuleset | undefined, (newRuleset: Ruleset) => Promise<void>] {
   interface MutableState {
     lastRegisteredRuleset: RegisteredRuleset | undefined;
     componentIsDisposed: boolean;
@@ -130,7 +130,7 @@ function useRegisteredRuleset(): [string | undefined, (newRuleset: Ruleset) => P
     componentIsDisposed: false,
   }).current;
 
-  const [rulesetId, setRulesetId] = React.useState<string>();
+  const [registeredRuleset, setRegisteredRuleset] = React.useState<RegisteredRuleset>();
 
   React.useEffect(
     () => {
@@ -143,7 +143,7 @@ function useRegisteredRuleset(): [string | undefined, (newRuleset: Ruleset) => P
         }
 
         mutableState.lastRegisteredRuleset = addedRuleset;
-        setRulesetId(addedRuleset.id);
+        setRegisteredRuleset(addedRuleset);
       })();
 
       // On unmount, unregister the last registered ruleset
@@ -172,9 +172,10 @@ function useRegisteredRuleset(): [string | undefined, (newRuleset: Ruleset) => P
     }
 
     mutableState.lastRegisteredRuleset = modifiedRuleset;
+    setRegisteredRuleset(modifiedRuleset);
   };
 
-  return [rulesetId, modifyRuleset];
+  return [registeredRuleset, modifyRuleset];
 }
 
 function useIModel(backendApi: BackendApi, path: string): IModelConnection | undefined {

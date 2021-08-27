@@ -74,7 +74,7 @@ async function execute(command: string): Promise<void> {
 }
 
 async function setupBrowser({ debug }: { debug: boolean }): Promise<void> {
-  browser = await chromium.launch({ headless: !debug, slowMo: debug ? 1000 : undefined });
+  browser = await chromium.launch({ headless: !debug, slowMo: debug ? 100 : undefined });
   page = await browser.newPage();
 }
 
