@@ -193,7 +193,10 @@ function useIModel(backendApi: BackendApi, path: string): IModelConnection | und
             setIModel(openedIModel);
           }
         } catch (error) {
-          displayErrorToast(IModelApp.i18n.translate("App:error:imodel-open", { imodel: path }), error.message);
+          displayErrorToast(
+            IModelApp.i18n.translate("App:error:imodel-open", { imodel: path }),
+            (error && typeof error === "object") ? (error as { message: unknown }).message : undefined,
+          );
         }
       })();
 
@@ -206,7 +209,10 @@ function useIModel(backendApi: BackendApi, path: string): IModelConnection | und
               await openedIModel.close();
             }
           } catch (error) {
-            displayErrorToast(IModelApp.i18n.translate("App:error:imodel-close", { imodel: path }), error.message);
+            displayErrorToast(
+              IModelApp.i18n.translate("App:error:imodel-close", { imodel: path }),
+              (error && typeof error === "object") ? (error as { message: unknown }).message : undefined,
+            );
           }
         })();
       };
@@ -217,11 +223,11 @@ function useIModel(backendApi: BackendApi, path: string): IModelConnection | und
   return imodel;
 }
 
-function displayErrorToast(messageShort: string, messageDetail: string): void {
+function displayErrorToast(messageShort: string, messageDetail: unknown): void {
   const messageDetails = new NotifyMessageDetails(
     OutputMessagePriority.Error,
     messageShort,
-    messageDetail,
+    typeof messageDetail === "string" ? messageDetail : undefined,
     OutputMessageType.Toast,
   );
   MessageManager.outputMessage(messageDetails);
