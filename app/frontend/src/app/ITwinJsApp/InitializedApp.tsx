@@ -193,26 +193,20 @@ function useIModel(backendApi: BackendApi, path: string): IModelConnection | und
             setIModel(openedIModel);
           }
         } catch (error) {
-          displayErrorToast(
-            IModelApp.i18n.translate("App:error:imodel-open", { imodel: path }),
-            (error && typeof error === "object") ? (error as { message: unknown }).message : undefined,
-          );
+          displayIModelError(IModelApp.i18n.translate("App:error:imodel-open", { imodel: path }), error);
         }
       })();
 
       return () => {
         disposed = true;
         void (async () => {
+          const openedIModel = await imodelPromise;
           try {
-            const openedIModel = await imodelPromise;
             if (openedIModel !== undefined) {
               await openedIModel.close();
             }
           } catch (error) {
-            displayErrorToast(
-              IModelApp.i18n.translate("App:error:imodel-close", { imodel: path }),
-              (error && typeof error === "object") ? (error as { message: unknown }).message : undefined,
-            );
+            displayIModelError(IModelApp.i18n.translate("App:error:imodel-close", { imodel: path }), error);
           }
         })();
       };
@@ -223,11 +217,19 @@ function useIModel(backendApi: BackendApi, path: string): IModelConnection | und
   return imodel;
 }
 
-function displayErrorToast(messageShort: string, messageDetail: unknown): void {
+function displayIModelError(message: string, error: unknown): void {
+  const errorMessage = (error && typeof error === "object") ? (error as { message: unknown }).message : error;
+  displayErrorToast(
+    message,
+    typeof errorMessage === "string" ? errorMessage : undefined,
+  );
+}
+
+function displayErrorToast(messageShort: string, messageDetail: string | undefined): void {
   const messageDetails = new NotifyMessageDetails(
     OutputMessagePriority.Error,
     messageShort,
-    typeof messageDetail === "string" ? messageDetail : undefined,
+    messageDetail,
     OutputMessageType.Toast,
   );
   MessageManager.outputMessage(messageDetails);
