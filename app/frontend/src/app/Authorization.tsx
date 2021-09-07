@@ -7,6 +7,7 @@ import * as React from "react";
 import { useHistory } from "react-router-dom";
 import { Code } from "@itwin/itwinui-react";
 import { ErrorPage } from "./errors/ErrorPage";
+import { applyUrlPrefix } from "./utils/Environment";
 
 export interface AuthorizationProviderConfig {
   authority: string;
@@ -29,7 +30,7 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
     response_type: "code",
     automaticSilentRenew: true,
     accessTokenExpiringNotificationTime: 120,
-    userStore: new WebStorageStateStore({ store: new VoidWebStorage() }),
+    userStore: new WebStorageStateStore({ store: localStorage }),
   });
   userManager.events.addSilentRenewError((error) => {
     // eslint-disable-next-line no-console
@@ -122,25 +123,20 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
   };
 }
 
-class VoidWebStorage implements Storage {
-  public readonly length = 0;
-  public key(): null {
-    return null;
-  }
-  public getItem(): null {
-    return null;
-  }
-  public setItem(): void {}
-  public removeItem(): void {}
-  public clear(): void {}
-}
-
-export interface AuthorizationContext {
+export type AuthorizationContext = {
   userManager: UserManager;
-  state: AuthorizationState;
-  user: User | undefined;
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
+} & (AuthorizationContextWithUser | AuthorizationContextWithoutUser);
+
+interface AuthorizationContextWithUser {
+  state: AuthorizationState.SignedIn;
+  user: User;
+}
+
+interface AuthorizationContextWithoutUser {
+  state: Exclude<AuthorizationState, AuthorizationState.SignedIn>;
+  user: undefined;
 }
 
 export enum AuthorizationState {
@@ -281,8 +277,8 @@ function getTroubleshootingText(userManager: UserManager): React.ReactNode {
   return (
     <>
       Visit the application&apos;s registration page
-      on <a title="iTwin Platform" href="https://developer.bentley.com/my-apps/">iTwin Platform</a> to check if it has
-      access to the following scopes: {scopeList}.
+      on <a title="iTwin Platform" href={applyUrlPrefix("https://developer.bentley.com/my-apps/")}>iTwin Platform</a> to
+      check if it has access to the following scopes: {scopeList}.
     </>
   );
 }

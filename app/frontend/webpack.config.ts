@@ -71,8 +71,8 @@ const config: Configuration & { devServer: any } = {
     }),
     new MonacoWebpackPlugin({ languages: ["json"] }),
     new DefinePlugin({
-      ["process.env.OAUTH_AUTHORITY"]: JSON.stringify(process.env.OAUTH_AUTHORITY),
       ["process.env.OAUTH_CLIENT_ID"]: JSON.stringify(process.env.OAUTH_CLIENT_ID),
+      ["process.env.IMJS_URL_PREFIX"]: JSON.stringify(process.env.IMJS_URL_PREFIX),
     }),
   ],
   resolve: {

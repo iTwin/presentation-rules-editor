@@ -2,16 +2,14 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { page } from "../setup";
-import { openTestIModel } from "../utils";
 
-describe("viewport", () => {
-  before(async () => {
-    await openTestIModel(page);
-  });
+/** Adds process.env.IMJS_URL_PREFIX to URL hostname. */
+export function applyUrlPrefix(url: string): string {
+  if (!process.env.IMJS_URL_PREFIX) {
+    return url;
+  }
 
-  it("displays an iModel", async () => {
-    await page.click("text=Viewport");
-    await page.waitForSelector("data-testid=viewport-component", { state: "visible" });
-  });
-});
+  const modifierUrl = new URL(url);
+  modifierUrl.hostname = process.env.IMJS_URL_PREFIX + modifierUrl.hostname;
+  return modifierUrl.toString();
+}

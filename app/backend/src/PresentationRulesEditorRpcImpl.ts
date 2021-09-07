@@ -4,10 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 import { execSync } from "child_process";
 import * as fs from "fs";
-import * as path from "path";
 import { PresentationRulesEditorRpcInterface } from "@app/common";
-import { IModelHost } from "@bentley/imodeljs-backend";
 import { RpcManager } from "@bentley/imodeljs-common";
+import { SnapshotFileNameResolver } from "./SnapshotFileNameResolver";
 
 /** The backend implementation of PresentationRulesEditorRpcInterface. */
 export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcInterface {
@@ -16,11 +15,9 @@ export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcIn
   }
 
   public override async getAvailableIModels(): Promise<string[]> {
-    const dir = getIModelsDirectory();
+    const dir = SnapshotFileNameResolver.getIModelsDirectory();
     const files = fs.readdirSync(dir);
-    return files
-      .filter((name) => name.endsWith(".ibim") || name.endsWith(".bim"))
-      .map((name) => path.resolve(dir, name));
+    return files.filter((name) => name.endsWith(".ibim") || name.endsWith(".bim"));
   }
 
   public override async openIModelsDirectory(): Promise<void> {
@@ -39,11 +36,6 @@ export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcIn
         command = "xdg-open";
     }
 
-    execSync(`${command} ${getIModelsDirectory()}`);
+    execSync(`${command} ${SnapshotFileNameResolver.getIModelsDirectory()}`);
   }
-}
-
-function getIModelsDirectory(): string {
-  const assetsDir = IModelHost.appAssetsDir ? IModelHost.appAssetsDir : "assets";
-  return path.join(assetsDir, "imodels");
 }

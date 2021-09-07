@@ -5,7 +5,7 @@
 import "./InitializedApp.scss";
 import * as React from "react";
 import {
-  IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, OutputMessageType,
+  CheckpointConnection, IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, OutputMessageType,
 } from "@bentley/imodeljs-frontend";
 import {
   ChildNodeSpecificationTypes, ContentSpecificationTypes, RegisteredRuleset, Ruleset, RuleTypes,
@@ -13,38 +13,27 @@ import {
 import { Presentation } from "@bentley/presentation-frontend";
 import { WidgetState } from "@bentley/ui-abstract";
 import { MessageManager, StatusMessageRenderer } from "@bentley/ui-framework";
-import { appLayoutContext } from "../AppContext";
 import { LoadingIndicator } from "../utils/LoadingIndicator";
 import { BackendApi } from "./api/BackendApi";
 import { ContentTabs } from "./content-tabs/ContentTabs";
-import { IModelSelector } from "./imodel-selector/IModelSelector";
+import { IModelIdentifier, isSnapshotIModel } from "./IModelIdentifier";
 import { backendApiContext } from "./ITwinJsAppContext";
 import { Frontstage } from "./ui-framework/Frontstage";
 import { StagePanel, StagePanelZone } from "./ui-framework/StagePanel";
 import { UIFramework } from "./ui-framework/UIFramework";
 import { Widget } from "./ui-framework/Widget/Widget";
-import { SelectIModelHint } from "./utils/SelectIModelHint";
+import { OpeningIModelHint } from "./utils/OpeningIModelHint";
 import { PropertyGrid } from "./widgets/PropertyGrid";
 import { Tree } from "./widgets/Tree";
 
 export interface InitializedAppProps {
   backendApi: BackendApi;
+  imodelIdentifier: IModelIdentifier;
 }
 
 export function InitializedApp(props: InitializedAppProps): React.ReactElement {
-  const [imodelPath, setIModelPath] = React.useState("");
-  const imodel = useIModel(props.backendApi, imodelPath);
+  const imodel = useIModel(props.backendApi, props.imodelIdentifier);
   const [registeredRuleset, modifyRuleset] = useRegisteredRuleset();
-
-  const { setBreadcrumbs } = React.useContext(appLayoutContext);
-  React.useEffect(
-    () => {
-      setBreadcrumbs([
-        <IModelSelector key="imodel-selector" selectedIModelPath={imodelPath} setSelectedIModelPath={setIModelPath} />,
-      ]);
-    },
-    [imodelPath, setBreadcrumbs],
-  );
 
   return (
     <backendApiContext.Provider value={props.backendApi}>
@@ -64,7 +53,7 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
                         ? registeredRuleset !== undefined
                           ? <Tree imodel={imodel} rulesetId={registeredRuleset.id} />
                           : <LoadingIndicator>Loading...</LoadingIndicator>
-                        : <SelectIModelHint />
+                        : <OpeningIModelHint />
                     }
                   </Widget>
                 </StagePanelZone>
@@ -79,7 +68,7 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
                         ? registeredRuleset !== undefined
                           ? <PropertyGrid imodel={imodel} ruleset={registeredRuleset} />
                           : <LoadingIndicator>Loading...</LoadingIndicator>
-                        : <SelectIModelHint />
+                        : <OpeningIModelHint />
                     }
                   </Widget>
                 </StagePanelZone>
@@ -178,22 +167,33 @@ function useRegisteredRuleset(): [RegisteredRuleset | undefined, (newRuleset: Ru
   return [registeredRuleset, modifyRuleset];
 }
 
-function useIModel(backendApi: BackendApi, path: string): IModelConnection | undefined {
+function useIModel(backendApi: BackendApi, imodelIdentifier: IModelIdentifier): IModelConnection | undefined {
   const [imodel, setIModel] = React.useState<IModelConnection>();
 
   React.useEffect(
     () => {
+      setIModel(undefined);
+
       let disposed = false;
-      let imodelPromise: Promise<IModelConnection | undefined>;
+      let imodelPromise: Promise<IModelConnection>;
       void (async () => {
         try {
-          imodelPromise = (path === "" ? Promise.resolve(undefined) : backendApi.openIModel(path));
+          imodelPromise = isSnapshotIModel(imodelIdentifier)
+            ? backendApi.openIModel(imodelIdentifier)
+            : CheckpointConnection.openRemote(imodelIdentifier.itwinId, imodelIdentifier.imodelId);
           const openedIModel = await imodelPromise;
           if (!disposed) {
             setIModel(openedIModel);
           }
         } catch (error) {
-          displayIModelError(IModelApp.i18n.translate("App:error:imodel-open", { imodel: path }), error);
+          if (isSnapshotIModel(imodelIdentifier)) {
+            displayIModelError(
+              IModelApp.i18n.translate("App:error:imodel-open-local", { imodel: imodelIdentifier }),
+              error,
+            );
+          } else {
+            displayIModelError(IModelApp.i18n.translate("App:error:imodel-open-remote"), error);
+          }
         }
       })();
 
@@ -202,16 +202,21 @@ function useIModel(backendApi: BackendApi, path: string): IModelConnection | und
         void (async () => {
           const openedIModel = await imodelPromise;
           try {
-            if (openedIModel !== undefined) {
-              await openedIModel.close();
-            }
+            await openedIModel.close();
           } catch (error) {
-            displayIModelError(IModelApp.i18n.translate("App:error:imodel-close", { imodel: path }), error);
+            if (isSnapshotIModel(imodelIdentifier)) {
+              displayIModelError(
+                IModelApp.i18n.translate("App:error:imodel-close-local", { imodel: imodelIdentifier }),
+                error,
+              );
+            } else {
+              displayIModelError(IModelApp.i18n.translate("App:error:imodel-close-remote"), error);
+            }
           }
         })();
       };
     },
-    [backendApi, path],
+    [backendApi, imodelIdentifier],
   );
 
   return imodel;

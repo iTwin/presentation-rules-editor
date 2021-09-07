@@ -1,0 +1,72 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
+.imodel-selector-group {
+  display: grid;
+  grid-auto-rows: min-content;
+  gap: 22px;
+  padding: 22px 64px;
+  overflow: auto;
+}
+
+.imodel-selector {
+    display: grid;
+    // Give enough height for the Back button besides the label
+    grid-template-rows: 38px 1fr;
+    align-items: center;
+ }
+
+// Emulates iac-grid-structure but only with one column that spans the entire width
+.imodel-selector-empty-grid {
+  display: grid;
+  height: 237.5px;
+  margin: 22px 64px;
+}
+
+.imodel-selector-title {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  button {
+    margin-left: 11px;
+  }
+}
+
+.imodel-selector-thumbnail {
+  // Signal that local imodel thumbnail is interactive
+  cursor: pointer;
+}
+
+ // Style for placeholder tiles
+.iui-tile.skeleton {
+  .iui-thumbnail .iui-skeleton {
+      width: 100%;
+      height: 100%;
+  }
+
+  .iui-content .iui-skeleton {
+    width: 178px;
+    height: 22px;
+  }
+}
+
+// Neutralize absolute centering that @itwin/imodel-browser-react uses
+.iac-no-results.iac-no-results {
+  position: unset;
+  left: unset;
+  top: unset;
+  transform: unset;
+}
+
+.iac-grid-structure.iac-grid-structure {
+  // Prevent row height from changing when tiles are loaded
+  grid-auto-rows: 237.5px;
+
+  .iui-description .iui-skeleton {
+    // Having both name and description text skeletons is a little too much
+    display: none;
+  }
+}

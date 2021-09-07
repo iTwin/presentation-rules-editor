@@ -1,12 +1,9 @@
 {
   "error": {
-    "imodel-open": "Failed to open iModel \"{{imodel}}\".",
-    "imodel-close": "Failed to close iModel \"{{imodel}}\"."
-  },
-  "imodel-selector": {
-    "no-imodel-selected": "Select an iModel to view content.",
-    "open-snapshot-folder": "Open snapshot folder...",
-    "select-imodel": "Select iModel"
+    "imodel-close-local": "Failed to close iModel \"{{imodel}}\".",
+    "imodel-close-remote": "Failed to close remote iModel",
+    "imodel-open-local": "Failed to open iModel \"{{imodel}}\".",
+    "imodel-open-remote": "Failed to open remote iModel."
   },
   "label": {
     "editor": "Ruleset",
@@ -14,6 +11,7 @@
     "property-grid-widget": "Properties",
     "viewport": "Viewport"
   },
+  "opening-imodel": "Opening iModel...",
   "property-grid": {
     "no-elements-selected": "Select element(s) to view properties.",
     "over-limit": "Too many elements selected.",

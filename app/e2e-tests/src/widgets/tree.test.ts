@@ -3,24 +3,19 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { page } from "../setup";
-import { getEditor, getWidget, loadHomepage, selectIModel } from "../utils";
+import { getEditor, getWidget, openTestIModel } from "../utils";
 
 describe("tree widget", () => {
   before(async () => {
-    await loadHomepage(page);
+    await openTestIModel(page);
   });
 
   it("displays tree hierarchy", async () => {
     const treeWidget = await getWidget(page, "Tree");
-    await treeWidget.waitForSelector("text=Select an iModel to view content.");
-
-    await selectIModel(page);
     await treeWidget.waitForSelector(".core-tree-node");
   });
 
   it("updates tree when ruleset changes", async () => {
-    await selectIModel(page);
-
     const editor = await getEditor(page);
     await page.click('text=""rules""');
     await editor.press("Control+Enter");

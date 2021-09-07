@@ -10,7 +10,7 @@ import { ErrorPage } from "./ErrorPage";
 export function PageNotFound(): React.ReactElement {
   return (
     <ErrorPage illustration={Svg404} title={"Page Not Found"}>
-      The current URL does not match any application path.
+      Current URL does not match any application path.
     </ErrorPage>
   );
 }

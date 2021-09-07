@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import { expect } from "chai";
 import { page } from "../setup";
-import { getEditor, getWidget, loadHomepage, selectIModel } from "../utils";
+import { getEditor, getWidget, openTestIModel } from "../utils";
 
 describe("editor", () => {
   before(async () => {
-    await loadHomepage(page);
+    await openTestIModel(page);
   });
 
   it("is populated with template ruleset", async () => {
@@ -32,8 +32,7 @@ describe("editor", () => {
 
   describe("ruleset submission", () => {
     beforeEach(async () => {
-      await loadHomepage(page);
-      await selectIModel(page);
+      await openTestIModel(page);
     });
 
     it("submits ruleset when button is clicked", async () => {

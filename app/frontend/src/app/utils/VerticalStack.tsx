@@ -6,12 +6,14 @@ import "./VerticalStack.scss";
 import * as React from "react";
 
 export interface CenteredContentsProps {
+  id?: string | undefined;
+  className?: string | undefined;
   children: React.ReactNode;
 }
 
 export function VerticalStack(props: CenteredContentsProps): React.ReactElement {
   return (
-    <div className="vertical-stack">
+    <div id={props.id} className={`vertical-stack ${props.className ?? ""}`}>
       {props.children}
     </div>
   );

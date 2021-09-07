@@ -3,22 +3,19 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "./App.scss";
-import { Profile } from "oidc-client";
 import * as React from "react";
-import { BrowserRouter, Route, Switch, useHistory } from "react-router-dom";
-import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
-import {
-  Button, DropdownMenu, Footer, getUserColor, Header, HeaderBreadcrumbs, HeaderLogo, IconButton, MenuItem, UserIcon,
-} from "@itwin/itwinui-react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { Footer } from "@itwin/itwinui-react";
 import { appLayoutContext, AppLayoutContext, AppTab } from "./AppContext";
-import {
-  AuthorizationState, createAuthorizationProvider, SignInCallback, SignInSilent, useAuthorization,
-} from "./Authorization";
+import { AppHeader } from "./AppHeader";
+import { createAuthorizationProvider, SignInCallback, SignInSilent, useAuthorization } from "./Authorization";
 import { PageNotFound } from "./errors/PageNotFound";
-import { Explainer } from "./utils/Explainer";
+import { IModelSelector } from "./IModelSelector/IModelSelector";
+import { BackendApi } from "./ITwinJsApp/api/BackendApi";
+import { IModelIdentifier, isSnapshotIModel } from "./ITwinJsApp/IModelIdentifier";
+import { ITwinJsApp } from "./ITwinJsApp/ITwinJsApp";
+import { applyUrlPrefix } from "./utils/Environment";
 import { LoadingIndicator } from "./utils/LoadingIndicator";
-
-const ITwinJsApp = React.lazy(async () => import("./ITwinJsApp/ITwinJsApp"));
 
 export function App(): React.ReactElement {
   const appLayoutContextValue = useAppLayout();
@@ -29,9 +26,6 @@ export function App(): React.ReactElement {
           <BrowserRouter>
             <AppHeader />
             <Switch>
-              <Route path="/" exact={true}>
-                <Home />
-              </Route>
               <Route path="/auth/callback">
                 <SignInCallback returnTo="/">
                   <LoadingIndicator>
@@ -39,12 +33,8 @@ export function App(): React.ReactElement {
                   </LoadingIndicator>
                 </SignInCallback>
               </Route>
-              <Route path="/auth/silent">
-                <SignInSilent />
-              </Route>
-              <Route path="*">
-                <PageNotFound />
-              </Route>
+              <Route path="/auth/silent" component={SignInSilent} />
+              <Route path="/" component={Main} />
             </Switch>
             <Footer />
           </BrowserRouter>
@@ -60,90 +50,100 @@ function useAppLayout(): AppLayoutContext {
   return { activeTab, setActiveTab, breadcrumbs, setBreadcrumbs };
 }
 
-const AuthorizationProvider = (process.env.OAUTH_AUTHORITY && process.env.OAUTH_CLIENT_ID)
+const AuthorizationProvider = process.env.OAUTH_CLIENT_ID
   ? createAuthorizationProvider({
-    authority: process.env.OAUTH_AUTHORITY,
+    authority: applyUrlPrefix("https://ims.bentley.com"),
     client_id: process.env.OAUTH_CLIENT_ID,
     redirect_uri: "/auth/callback",
     silent_redirect_uri: "/auth/silent",
     post_logout_redirect_uri: "/",
-    scope: "openid profile itwinjs",
+    scope: "openid profile itwinjs imodels:read projects:read",
   })
   : (props: React.PropsWithChildren<{}>) => <>{props.children}</>;
 
-function AppHeader(): React.ReactElement {
-  const { state, user, signIn, signOut } = useAuthorization();
-  const history = useHistory();
+function Main(): React.ReactElement {
+  const itwinJsApp = useBackgroundITwinJsAppLoading();
 
-  let actions: React.ReactNode[];
-  switch (state) {
-    case AuthorizationState.Offline:
-      actions = [
-        <span key="offlinemode">
-          Offline mode
-          <Explainer>To access online imodels, setup a .env file in repository root</Explainer>
-        </span>,
-      ];
-      break;
+  return (
+    <Switch>
+      <Route path="/" exact={true}>
+        <IModelSelector backendApiPromise={itwinJsApp?.backendApiPromise} />
+      </Route>
+      <Route path="/open-imodel">
+        {
+          (props) => {
+            const params = new URLSearchParams(props.location.search);
+            const snapshotPath = params.get("snapshot");
+            if (snapshotPath) {
+              return <ITwinJsAppAwaiter itwinJsApp={itwinJsApp} imodelIdentifier={snapshotPath} />;
+            }
 
-    case AuthorizationState.SignedOut:
-      actions = [<Button key="signin" styleType="borderless" onClick={signIn}>Sign In</Button>];
-      break;
+            const itwinId = params.get("itwinId");
+            const imodelId = params.get("imodelId");
+            if (itwinId && imodelId) {
+              return <ITwinJsAppAwaiter itwinJsApp={itwinJsApp} imodelIdentifier={{ itwinId, imodelId }} />;
+            }
 
-    default:
-      actions = [];
-      break;
+            return <PageNotFound />;
+          }
+        }
+      </Route>
+      <Route path="*" component={PageNotFound} />
+    </Switch>
+  );
+}
+
+interface ITwinJsAppData {
+  component: typeof ITwinJsApp;
+  backendApiPromise: Promise<BackendApi>;
+}
+
+function useBackgroundITwinJsAppLoading(): ITwinJsAppData | undefined {
+  const [itwinJsApp, setITwinJsApp] = React.useState<ITwinJsAppData>();
+  const { userManager } = useAuthorization();
+
+  React.useEffect(
+    () => {
+      let disposed = false;
+      void (async () => {
+        const { ITwinJsApp: component, initializeApp } = await import("./ITwinJsApp/ITwinJsApp");
+        if (!disposed) {
+          setITwinJsApp({ component, backendApiPromise: initializeApp(userManager) });
+        }
+      })();
+
+      return () => { disposed = true; };
+    },
+    [userManager],
+  );
+
+  return itwinJsApp;
+}
+
+interface ITwinJsAppAwaiterProps {
+  itwinJsApp: ITwinJsAppData | undefined;
+  imodelIdentifier: IModelIdentifier;
+}
+
+function ITwinJsAppAwaiter(props: ITwinJsAppAwaiterProps): React.ReactElement {
+  // Keep the same identifier object between renders if its properties have not changed
+  const imodelIdentifier = React.useMemo(
+    () => props.imodelIdentifier,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    isSnapshotIModel(props.imodelIdentifier)
+      ? [props.imodelIdentifier]
+      : [props.imodelIdentifier.imodelId, props.imodelIdentifier.itwinId],
+  );
+
+  if (props.itwinJsApp === undefined) {
+    return <LoadingIndicator id="app-loader">Loading...</LoadingIndicator>;
   }
 
-  const userIcon = (state === AuthorizationState.SignedIn && user !== undefined)
-    ? <HeaderUserIcon profile={user.profile} signOut={signOut} />
-    : null;
-
-  return (
-    <Header
-      appLogo={
-        <HeaderLogo logo={<SvgImodelHollow />} onClick={() => history.push("/")}>
-          Presentation Rules Editor
-        </HeaderLogo>
-      }
-      breadcrumbs={<Breadcrumbs />}
-      actions={actions}
-      userIcon={userIcon}
-    />
-  );
-}
-
-interface HeaderUserIconProps {
-  /** User profile. Even though oidc-client types claim that User always has a profile, that is not always the case. */
-  profile: Profile | undefined;
-  signOut: () => void;
-}
-
-function HeaderUserIcon(props: HeaderUserIconProps): React.ReactElement | null {
-  const { profile, signOut } = props;
-  const preferredName = profile?.preferred_username || profile?.name || profile?.nickname;
-  const initials = (profile?.given_name && profile?.family_name)
-    ? profile.given_name[0] + profile.family_name[0]
-    : (preferredName ?? "?").substr(0, 2);
-  const displayName = preferredName ?? "Unknown Account";
-  return (
-    <DropdownMenu menuItems={() => [<MenuItem key="signout" onClick={signOut}>Sign Out</MenuItem>]}>
-      <IconButton styleType="borderless" title="Account Actions">
-        <UserIcon title={displayName} abbreviation={initials} backgroundColor={getUserColor(displayName)} />
-      </IconButton>
-    </DropdownMenu>
-  );
-}
-
-function Breadcrumbs(): React.ReactElement {
-  const appLayout = React.useContext(appLayoutContext);
-  return <HeaderBreadcrumbs items={appLayout.breadcrumbs} />;
-}
-
-function Home(): React.ReactElement {
-  return (
-    <React.Suspense fallback={<LoadingIndicator>Loading...</LoadingIndicator>}>
-      <ITwinJsApp />
-    </React.Suspense>
+  return React.createElement(
+    props.itwinJsApp.component,
+    {
+      backendApiPromise: props.itwinJsApp.backendApiPromise,
+      imodelIdentifier,
+    },
   );
 }

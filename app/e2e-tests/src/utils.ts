@@ -6,12 +6,12 @@ import { ElementHandle, Page } from "playwright";
 
 export async function loadHomepage(page: Page): Promise<void> {
   await page.goto("http://localhost:8080");
-  await page.waitForSelector("text=Select iModel");
+  await page.waitForSelector("text=Presentation Rules Editor");
 }
 
-export async function selectIModel(page: Page): Promise<void> {
-  await page.click("text=Select iModel");
-  await page.click("text=Baytown.bim");
+export async function openTestIModel(page: Page): Promise<void> {
+  await page.goto("http://localhost:8080/open-imodel?snapshot=Baytown.bim");
+  await page.waitForSelector("id=app-loader", { state: "detached" });
 }
 
 export async function getWidget(page: Page, widget: string): Promise<ElementHandle<HTMLElement>> {
@@ -19,10 +19,8 @@ export async function getWidget(page: Page, widget: string): Promise<ElementHand
 }
 
 export async function getEditor(page: Page): Promise<ElementHandle<HTMLElement>> {
-  const element = await page.$("[role=code]");
-  if (element === null) {
-    throw new Error("Failed to get editor element.");
-  }
-
+  const element = await page.waitForSelector("[role=code]");
+  // Wait for syntax highlighting to kick in so that text nodes do not disappear while we interact with them
+  await element.waitForSelector(".mtk20");
   return element;
 }
