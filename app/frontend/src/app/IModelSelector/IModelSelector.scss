@@ -52,12 +52,17 @@
   }
 }
 
-// Neutralize absolute centering that @itwin/imodel-browser-react uses
 .iac-no-results.iac-no-results {
+  // Neutralize absolute centering that @itwin/imodel-browser-react uses
   position: unset;
   left: unset;
   top: unset;
   transform: unset;
+
+  svg {
+    // Make all icons use the same color
+    fill: currentColor;
+  }
 }
 
 .iac-grid-structure.iac-grid-structure {

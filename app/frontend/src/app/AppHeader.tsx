@@ -11,8 +11,8 @@ import {
 } from "@itwin/itwinui-react";
 import { appLayoutContext } from "./AppContext";
 import { AuthorizationState, useAuthorization } from "./Authorization";
+import { OfflineModeExplainer } from "./common/OfflineModeExplainer";
 import { HorizontalStack } from "./utils/CenteredStack";
-import { Explainer } from "./utils/Explainer";
 
 export function AppHeader(): React.ReactElement {
   const { state, user, signIn, signOut } = useAuthorization();
@@ -23,8 +23,7 @@ export function AppHeader(): React.ReactElement {
     case AuthorizationState.Offline:
       actions = [
         <HorizontalStack key="offlinemode">
-          Offline mode
-          <Explainer>To access online imodels, setup a .env file in repository root</Explainer>
+          Offline mode <OfflineModeExplainer />
         </HorizontalStack>,
       ];
       break;

@@ -9,9 +9,10 @@ import { IModelGrid, ProjectFull, ProjectGrid } from "@itwin/imodel-browser-reac
 import { SvgChevronRight, SvgImodel, SvgImodelHollow } from "@itwin/itwinui-icons-react";
 import { Button, MenuItem, ProgressRadial, Text, Tile } from "@itwin/itwinui-react";
 import { AuthorizationState, useAuthorization } from "../Authorization";
+import { OfflineModeExplainer } from "../common/OfflineModeExplainer";
 import { BackendApi } from "../ITwinJsApp/api/BackendApi";
 import { AsyncActionButton } from "../utils/AsyncActionButton";
-import { VerticalStack } from "../utils/CenteredStack";
+import { HorizontalStack, VerticalStack } from "../utils/CenteredStack";
 import { LoadingIndicator } from "../utils/LoadingIndicator";
 
 export interface IModelSelectorProps {
@@ -54,7 +55,7 @@ const OfflineSelector = React.memo((props: OfflineSelectorProps) => {
               <SvgImodel />
             </div>
           }
-          description="Local Snapshot"
+          description="Local snapshot"
           moreOptions={[
             <MenuItem
               key="open-folder"
@@ -222,6 +223,21 @@ const OnlineSelector = React.memo(() => {
   const authContext = useAuthorization();
   const history = useHistory();
   const [selectedProject, setSelectedProject] = React.useState<ProjectFull>();
+
+  if (authContext.state === AuthorizationState.Offline) {
+    return (
+      <IModelSelectorSection title={<Text variant="title">Projects</Text>}>
+        <VerticalStack className="imodel-selector-empty-grid">
+          <h3 className="iui-text-leading iui-text-muted iac-no-results">
+            <SvgImodelHollow />
+            <HorizontalStack>
+              Projects are not available in offline mode <OfflineModeExplainer />
+            </HorizontalStack>
+          </h3>
+        </VerticalStack>
+      </IModelSelectorSection>
+    );
+  }
 
   if (authContext.state === AuthorizationState.Pending) {
     return (
