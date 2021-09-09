@@ -10,9 +10,9 @@ import { SvgChevronRight, SvgImodel, SvgImodelHollow } from "@itwin/itwinui-icon
 import { Button, MenuItem, ProgressRadial, Text, Tile } from "@itwin/itwinui-react";
 import { AuthorizationState, useAuthorization } from "../Authorization";
 import { BackendApi } from "../ITwinJsApp/api/BackendApi";
-import { LoadingIndicator } from "../utils/LoadingIndicator";
-import { VerticalStack } from "../utils/VerticalStack";
 import { AsyncActionButton } from "../utils/AsyncActionButton";
+import { VerticalStack } from "../utils/CenteredStack";
+import { LoadingIndicator } from "../utils/LoadingIndicator";
 
 export interface IModelSelectorProps {
   backendApiPromise: Promise<BackendApi> | undefined;
@@ -226,9 +226,9 @@ const OnlineSelector = React.memo(() => {
   if (authContext.state === AuthorizationState.Pending) {
     return (
       <IModelSelectorSection title={<Text variant="title">Projects</Text>}>
-        <div className="imodel-selector-empty-grid">
+        <VerticalStack className="imodel-selector-empty-grid">
           <LoadingIndicator>Checking signin status...</LoadingIndicator>
-        </div>
+        </VerticalStack>
       </IModelSelectorSection>
     );
   }

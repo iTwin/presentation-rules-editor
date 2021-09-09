@@ -12,7 +12,7 @@ import { PropertyCategory, PropertyData, VirtualizedPropertyGridWithDataProvider
 import { Orientation, useDisposable } from "@bentley/ui-core";
 import { Button } from "@itwin/itwinui-react";
 import { appLayoutContext, AppTab } from "../../AppContext";
-import { VerticalStack } from "../../utils/VerticalStack";
+import { VerticalStack } from "../../utils/CenteredStack";
 import { AutoSizer } from "../utils/AutoSizer";
 
 export interface PropertyGridProps {

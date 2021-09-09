@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { Leading, ProgressRadial } from "@itwin/itwinui-react";
-import { VerticalStack } from "./VerticalStack";
+import { VerticalStack } from "./CenteredStack";
 
 export interface LoadingIndicatorProps {
   /** Element id attribute. */
