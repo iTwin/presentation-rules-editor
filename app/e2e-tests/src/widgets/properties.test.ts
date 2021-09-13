@@ -4,18 +4,15 @@
 *--------------------------------------------------------------------------------------------*/
 import { Page } from "playwright";
 import { page } from "../setup";
-import { getEditor, getWidget, loadHomepage, selectIModel } from "../utils";
+import { getEditor, getWidget, openTestIModel } from "../utils";
 
 describe("properties widget", () => {
   before(async () => {
-    await loadHomepage(page);
+    await openTestIModel(page);
   });
 
   it("displays properties", async () => {
     const propertiesWidget = await getWidget(page, "Properties");
-    await propertiesWidget.waitForSelector("text=Select an iModel to view content.");
-
-    await selectIModel(page);
     await propertiesWidget.waitForSelector("text=Select element(s) to view properties.");
 
     await selectAnyTreeNode(page);
@@ -23,7 +20,6 @@ describe("properties widget", () => {
   });
 
   it("updates properties when ruleset changes", async () => {
-    await selectIModel(page);
     await selectAnyTreeNode(page);
 
     const editor = await getEditor(page);

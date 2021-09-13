@@ -4,12 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { VerticalStack } from "../../utils/VerticalStack";
+import { LoadingIndicator } from "../../utils/LoadingIndicator";
 
-export function SelectIModelHint(): React.ReactElement {
+export function OpeningIModelHint(): React.ReactElement {
   return (
-    <VerticalStack>
-      <span>{IModelApp.i18n.translate("App:imodel-selector.no-imodel-selected")}</span>
-    </VerticalStack>
+    <LoadingIndicator>
+      {IModelApp.i18n.translate("App:opening-imodel")}
+    </LoadingIndicator>
   );
 }

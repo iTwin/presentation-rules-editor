@@ -40,6 +40,7 @@
     "@bentley/ui-imodel-components": "^3.0.0-dev.34",
     "@bentley/ui-ninezone": "3.0.0-dev.34",
     "@bentley/webgl-compatibility": "3.0.0-dev.34",
+    "@itwin/imodel-browser-react": "^0.12.1",
     "@itwin/itwinui-icons-react": "^1.2.0",
     "@itwin/itwinui-illustrations-react": "^1.0.2",
     "@itwin/itwinui-react": "^1.15.0",

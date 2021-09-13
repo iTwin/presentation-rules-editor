@@ -2,6 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import * as dotenv from "dotenv";
 import { rpcInterfaces } from "@app/common";
 import { Logger, LogLevel } from "@bentley/bentleyjs-core";
 import { IModelHost } from "@bentley/imodeljs-backend";
@@ -11,6 +12,9 @@ import {
 } from "@bentley/presentation-backend";
 import { RequestPriority } from "@bentley/presentation-common";
 import { PresentationRulesEditorRpcImpl } from "./PresentationRulesEditorRpcImpl";
+import { SnapshotFileNameResolver } from "./SnapshotFileNameResolver";
+
+dotenv.config({ path: "../../.env" });
 
 void (async () => {
   Logger.initializeToConsole();
@@ -20,6 +24,7 @@ void (async () => {
   Logger.setLevel(PresentationBackendLoggerCategory.Package, LogLevel.Info);
 
   await IModelHost.startup();
+  IModelHost.snapshotFileNameResolver = new SnapshotFileNameResolver();
 
   Presentation.initialize({
     mode: PresentationManagerMode.ReadOnly,

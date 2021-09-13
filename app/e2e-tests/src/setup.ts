@@ -27,6 +27,7 @@ before(async function () {
   // eslint-disable-next-line no-console
   console.log("Preloading homepage...");
   await loadHomepage(page);
+  await page.waitForSelector("text=Baytown.bim");
 });
 
 after(async () => {

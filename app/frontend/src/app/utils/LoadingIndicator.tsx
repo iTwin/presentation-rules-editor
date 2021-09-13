@@ -4,9 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { Leading, ProgressRadial } from "@itwin/itwinui-react";
-import { VerticalStack } from "./VerticalStack";
+import { VerticalStack } from "./CenteredStack";
 
 export interface LoadingIndicatorProps {
+  /** Element id attribute. */
+  id?: string | undefined;
+
   /** Content displayed under the loading animation. */
   children: React.ReactNode;
 }
@@ -14,7 +17,7 @@ export interface LoadingIndicatorProps {
 /** Displays a spinning loading animation with a description. */
 export function LoadingIndicator(props: LoadingIndicatorProps): React.ReactElement {
   return (
-    <VerticalStack>
+    <VerticalStack id={props.id}>
       <ProgressRadial size="large" indeterminate={true} />
       <Leading>{props.children}</Leading>
     </VerticalStack>

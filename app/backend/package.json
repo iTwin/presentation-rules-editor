@@ -33,6 +33,7 @@
     "@bentley/presentation-common": "3.0.0-dev.34",
     "@bentley/telemetry-client": "3.0.0-dev.34",
     "@types/node": "^15.0.0",
+    "dotenv": "^10.0.0",
     "eslint": "^7.30.0",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.4.2"
