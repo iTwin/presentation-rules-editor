@@ -2,14 +2,13 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { UserManager } from "oidc-client";
+import { User, UserManager } from "oidc-client";
 import * as React from "react";
 import { rpcInterfaces } from "@app/common";
-import { BeEvent, Logger, LogLevel } from "@bentley/bentleyjs-core";
+import { AccessToken, BeEvent, Logger, LogLevel } from "@bentley/bentleyjs-core";
 import { FrontendAuthorizationClient } from "@bentley/frontend-authorization-client";
-import { IModelApp, WebViewerApp } from "@bentley/imodeljs-frontend";
-import { AccessToken } from "@bentley/itwin-client";
-import { PresentationUnitSystem } from "@bentley/presentation-common";
+import { BentleyCloudRpcManager } from "@bentley/imodeljs-common";
+import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Presentation } from "@bentley/presentation-frontend";
 import {
   AppNotificationManager, ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework,
@@ -56,20 +55,19 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
   Logger.setLevelDefault(LogLevel.Warning);
 
   const authClient = new AuthClient(userManager);
-  await WebViewerApp.startup({
-    iModelApp: {
-      rpcInterfaces,
-      notifications: new AppNotificationManager(),
-      authorizationClient: authClient,
-      i18n: {
-        // Default template lacks the leading forward slash, which results in relative urls being requested
-        urlTemplate: "/locales/{{lng}}/{{ns}}.json",
-      },
-    },
-    webViewerApp: {
-      rpcParams: { info: { title: "presentation-rules-editor", version: "v1.0" }, uriPrefix: "http://localhost:3001" },
+  await IModelApp.startup({
+    rpcInterfaces,
+    notifications: new AppNotificationManager(),
+    authorizationClient: authClient,
+    i18n: {
+      // Default template lacks the leading forward slash, which results in relative urls being requested
+      urlTemplate: "/locales/{{lng}}/{{ns}}.json",
     },
   });
+  BentleyCloudRpcManager.initializeClient(
+    { info: { title: "presentation-rules-editor", version: "v1.0" }, uriPrefix: "http://localhost:3001" },
+    rpcInterfaces,
+  );
 
   const backendApi = new BackendApi();
   await Promise.all([
@@ -86,9 +84,11 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
 
 async function initializePresentation(appFrontend: BackendApi): Promise<void> {
   await Presentation.initialize({
-    clientId: appFrontend.getClientId(),
-    activeLocale: "en",
-    activeUnitSystem: PresentationUnitSystem.Metric,
+    presentation: {
+      clientId: appFrontend.getClientId(),
+      activeLocale: "en",
+      activeUnitSystem: "metric",
+    },
   });
 
   Presentation.selection.scopes.activeScope = "top-assembly";
@@ -107,7 +107,7 @@ class AuthClient implements FrontendAuthorizationClient {
 
   constructor(private userManager: UserManager) {
     userManager.events.addUserLoaded((user) => {
-      this.accessToken = AccessToken.fromTokenResponseJson(user, user.profile);
+      this.setAccessToken(user);
       if (this.initialized) {
         this.isAuthorized = true;
         this.hasSignedIn = true;
@@ -118,18 +118,18 @@ class AuthClient implements FrontendAuthorizationClient {
 
   public isAuthorized = false;
 
-  public async getAccessToken(): Promise<AccessToken> {
+  public async getAccessToken(): Promise<AccessToken | undefined> {
     if (!this.initialized) {
-      return new AccessToken();
+      return undefined;
     }
 
     if (this.accessToken === undefined) {
       const user = await this.userManager.getUser();
       if (user === null) {
-        return new AccessToken();
+        return undefined;
       }
 
-      this.accessToken = AccessToken.fromTokenResponseJson(user, user.profile);
+      this.setAccessToken(user);
     }
 
     return this.accessToken;
@@ -143,12 +143,16 @@ class AuthClient implements FrontendAuthorizationClient {
 
   public hasSignedIn = false;
 
-  public onAppInitialized() {
+  public onAppInitialized():  void {
     this.initialized = true;
     if (this.accessToken !== undefined) {
       this.isAuthorized = true;
       this.hasSignedIn = true;
       this.onUserStateChanged.raiseEvent(this.accessToken);
     }
+  }
+
+  private setAccessToken(user: User): void {
+    this.accessToken = `${user.token_type} ${user.access_token}`;
   }
 }

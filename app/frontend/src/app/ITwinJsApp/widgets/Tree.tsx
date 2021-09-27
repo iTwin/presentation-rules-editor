@@ -5,7 +5,7 @@
 import * as React from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@bentley/presentation-components";
-import { ControlledTree, SelectionMode, useVisibleTreeNodes } from "@bentley/ui-components";
+import { ControlledTree, SelectionMode, useTreeModel } from "@bentley/ui-components";
 import { AutoSizer } from "../utils/AutoSizer";
 
 export interface TreeProps {
@@ -13,7 +13,7 @@ export interface TreeProps {
   rulesetId: string;
 }
 
-export const Tree: React.FC<TreeProps> = (props) => {
+export function Tree(props: TreeProps): React.ReactElement {
   const { nodeLoader, onItemsRendered } = usePresentationTreeNodeLoader({
     imodel: props.imodel,
     ruleset: props.rulesetId,
@@ -21,7 +21,7 @@ export const Tree: React.FC<TreeProps> = (props) => {
     enableHierarchyAutoUpdate: true,
   });
   const eventHandler = useUnifiedSelectionTreeEventHandler({ nodeLoader });
-  const visibleNodes = useVisibleTreeNodes(nodeLoader.modelSource);
+  const treeModel = useTreeModel(nodeLoader.modelSource);
 
   return (
     <AutoSizer>
@@ -29,8 +29,8 @@ export const Tree: React.FC<TreeProps> = (props) => {
         <ControlledTree
           width={width}
           height={height}
-          visibleNodes={visibleNodes}
-          treeEvents={eventHandler}
+          model={treeModel}
+          eventsHandler={eventHandler}
           nodeLoader={nodeLoader}
           selectionMode={SelectionMode.Extended}
           onItemsRendered={onItemsRendered}
@@ -38,4 +38,4 @@ export const Tree: React.FC<TreeProps> = (props) => {
       }
     </AutoSizer>
   );
-};
+}
