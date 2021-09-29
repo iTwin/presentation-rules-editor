@@ -88,7 +88,7 @@ class CustomFrontstageProvider extends FrontstageProvider {
     this.contentGroup = new ContentGroup({
       id: "root_content_group",
       layout: new ContentLayoutDef({ id: "root_content_group_layout" }),
-      contents: [{ id: "b", classId: ContentControlShim }],
+      contents: [{ id: "root_content_group_content", classId: ContentControlShim }],
     });
   }
 
