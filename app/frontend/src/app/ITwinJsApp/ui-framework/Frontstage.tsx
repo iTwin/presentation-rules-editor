@@ -30,7 +30,8 @@ export const Frontstage: React.FC<FrontstageProps> = (props) => {
     () => {
       void (async () => {
         FrontstageManager.addFrontstageProvider(frontstage);
-        await FrontstageManager.setActiveFrontstageDef(frontstage.frontstageDef);
+        const frontstageDef = await FrontstageManager.getFrontstageDef(frontstage.id);
+        await FrontstageManager.setActiveFrontstageDef(frontstageDef);
       })();
     },
     [frontstage],
@@ -71,8 +72,6 @@ function gatherWidgetContents(props: FrontstageProps): Map<string, ReactElement 
 
 /** Defines a Frontstage with content and widget shims. Content for the shims is provided via React Context API. */
 class CustomFrontstageProvider extends FrontstageProvider {
-  private contentLayoutDef = new ContentLayoutDef({ id: "app_layout" });
-
   private contentGroup: ContentGroup;
   private rightPanel: React.ReactElement<FrameworkStagePanelProps>;
 
@@ -87,16 +86,19 @@ class CustomFrontstageProvider extends FrontstageProvider {
     );
 
     this.contentGroup = new ContentGroup({
-      contents: [{ classId: ContentControlShim }],
+      id: "root_content_group",
+      layout: new ContentLayoutDef({ id: "root_content_group_layout" }),
+      contents: [{ id: "root_content_group_content", classId: ContentControlShim }],
     });
   }
+
+  public readonly id = "main_frontstage_provider";
 
   public get frontstage(): React.ReactElement<FrameworkFrontstageProps> {
     return (
       <FrameworkFrontstage
         id="CustomFrontstage"
         contentGroup={this.contentGroup}
-        defaultLayout={this.contentLayoutDef}
         defaultTool={CoreTools.selectElementCommand}
         rightPanel={this.rightPanel}
       />

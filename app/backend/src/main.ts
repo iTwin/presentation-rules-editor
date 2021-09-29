@@ -10,7 +10,6 @@ import { RpcConfiguration } from "@bentley/imodeljs-common";
 import {
   Presentation, PresentationBackendLoggerCategory, PresentationBackendNativeLoggerCategory, PresentationManagerMode,
 } from "@bentley/presentation-backend";
-import { RequestPriority } from "@bentley/presentation-common";
 import { PresentationRulesEditorRpcImpl } from "./PresentationRulesEditorRpcImpl";
 import { SnapshotFileNameResolver } from "./SnapshotFileNameResolver";
 
@@ -28,7 +27,7 @@ void (async () => {
 
   Presentation.initialize({
     mode: PresentationManagerMode.ReadOnly,
-    taskAllocationsMap: { [RequestPriority.Max]: 1 },
+    workerThreadsCount: 1,
     useMmap: true,
   });
 
