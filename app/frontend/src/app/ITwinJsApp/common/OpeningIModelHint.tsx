@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { LoadingIndicator } from "../../utils/LoadingIndicator";
+import { LoadingIndicator } from "../../common/LoadingIndicator";
 
 export function OpeningIModelHint(): React.ReactElement {
   return (

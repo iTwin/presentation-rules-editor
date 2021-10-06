@@ -11,8 +11,8 @@ import {
 } from "@itwin/itwinui-react";
 import { appLayoutContext } from "./AppContext";
 import { AuthorizationState, useAuthorization } from "./Authorization";
+import { HorizontalStack } from "./common/CenteredStack";
 import { OfflineModeExplainer } from "./common/OfflineModeExplainer";
-import { HorizontalStack } from "./utils/CenteredStack";
 
 export function AppHeader(): React.ReactElement {
   const { state, user, signIn, signOut } = useAuthorization();

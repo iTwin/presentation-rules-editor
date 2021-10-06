@@ -6,8 +6,8 @@ import * as React from "react";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { Ruleset } from "@bentley/presentation-common";
 import { appLayoutContext } from "../../AppContext";
+import { OpeningIModelHint } from "../common/OpeningIModelHint";
 import { TabView, TabViewItem } from "../ui-framework/TabView/TabView";
-import { OpeningIModelHint } from "../utils/OpeningIModelHint";
 import { Editor } from "./editor/Editor";
 import { Viewport } from "./viewport/Viewport";
 

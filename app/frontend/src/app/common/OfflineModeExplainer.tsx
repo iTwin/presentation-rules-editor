@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { Explainer } from "../utils/Explainer";
+import { Explainer } from "./Explainer";
 
 export function OfflineModeExplainer(): React.ReactElement {
   return <Explainer>To access online imodels, setup a .env file in repository root</Explainer>;

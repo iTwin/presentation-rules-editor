@@ -13,8 +13,9 @@ import {
 import { Presentation } from "@bentley/presentation-frontend";
 import { WidgetState } from "@bentley/ui-abstract";
 import { MessageManager, StatusMessageRenderer } from "@bentley/ui-framework";
-import { LoadingIndicator } from "../utils/LoadingIndicator";
+import { LoadingIndicator } from "../common/LoadingIndicator";
 import { BackendApi } from "./api/BackendApi";
+import { OpeningIModelHint } from "./common/OpeningIModelHint";
 import { ContentTabs } from "./content-tabs/ContentTabs";
 import { IModelIdentifier, isSnapshotIModel } from "./IModelIdentifier";
 import { backendApiContext } from "./ITwinJsAppContext";
@@ -22,7 +23,6 @@ import { Frontstage } from "./ui-framework/Frontstage";
 import { StagePanel, StagePanelZone } from "./ui-framework/StagePanel";
 import { UIFramework } from "./ui-framework/UIFramework";
 import { Widget } from "./ui-framework/Widget/Widget";
-import { OpeningIModelHint } from "./utils/OpeningIModelHint";
 import { PropertyGrid } from "./widgets/PropertyGrid";
 import { Tree } from "./widgets/Tree";
 

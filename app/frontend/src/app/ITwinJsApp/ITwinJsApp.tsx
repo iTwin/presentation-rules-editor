@@ -14,7 +14,7 @@ import {
   AppNotificationManager, ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework,
 } from "@bentley/ui-framework";
 import { AuthorizationState, useAuthorization } from "../Authorization";
-import { LoadingIndicator } from "../utils/LoadingIndicator";
+import { LoadingIndicator } from "../common/LoadingIndicator";
 import { BackendApi } from "./api/BackendApi";
 import { IModelIdentifier } from "./IModelIdentifier";
 import { InitializedApp } from "./InitializedApp";

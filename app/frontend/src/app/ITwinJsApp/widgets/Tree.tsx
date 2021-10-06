@@ -6,7 +6,7 @@ import * as React from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@bentley/presentation-components";
 import { ControlledTree, SelectionMode, useTreeModel } from "@bentley/ui-components";
-import { AutoSizer } from "../utils/AutoSizer";
+import { AutoSizer } from "../common/AutoSizer";
 
 export interface TreeProps {
   imodel: IModelConnection;
