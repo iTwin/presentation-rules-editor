@@ -7,12 +7,13 @@ import * as React from "react";
 import { useHistory } from "react-router-dom";
 import { IModelGrid, ProjectFull, ProjectGrid } from "@itwin/imodel-browser-react";
 import { SvgChevronRight, SvgImodel, SvgImodelHollow } from "@itwin/itwinui-icons-react";
-import { Button, MenuItem, ProgressRadial, Text, Tile } from "@itwin/itwinui-react";
+import { Button, MenuItem, ProgressRadial, Text } from "@itwin/itwinui-react";
 import { AuthorizationState, useAuthorization } from "../Authorization";
 import { AsyncActionButton } from "../common/AsyncActionButton";
 import { HorizontalStack, VerticalStack } from "../common/CenteredStack";
 import { LoadingIndicator } from "../common/LoadingIndicator";
 import { OfflineModeExplainer } from "../common/OfflineModeExplainer";
+import { Tile, TileSkeleton } from "../common/Tile";
 import { BackendApi } from "../ITwinJsApp/api/BackendApi";
 
 export interface IModelSelectorProps {
@@ -51,7 +52,7 @@ const OfflineSelector = React.memo((props: OfflineSelectorProps) => {
           name={name}
           thumbnail={
             // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-            <div className="iui-thumbnail iui-picture imodel-selector-thumbnail" onClick={handleOpen}>
+            <div onClick={handleOpen}>
               <SvgImodel />
             </div>
           }
@@ -174,9 +175,9 @@ function OfflineIModelSelectorSection(props: OfflineIModelSelectorSectionProps):
     return (
       <IModelSelectorSection title={props.title}>
         <div className="iac-grid-structure">
-          <SkeletonTile />
-          <SkeletonTile />
-          <SkeletonTile />
+          <TileSkeleton />
+          <TileSkeleton />
+          <TileSkeleton />
         </div>
       </IModelSelectorSection>
     );
@@ -206,16 +207,6 @@ function OfflineIModelSelectorSection(props: OfflineIModelSelectorSectionProps):
         {props.gridItems}
       </div>
     </IModelSelectorSection>
-  );
-}
-
-function SkeletonTile(): React.ReactElement {
-  return (
-    <Tile
-      className="skeleton"
-      name={<div className="iui-skeleton" />}
-      thumbnail={<div className="iui-skeleton" />}
-    />
   );
 }
 
