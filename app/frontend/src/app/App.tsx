@@ -9,13 +9,13 @@ import { Footer } from "@itwin/itwinui-react";
 import { appLayoutContext, AppLayoutContext, AppTab } from "./AppContext";
 import { AppHeader } from "./AppHeader";
 import { createAuthorizationProvider, SignInCallback, SignInSilent, useAuthorization } from "./Authorization";
+import { LoadingIndicator } from "./common/LoadingIndicator";
 import { PageNotFound } from "./errors/PageNotFound";
 import { IModelSelector } from "./IModelSelector/IModelSelector";
 import { BackendApi } from "./ITwinJsApp/api/BackendApi";
 import { IModelIdentifier, isSnapshotIModel } from "./ITwinJsApp/IModelIdentifier";
 import { ITwinJsApp } from "./ITwinJsApp/ITwinJsApp";
 import { applyUrlPrefix } from "./utils/Environment";
-import { LoadingIndicator } from "./utils/LoadingIndicator";
 
 export function App(): React.ReactElement {
   const appLayoutContextValue = useAppLayout();

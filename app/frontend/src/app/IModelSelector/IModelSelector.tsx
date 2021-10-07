@@ -9,11 +9,11 @@ import { IModelGrid, ProjectFull, ProjectGrid } from "@itwin/imodel-browser-reac
 import { SvgChevronRight, SvgImodel, SvgImodelHollow } from "@itwin/itwinui-icons-react";
 import { Button, MenuItem, ProgressRadial, Text, Tile } from "@itwin/itwinui-react";
 import { AuthorizationState, useAuthorization } from "../Authorization";
+import { AsyncActionButton } from "../common/AsyncActionButton";
+import { HorizontalStack, VerticalStack } from "../common/CenteredStack";
+import { LoadingIndicator } from "../common/LoadingIndicator";
 import { OfflineModeExplainer } from "../common/OfflineModeExplainer";
 import { BackendApi } from "../ITwinJsApp/api/BackendApi";
-import { AsyncActionButton } from "../utils/AsyncActionButton";
-import { HorizontalStack, VerticalStack } from "../utils/CenteredStack";
-import { LoadingIndicator } from "../utils/LoadingIndicator";
 
 export interface IModelSelectorProps {
   backendApiPromise: Promise<BackendApi> | undefined;
