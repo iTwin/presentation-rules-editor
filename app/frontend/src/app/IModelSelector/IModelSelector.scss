@@ -34,24 +34,6 @@
   }
 }
 
-.imodel-selector-thumbnail {
-  // Signal that local imodel thumbnail is interactive
-  cursor: pointer;
-}
-
- // Style for placeholder tiles
-.iui-tile.skeleton {
-  .iui-thumbnail .iui-skeleton {
-      width: 100%;
-      height: 100%;
-  }
-
-  .iui-content .iui-skeleton {
-    width: 178px;
-    height: 22px;
-  }
-}
-
 .iac-no-results.iac-no-results {
   // Neutralize absolute centering that @itwin/imodel-browser-react uses
   position: unset;
