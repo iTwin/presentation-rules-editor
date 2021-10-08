@@ -54,6 +54,17 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
   Logger.initializeToConsole();
   Logger.setLevelDefault(LogLevel.Warning);
 
+  const rpcParams = process.env.DEPLOYMENT_TYPE === "web"
+    ? {
+      info: { title: "general-purpose-imodeljs-backend", version: "v3.0" },
+      uriPrefix: "https://api.bentley.com/imodeljs",
+    }
+    : {
+      info: { title: "presentation-rules-editor", version: "v1.0" },
+      uriPrefix: "http://localhost:3001",
+    };
+
+  // const rpcParams = { info: { title: "presentation-rules-editor-local-backend", version: "v1.0" }, uriPrefix: "http://localhost:3001" };
   const authClient = new AuthClient(userManager);
   await IModelApp.startup({
     rpcInterfaces,
@@ -64,10 +75,7 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
       urlTemplate: "/locales/{{lng}}/{{ns}}.json",
     },
   });
-  BentleyCloudRpcManager.initializeClient(
-    { info: { title: "presentation-rules-editor", version: "v1.0" }, uriPrefix: "http://localhost:3001" },
-    rpcInterfaces,
-  );
+  BentleyCloudRpcManager.initializeClient(rpcParams, rpcInterfaces);
 
   const backendApi = new BackendApi();
   await Promise.all([

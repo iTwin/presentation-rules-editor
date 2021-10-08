@@ -11,7 +11,7 @@ import { AppHeader } from "./AppHeader";
 import { createAuthorizationProvider, SignInCallback, SignInSilent, useAuthorization } from "./Authorization";
 import { LoadingIndicator } from "./common/LoadingIndicator";
 import { PageNotFound } from "./errors/PageNotFound";
-import { IModelSelector } from "./IModelSelector/IModelSelector";
+import { Homepage } from "./Homepage/Homepage";
 import { BackendApi } from "./ITwinJsApp/api/BackendApi";
 import { IModelIdentifier, isSnapshotIModel } from "./ITwinJsApp/IModelIdentifier";
 import { ITwinJsApp } from "./ITwinJsApp/ITwinJsApp";
@@ -67,7 +67,7 @@ function Main(): React.ReactElement {
   return (
     <Switch>
       <Route path="/" exact={true}>
-        <IModelSelector backendApiPromise={itwinJsApp?.backendApiPromise} />
+        <Homepage backendApiPromise={itwinJsApp?.backendApiPromise} />
       </Route>
       <Route path="/open-imodel">
         {

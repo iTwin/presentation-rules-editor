@@ -12,28 +12,34 @@ import {
 import { appLayoutContext } from "./AppContext";
 import { AuthorizationState, useAuthorization } from "./Authorization";
 import { HorizontalStack } from "./common/CenteredStack";
+import { GitHubLogoSmall } from "./common/GitHubLogo";
 import { OfflineModeExplainer } from "./common/OfflineModeExplainer";
 
 export function AppHeader(): React.ReactElement {
   const { state, user, signIn, signOut } = useAuthorization();
   const history = useHistory();
 
-  let actions: React.ReactNode[];
+  const actions = [
+    <a
+      key="Repository"
+      className="iui-button iui-borderless iui-button-split-menu"
+      href="https://github.com/iTwin/presentation-rules-editor"
+      title="Source code"
+    >
+      <GitHubLogoSmall />
+    </a>,
+  ];
   switch (state) {
     case AuthorizationState.Offline:
-      actions = [
+      actions.push(
         <HorizontalStack key="offlinemode">
           Offline mode <OfflineModeExplainer />
         </HorizontalStack>,
-      ];
+      );
       break;
 
     case AuthorizationState.SignedOut:
-      actions = [<Button key="signin" styleType="borderless" onClick={signIn}>Sign In</Button>];
-      break;
-
-    default:
-      actions = [];
+      actions.push(<Button key="signin" styleType="borderless" onClick={signIn}>Sign In</Button>);
       break;
   }
 
@@ -43,9 +49,11 @@ export function AppHeader(): React.ReactElement {
 
   return (
     <Header
-      appLogo={<HeaderLogo logo={<SvgImodelHollow />} onClick={() => history.push("/")}>
-        Presentation Rules Editor
-      </HeaderLogo>}
+      appLogo={
+        <HeaderLogo logo={<SvgImodelHollow />} onClick={() => history.push("/")}>
+          Presentation Rules Editor
+        </HeaderLogo>
+      }
       breadcrumbs={<Breadcrumbs />}
       actions={actions}
       userIcon={userIcon} />
