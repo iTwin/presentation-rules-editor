@@ -64,7 +64,6 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
       uriPrefix: "http://localhost:3001",
     };
 
-  // const rpcParams = { info: { title: "presentation-rules-editor-local-backend", version: "v1.0" }, uriPrefix: "http://localhost:3001" };
   const authClient = new AuthClient(userManager);
   await IModelApp.startup({
     rpcInterfaces,
