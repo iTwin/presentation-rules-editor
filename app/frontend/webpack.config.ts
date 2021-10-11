@@ -146,8 +146,8 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
 }
 
 function verifyEnvironmentVariables(isProductionEnvironment: boolean): void {
-  process.env.DEPLOYMENT_TYPE ??= isProductionEnvironment ? "web" : "dev";
-  if (!new Set(["dev", "local", "web"]).has(process.env.DEPLOYMENT_TYPE)) {
+  (process.env.DEPLOYMENT_TYPE as any) ??= isProductionEnvironment ? "web" : "dev";
+  if (!new Set(["dev", "local", "web"] as const).has(process.env.DEPLOYMENT_TYPE)) {
     // eslint-disable-next-line no-console
     console.error(`Error: Environment variable DEPLOYMENT_TYPE has invalid value: '${process.env.DEPLOYMENT_TYPE}'.`);
     process.exit(1);
