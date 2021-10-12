@@ -8,5 +8,5 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
   },
-  "include": ["webpack.config.ts", "src"],
+  "include": ["custom.d.ts", "webpack.config.ts", "src"],
 }

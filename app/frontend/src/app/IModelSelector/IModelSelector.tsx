@@ -11,7 +11,7 @@ import { Button, MenuItem, ProgressRadial, Text } from "@itwin/itwinui-react";
 import { AuthorizationState, useAuthorization } from "../Authorization";
 import { AsyncActionButton } from "../common/AsyncActionButton";
 import { HorizontalStack, VerticalStack } from "../common/CenteredStack";
-import { LoadingIndicator } from "../common/LoadingIndicator";
+import { CheckingSignInStatusHint } from "../common/CheckingSignInStatusHint";
 import { OfflineModeExplainer } from "../common/OfflineModeExplainer";
 import { Tile, TileSkeleton } from "../common/Tile";
 import { BackendApi } from "../ITwinJsApp/api/BackendApi";
@@ -23,7 +23,10 @@ export interface IModelSelectorProps {
 export function IModelSelector(props: IModelSelectorProps): React.ReactElement | null {
   return (
     <div className="imodel-selector-group">
-      <OfflineSelector backendApiPromise={props.backendApiPromise} />
+      {
+        process.env.DEPLOYMENT_TYPE !== "web" &&
+        <OfflineSelector backendApiPromise={props.backendApiPromise} />
+      }
       <OnlineSelector />
     </div>
   );
@@ -234,7 +237,7 @@ const OnlineSelector = React.memo(() => {
     return (
       <IModelSelectorSection title={<Text variant="title">Projects</Text>}>
         <VerticalStack className="imodel-selector-empty-grid">
-          <LoadingIndicator>Checking signin status...</LoadingIndicator>
+          <CheckingSignInStatusHint />
         </VerticalStack>
       </IModelSelectorSection>
     );

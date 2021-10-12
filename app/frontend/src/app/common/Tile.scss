@@ -10,6 +10,11 @@
     box-sizing: border-box;
     cursor: pointer;
   }
+
+  svg {
+    // SVG icon could be slightly cut-off when enlarged by mouse hover
+    overflow: visible;
+  }
 }
 
 .iui-tile.skeleton {
