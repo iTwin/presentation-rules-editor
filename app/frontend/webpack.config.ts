@@ -107,7 +107,6 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
       new HtmlWebpackPlugin({
         title: "Presentation Rules Editor",
         favicon: "public/favicon.ico",
-        preload: "",
       }),
       new FontPreloadPlugin({
         assetPatterns: [/OpenSans-subset\.woff2/],
