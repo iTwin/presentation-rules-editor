@@ -22,3 +22,26 @@ body > div {
 iframe {
   border: 0;
 }
+
+// Fix iTwinUI bug where form elements do not inherit Open Sans font
+button {
+  font-family: inherit;
+}
+
+// Expensive font goes first so that browser considers it last
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: local("Open Sans"), url('/public/fonts/OpenSans-rest.woff2') format('woff2');
+  unicode-range: U+80-FFFF;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: local("Open Sans"), url('/public/fonts/OpenSans-subset.woff2') format('woff2');
+  // Unprintable + latin + digits + punctuation, and © (for the footer)
+  unicode-range: U+00-7F, U+A9;
+}
