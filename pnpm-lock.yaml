@@ -166,6 +166,7 @@ importers:
       source-map-loader: ^2.0.1
       stream-browserify: ^3.0.0
       stream-http: ^3.2.0
+      string-replace-loader: ^3.0.3
       style-loader: ^2.0.0
       terser-webpack-plugin: ^5.2.4
       timers-browserify: ^2.0.12
@@ -231,6 +232,7 @@ importers:
       source-map-loader: 2.0.1_webpack@5.51.1
       stream-browserify: 3.0.0
       stream-http: 3.2.0
+      string-replace-loader: 3.0.3_webpack@5.51.1
       style-loader: 2.0.0_webpack@5.51.1
       terser-webpack-plugin: 5.2.4_webpack@5.51.1
       timers-browserify: 2.0.12
@@ -2397,7 +2399,7 @@ packages:
     dev: false
 
   /balanced-match/1.0.2:
-    resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
+    resolution: {integrity: sha1-6D46fj8wCzTLnYf2FfoMvzV2kO4=}
 
   /base/0.11.2:
     resolution: {integrity: sha1-e95c7RRbbVUakNuH+DxVi060io8=}
@@ -2474,7 +2476,7 @@ packages:
     dev: false
 
   /brace-expansion/1.1.11:
-    resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
+    resolution: {integrity: sha1-PH/L9SnYcibz0vUrlm/1Jx60Qd0=}
     dependencies:
       balanced-match: 1.0.2
       concat-map: 0.0.1
@@ -5675,7 +5677,7 @@ packages:
     dev: false
 
   /loader-utils/2.0.0:
-    resolution: {integrity: sha512-rP4F0h2RaWSvPEkD7BLDFQnvSf+nK+wr3ESUjNTyAGobqrijmW92zc+SO6d4p4B1wh7+B/Jg1mkQe5NYUEHtHQ==}
+    resolution: {integrity: sha1-5MrOW4FtQloWa18JfhDNErNgZLA=}
     engines: {node: '>=8.9.0'}
     dependencies:
       big.js: 5.2.2
@@ -5999,7 +6001,7 @@ packages:
     dev: false
 
   /minimatch/3.0.4:
-    resolution: {integrity: sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA==}
+    resolution: {integrity: sha1-UWbihkV/AzBgZL5Ul+jbsMPTIIM=}
     dependencies:
       brace-expansion: 1.1.11
 
@@ -8188,6 +8190,16 @@ packages:
   /strict-uri-encode/1.1.0:
     resolution: {integrity: sha1-J5siXfHVgrH1TmWt3UNS4Y+qBxM=}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /string-replace-loader/3.0.3_webpack@5.51.1:
+    resolution: {integrity: sha1-vbtMmHnrsdiBhazTSvxPtiM0tDM=}
+    peerDependencies:
+      webpack: ^5
+    dependencies:
+      loader-utils: 2.0.0
+      schema-utils: 3.1.1
+      webpack: 5.51.1_webpack-cli@4.8.0
     dev: false
 
   /string-width/2.1.1:

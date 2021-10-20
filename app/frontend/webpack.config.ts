@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import dotenv from "dotenv";
 import fs from "fs";
-import HtmlWebpackPlugin from "html-webpack-plugin";
+import HtmlWebpackPlugin, { HtmlTagObject } from "html-webpack-plugin";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
 import path from "path";
 import TerserPlugin from "terser-webpack-plugin";
-import { Configuration, DefinePlugin, ProvidePlugin } from "webpack";
+import { Compilation, Compiler, Configuration, DefinePlugin, ProvidePlugin, WebpackPluginInstance } from "webpack";
 
 dotenv.config({ path: "../../.env" });
 
@@ -46,15 +46,38 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
           ],
         },
         {
-          test: /\.(svg|eot|ttf|woff|woff2)$/,
-          type: "asset/inline",
+          test: /\.(eot|ttf|woff|woff2)$/,
+          type: "asset/resource",
+          generator: {
+            filename: "fonts/[name].[hash][ext]",
+          },
+        },
+        {
+          test: /\.svg$/,
+          type: "asset/resource",
+          generator: {
+            filename: "svg/[name].[hash][ext]",
+          },
+        },
+        // Patch iTwin.js frontend package to avoid loading Open Sans font twice
+        {
+          test: /IModeljs-css\.js$/,
+          loader: "string-replace-loader",
+          options: {
+            search: "document.head.prepend(openSans);",
+            replace: "// document.head.prepend(openSans); // Our font loading workaround",
+            // Throw if replacement hasn't been performed at least once
+            strict: true,
+          },
         },
       ],
     },
     output: {
+      clean: true,
       path: path.resolve("./build"),
       publicPath: "/",
-      filename: "[name].[contenthash:8].js",
+      filename: "[name].[contenthash].js",
+      assetModuleFilename: "[name].[hash][ext]",
       devtoolModuleFilenameTemplate: (info: any) => {
         // Source maps are not being found on Windows due to non-Unix path separator
         const fixedPath = path.resolve(info.absoluteResourcePath).replace(/\\/g, "/");
@@ -84,6 +107,9 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
       new HtmlWebpackPlugin({
         title: "Presentation Rules Editor",
         favicon: "public/favicon.ico",
+      }),
+      new FontPreloadPlugin({
+        assetPatterns: [/OpenSans-subset\.woff2/],
       }),
       new ProvidePlugin({
         Buffer: ["buffer", "Buffer"],
@@ -162,4 +188,65 @@ function verifyEnvironmentVariables(isProductionEnvironment: boolean): void {
 will guide you through the setup process.");
     process.exit(1);
   }
+}
+
+/** Hooks into HtmlWebpackPlugin and adds <link> tags to tell the browser to preload specific resources. */
+class FontPreloadPlugin implements WebpackPluginInstance {
+  private assetPatterns: RegExp[];
+  private assetsToPreload: Array<string> = [];
+
+  constructor({ assetPatterns }: { assetPatterns: RegExp[] }) {
+    this.assetPatterns = assetPatterns;
+  }
+
+  public apply(compiler: Compiler): void {
+    compiler.hooks.compilation.tap(FontPreloadPlugin.name, (compilation) => {
+      const publicPath = typeof compilation.outputOptions.publicPath === "function"
+        ? compilation.outputOptions.publicPath({})
+        : compilation.outputOptions.publicPath || "";
+
+      HtmlWebpackPlugin.getHooks(compilation).beforeAssetTagGeneration.tap(FontPreloadPlugin.name, (htmlPluginData) => {
+        // Sort assets to ensure consistent ordering
+        this.assetsToPreload = findAssets(compilation, this.assetPatterns).sort();
+        return htmlPluginData;
+      });
+
+      HtmlWebpackPlugin.getHooks(compilation).alterAssetTags.tap(FontPreloadPlugin.name, (htmlPluginData) => {
+        const linkElements: HtmlTagObject[] = this.assetsToPreload.map(
+          (assetFile) => ({
+            tagName: "link",
+            voidTag: true,
+            attributes: {
+              href: `${publicPath}${assetFile}`,
+              rel: "preload",
+              as: "font",
+              // Because we are preloading a font, we need to set crossorigin attribute. Its value should be empty.
+              crossorigin: "",
+            },
+            meta: {},
+          }),
+        );
+        htmlPluginData.assetTags.styles = [...linkElements, ...htmlPluginData.assetTags.styles];
+        return htmlPluginData;
+      });
+    });
+  }
+}
+
+/** Find assets by testing original file paths with supplied patterns and return list of matched asset identifiers. */
+function findAssets(compilation: Compilation, patterns: RegExp[]): string[] {
+  const result: Array<string> = [];
+  // eslint-disable-next-line guard-for-in
+  for (const asset in compilation.assets) {
+    const sourceFilename = compilation.assetsInfo.get(asset)?.sourceFilename;
+    if (sourceFilename === undefined) {
+      continue;
+    }
+
+    if (patterns.some((pattern) => pattern.test(sourceFilename))) {
+      result.push(asset);
+    }
+  }
+
+  return result;
 }
