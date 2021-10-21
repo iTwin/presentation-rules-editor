@@ -126,7 +126,6 @@ importers:
       '@bentley/presentation-common': 3.0.0-dev.71
       '@bentley/presentation-components': 3.0.0-dev.71
       '@bentley/presentation-frontend': 3.0.0-dev.71
-      '@bentley/presentation-rules-editor': workspace:*
       '@bentley/product-settings-client': 3.0.0-dev.71
       '@bentley/telemetry-client': 3.0.0-dev.71
       '@bentley/ui-abstract': 3.0.0-dev.71
@@ -140,6 +139,7 @@ importers:
       '@itwin/itwinui-icons-react': ^1.2.0
       '@itwin/itwinui-illustrations-react': ^1.0.2
       '@itwin/itwinui-react': ^1.19.0
+      '@itwin/presentation-rules-editor': workspace:*
       '@types/node': ^15.6.0
       '@types/react': ^17.0.0
       '@types/react-dom': ^17.0.0
@@ -192,7 +192,6 @@ importers:
       '@bentley/presentation-common': 3.0.0-dev.71_ee6a9a970c82445781d9847aa9d8bf83
       '@bentley/presentation-components': 3.0.0-dev.71_92efaeb5eb95a49d932f5734bbc3bf3d
       '@bentley/presentation-frontend': 3.0.0-dev.71_42fe9fab4db753d80d6b1e3ac0684506
-      '@bentley/presentation-rules-editor': link:../../components
       '@bentley/product-settings-client': 3.0.0-dev.71_b55daa72b4ee8e03e5954953a47bd529
       '@bentley/telemetry-client': 3.0.0-dev.71_0e982f2bd10afd65aafbd3fe31511673
       '@bentley/ui-abstract': 3.0.0-dev.71_d0bbf31e905288bfa839745543683501
@@ -206,6 +205,7 @@ importers:
       '@itwin/itwinui-icons-react': 1.2.0_react-dom@17.0.2+react@17.0.2
       '@itwin/itwinui-illustrations-react': 1.0.2_react-dom@17.0.2+react@17.0.2
       '@itwin/itwinui-react': 1.19.0_react-dom@17.0.2+react@17.0.2
+      '@itwin/presentation-rules-editor': link:../../components
       '@types/node': 15.6.0
       '@types/react': 17.0.19
       '@types/react-dom': 17.0.9

@@ -1,5 +1,5 @@
 {
-  "name": "@bentley/presentation-rules-editor",
+  "name": "@itwin/presentation-rules-editor",
   "description": "iTwin.js Presentation Rules Editor components",
   "version": "0.0.1",
   "scripts": {
