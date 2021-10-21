@@ -240,14 +240,14 @@ importers:
       jsdom-global: ^3.0.2
       mocha: ^8.3.2
       nyc: ^14.0.0
-      react: ^16.14.0
-      react-dom: ^16.14.0
+      react: ^17.0.0
+      react-dom: ^17.0.0
       sinon: ^10.0.0
       sinon-chai: ^3.6.0
       typescript: ^4.4.2
     devDependencies:
       '@itwin/eslint-plugin': 3.0.0-dev.93_eslint@7.30.0+typescript@4.4.2
-      '@testing-library/react': 11.2.6_react-dom@16.14.0+react@16.14.0
+      '@testing-library/react': 11.2.6_react-dom@17.0.2+react@17.0.2
       '@types/chai': 4.2.17
       '@types/chai-as-promised': 7.1.3
       '@types/mocha': 8.2.2
@@ -262,8 +262,8 @@ importers:
       jsdom-global: 3.0.2_jsdom@16.5.3
       mocha: 8.3.2
       nyc: 14.1.1
-      react: 16.14.0
-      react-dom: 16.14.0_react@16.14.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
       sinon: 10.0.0
       sinon-chai: 3.6.0_chai@4.3.4+sinon@10.0.0
       typescript: 4.4.2
@@ -1302,7 +1302,7 @@ packages:
       pretty-format: 26.6.2
     dev: true
 
-  /@testing-library/react/11.2.6_react-dom@16.14.0+react@16.14.0:
+  /@testing-library/react/11.2.6_react-dom@17.0.2+react@17.0.2:
     resolution: {integrity: sha512-TXMCg0jT8xmuU8BkKMtp8l7Z50Ykew5WNX8UoIKTaLFwKkP2+1YDhOLA2Ga3wY4x29jyntk7EWfum0kjlYiSjQ==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -1311,8 +1311,8 @@ packages:
     dependencies:
       '@babel/runtime': 7.14.0
       '@testing-library/dom': 7.30.4
-      react: 16.14.0
-      react-dom: 16.14.0_react@16.14.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
     dev: true
 
   /@tippyjs/react/4.2.5_react-dom@17.0.2+react@17.0.2:
@@ -6041,18 +6041,6 @@ packages:
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
-  /react-dom/16.14.0_react@16.14.0:
-    resolution: {integrity: sha1-etg47Cmnd/s8dcOhkPZhz5Kri4k=}
-    peerDependencies:
-      react: ^16.14.0
-    dependencies:
-      loose-envify: 1.4.0
-      object-assign: 4.1.1
-      prop-types: 15.7.2
-      react: 16.14.0
-      scheduler: 0.19.1
-    dev: true
-
   /react-dom/17.0.2_react@17.0.2:
     resolution: {integrity: sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==}
     peerDependencies:
@@ -6062,7 +6050,6 @@ packages:
       object-assign: 4.1.1
       react: 17.0.2
       scheduler: 0.20.2
-    dev: false
 
   /react-highlight-words/0.17.0_react@17.0.2:
     resolution: {integrity: sha1-55pVmi3jAVSDOdchYmTWzQ8e7W8=}
@@ -6252,22 +6239,12 @@ packages:
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
-  /react/16.14.0:
-    resolution: {integrity: sha1-lNd23dCqo32j7aj8W2sYpMmjEU0=}
-    engines: {node: '>=0.10.0'}
-    dependencies:
-      loose-envify: 1.4.0
-      object-assign: 4.1.1
-      prop-types: 15.7.2
-    dev: true
-
   /react/17.0.2:
     resolution: {integrity: sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==}
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: false
 
   /read-pkg-up/3.0.0:
     resolution: {integrity: sha1-PtSWaF26D4/hGNBpHcUfSh/5bwc=}
@@ -6577,19 +6554,11 @@ packages:
       xmlchars: 2.2.0
     dev: true
 
-  /scheduler/0.19.1:
-    resolution: {integrity: sha1-Tz4u0sGn1laB9MhU+oxaHMtA8ZY=}
-    dependencies:
-      loose-envify: 1.4.0
-      object-assign: 4.1.1
-    dev: true
-
   /scheduler/0.20.2:
     resolution: {integrity: sha512-2eWfGgAqqWFGqtdMmcL5zCMK1U8KlXv8SQFGglL3CEtd0aDVDWgeF/YoCmvln55m5zSk3J/20hTaSBeSObsQDQ==}
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: false
 
   /schema-utils/3.0.0:
     resolution: {integrity: sha512-6D82/xSzO094ajanoOSbe4YvXWMfn2A//8Y1+MUqFAJul5Bs+yn36xbK9OtNDcRVSBJ9jjeoXftM6CfztsjOAA==}

@@ -34,7 +34,8 @@
   "browser": "lib/index.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {
-    "react": "^16.14.0"
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0"
   },
   "devDependencies": {
     "@itwin/eslint-plugin": "3.0.0-dev.93",
@@ -53,8 +54,8 @@
     "jsdom-global": "^3.0.2",
     "mocha": "^8.3.2",
     "nyc": "^14.0.0",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
     "sinon": "^10.0.0",
     "sinon-chai": "^3.6.0",
     "typescript": "^4.4.2"
