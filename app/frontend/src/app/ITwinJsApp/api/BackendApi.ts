@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { PresentationRulesEditorRpcInterface } from "@app/common";
-import { Guid, Id64, Id64String, Logger } from "@bentley/bentleyjs-core";
-import { IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";
+import { Guid, Id64, Id64String, Logger } from "@itwin/core-bentley";
+import { IModelConnection, SnapshotConnection } from "@itwin/core-frontend";
 
 export class BackendApi {
   public async getAvailableIModels(): Promise<string[]> {

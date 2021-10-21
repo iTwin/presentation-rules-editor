@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { UiSettingsResult, UiSettingsStatus, UiSettingsStorage } from "@bentley/ui-core";
+import { UiSettingsResult, UiSettingsStatus, UiSettingsStorage } from "@itwin/core-react";
 
 /** UI settings storage that is persisted in working memory. Resets after page refresh. */
 export class MemoryUISettingsStorage implements UiSettingsStorage {

@@ -4,12 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import * as dotenv from "dotenv";
 import { rpcInterfaces } from "@app/common";
-import { Logger, LogLevel } from "@bentley/bentleyjs-core";
-import { IModelHost } from "@bentley/imodeljs-backend";
-import { RpcConfiguration } from "@bentley/imodeljs-common";
+import { IModelHost } from "@itwin/core-backend";
+import { Logger, LogLevel } from "@itwin/core-bentley";
+import { RpcConfiguration } from "@itwin/core-common";
 import {
   Presentation, PresentationBackendLoggerCategory, PresentationBackendNativeLoggerCategory, PresentationManagerMode,
-} from "@bentley/presentation-backend";
+} from "@itwin/presentation-backend";
 import { PresentationRulesEditorRpcImpl } from "./PresentationRulesEditorRpcImpl";
 import { SnapshotFileNameResolver } from "./SnapshotFileNameResolver";
 

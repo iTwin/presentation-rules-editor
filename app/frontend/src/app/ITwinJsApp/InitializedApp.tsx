@@ -4,15 +4,15 @@
 *--------------------------------------------------------------------------------------------*/
 import "./InitializedApp.scss";
 import * as React from "react";
+import { WidgetState } from "@itwin/appui-abstract";
+import { MessageManager, StatusMessageRenderer } from "@itwin/appui-react";
 import {
   CheckpointConnection, IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, OutputMessageType,
-} from "@bentley/imodeljs-frontend";
+} from "@itwin/core-frontend";
 import {
   ChildNodeSpecificationTypes, ContentSpecificationTypes, RegisteredRuleset, Ruleset, RuleTypes,
-} from "@bentley/presentation-common";
-import { Presentation } from "@bentley/presentation-frontend";
-import { WidgetState } from "@bentley/ui-abstract";
-import { MessageManager, StatusMessageRenderer } from "@bentley/ui-framework";
+} from "@itwin/presentation-common";
+import { Presentation } from "@itwin/presentation-frontend";
 import { LoadingIndicator } from "../common/LoadingIndicator";
 import { BackendApi } from "./api/BackendApi";
 import { OpeningIModelHint } from "./common/OpeningIModelHint";

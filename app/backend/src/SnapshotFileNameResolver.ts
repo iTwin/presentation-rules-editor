@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as path from "path";
-import { FileNameResolver, IModelHost } from "@bentley/imodeljs-backend";
+import { FileNameResolver, IModelHost } from "@itwin/core-backend";
 
 export class SnapshotFileNameResolver extends FileNameResolver {
   public override tryResolveFileName(inFileName: string): string | undefined {

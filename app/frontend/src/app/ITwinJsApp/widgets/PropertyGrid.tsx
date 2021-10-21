@@ -3,14 +3,14 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
-import { RegisteredRuleset } from "@bentley/presentation-common";
+import { PropertyCategory, PropertyData, VirtualizedPropertyGridWithDataProvider } from "@itwin/components-react";
+import { IModelApp, IModelConnection } from "@itwin/core-frontend";
+import { Orientation, useDisposable } from "@itwin/core-react";
+import { Button } from "@itwin/itwinui-react";
+import { RegisteredRuleset } from "@itwin/presentation-common";
 import {
   PresentationPropertyDataProvider, usePropertyDataProviderWithUnifiedSelection,
-} from "@bentley/presentation-components";
-import { PropertyCategory, PropertyData, VirtualizedPropertyGridWithDataProvider } from "@bentley/ui-components";
-import { Orientation, useDisposable } from "@bentley/ui-core";
-import { Button } from "@itwin/itwinui-react";
+} from "@itwin/presentation-components";
 import { appLayoutContext, AppTab } from "../../AppContext";
 import { VerticalStack } from "../../common/CenteredStack";
 import { AutoSizer } from "../common/AutoSizer";

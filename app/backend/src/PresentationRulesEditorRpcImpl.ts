@@ -5,7 +5,7 @@
 import { execSync } from "child_process";
 import * as fs from "fs";
 import { PresentationRulesEditorRpcInterface } from "@app/common";
-import { RpcManager } from "@bentley/imodeljs-common";
+import { RpcManager } from "@itwin/core-common";
 import { SnapshotFileNameResolver } from "./SnapshotFileNameResolver";
 
 /** The backend implementation of PresentationRulesEditorRpcInterface. */

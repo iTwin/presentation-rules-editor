@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
-import { Ruleset } from "@bentley/presentation-common";
+import { IModelApp, IModelConnection } from "@itwin/core-frontend";
+import { Ruleset } from "@itwin/presentation-common";
 import { appLayoutContext } from "../../AppContext";
 import { OpeningIModelHint } from "../common/OpeningIModelHint";
 import { TabView, TabViewItem } from "../ui-framework/TabView/TabView";

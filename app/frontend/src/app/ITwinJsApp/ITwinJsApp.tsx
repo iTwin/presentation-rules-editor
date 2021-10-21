@@ -5,14 +5,14 @@
 import { User, UserManager } from "oidc-client";
 import * as React from "react";
 import { rpcInterfaces } from "@app/common";
-import { AccessToken, BeEvent, Logger, LogLevel } from "@bentley/bentleyjs-core";
 import { FrontendAuthorizationClient } from "@bentley/frontend-authorization-client";
-import { BentleyCloudRpcManager } from "@bentley/imodeljs-common";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { Presentation } from "@bentley/presentation-frontend";
 import {
   AppNotificationManager, ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework,
-} from "@bentley/ui-framework";
+} from "@itwin/appui-react";
+import { AccessToken, BeEvent, Logger, LogLevel } from "@itwin/core-bentley";
+import { BentleyCloudRpcManager } from "@itwin/core-common";
+import { IModelApp } from "@itwin/core-frontend";
+import { Presentation } from "@itwin/presentation-frontend";
 import { AuthorizationState, useAuthorization } from "../Authorization";
 import { LoadingIndicator } from "../common/LoadingIndicator";
 import { BackendApi } from "./api/BackendApi";

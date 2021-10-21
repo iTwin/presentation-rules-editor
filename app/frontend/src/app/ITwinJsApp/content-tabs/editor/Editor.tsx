@@ -5,11 +5,11 @@
 import "./Editor.scss";
 import * as monaco from "monaco-editor";
 import * as React from "react";
-import { assert } from "@bentley/bentleyjs-core";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { Ruleset } from "@bentley/presentation-common";
-import presentationRulesetSchema from "@bentley/presentation-common/Ruleset.schema.json";
+import { assert } from "@itwin/core-bentley";
+import { IModelApp } from "@itwin/core-frontend";
 import { Button } from "@itwin/itwinui-react";
+import { Ruleset } from "@itwin/presentation-common";
+import presentationRulesetSchema from "@itwin/presentation-common/Ruleset.schema.json";
 import { AutoSizer, Size } from "../../common/AutoSizer";
 
 export interface EditorProps {

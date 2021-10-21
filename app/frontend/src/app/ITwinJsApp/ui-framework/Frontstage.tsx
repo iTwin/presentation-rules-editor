@@ -10,7 +10,7 @@ import {
   FrontstageProps as FrameworkFrontstageProps, FrontstageProvider, StagePanel as FrameworkStagePanel,
   StagePanelProps as FrameworkStagePanelProps, StagePanelZoneProps as FrameworkStagePanelZoneProps,
   StagePanelZonesProps as FrameworkStagePanelZonesProps, UiSettingsProvider, Widget as FrameworkWidget, WidgetControl,
-} from "@bentley/ui-framework";
+} from "@itwin/appui-react";
 import { MemoryUISettingsStorage } from "./MemoryUISettingsStorage";
 import { StagePanelProps, StagePanelZoneProps } from "./StagePanel";
 
