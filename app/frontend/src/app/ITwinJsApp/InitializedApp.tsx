@@ -45,7 +45,7 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
                 <StagePanelZone>
                   <Widget
                     id="TreeWidget"
-                    label={IModelApp.i18n.translate("App:label:tree-widget")}
+                    label={IModelApp.localization.getLocalizedString("App:label:tree-widget")}
                     defaultState={WidgetState.Open}
                   >
                     {
@@ -60,7 +60,7 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
                 <StagePanelZone>
                   <Widget
                     id="PropertyGridWidget"
-                    label={IModelApp.i18n.translate("App:label:property-grid-widget")}
+                    label={IModelApp.localization.getLocalizedString("App:label:property-grid-widget")}
                     defaultState={WidgetState.Open}
                   >
                     {
@@ -188,11 +188,11 @@ function useIModel(backendApi: BackendApi, imodelIdentifier: IModelIdentifier): 
         } catch (error) {
           if (isSnapshotIModel(imodelIdentifier)) {
             displayIModelError(
-              IModelApp.i18n.translate("App:error:imodel-open-local", { imodel: imodelIdentifier }),
+              IModelApp.localization.getLocalizedString("App:error:imodel-open-local", { imodel: imodelIdentifier }),
               error,
             );
           } else {
-            displayIModelError(IModelApp.i18n.translate("App:error:imodel-open-remote"), error);
+            displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-open-remote"), error);
           }
         }
       })();
@@ -206,11 +206,11 @@ function useIModel(backendApi: BackendApi, imodelIdentifier: IModelIdentifier): 
           } catch (error) {
             if (isSnapshotIModel(imodelIdentifier)) {
               displayIModelError(
-                IModelApp.i18n.translate("App:error:imodel-close-local", { imodel: imodelIdentifier }),
+                IModelApp.localization.getLocalizedString("App:error:imodel-close-local", { imodel: imodelIdentifier }),
                 error,
               );
             } else {
-              displayIModelError(IModelApp.i18n.translate("App:error:imodel-close-remote"), error);
+              displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-close-remote"), error);
             }
           }
         })();

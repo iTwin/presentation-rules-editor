@@ -21,10 +21,10 @@ export function ContentTabs(props: ContentTabsProps): React.ReactElement {
   const appLayout = React.useContext(appLayoutContext);
   return (
     <TabView activeTab={appLayout.activeTab} setActiveTab={appLayout.setActiveTab}>
-      <TabViewItem label={IModelApp.i18n.translate("App:label:editor")}>
+      <TabViewItem label={IModelApp.localization.getLocalizedString("App:label:editor")}>
         <Editor initialText={props.defaultRuleset} submitRuleset={props.submitRuleset} />
       </TabViewItem>
-      <TabViewItem label={IModelApp.i18n.translate("App:label:viewport")}>
+      <TabViewItem label={IModelApp.localization.getLocalizedString("App:label:viewport")}>
         {props.imodel !== undefined ? <Viewport imodel={props.imodel} /> : <OpeningIModelHint />}
       </TabViewItem>
     </TabView>

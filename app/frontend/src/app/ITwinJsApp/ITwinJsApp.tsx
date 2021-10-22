@@ -12,6 +12,7 @@ import {
 import { AccessToken, BeEvent, Logger, LogLevel } from "@itwin/core-bentley";
 import { BentleyCloudRpcManager } from "@itwin/core-common";
 import { IModelApp } from "@itwin/core-frontend";
+import { ITwinLocalization } from "@itwin/core-i18n";
 import { Presentation } from "@itwin/presentation-frontend";
 import { AuthorizationState, useAuthorization } from "../Authorization";
 import { LoadingIndicator } from "../common/LoadingIndicator";
@@ -69,16 +70,19 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
     rpcInterfaces,
     notifications: new AppNotificationManager(),
     authorizationClient: authClient,
-    i18n: {
+    localization: new ITwinLocalization({
+      initOptions: {
+        lng: "en",
+      },
       // Default template lacks the leading forward slash, which results in relative urls being requested
       urlTemplate: "/locales/{{lng}}/{{ns}}.json",
-    },
+    }),
   });
   BentleyCloudRpcManager.initializeClient(rpcParams, rpcInterfaces);
 
   const backendApi = new BackendApi();
   await Promise.all([
-    IModelApp.i18n.registerNamespace("App").readFinished,
+    IModelApp.localization.registerNamespace("App"),
     initializePresentation(backendApi),
     initializeUIFramework(),
   ]);
@@ -102,7 +106,7 @@ async function initializePresentation(appFrontend: BackendApi): Promise<void> {
 }
 
 async function initializeUIFramework(): Promise<void> {
-  await UiFramework.initialize(undefined, IModelApp.i18n);
+  await UiFramework.initialize(undefined, IModelApp.localization);
   new StateManager({ frameworkState: FrameworkReducer });
   ConfigurableUiManager.initialize();
 }

@@ -36,11 +36,11 @@ export function PropertyGrid(props: PropertyGridProps): React.ReactElement {
   if (numSelectedElements === 0) {
     return (
       <VerticalStack>
-        <span>{IModelApp.i18n.translate("App:property-grid.no-elements-selected")}</span>
+        <span>{IModelApp.localization.getLocalizedString("App:property-grid.no-elements-selected")}</span>
         {
           appLayout.activeTab !== AppTab.Viewport &&
           <Button onClick={() => appLayout.setActiveTab(AppTab.Viewport)}>
-            {IModelApp.i18n.translate("App:property-grid.show-viewport")}
+            {IModelApp.localization.getLocalizedString("App:property-grid.show-viewport")}
           </Button>
         }
       </VerticalStack>
@@ -48,7 +48,7 @@ export function PropertyGrid(props: PropertyGridProps): React.ReactElement {
   }
 
   if (isOverLimit) {
-    return <VerticalStack>{IModelApp.i18n.translate("App:property-grid.over-limit")}</VerticalStack>;
+    return <VerticalStack>{IModelApp.localization.getLocalizedString("App:property-grid.over-limit")}</VerticalStack>;
   }
 
   return (

@@ -9,7 +9,7 @@ import { LoadingIndicator } from "../../common/LoadingIndicator";
 export function OpeningIModelHint(): React.ReactElement {
   return (
     <LoadingIndicator>
-      {IModelApp.i18n.translate("App:opening-imodel")}
+      {IModelApp.localization.getLocalizedString("App:opening-imodel")}
     </LoadingIndicator>
   );
 }

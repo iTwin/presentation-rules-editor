@@ -36,7 +36,7 @@ function SizedEditor(props: SizedEditorProps): React.ReactElement {
   const buttonWidgetRef = React.useRef<HTMLDivElement>(null);
   const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
 
-  const textSubmitRuleset = IModelApp.i18n.translate("App:submit-ruleset");
+  const textSubmitRuleset = IModelApp.localization.getLocalizedString("App:submit-ruleset");
   const [buttonIsVisible, setButtonIsVisible] = React.useState(false);
 
   const submitRulesetRef = React.useRef(props.submitRuleset);
@@ -142,7 +142,7 @@ function contributeToMonacoEditor(editor: monaco.editor.IStandaloneCodeEditor, s
   if (submitRuleset !== undefined) {
     editor.addAction({
       id: "presentation-rules-editor:submit-ruleset",
-      label: IModelApp.i18n.translate("App:submit-ruleset"),
+      label: IModelApp.localization.getLocalizedString("App:submit-ruleset"),
       keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.Enter],
       run: () => {
         submitRuleset(JSON.parse(editor.getValue()) as Ruleset);

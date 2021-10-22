@@ -123,11 +123,13 @@ importers:
       '@itwin/presentation-frontend': 3.0.0-dev.93
       '@itwin/presentation-rules-editor': workspace:*
       '@itwin/webgl-compatibility': 3.0.0-dev.93
+      '@types/copy-webpack-plugin': ^8.0.1
       '@types/node': ^15.6.0
       '@types/react': ^17.0.0
       '@types/react-dom': ^17.0.0
       '@types/react-router-dom': ^5.1.8
       buffer: ^6.0.3
+      copy-webpack-plugin: ^9.0.1
       css-loader: ^5.2.6
       dotenv: ^10.0.0
       esbuild-loader: ^2.15.1
@@ -186,11 +188,13 @@ importers:
       '@itwin/presentation-frontend': 3.0.0-dev.93_75445b9c6f5bc3172a92b17d406972ee
       '@itwin/presentation-rules-editor': link:../../components
       '@itwin/webgl-compatibility': 3.0.0-dev.93_@itwin+core-bentley@3.0.0-dev.93
+      '@types/copy-webpack-plugin': 8.0.1_webpack-cli@4.8.0
       '@types/node': 15.6.0
       '@types/react': 17.0.19
       '@types/react-dom': 17.0.9
       '@types/react-router-dom': 5.1.8
       buffer: 6.0.3
+      copy-webpack-plugin: 9.0.1_webpack@5.51.1
       css-loader: 5.2.6_webpack@5.51.1
       dotenv: 10.0.0
       esbuild-loader: 2.15.1_webpack@5.51.1
@@ -1339,6 +1343,16 @@ packages:
   /@types/chai/4.2.17:
     resolution: {integrity: sha512-LaiwWNnYuL8xJlQcE91QB2JoswWZckq9A4b+nMPq8dt8AP96727Nb3X4e74u+E3tm4NLTILNI9MYFsyVc30wSA==}
     dev: true
+
+  /@types/copy-webpack-plugin/8.0.1_webpack-cli@4.8.0:
+    resolution: {integrity: sha1-3AqIAe6u89yoEt95PRr8hPuNZI8=}
+    dependencies:
+      '@types/node': 15.6.0
+      tapable: 2.2.0
+      webpack: 5.51.1_webpack-cli@4.8.0
+    transitivePeerDependencies:
+      - webpack-cli
+    dev: false
 
   /@types/eslint-scope/3.7.0:
     resolution: {integrity: sha512-O/ql2+rrCUe2W2rs7wMR+GqPRcgB6UiqN5RhrR5xruFlY7l9YLMn0ZkDzjoHLeiFkR8MCQZVudUuuvQ2BLC9Qw==}
@@ -2567,6 +2581,22 @@ packages:
 
   /cookiejar/2.1.2:
     resolution: {integrity: sha1-3YojVTB1L5iPmghE8/xYnjERElw=}
+    dev: false
+
+  /copy-webpack-plugin/9.0.1_webpack@5.51.1:
+    resolution: {integrity: sha1-tx0hmRWZ9hpO4AunkIe4uiebu1k=}
+    engines: {node: '>= 12.13.0'}
+    peerDependencies:
+      webpack: ^5.1.0
+    dependencies:
+      fast-glob: 3.2.5
+      glob-parent: 6.0.2
+      globby: 11.0.3
+      normalize-path: 3.0.0
+      p-limit: 3.1.0
+      schema-utils: 3.1.1
+      serialize-javascript: 6.0.0
+      webpack: 5.51.1_webpack-cli@4.8.0
     dev: false
 
   /core-js-pure/3.12.1:
@@ -3860,6 +3890,13 @@ packages:
     dependencies:
       is-glob: 4.0.1
 
+  /glob-parent/6.0.2:
+    resolution: {integrity: sha1-bSN9mQg5UMeSkPJMdkKj3poo+eM=}
+    engines: {node: '>=10.13.0'}
+    dependencies:
+      is-glob: 4.0.3
+    dev: false
+
   /glob-to-regexp/0.4.1:
     resolution: {integrity: sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==}
     dev: false
@@ -4412,6 +4449,13 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       is-extglob: 2.1.1
+
+  /is-glob/4.0.3:
+    resolution: {integrity: sha1-ZPYeQsu7LuwgcanawLKLoeZdUIQ=}
+    engines: {node: '>=0.10.0'}
+    dependencies:
+      is-extglob: 2.1.1
+    dev: false
 
   /is-ip/3.1.0:
     resolution: {integrity: sha512-35vd5necO7IitFPjd/YBeqwWnyDWbuLH9ZXQdMfDA8TEo7pv5X8yfrvVO3xbJbLUlERCMvf6X0hTUamQxCYJ9Q==}
@@ -5283,7 +5327,7 @@ packages:
       validate-npm-package-license: 3.0.4
 
   /normalize-path/3.0.0:
-    resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
+    resolution: {integrity: sha1-Dc1p/yOhybEf0JeDFmRKA4ghamU=}
     engines: {node: '>=0.10.0'}
 
   /npm-run-all/4.1.5:
@@ -6951,11 +6995,6 @@ packages:
       xtend: 4.0.2
     dev: false
 
-  /strict-uri-encode/1.1.0:
-    resolution: {integrity: sha1-J5siXfHVgrH1TmWt3UNS4Y+qBxM=}
-    engines: {node: '>=0.10.0'}
-    dev: false
-
   /string-replace-loader/3.0.3_webpack@5.51.1:
     resolution: {integrity: sha1-vbtMmHnrsdiBhazTSvxPtiM0tDM=}
     peerDependencies:
@@ -7157,7 +7196,7 @@ packages:
       strip-ansi: 6.0.0
 
   /tapable/2.2.0:
-    resolution: {integrity: sha512-FBk4IesMV1rBxX2tfiK8RAmogtWn53puLOQlvO8XuwlgxcYbP4mVPS9Ph4aeamSyyVjOl24aYWAuc8U5kCVwMw==}
+    resolution: {integrity: sha1-XDc9KB2cZyhIIT0OA30cQWWrQms=}
     engines: {node: '>=6'}
     dev: false
 
