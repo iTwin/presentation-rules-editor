@@ -2,15 +2,14 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { User, UserManager } from "oidc-client";
+import { UserManager } from "oidc-client";
 import * as React from "react";
 import { rpcInterfaces } from "@app/common";
-import { FrontendAuthorizationClient } from "@bentley/frontend-authorization-client";
 import {
   AppNotificationManager, ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework,
 } from "@itwin/appui-react";
-import { AccessToken, BeEvent, Logger, LogLevel } from "@itwin/core-bentley";
-import { BentleyCloudRpcManager } from "@itwin/core-common";
+import { AccessToken, Logger, LogLevel } from "@itwin/core-bentley";
+import { AuthorizationClient, BentleyCloudRpcManager } from "@itwin/core-common";
 import { IModelApp } from "@itwin/core-frontend";
 import { ITwinLocalization } from "@itwin/core-i18n";
 import { Presentation } from "@itwin/presentation-frontend";
@@ -87,9 +86,6 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
     initializeUIFramework(),
   ]);
 
-  // authorizationClient cannot be in authorized state before the app is initialized. Otherwise, we get Error:
-  // UiFramework not initialized
-  authClient.onAppInitialized();
   return backendApi;
 }
 
@@ -111,59 +107,12 @@ async function initializeUIFramework(): Promise<void> {
   ConfigurableUiManager.initialize();
 }
 
-/** Forwards OAuth access token to IModelApp. */
-class AuthClient implements FrontendAuthorizationClient {
-  private initialized = false;
-  private accessToken: AccessToken | undefined;
+class AuthClient implements AuthorizationClient {
 
-  constructor(private userManager: UserManager) {
-    userManager.events.addUserLoaded((user) => {
-      this.setAccessToken(user);
-      if (this.initialized) {
-        this.isAuthorized = true;
-        this.hasSignedIn = true;
-        this.onUserStateChanged.raiseEvent(this.accessToken);
-      }
-    });
-  }
+  constructor(private userManager: UserManager) { }
 
-  public isAuthorized = false;
-
-  public async getAccessToken(): Promise<AccessToken | undefined> {
-    if (!this.initialized) {
-      return undefined;
-    }
-
-    if (this.accessToken === undefined) {
-      const user = await this.userManager.getUser();
-      if (user === null) {
-        return undefined;
-      }
-
-      this.setAccessToken(user);
-    }
-
-    return this.accessToken;
-  }
-
-  public async signIn(): Promise<void> { }
-
-  public async signOut(): Promise<void> { }
-
-  public onUserStateChanged = new BeEvent<(token: AccessToken | undefined) => void>();
-
-  public hasSignedIn = false;
-
-  public onAppInitialized():  void {
-    this.initialized = true;
-    if (this.accessToken !== undefined) {
-      this.isAuthorized = true;
-      this.hasSignedIn = true;
-      this.onUserStateChanged.raiseEvent(this.accessToken);
-    }
-  }
-
-  private setAccessToken(user: User): void {
-    this.accessToken = `${user.token_type} ${user.access_token}`;
+  public async getAccessToken(): Promise<AccessToken> {
+    const user = await this.userManager.getUser();
+    return user === null ? "" : `${user.token_type} ${user.access_token}`;
   }
 }
