@@ -9,11 +9,11 @@ import * as yargs from "yargs";
 
 const packagesToLink = new Set([
   "@bentley/imodeljs-native",
-  "@bentley/presentation-backend",
-  "@bentley/presentation-common",
-  "@bentley/presentation-components",
-  "@bentley/presentation-frontend",
-  "@bentley/ui-components",
+  "@itwin/presentation-backend",
+  "@itwin/presentation-common",
+  "@itwin/presentation-components",
+  "@itwin/presentation-frontend",
+  "@itwin/components-react",
 ]);
 
 const repositoryRootLocation = getRepositoryRootLocation();
@@ -110,9 +110,9 @@ function findPackageSourceLocations(pathToRepository: string, packageNames: Set<
 
   // @bentley/imodeljs-native does not have a project in imodeljs monorepo
   if (packageNames.has("@bentley/imodeljs-native")) {
-    const backendProject = rushJson.projects.find((project) => project.packageName === "@bentley/imodeljs-backend");
+    const backendProject = rushJson.projects.find((project) => project.packageName === "@itwin/core-backend");
     if (backendProject === undefined) {
-      console.error(`'@bentley/imodeljs-backend' is not present in '${rushJsonPath}'`);
+      console.error(`'@itwin/core-backend' is not present in '${rushJsonPath}'`);
       process.exit(1);
     }
 
@@ -145,10 +145,15 @@ function findPackageDestinationLocations(packageNames: Iterable<string>): Map<st
         process.exit(1);
       }
 
-      const packageNameWithoutScope = originalPackageName.slice(originalPackageName.indexOf("/") + 1);
+      const [packageScope, packageName] = originalPackageName.split("/");
+      if (packageName === undefined) {
+        console.error(`Error: package '${originalPackageName}' is not scoped.`);
+        process.exit(1);
+      }
+
       packageDestinationMap.set(
         originalPackageName,
-        path.resolve(packageStoreFolder, folderName, "node_modules", "@bentley", packageNameWithoutScope),
+        path.resolve(packageStoreFolder, folderName, "node_modules", packageScope, packageName),
       );
     }
   }
