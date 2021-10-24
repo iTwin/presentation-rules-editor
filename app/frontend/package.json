@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@app/common": "workspace:*",
+    "@bentley/imodelhub-client": "3.0.0-dev.93",
     "@bentley/itwin-client": "3.0.0-dev.93",
     "@bentley/product-settings-client": "3.0.0-dev.93",
     "@itwin/appui-abstract": "3.0.0-dev.93",

@@ -5,6 +5,7 @@
 import { UserManager } from "oidc-client";
 import * as React from "react";
 import { rpcInterfaces } from "@app/common";
+import { IModelHubFrontend } from "@bentley/imodelhub-client";
 import {
   AppNotificationManager, ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework,
 } from "@itwin/appui-react";
@@ -15,6 +16,7 @@ import { ITwinLocalization } from "@itwin/core-i18n";
 import { Presentation } from "@itwin/presentation-frontend";
 import { AuthorizationState, useAuthorization } from "../Authorization";
 import { LoadingIndicator } from "../common/LoadingIndicator";
+import { applyUrlPrefix } from "../utils/Environment";
 import { BackendApi } from "./api/BackendApi";
 import { IModelIdentifier } from "./IModelIdentifier";
 import { InitializedApp } from "./InitializedApp";
@@ -56,8 +58,8 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
 
   const rpcParams = process.env.DEPLOYMENT_TYPE === "web"
     ? {
-      info: { title: "general-purpose-imodeljs-backend", version: "v3.0" },
-      uriPrefix: "https://api.bentley.com/imodeljs",
+      info: { title: "visualization", version: "v3.0" },
+      uriPrefix: applyUrlPrefix("https://api.bentley.com/imodeljs"),
     }
     : {
       info: { title: "presentation-rules-editor", version: "v1.0" },
@@ -76,6 +78,7 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
       // Default template lacks the leading forward slash, which results in relative urls being requested
       urlTemplate: "/locales/{{lng}}/{{ns}}.json",
     }),
+    hubAccess: new IModelHubFrontend(),
   });
   BentleyCloudRpcManager.initializeClient(rpcParams, rpcInterfaces);
 
