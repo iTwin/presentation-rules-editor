@@ -16,6 +16,7 @@
   "type": "module",
   "dependencies": {
     "@app/common": "workspace:*",
+    "@bentley/imodelhub-client": "3.0.0-dev.93",
     "@bentley/itwin-client": "3.0.0-dev.93",
     "@itwin/core-backend": "3.0.0-dev.93",
     "@itwin/core-bentley": "3.0.0-dev.93",

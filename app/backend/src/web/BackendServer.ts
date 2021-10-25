@@ -6,7 +6,7 @@ import { BentleyCloudRpcManager, RpcInterfaceDefinition } from "@itwin/core-comm
 import { IModelJsExpressServer } from "@itwin/express-server";
 
 /** Initializes backend Web Server */
-export default async function initialize(rpcs: RpcInterfaceDefinition[]): Promise<void> {
+export async function initialize(rpcs: RpcInterfaceDefinition[]): Promise<void> {
   // Tell BentleyCloudRpcManager which RPC interfaces to handle
   const rpcConfig = BentleyCloudRpcManager.initializeImpl(
     { info: { title: "presentation-rules-editor", version: "v1.0" } },
