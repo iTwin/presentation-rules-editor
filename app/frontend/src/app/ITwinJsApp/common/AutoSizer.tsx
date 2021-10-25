@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { assert } from "@bentley/bentleyjs-core";
+import { assert } from "@itwin/core-bentley";
 
 export interface AutoSizerProps {
   children: (size: Size) => React.ReactElement | null;

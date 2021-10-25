@@ -3,14 +3,14 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
-import { RegisteredRuleset } from "@bentley/presentation-common";
+import { PropertyCategory, PropertyData, VirtualizedPropertyGridWithDataProvider } from "@itwin/components-react";
+import { IModelApp, IModelConnection } from "@itwin/core-frontend";
+import { Orientation, useDisposable } from "@itwin/core-react";
+import { Button } from "@itwin/itwinui-react";
+import { RegisteredRuleset } from "@itwin/presentation-common";
 import {
   PresentationPropertyDataProvider, usePropertyDataProviderWithUnifiedSelection,
-} from "@bentley/presentation-components";
-import { PropertyCategory, PropertyData, VirtualizedPropertyGridWithDataProvider } from "@bentley/ui-components";
-import { Orientation, useDisposable } from "@bentley/ui-core";
-import { Button } from "@itwin/itwinui-react";
+} from "@itwin/presentation-components";
 import { appLayoutContext, AppTab } from "../../AppContext";
 import { VerticalStack } from "../../common/CenteredStack";
 import { AutoSizer } from "../common/AutoSizer";
@@ -36,11 +36,11 @@ export function PropertyGrid(props: PropertyGridProps): React.ReactElement {
   if (numSelectedElements === 0) {
     return (
       <VerticalStack>
-        <span>{IModelApp.i18n.translate("App:property-grid.no-elements-selected")}</span>
+        <span>{IModelApp.localization.getLocalizedString("App:property-grid.no-elements-selected")}</span>
         {
           appLayout.activeTab !== AppTab.Viewport &&
           <Button onClick={() => appLayout.setActiveTab(AppTab.Viewport)}>
-            {IModelApp.i18n.translate("App:property-grid.show-viewport")}
+            {IModelApp.localization.getLocalizedString("App:property-grid.show-viewport")}
           </Button>
         }
       </VerticalStack>
@@ -48,7 +48,7 @@ export function PropertyGrid(props: PropertyGridProps): React.ReactElement {
   }
 
   if (isOverLimit) {
-    return <VerticalStack>{IModelApp.i18n.translate("App:property-grid.over-limit")}</VerticalStack>;
+    return <VerticalStack>{IModelApp.localization.getLocalizedString("App:property-grid.over-limit")}</VerticalStack>;
   }
 
   return (

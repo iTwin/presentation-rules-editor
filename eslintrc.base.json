@@ -1,6 +1,6 @@
 {
   "plugins": [
-    "@bentley"
+    "@itwin"
   ],
   "rules": {
     "@typescript-eslint/no-unused-vars": "off",

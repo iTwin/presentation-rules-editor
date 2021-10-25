@@ -11,15 +11,13 @@
     "lint": "eslint **/*.{ts,tsx}"
   },
   "dependencies": {
-    "@bentley/bentleyjs-core": "3.0.0-dev.71",
-    "@bentley/eslint-plugin": "3.0.0-dev.71",
-    "@bentley/frontend-authorization-client": "3.0.0-dev.71",
-    "@bentley/geometry-core": "3.0.0-dev.71",
-    "@bentley/imodelhub-client": "3.0.0-dev.71",
-    "@bentley/imodeljs-common": "3.0.0-dev.71",
-    "@bentley/imodeljs-quantity": "3.0.0-dev.71",
-    "@bentley/itwin-client": "3.0.0-dev.71",
-    "@bentley/presentation-common": "3.0.0-dev.71",
+    "@bentley/itwin-client": "3.0.0-dev.93",
+    "@itwin/core-bentley": "3.0.0-dev.93",
+    "@itwin/core-common": "3.0.0-dev.93",
+    "@itwin/core-geometry": "3.0.0-dev.93",
+    "@itwin/core-quantity": "3.0.0-dev.93",
+    "@itwin/eslint-plugin": "3.0.0-dev.93",
+    "@itwin/presentation-common": "3.0.0-dev.93",
     "eslint": "^7.30.0",
     "typescript": "^4.4.2"
   }

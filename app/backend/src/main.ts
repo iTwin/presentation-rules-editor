@@ -4,14 +4,16 @@
 *--------------------------------------------------------------------------------------------*/
 import * as dotenv from "dotenv";
 import { rpcInterfaces } from "@app/common";
-import { Logger, LogLevel } from "@bentley/bentleyjs-core";
-import { IModelHost } from "@bentley/imodeljs-backend";
-import { RpcConfiguration } from "@bentley/imodeljs-common";
+import { IModelHubBackend } from "@bentley/imodelhub-client/lib/cjs/imodelhub-node";
+import { IModelHost, IModelHostConfiguration } from "@itwin/core-backend";
+import { Logger, LogLevel } from "@itwin/core-bentley";
+import { RpcConfiguration } from "@itwin/core-common";
 import {
   Presentation, PresentationBackendLoggerCategory, PresentationBackendNativeLoggerCategory, PresentationManagerMode,
-} from "@bentley/presentation-backend";
+} from "@itwin/presentation-backend";
 import { PresentationRulesEditorRpcImpl } from "./PresentationRulesEditorRpcImpl";
 import { SnapshotFileNameResolver } from "./SnapshotFileNameResolver";
+import { initialize } from "./web/BackendServer";
 
 dotenv.config({ path: "../../.env" });
 
@@ -22,7 +24,9 @@ void (async () => {
   Logger.setLevel(PresentationBackendNativeLoggerCategory.ECPresentation, LogLevel.Info);
   Logger.setLevel(PresentationBackendLoggerCategory.Package, LogLevel.Info);
 
-  await IModelHost.startup();
+  const config = new IModelHostConfiguration();
+  config.hubAccess = new IModelHubBackend();
+  await IModelHost.startup(config);
   IModelHost.snapshotFileNameResolver = new SnapshotFileNameResolver();
 
   Presentation.initialize({
@@ -34,8 +38,7 @@ void (async () => {
   RpcConfiguration.developmentMode = true;
   PresentationRulesEditorRpcImpl.register();
 
-  const init = (await import("./web/BackendServer")).default;
-  await init(rpcInterfaces);
+  await initialize(rpcInterfaces);
 
   // eslint-disable-next-line no-console
   console.log(`Backend process id: ${process.pid}`);

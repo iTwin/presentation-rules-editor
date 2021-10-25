@@ -2,6 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import CopyPlugin from "copy-webpack-plugin";
 import dotenv from "dotenv";
 import fs from "fs";
 import HtmlWebpackPlugin, { HtmlTagObject } from "html-webpack-plugin";
@@ -65,7 +66,18 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
           loader: "string-replace-loader",
           options: {
             search: "document.head.prepend(openSans);",
-            replace: "// document.head.prepend(openSans); // Our font loading workaround",
+            replace: "// document.head.prepend(openSans); // Our workaround",
+            // Throw if replacement hasn't been performed at least once
+            strict: true,
+          },
+        },
+        // Patch @itwin/core-common package to remove dependency on Node.js module
+        {
+          test: /BentleyCloudRpcProtocol\.js$/,
+          loader: "string-replace-loader",
+          options: {
+            search: /^import \{ URL \} from "url";$/m,
+            replace: "// import { URL } from \"url\"; // Our workaround",
             // Throw if replacement hasn't been performed at least once
             strict: true,
           },
@@ -77,7 +89,7 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
       path: path.resolve("./build"),
       publicPath: "/",
       filename: "[name].[contenthash].js",
-      assetModuleFilename: "[name].[hash][ext]",
+      assetModuleFilename: "[name].[contenthash][ext]",
       devtoolModuleFilenameTemplate: (info: any) => {
         // Source maps are not being found on Windows due to non-Unix path separator
         const fixedPath = path.resolve(info.absoluteResourcePath).replace(/\\/g, "/");
@@ -121,6 +133,19 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
         ["process.env.IMJS_URL_PREFIX"]: JSON.stringify(process.env.IMJS_URL_PREFIX),
         ["process.env.DEPLOYMENT_TYPE"]: JSON.stringify(process.env.DEPLOYMENT_TYPE),
       }),
+      new CopyPlugin({
+        patterns: [
+          { to: "locales", from: "public/locales" },
+          { to: ".", from: "node_modules/@itwin/appui-abstract/lib/public" },
+          { to: ".", from: "node_modules/@itwin/appui-react/lib/public" },
+          { to: ".", from: "node_modules/@itwin/components-react/lib/public" },
+          { to: ".", from: "node_modules/@itwin/core-frontend/lib/public" },
+          { to: ".", from: "node_modules/@itwin/core-react/lib/public" },
+          { to: ".", from: "node_modules/@itwin/imodel-components-react/lib/public" },
+          { to: ".", from: "node_modules/@itwin/presentation-common/lib/public" },
+          { to: ".", from: "node_modules/@itwin/presentation-components/lib/public" },
+        ],
+      }),
     ],
     resolve: {
       extensions: [".ts", ".tsx", ".js"],
@@ -144,27 +169,9 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
         },
       },
       devServer: {
-        static: [
-          path.join(__dirname, "public/"),
-          path.join(__dirname, "node_modules/@bentley/imodeljs-frontend/lib/public/"),
-          path.join(__dirname, "node_modules/@bentley/presentation-common/lib/public/"),
-          path.join(__dirname, "node_modules/@bentley/presentation-components/lib/public/"),
-          path.join(__dirname, "node_modules/@bentley/ui-abstract/lib/public/"),
-          path.join(__dirname, "node_modules/@bentley/ui-components/lib/public/"),
-          path.join(__dirname, "node_modules/@bentley/ui-core/lib/public/"),
-          path.join(__dirname, "node_modules/@bentley/ui-framework/lib/public/"),
-          path.join(__dirname, "node_modules/@bentley/ui-imodel-components/lib/public/"),
-        ],
         // Always serve /index.html instead of 404 status code
         historyApiFallback: true,
         hot: true,
-        proxy: {
-          // IModelApp always requests PSEUDO localizations in dev builds but we do not have one for the app
-          "/locales/en-PSEUDO": {
-            target: "http://localhost:8080",
-            pathRewrite: { "^/locales/en-PSEUDO": "/locales/en" },
-          },
-        },
       },
       devtool: "cheap-module-source-map",
     }),

@@ -2,19 +2,21 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { User, UserManager } from "oidc-client";
+import { UserManager } from "oidc-client";
 import * as React from "react";
 import { rpcInterfaces } from "@app/common";
-import { AccessToken, BeEvent, Logger, LogLevel } from "@bentley/bentleyjs-core";
-import { FrontendAuthorizationClient } from "@bentley/frontend-authorization-client";
-import { BentleyCloudRpcManager } from "@bentley/imodeljs-common";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { Presentation } from "@bentley/presentation-frontend";
+import { IModelHubFrontend } from "@bentley/imodelhub-client";
 import {
   AppNotificationManager, ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework,
-} from "@bentley/ui-framework";
+} from "@itwin/appui-react";
+import { AccessToken, Logger, LogLevel } from "@itwin/core-bentley";
+import { AuthorizationClient, BentleyCloudRpcManager } from "@itwin/core-common";
+import { IModelApp } from "@itwin/core-frontend";
+import { ITwinLocalization } from "@itwin/core-i18n";
+import { Presentation } from "@itwin/presentation-frontend";
 import { AuthorizationState, useAuthorization } from "../Authorization";
 import { LoadingIndicator } from "../common/LoadingIndicator";
+import { applyUrlPrefix } from "../utils/Environment";
 import { BackendApi } from "./api/BackendApi";
 import { IModelIdentifier } from "./IModelIdentifier";
 import { InitializedApp } from "./InitializedApp";
@@ -56,8 +58,8 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
 
   const rpcParams = process.env.DEPLOYMENT_TYPE === "web"
     ? {
-      info: { title: "general-purpose-imodeljs-backend", version: "v3.0" },
-      uriPrefix: "https://api.bentley.com/imodeljs",
+      info: { title: "visualization", version: "v3.0" },
+      uriPrefix: applyUrlPrefix("https://api.bentley.com/imodeljs"),
     }
     : {
       info: { title: "presentation-rules-editor", version: "v1.0" },
@@ -69,23 +71,24 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
     rpcInterfaces,
     notifications: new AppNotificationManager(),
     authorizationClient: authClient,
-    i18n: {
+    localization: new ITwinLocalization({
+      initOptions: {
+        lng: "en",
+      },
       // Default template lacks the leading forward slash, which results in relative urls being requested
       urlTemplate: "/locales/{{lng}}/{{ns}}.json",
-    },
+    }),
+    hubAccess: new IModelHubFrontend(),
   });
   BentleyCloudRpcManager.initializeClient(rpcParams, rpcInterfaces);
 
   const backendApi = new BackendApi();
   await Promise.all([
-    IModelApp.i18n.registerNamespace("App").readFinished,
+    IModelApp.localization.registerNamespace("App"),
     initializePresentation(backendApi),
     initializeUIFramework(),
   ]);
 
-  // authorizationClient cannot be in authorized state before the app is initialized. Otherwise, we get Error:
-  // UiFramework not initialized
-  authClient.onAppInitialized();
   return backendApi;
 }
 
@@ -102,64 +105,17 @@ async function initializePresentation(appFrontend: BackendApi): Promise<void> {
 }
 
 async function initializeUIFramework(): Promise<void> {
-  await UiFramework.initialize(undefined, IModelApp.i18n);
+  await UiFramework.initialize(undefined, IModelApp.localization);
   new StateManager({ frameworkState: FrameworkReducer });
   ConfigurableUiManager.initialize();
 }
 
-/** Forwards OAuth access token to IModelApp. */
-class AuthClient implements FrontendAuthorizationClient {
-  private initialized = false;
-  private accessToken: AccessToken | undefined;
+class AuthClient implements AuthorizationClient {
 
-  constructor(private userManager: UserManager) {
-    userManager.events.addUserLoaded((user) => {
-      this.setAccessToken(user);
-      if (this.initialized) {
-        this.isAuthorized = true;
-        this.hasSignedIn = true;
-        this.onUserStateChanged.raiseEvent(this.accessToken);
-      }
-    });
-  }
+  constructor(private userManager: UserManager) { }
 
-  public isAuthorized = false;
-
-  public async getAccessToken(): Promise<AccessToken | undefined> {
-    if (!this.initialized) {
-      return undefined;
-    }
-
-    if (this.accessToken === undefined) {
-      const user = await this.userManager.getUser();
-      if (user === null) {
-        return undefined;
-      }
-
-      this.setAccessToken(user);
-    }
-
-    return this.accessToken;
-  }
-
-  public async signIn(): Promise<void> { }
-
-  public async signOut(): Promise<void> { }
-
-  public onUserStateChanged = new BeEvent<(token: AccessToken | undefined) => void>();
-
-  public hasSignedIn = false;
-
-  public onAppInitialized():  void {
-    this.initialized = true;
-    if (this.accessToken !== undefined) {
-      this.isAuthorized = true;
-      this.hasSignedIn = true;
-      this.onUserStateChanged.raiseEvent(this.accessToken);
-    }
-  }
-
-  private setAccessToken(user: User): void {
-    this.accessToken = `${user.token_type} ${user.access_token}`;
+  public async getAccessToken(): Promise<AccessToken> {
+    const user = await this.userManager.getUser();
+    return user === null ? "" : `${user.token_type} ${user.access_token}`;
   }
 }

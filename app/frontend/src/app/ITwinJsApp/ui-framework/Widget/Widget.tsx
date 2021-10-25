@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "./Widget.scss";
 import * as React from "react";
-import { WidgetState } from "@bentley/ui-abstract";
+import { WidgetState } from "@itwin/appui-abstract";
 
 export interface WidgetProps {
   /** Unique widget identifier */

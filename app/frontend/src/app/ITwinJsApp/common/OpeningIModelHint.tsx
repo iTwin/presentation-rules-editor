@@ -3,13 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { IModelApp } from "@itwin/core-frontend";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
 
 export function OpeningIModelHint(): React.ReactElement {
   return (
     <LoadingIndicator>
-      {IModelApp.i18n.translate("App:opening-imodel")}
+      {IModelApp.localization.getLocalizedString("App:opening-imodel")}
     </LoadingIndicator>
   );
 }

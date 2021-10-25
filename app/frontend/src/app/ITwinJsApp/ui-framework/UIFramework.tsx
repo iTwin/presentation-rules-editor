@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { Provider } from "react-redux";
-import { FrameworkVersion, StateManager, ThemeManager } from "@bentley/ui-framework";
+import { FrameworkVersion, StateManager, ThemeManager } from "@itwin/appui-react";
 
 export const UIFramework: React.FC = (props) => {
   return (

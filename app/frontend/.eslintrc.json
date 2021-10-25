@@ -1,9 +1,6 @@
 {
   "extends": [
-    "plugin:@bentley/ui",
+    "plugin:@itwin/ui",
     "../../eslintrc.base.json"
-  ],
-  "plugins": [
-    "@bentley"
   ]
 }

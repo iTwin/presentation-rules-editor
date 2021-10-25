@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { Id64String } from "@bentley/bentleyjs-core";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { viewWithUnifiedSelection } from "@bentley/presentation-components";
-import { ViewportComponent } from "@bentley/ui-imodel-components";
+import { Id64String } from "@itwin/core-bentley";
+import { IModelConnection } from "@itwin/core-frontend";
+import { ViewportComponent } from "@itwin/imodel-components-react";
+import { viewWithUnifiedSelection } from "@itwin/presentation-components";
 import { backendApiContext } from "../../ITwinJsAppContext";
 
 export interface ViewportProps {

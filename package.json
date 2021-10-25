@@ -2,7 +2,7 @@
   "scripts": {
     "start": "run-p --silent start:backend start:frontend",
     "start:qa": "cross-env IMJS_URL_PREFIX=qa- run-p --silent start:backend start:frontend",
-    "start:web": "cross-env DEPLOYMENT_TYPE=web run-p --silent start:backend start:frontend",
+    "start:web": "cross-env DEPLOYMENT_TYPE=web npm run start:frontend",
     "start:backend": "npm run start --prefix ./app/backend",
     "start:frontend": "npm run start --prefix ./app/frontend -- --open",
     "link": "npm run link --prefix ./scripts --",

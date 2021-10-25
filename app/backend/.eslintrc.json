@@ -1,9 +1,6 @@
 {
   "extends": [
-    "plugin:@bentley/imodeljs-recommended",
+    "plugin:@itwin/itwinjs-recommended",
     "../../eslintrc.base.json"
-  ],
-  "plugins": [
-    "@bentley"
   ]
 }

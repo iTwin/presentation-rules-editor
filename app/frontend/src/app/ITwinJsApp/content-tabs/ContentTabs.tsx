@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
-import { Ruleset } from "@bentley/presentation-common";
+import { IModelApp, IModelConnection } from "@itwin/core-frontend";
+import { Ruleset } from "@itwin/presentation-common";
 import { appLayoutContext } from "../../AppContext";
 import { OpeningIModelHint } from "../common/OpeningIModelHint";
 import { TabView, TabViewItem } from "../ui-framework/TabView/TabView";
@@ -21,10 +21,10 @@ export function ContentTabs(props: ContentTabsProps): React.ReactElement {
   const appLayout = React.useContext(appLayoutContext);
   return (
     <TabView activeTab={appLayout.activeTab} setActiveTab={appLayout.setActiveTab}>
-      <TabViewItem label={IModelApp.i18n.translate("App:label:editor")}>
+      <TabViewItem label={IModelApp.localization.getLocalizedString("App:label:editor")}>
         <Editor initialText={props.defaultRuleset} submitRuleset={props.submitRuleset} />
       </TabViewItem>
-      <TabViewItem label={IModelApp.i18n.translate("App:label:viewport")}>
+      <TabViewItem label={IModelApp.localization.getLocalizedString("App:label:viewport")}>
         {props.imodel !== undefined ? <Viewport imodel={props.imodel} /> : <OpeningIModelHint />}
       </TabViewItem>
     </TabView>
