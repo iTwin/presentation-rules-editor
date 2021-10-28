@@ -4,13 +4,17 @@
 *--------------------------------------------------------------------------------------------*/
 import { ElementHandle, Page } from "playwright";
 
+export function getServiceUrl(): string {
+  return process.env.SERVICE_URL ?? "http://localhost:8080";
+}
+
 export async function loadHomepage(page: Page): Promise<void> {
-  await page.goto("http://localhost:8080");
+  await page.goto(getServiceUrl());
   await page.waitForSelector("text=Presentation Rules Editor");
 }
 
 export async function openTestIModel(page: Page): Promise<void> {
-  await page.goto("http://localhost:8080/open-imodel?snapshot=Baytown.bim");
+  await page.goto(`${getServiceUrl()}/open-imodel?snapshot=Baytown.bim`);
   await page.waitForSelector("id=app-loader", { state: "detached" });
 }
 
