@@ -5,7 +5,7 @@
 import { page } from "../setup";
 import { getEditor, getWidget, openTestIModel } from "../utils";
 
-describe("tree widget", () => {
+describe("#local tree widget", () => {
   before(async () => {
     await openTestIModel(page);
   });

@@ -4,15 +4,26 @@
 *--------------------------------------------------------------------------------------------*/
 import { expect } from "chai";
 import { page } from "./setup";
-import { loadHomepage } from "./utils";
+import { getServiceUrl, loadHomepage } from "./utils";
 
-describe("homepage", () => {
+describe("#local homepage", () => {
   before(async () => {
     await loadHomepage(page);
   });
 
   it("allows opening local imodel snapshot", async () => {
     await page.click('.iui-tile:has-text("Baytown.bim") .iui-thumbnail');
-    expect(page.url()).to.be.equal("http://localhost:8080/open-imodel?snapshot=Baytown.bim");
+    expect(page.url()).to.be.equal(`${getServiceUrl()}/open-imodel?snapshot=Baytown.bim`);
+  });
+});
+
+describe("#web homepage", () => {
+  before(async () => {
+    await loadHomepage(page);
+  });
+
+  it("gives options to sign in or clone", async () => {
+    expect(await page.waitForSelector("text=Sign In"));
+    expect(await page.waitForSelector("text=Clone"));
   });
 });

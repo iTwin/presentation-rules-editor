@@ -6,7 +6,7 @@ import { expect } from "chai";
 import { page } from "../setup";
 import { getEditor, getWidget, openTestIModel } from "../utils";
 
-describe("editor", () => {
+describe("#local editor", () => {
   before(async () => {
     await openTestIModel(page);
   });

@@ -16,6 +16,11 @@ before(async function () {
   this.timeout(120000);
   const debug = !!process.env.PWDEBUG;
 
+  if (process.env.WEB_TEST) {
+    await setupBrowser({ debug });
+    return;
+  }
+
   // mocha will hang if teardownDevServers is called before dev server finishes initialising
   await settleAllPromises([
     setupIModel(),
