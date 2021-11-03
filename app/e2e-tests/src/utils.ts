@@ -18,11 +18,11 @@ export async function openTestIModel(page: Page): Promise<void> {
   await page.waitForSelector("id=app-loader", { state: "detached" });
 }
 
-export async function getWidget(page: Page, widget: string): Promise<ElementHandle<HTMLElement>> {
+export async function getWidget(page: Page, widget: string): Promise<ElementHandle<SVGElement | HTMLElement>> {
   return page.waitForSelector(`.nz-widget-widget:has([role=tab][title=${widget}]) .nz-widget-content`);
 }
 
-export async function getEditor(page: Page): Promise<ElementHandle<HTMLElement>> {
+export async function getEditor(page: Page): Promise<ElementHandle<SVGElement | HTMLElement>> {
   const element = await page.waitForSelector("[role=code]");
   // Wait for syntax highlighting to kick in so that text nodes do not disappear while we interact with them
   await element.waitForSelector(".mtk20");

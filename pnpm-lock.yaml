@@ -75,8 +75,10 @@ importers:
   app/e2e-tests:
     specifiers:
       '@itwin/eslint-plugin': 3.0.0-dev.93
+      '@types/chai': ^4.2.17
       '@types/jest-dev-server': ^4.2.0
       '@types/mocha': ^8.2.2
+      chai: ^4.3.4
       cross-env: ^7.0.3
       eslint: ^7.30.0
       jest-dev-server: ^5.0.3
@@ -86,8 +88,10 @@ importers:
       typescript: ^4.4.2
     dependencies:
       '@itwin/eslint-plugin': 3.0.0-dev.93_eslint@7.30.0+typescript@4.4.2
+      '@types/chai': 4.2.17
       '@types/jest-dev-server': 4.2.0
       '@types/mocha': 8.2.2
+      chai: 4.3.4
       cross-env: 7.0.3
       eslint: 7.30.0
       jest-dev-server: 5.0.3
@@ -1387,7 +1391,6 @@ packages:
 
   /@types/chai/4.2.17:
     resolution: {integrity: sha512-LaiwWNnYuL8xJlQcE91QB2JoswWZckq9A4b+nMPq8dt8AP96727Nb3X4e74u+E3tm4NLTILNI9MYFsyVc30wSA==}
-    dev: true
 
   /@types/copy-webpack-plugin/8.0.1_webpack-cli@4.8.0:
     resolution: {integrity: sha1-3AqIAe6u89yoEt95PRr8hPuNZI8=}
@@ -2190,7 +2193,6 @@ packages:
 
   /assertion-error/1.1.0:
     resolution: {integrity: sha512-jgsaNduz+ndvGyFt3uSuWqvy4lCnIJiovtouQN5JZHOKCS2QuhEdbcQHFhVksz2N2U9hXJo8odG7ETyWlEeuDw==}
-    dev: true
 
   /ast-types-flow/0.0.7:
     resolution: {integrity: sha1-9wtzXGvKGlycItmCw+Oef+ujva0=}
@@ -2463,7 +2465,6 @@ packages:
       get-func-name: 2.0.0
       pathval: 1.1.1
       type-detect: 4.0.8
-    dev: true
 
   /chalk/2.4.2:
     resolution: {integrity: sha1-zUJUFnelQzPPVBpJEIwUMrRMlCQ=}
@@ -2482,7 +2483,6 @@ packages:
 
   /check-error/1.0.2:
     resolution: {integrity: sha1-V00xLt2Iu13YkS6Sht1sCu1KrII=}
-    dev: true
 
   /chokidar/3.5.1:
     resolution: {integrity: sha512-9+s+Od+W0VJJzawDma/gvBNQqkTiqYTWLuZoyAsivsI4AaWTCzHG06/TMjsf1cYe9Cb97UCEhjz7HvnPk2p/tw==}
@@ -2931,7 +2931,6 @@ packages:
     engines: {node: '>=0.12'}
     dependencies:
       type-detect: 4.0.8
-    dev: true
 
   /deep-equal/1.1.1:
     resolution: {integrity: sha512-yd9c5AdiqVcR+JjcwUQb9DkhJc8ngNr0MahEBGvDiJw8puWab2yZlh+nkasOnZP+EGTAP6rRp2JzJhJZzvNF8g==}
@@ -3967,7 +3966,6 @@ packages:
 
   /get-func-name/2.0.0:
     resolution: {integrity: sha1-6td0q+5y4gQJQzoGY2YCPdaIekE=}
-    dev: true
 
   /get-intrinsic/1.1.1:
     resolution: {integrity: sha1-FfWfN2+FXERpY5SPDSTNNje0q8Y=}
@@ -5929,7 +5927,6 @@ packages:
 
   /pathval/1.1.1:
     resolution: {integrity: sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==}
-    dev: true
 
   /pend/1.2.0:
     resolution: {integrity: sha1-elfrVQpng/kRUzH89GY9XI4AelA=}
@@ -7668,7 +7665,6 @@ packages:
   /type-detect/4.0.8:
     resolution: {integrity: sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==}
     engines: {node: '>=4'}
-    dev: true
 
   /type-fest/0.20.2:
     resolution: {integrity: sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==}
