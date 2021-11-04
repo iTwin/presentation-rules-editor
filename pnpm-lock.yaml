@@ -83,6 +83,7 @@ importers:
       eslint: ^7.30.0
       jest-dev-server: ^5.0.3
       mocha: ^8.3.2
+      mocha-junit-reporter: ^2.0.2
       playwright: ^1.14.0
       ts-node: ^9.1.1
       typescript: ^4.4.2
@@ -96,6 +97,7 @@ importers:
       eslint: 7.30.0
       jest-dev-server: 5.0.3
       mocha: 8.3.2
+      mocha-junit-reporter: 2.0.2_mocha@8.3.2
       playwright: 1.14.0
       ts-node: 9.1.1_typescript@4.4.2
       typescript: 4.4.2
@@ -2088,6 +2090,11 @@ packages:
     resolution: {integrity: sha512-bY6fj56OUQ0hU1KjFNDQuJFezqKdrAyFdIevADiqrWHwSlbmBNMHp5ak2f40Pm8JTFyM2mqxkG6ngkHO11f/lg==}
     engines: {node: '>=8'}
 
+  /ansi-regex/5.0.1:
+    resolution: {integrity: sha1-CCyyyJyf6GWaMRpTvWpNxTAdswQ=}
+    engines: {node: '>=8'}
+    dev: false
+
   /ansi-regex/6.0.0:
     resolution: {integrity: sha512-tAaOSrWCHF+1Ear1Z4wnJCXA9GGox4K6Ic85a5qalES2aeEwQGr7UC93mwef49536PkCYjzkp0zIxfFvexJ6zQ==}
     engines: {node: '>=12'}
@@ -2481,6 +2488,10 @@ packages:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
+  /charenc/0.0.2:
+    resolution: {integrity: sha1-wKHS86cJLgN3S/qD8UwPxXkKhmc=}
+    dev: false
+
   /check-error/1.0.2:
     resolution: {integrity: sha1-V00xLt2Iu13YkS6Sht1sCu1KrII=}
 
@@ -2772,6 +2783,10 @@ packages:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+
+  /crypt/0.0.2:
+    resolution: {integrity: sha1-iNf/fsDfuG9xPch7u0LQRNPmxBs=}
+    dev: false
 
   /crypto-js/4.0.0:
     resolution: {integrity: sha512-bzHZN8Pn+gS7DQA6n+iUmBfl0hO5DJq++QP3U6uTucDtk/0iGpXd/Gg7CGR0p8tJhofJyaKoWBuJI4eAO00BBg==}
@@ -4562,6 +4577,10 @@ packages:
     dependencies:
       call-bind: 1.0.2
 
+  /is-buffer/1.1.6:
+    resolution: {integrity: sha1-76ouqdqg16suoTqXsritUf776L4=}
+    dev: false
+
   /is-callable/1.2.3:
     resolution: {integrity: sha1-ix4FALc6HXbHBIdjbzaOUZ3o244=}
     engines: {node: '>= 0.4'}
@@ -5189,6 +5208,14 @@ packages:
       p-defer: 1.0.0
     dev: false
 
+  /md5/2.3.0:
+    resolution: {integrity: sha1-w9qaaq46MLRreww0m4exENw72k8=}
+    dependencies:
+      charenc: 0.0.2
+      crypt: 0.0.2
+      is-buffer: 1.1.6
+    dev: false
+
   /media-typer/0.3.0:
     resolution: {integrity: sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=}
     engines: {node: '>= 0.6'}
@@ -5333,7 +5360,7 @@ packages:
     resolution: {integrity: sha1-Z9ZgFLZqaoqqDAg8X9WN9OTpdgI=}
 
   /mkdirp/0.5.5:
-    resolution: {integrity: sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==}
+    resolution: {integrity: sha1-2Rzv1i0UNsoPQWIOJRKI1CAJne8=}
     hasBin: true
     dependencies:
       minimist: 1.2.5
@@ -5342,6 +5369,19 @@ packages:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
     hasBin: true
+    dev: false
+
+  /mocha-junit-reporter/2.0.2_mocha@8.3.2:
+    resolution: {integrity: sha1-1SFom2UdxS9SBEc5+P+zaL5BVzE=}
+    peerDependencies:
+      mocha: '>=2.2.5'
+    dependencies:
+      debug: 2.6.9
+      md5: 2.3.0
+      mkdirp: 0.5.5
+      mocha: 8.3.2
+      strip-ansi: 6.0.1
+      xml: 1.0.1
     dev: false
 
   /mocha/8.3.2:
@@ -7302,6 +7342,13 @@ packages:
     dependencies:
       ansi-regex: 5.0.0
 
+  /strip-ansi/6.0.1:
+    resolution: {integrity: sha1-nibGPTD1NEPpSJSVshBdN7Z6hdk=}
+    engines: {node: '>=8'}
+    dependencies:
+      ansi-regex: 5.0.1
+    dev: false
+
   /strip-ansi/7.0.0:
     resolution: {integrity: sha512-UhDTSnGF1dc0DRbUqr1aXwNoY3RgVkSWG8BrpnuFIxhP57IqbS7IRta2Gfiavds4yCxc5+fEAVVOgBZWnYkvzg==}
     engines: {node: '>=12'}
@@ -8170,6 +8217,10 @@ packages:
   /xml-name-validator/3.0.0:
     resolution: {integrity: sha512-A5CUptxDsvxKJEU3yO6DuWBSJz/qizqzJKOMIfUJHETbBw/sFaDxgd6fxm1ewUaM0jZ444Fc5vC5ROYurg/4Pw==}
     dev: true
+
+  /xml/1.0.1:
+    resolution: {integrity: sha1-eLpyAgApxbyHuKgaPPzXS0ovweU=}
+    dev: false
 
   /xml2js/0.4.23:
     resolution: {integrity: sha1-oMaVFnUkIesqx1juTUzPWIQ+rGY=}

@@ -12,6 +12,7 @@
     "lint": "eslint ./src/**/*.{ts,tsx}",
     "test": "mocha -r ts-node/register --timeout 15000 --exit --grep '#local' '**/*.test.ts'",
     "test:web": "cross-env WEB_TEST=1 mocha -r ts-node/register --timeout 15000 --exit --grep '#web' '**/*.test.ts'",
+    "test:web:junit": "npm run test:web -- --reporter mocha-junit-reporter",
     "test:debug": "cross-env PWDEBUG=1 mocha -r ts-node/register --timeout 99999999 --exit --grep '#local' '**/*.test.ts'",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch"
@@ -26,6 +27,7 @@
     "eslint": "^7.30.0",
     "jest-dev-server": "^5.0.3",
     "mocha": "^8.3.2",
+    "mocha-junit-reporter": "^2.0.2",
     "playwright": "^1.14.0",
     "ts-node": "^9.1.1",
     "typescript": "^4.4.2"
