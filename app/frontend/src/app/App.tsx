@@ -62,6 +62,7 @@ const AuthorizationProvider = process.env.OAUTH_CLIENT_ID
   : (props: React.PropsWithChildren<{}>) => <>{props.children}</>;
 
 function Main(): React.ReactElement {
+  useApplicationInsights();
   const itwinJsApp = useBackgroundITwinJsAppLoading();
 
   return (
@@ -145,5 +146,25 @@ function ITwinJsAppAwaiter(props: ITwinJsAppAwaiterProps): React.ReactElement {
       backendApiPromise: props.itwinJsApp.backendApiPromise,
       imodelIdentifier,
     },
+  );
+}
+
+function useApplicationInsights(): void {
+  React.useEffect(
+    () => {
+      const connectionString = process.env.APPLICATION_INSIGHTS_CONNECTION_STRING;
+      if (connectionString) {
+        void (async () => {
+          try {
+            const { initialize } = await import("./ApplicationInsights");
+            initialize(connectionString);
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.warn("ApplicationInsights initialization failed", error);
+          }
+        })();
+      }
+    },
+    [],
   );
 }
