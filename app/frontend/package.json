@@ -55,7 +55,7 @@
     "dotenv": "^10.0.0",
     "esbuild-loader": "^2.15.1",
     "eslint": "^7.30.0",
-    "html-webpack-plugin": "^5.3.2",
+    "html-webpack-plugin": "^5.5.0",
     "https-browserify": "^1.0.0",
     "monaco-editor": "^0.25.2",
     "monaco-editor-webpack-plugin": "^4.0.0",
