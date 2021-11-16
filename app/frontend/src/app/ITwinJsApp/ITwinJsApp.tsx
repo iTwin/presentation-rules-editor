@@ -105,7 +105,7 @@ async function initializePresentation(appFrontend: BackendApi): Promise<void> {
 }
 
 async function initializeUIFramework(): Promise<void> {
-  await UiFramework.initialize(undefined, IModelApp.localization);
+  await UiFramework.initialize(undefined);
   new StateManager({ frameworkState: FrameworkReducer });
   ConfigurableUiManager.initialize();
 }

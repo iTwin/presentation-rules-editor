@@ -5,11 +5,13 @@
 /* eslint-disable sort-imports */
 import React, { ReactElement } from "react";
 import {
+  AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsManager, UiItemsProvider,
+} from "@itwin/appui-abstract";
+import {
   ConfigurableCreateInfo, ConfigurableUiContent, ContentControl as FrameworkContentControl, ContentGroup,
   ContentLayoutDef, CoreTools, Frontstage as FrameworkFrontstage, FrontstageManager,
   FrontstageProps as FrameworkFrontstageProps, FrontstageProvider, StagePanel as FrameworkStagePanel,
-  StagePanelProps as FrameworkStagePanelProps, StagePanelZoneProps as FrameworkStagePanelZoneProps,
-  StagePanelZonesProps as FrameworkStagePanelZonesProps, UiSettingsProvider, Widget as FrameworkWidget, WidgetControl,
+  StagePanelProps as FrameworkStagePanelProps, UiSettingsProvider,
 } from "@itwin/appui-react";
 import { MemoryUISettingsStorage } from "./MemoryUISettingsStorage";
 import { StagePanelProps, StagePanelZoneProps } from "./StagePanel";
@@ -78,18 +80,16 @@ class CustomFrontstageProvider extends FrontstageProvider {
   constructor(rightPanel: React.ReactElement<StagePanelProps> | undefined) {
     super();
 
-    this.rightPanel = (
-      <FrameworkStagePanel
-        size={rightPanel?.props.size}
-        panelZones={getStagePanelZones(rightPanel?.props.children)}
-      />
-    );
+    this.rightPanel = <FrameworkStagePanel size={rightPanel?.props.size} />;
 
     this.contentGroup = new ContentGroup({
       id: "root_content_group",
       layout: new ContentLayoutDef({ id: "root_content_group_layout" }),
       contents: [{ id: "root_content_group_content", classId: ContentControlShim }],
     });
+
+    const stagePanels = new Map([[StagePanelLocation.Right, createStagePanel(rightPanel?.props.children)]]);
+    UiItemsManager.register(new WidgetsProvider(stagePanels));
   }
 
   public readonly id = "main_frontstage_provider";
@@ -106,35 +106,56 @@ class CustomFrontstageProvider extends FrontstageProvider {
   }
 }
 
-function getStagePanelZones(panelChildren: StagePanelProps["children"]): FrameworkStagePanelZonesProps {
+class WidgetsProvider implements UiItemsProvider {
+  constructor(private stagePanels: StagePanels) { }
+
+  public id = WidgetsProvider.name;
+
+  public provideWidgets(
+    _stageId: string,
+    _stageUsage: string,
+    location: StagePanelLocation,
+    section?: StagePanelSection,
+  ): readonly AbstractWidgetProps[] {
+    if (section === undefined) {
+      return [];
+    }
+
+    return this.stagePanels.get(location)?.get(section) ?? [];
+  }
+}
+
+type StagePanels = Map<StagePanelLocation, Map<StagePanelSection, AbstractWidgetProps[]>>;
+
+function createStagePanel(panelChildren: StagePanelProps["children"]): Map<StagePanelSection, AbstractWidgetProps[]> {
+  const stagePanelSections = new Map<StagePanelSection, AbstractWidgetProps[]>();
   if (panelChildren === undefined) {
-    return {};
+    return stagePanelSections;
   }
 
   const children = React.Children.toArray(panelChildren) as Array<React.ReactElement<StagePanelZoneProps>>;
   if (children.length === 1) {
-    return { middle: makeZone(children[0]) };
+    stagePanelSections.set(StagePanelSection.Middle, makeZone(children[0]));
   } else if (children.length === 2) {
-    return { start: makeZone(children[0]), end: makeZone(children[1]) };
+    stagePanelSections.set(StagePanelSection.Start, makeZone(children[0]));
+    stagePanelSections.set(StagePanelSection.End, makeZone(children[1]));
   } else if (children.length === 3) {
-    return { start: makeZone(children[0]), middle: makeZone(children[1]), end: makeZone(children[2]) };
+    stagePanelSections.set(StagePanelSection.Start, makeZone(children[0]));
+    stagePanelSections.set(StagePanelSection.Middle, makeZone(children[1]));
+    stagePanelSections.set(StagePanelSection.End, makeZone(children[2]));
   }
 
-  return {};
+  return stagePanelSections;
 
-  function makeZone(stagePanelZone?: React.ReactElement<StagePanelZoneProps>): FrameworkStagePanelZoneProps {
-    return {
-      widgets: React.Children.map(
-        stagePanelZone?.props.children,
-        (widget) => (
-          <FrameworkWidget
-            {...widget?.props}
-            applicationData={{ id: widget?.props.id }}
-            control={WidgetControlShim}
-          />
-        ),
-      ) ?? [],
-    };
+  function makeZone(stagePanelZone?: React.ReactElement<StagePanelZoneProps>): AbstractWidgetProps[] {
+    return React.Children.map(
+      stagePanelZone?.props.children ?? [],
+      (widget) => ({
+        ...widget.props,
+        // eslint-disable-next-line react/display-name
+        getWidgetContent: () => <WidgetFromContext id={widget.props.id} />,
+      }),
+    );
   }
 }
 
@@ -153,15 +174,6 @@ const ContentFromContext: React.FC = () => {
 };
 
 const contentControlContext = React.createContext<React.ReactElement | null>(null);
-
-/** Renders WidgetControl content from the context by the given id */
-class WidgetControlShim extends WidgetControl {
-  constructor(info: ConfigurableCreateInfo, options: { id: string }) {
-    super(info, options);
-
-    this.reactNode = <WidgetFromContext id={options.id} />;
-  }
-}
 
 const WidgetFromContext: React.FC<{ id: string }> = (props) => {
   const { widgetContents } = React.useContext(widgetContext);

@@ -4,16 +4,18 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { Provider } from "react-redux";
-import { FrameworkVersion, StateManager, ThemeManager } from "@itwin/appui-react";
+import { StateManager, ThemeManager } from "@itwin/appui-react";
 
-export const UIFramework: React.FC = (props) => {
+export interface UIFrameworkProps {
+  children: React.ReactNode;
+}
+
+export function UIFramework(props: UIFrameworkProps): React.ReactElement {
   return (
     <Provider store={StateManager.store}>
       <ThemeManager>
-        <FrameworkVersion version="2">
-          {props.children}
-        </FrameworkVersion>
+        {props.children}
       </ThemeManager>
     </Provider>
   );
-};
+}
