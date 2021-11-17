@@ -8,7 +8,11 @@ import { getServiceUrl, loadHomepage } from "./utils";
 
 describe("#local homepage", () => {
   before(async () => {
+    // eslint-disable-next-line no-console
+    console.time("Homepage load");
     await loadHomepage(page);
+    // eslint-disable-next-line no-console
+    console.timeEnd("Homepage load");
   });
 
   it("allows opening local imodel snapshot", async () => {

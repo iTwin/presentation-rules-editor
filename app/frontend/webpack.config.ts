@@ -139,7 +139,6 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
       new CopyPlugin({
         patterns: [
           { to: "locales", from: "public/locales" },
-          { to: ".", from: "node_modules/@itwin/appui-abstract/lib/public" },
           { to: ".", from: "node_modules/@itwin/appui-react/lib/public" },
           { to: ".", from: "node_modules/@itwin/components-react/lib/public" },
           { to: ".", from: "node_modules/@itwin/core-frontend/lib/public" },
