@@ -1,13 +1,14 @@
 {
-  "name": "@itwin/presentation-rules-editor",
-  "description": "iTwin.js Presentation Rules Editor components",
+  "name": "@itwin/presentation-rules-editor-react",
+  "description": "iTwin.js Presentation Rules Editor React components",
   "version": "0.0.1",
   "scripts": {
+    "build": "tsc",
+    "test": "mocha -r ts-node/register -r jsdom-global/register -r ignore-styles '**/*.test.ts' '**/*.test.tsx'",
+    "test:cover": "nyc npm test",
     "lint": "eslint **/*.{ts,tsx}",
     "typecheck": "tsc --noEmit --project tsconfig.test.json",
-    "typecheck:watch": "tsc --noEmit --watch --project tsconfig.test.json",
-    "test": "mocha -r ts-node/register -r jsdom-global/register -r ignore-styles **/*.test.ts **/*.test.tsx",
-    "test:cover": "nyc npm test"
+    "typecheck:watch": "tsc --noEmit --watch --project tsconfig.test.json"
   },
   "license": "MIT",
   "private": true,
@@ -17,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/iTwin/presentation-rules-editor/tree/master/components"
+    "url": "https://github.com/iTwin/presentation-rules-editor/tree/master/presentation-rules-editor-react"
   },
   "keywords": [
     "Bentley",
@@ -33,12 +34,48 @@
   },
   "browser": "lib/index.js",
   "types": "lib/index.d.ts",
+  "dependencies": {
+    "@itwin/itwinui-react": "^1.19.0"
+  },
   "peerDependencies": {
+    "@bentley/itwin-client": "3.0.0-dev.121",
+    "@itwin/appui-abstract": "3.0.0-dev.121",
+    "@itwin/components-react": "3.0.0-dev.121",
+    "@itwin/core-bentley": "3.0.0-dev.121",
+    "@itwin/core-common": "3.0.0-dev.121",
+    "@itwin/core-frontend": "3.0.0-dev.121",
+    "@itwin/core-geometry": "3.0.0-dev.121",
+    "@itwin/core-i18n": "3.0.0-dev.121",
+    "@itwin/core-orbitgt": "3.0.0-dev.121",
+    "@itwin/core-quantity": "3.0.0-dev.121",
+    "@itwin/core-react": "3.0.0-dev.121",
+    "@itwin/imodel-components-react": "3.0.0-dev.121",
+    "@itwin/presentation-common": "3.0.0-dev.121",
+    "@itwin/presentation-components": "3.0.0-dev.121",
+    "@itwin/presentation-frontend": "3.0.0-dev.121",
+    "@itwin/webgl-compatibility": "3.0.0-dev.121",
+    "monaco-editor": "^0.25.2",
     "react": "^17.0.0",
     "react-dom": "^17.0.0"
   },
   "devDependencies": {
+    "@bentley/itwin-client": "3.0.0-dev.121",
+    "@itwin/appui-abstract": "3.0.0-dev.121",
+    "@itwin/components-react": "3.0.0-dev.121",
+    "@itwin/core-bentley": "3.0.0-dev.121",
+    "@itwin/core-common": "3.0.0-dev.121",
+    "@itwin/core-frontend": "3.0.0-dev.121",
+    "@itwin/core-geometry": "3.0.0-dev.121",
+    "@itwin/core-i18n": "3.0.0-dev.121",
+    "@itwin/core-orbitgt": "3.0.0-dev.121",
+    "@itwin/core-quantity": "3.0.0-dev.121",
+    "@itwin/core-react": "3.0.0-dev.121",
     "@itwin/eslint-plugin": "3.0.0-dev.121",
+    "@itwin/imodel-components-react": "3.0.0-dev.121",
+    "@itwin/presentation-common": "3.0.0-dev.121",
+    "@itwin/presentation-components": "3.0.0-dev.121",
+    "@itwin/presentation-frontend": "3.0.0-dev.121",
+    "@itwin/webgl-compatibility": "3.0.0-dev.121",
     "@testing-library/react": "^11.2.6",
     "@types/chai": "^4.2.17",
     "@types/chai-as-promised": "^7.1.3",
@@ -53,6 +90,7 @@
     "jsdom": "^16.5.3",
     "jsdom-global": "^3.0.2",
     "mocha": "^8.3.2",
+    "monaco-editor": "^0.25.2",
     "nyc": "^14.0.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
