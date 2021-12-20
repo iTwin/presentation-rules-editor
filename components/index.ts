@@ -4,12 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 export { EditableRuleset } from "./src/EditableRuleset";
 
-export {
-  StandaloneRulesetEditor, useStandaloneRulesetEditor,
-} from "./src/StandaloneRulesetEditor/StandaloneRulesetEditor";
+export { SoloRulesetEditor, useSoloRulesetEditor } from "./src/SoloRulesetEditor/SoloRulesetEditor";
 export type {
-  StandaloneRulesetEditorProps, UseStandaloneRulesetEditorParameters, UseStandaloneRulesetEditorReturnType,
-} from "./src/StandaloneRulesetEditor/StandaloneRulesetEditor";
+  SoloRulesetEditorProps, UseSoloRulesetEditorParameters, UseSoloRulesetEditorReturnType,
+} from "./src/SoloRulesetEditor/SoloRulesetEditor";
 
 export { PropertyGrid } from "./src/PropertyGrid/PropertyGrid";
 export type { PropertyGridProps } from "./src/PropertyGrid/PropertyGrid";

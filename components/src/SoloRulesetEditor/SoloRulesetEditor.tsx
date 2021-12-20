@@ -8,16 +8,16 @@ import { assert, IDisposable } from "@itwin/core-bentley";
 import { Button } from "@itwin/itwinui-react";
 import { Ruleset } from "@itwin/presentation-common";
 import * as presentationRulesetSchema from "@itwin/presentation-common/Ruleset.schema.json";
-import { EditableRuleset } from "../EditableRuleset";
+import { EditableRuleset, EditableRulesetParams } from "../EditableRuleset";
 
 /**
  * Represents a single monaco editor instance that is used to edit an associated ruleset. Instances of this class hold
  * global resources until {@linkcode dispose} method is called.
  */
-export class StandaloneRulesetEditor implements IDisposable {
+export class SoloRulesetEditor implements IDisposable {
   private model: monaco.editor.ITextModel;
 
-  private sharedData: StandaloneEditorSharedData = { savedViewState: undefined };
+  private sharedData: SoloRulesetEditorSharedData = { savedViewState: undefined };
 
   /**
    * Instantiates a monaco editor for a specific {@linkcode EditableRuleset}. If multiple editors are created for the
@@ -28,22 +28,22 @@ export class StandaloneRulesetEditor implements IDisposable {
     const uri = monaco.Uri.parse(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
     this.model = monaco.editor.getModel(uri)
       ?? monaco.editor.createModel(JSON.stringify(editableRuleset.rulesetContent, undefined, 2), "json", uri);
-    this.Component = createStandaloneEditor(this.model, editableRuleset, this.sharedData);
+    this.Component = createEditor(this.model, editableRuleset, this.sharedData);
   }
 
   /** React component that renders a monaco editor for the associated {@linkcode EditableRuleset}. */
-  public Component: (props: StandaloneRulesetEditorProps) => React.ReactElement;
+  public Component: (props: SoloRulesetEditorProps) => React.ReactElement;
 
   public dispose(): void {
     this.model.dispose();
   }
 }
 
-interface StandaloneEditorSharedData {
+interface SoloRulesetEditorSharedData {
   savedViewState: monaco.editor.ICodeEditorViewState | undefined;
 }
 
-export interface StandaloneRulesetEditorProps {
+export interface SoloRulesetEditorProps {
   /** Width of the editor element. */
   width: number;
 
@@ -51,13 +51,12 @@ export interface StandaloneRulesetEditorProps {
   height: number;
 }
 
-/** A single ruleset editor that manages its own  */
-function createStandaloneEditor(
+function createEditor(
   model: monaco.editor.ITextModel,
   ruleset: EditableRuleset,
-  sharedData: StandaloneEditorSharedData,
-): (props: StandaloneRulesetEditorProps) => React.ReactElement {
-  return function StandaloneEditorComponent(props: StandaloneRulesetEditorProps): React.ReactElement {
+  sharedData: SoloRulesetEditorSharedData,
+): (props: SoloRulesetEditorProps) => React.ReactElement {
+  return function StandaloneEditorComponent(props: SoloRulesetEditorProps): React.ReactElement {
     const divRef = React.useRef<HTMLDivElement>(null);
     const buttonWidgetRef = React.useRef<HTMLDivElement>(null);
     const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
@@ -84,15 +83,15 @@ function createStandaloneEditor(
           editorRef.current.focus();
         }
 
-        // editorRef.current.addOverlayWidget({
-        //   getId: () => "widget-submit-button",
-        //   getDomNode: () => {
-        //     assert(buttonWidgetRef.current !== null);
-        //     setButtonIsVisible(true);
-        //     return buttonWidgetRef.current;
-        //   },
-        //   getPosition: () => ({ preference: monaco.editor.OverlayWidgetPositionPreference.TOP_RIGHT_CORNER }),
-        // });
+        editorRef.current.addOverlayWidget({
+          getId: () => "presentation-rules-editor:submit-ruleset-widget",
+          getDomNode: () => {
+            assert(buttonWidgetRef.current !== null);
+            setButtonIsVisible(true);
+            return buttonWidgetRef.current;
+          },
+          getPosition: () => ({ preference: monaco.editor.OverlayWidgetPositionPreference.TOP_RIGHT_CORNER }),
+        });
 
         contributeToMonacoEditor(
           monaco,
@@ -135,7 +134,6 @@ function createStandaloneEditor(
 
 interface ContributionSettings {
   submitRuleset?: (ruleset: Ruleset) => void | undefined;
-  fileMatch?: string[] | undefined;
 }
 
 function contributeToMonacoEditor(
@@ -148,8 +146,8 @@ function contributeToMonacoEditor(
       validate: true,
       schemas: [{
         // Has to be a URI string, but not necessarily pointing to an existing resource
-        uri: monacoModule.Uri.file("@itwin/presentation-rules-editor/Ruleset.schema.json").toString(),
-        fileMatch: settings.fileMatch ?? ["*.ruleset.json"],
+        uri: monacoModule.Uri.file("presentation-rules-editor://schemas/Ruleset.schema.json").toString(),
+        fileMatch: ["*.ruleset.json"],
         schema: presentationRulesetSchema,
       }],
       enableSchemaRequest: false,
@@ -174,23 +172,23 @@ function contributeToMonacoEditor(
 
 let initialized = false;
 
-export interface UseStandaloneRulesetEditorReturnType {
+export interface UseSoloRulesetEditorReturnType {
   editableRuleset: EditableRuleset;
-  rulesetEditor: StandaloneRulesetEditor;
+  rulesetEditor: SoloRulesetEditor;
 }
 
-export interface UseStandaloneRulesetEditorParameters {
+export interface UseSoloRulesetEditorParameters {
   initialRuleset: Ruleset;
 }
 
-/** Instantiates and manages the lifetimes of {@linkcode EditableRuleset} and {@linkcode StandaloneRulesetEditor}. */
-export function useStandaloneRulesetEditor(
-  params: UseStandaloneRulesetEditorParameters,
-): UseStandaloneRulesetEditorReturnType {
-  const result = React.useRef(undefined as unknown as UseStandaloneRulesetEditorReturnType);
+/** Instantiates and manages the lifetimes of {@linkcode EditableRuleset} and {@linkcode SoloRulesetEditor}. */
+export function useSoloRulesetEditor(
+  initialEditableRulesetParams: EditableRulesetParams,
+): UseSoloRulesetEditorReturnType {
+  const result = React.useRef(undefined as unknown as UseSoloRulesetEditorReturnType);
   if (result.current === undefined) {
-    const editableRuleset = new EditableRuleset(params);
-    const rulesetEditor = new StandaloneRulesetEditor(editableRuleset);
+    const editableRuleset = new EditableRuleset(initialEditableRulesetParams);
+    const rulesetEditor = new SoloRulesetEditor(editableRuleset);
     result.current = { editableRuleset, rulesetEditor };
   }
 
