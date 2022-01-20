@@ -18,7 +18,7 @@
     "typecheck:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
-    "@itwin/eslint-plugin": "3.0.0-dev.121",
+    "@itwin/eslint-plugin": "3.0.0-dev.154",
     "@types/chai": "^4.2.17",
     "@types/jest-dev-server": "^4.2.0",
     "@types/mocha": "^8.2.2",

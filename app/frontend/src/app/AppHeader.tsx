@@ -26,7 +26,7 @@ export function AppHeader(): React.ReactElement {
       href="https://github.com/iTwin/presentation-rules-editor"
       title="Source code"
     >
-      <GitHubLogoSmall />
+      <GitHubLogoSmall className="iui-button-icon" />
     </a>,
   ];
   switch (state) {

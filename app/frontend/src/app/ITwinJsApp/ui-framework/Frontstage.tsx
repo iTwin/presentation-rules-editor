@@ -11,9 +11,8 @@ import {
   ConfigurableCreateInfo, ConfigurableUiContent, ContentControl as FrameworkContentControl, ContentGroup,
   ContentLayoutDef, CoreTools, Frontstage as FrameworkFrontstage, FrontstageManager,
   FrontstageProps as FrameworkFrontstageProps, FrontstageProvider, StagePanel as FrameworkStagePanel,
-  StagePanelProps as FrameworkStagePanelProps, UiSettingsProvider,
+  StagePanelProps as FrameworkStagePanelProps,
 } from "@itwin/appui-react";
-import { MemoryUISettingsStorage } from "./MemoryUISettingsStorage";
 import { StagePanelProps, StagePanelZoneProps } from "./StagePanel";
 
 export interface FrontstageProps {
@@ -25,28 +24,25 @@ export interface FrontstageProps {
 
 /** Displays ui-framework Frontstage */
 export const Frontstage: React.FC<FrontstageProps> = (props) => {
-  const [frontstage] = React.useState(() => new CustomFrontstageProvider(props.rightPanel));
-  const [settingsStorage] = React.useState(new MemoryUISettingsStorage());
-
   React.useEffect(
     () => {
       void (async () => {
+        const frontstage = new CustomFrontstageProvider(props.rightPanel);
         FrontstageManager.addFrontstageProvider(frontstage);
         const frontstageDef = await FrontstageManager.getFrontstageDef(frontstage.id);
         await FrontstageManager.setActiveFrontstageDef(frontstageDef);
       })();
     },
-    [frontstage],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
   return (
-    <UiSettingsProvider settingsStorage={settingsStorage}>
-      <contentControlContext.Provider value={props.children}>
-        <widgetContext.Provider value={{ widgetContents: gatherWidgetContents(props) }}>
-          <ConfigurableUiContent />
-        </widgetContext.Provider>
-      </contentControlContext.Provider>
-    </UiSettingsProvider>
+    <contentControlContext.Provider value={props.children}>
+      <widgetContext.Provider value={{ widgetContents: gatherWidgetContents(props) }}>
+        <ConfigurableUiContent />
+      </widgetContext.Provider>
+    </contentControlContext.Provider>
   );
 };
 
