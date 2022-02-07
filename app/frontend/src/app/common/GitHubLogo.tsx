@@ -5,10 +5,14 @@
 import "./GitHubLogo.scss";
 import * as React from "react";
 
+export interface GitHubLogoSmallProps {
+  className?: string | undefined;
+}
+
 /** GitHub logo (for 16–120px). */
-export function GitHubLogoSmall(): React.ReactElement {
+export function GitHubLogoSmall(props: GitHubLogoSmallProps): React.ReactElement {
   return (
-    <svg className="github-logo iui-icon" viewBox="0 0 44 44">
+    <svg className={`github-logo ${props.className}`} viewBox="0 0 44 44">
       <path
         d="M21.998.009C9.85.009 0 9.859 0 22.009c0 9.72 6.303 17.966 15.045 20.876 1.101.202 1.502-.478 1.502-1.061 0
 -.522-.019-1.906-.03-3.741-6.119 1.329-7.41-2.95-7.41-2.95-1-2.54-2.443-3.217-2.443-3.217-1.998-1.365.15-1.338.15-1.338
@@ -25,7 +29,7 @@ export function GitHubLogoSmall(): React.ReactElement {
 /** GitHub logo (for 120px and larger) */
 export function GitHubLogoLarge(): React.ReactElement {
   return (
-    <svg className="github-logo iui-icon" viewBox="0 0 160 160">
+    <svg className="github-logo" viewBox="0 0 160 160">
       <path
         d="M80 0C35.823 0 0 35.815 0 80c0 35.345 22.922 65.332 54.709 75.91 3.998.741 5.466-1.735 5.466-3.848 0-1.906
 -.074-8.21-.109-14.894-22.256 4.839-26.952-9.44-26.952-9.44-3.64-9.245-8.883-11.705-8.883-11.705-7.258-4.965.547-4.863
