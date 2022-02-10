@@ -13,9 +13,9 @@
   },
   "opening-imodel": "Opening iModel...",
   "property-grid": {
+    "loading-properties": "Loading properties...",
     "no-elements-selected": "Select element(s) to view properties.",
     "over-limit": "Too many elements selected.",
     "show-viewport": "Show viewport"
-  },
-  "submit-ruleset": "Submit Ruleset"
+  }
 }

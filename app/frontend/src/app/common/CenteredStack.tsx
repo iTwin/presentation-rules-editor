@@ -8,12 +8,13 @@ import * as React from "react";
 export interface CenteredStackProps {
   id?: string | undefined;
   className?: string | undefined;
+  style?: React.CSSProperties | undefined;
   children: React.ReactNode;
 }
 
 export function VerticalStack(props: CenteredStackProps): React.ReactElement {
   return (
-    <div id={props.id} className={getClassName("vertical-stack", props.className)}>
+    <div id={props.id} className={getClassName("vertical-stack", props.className)} style={props.style}>
       {props.children}
     </div>
   );
@@ -21,7 +22,7 @@ export function VerticalStack(props: CenteredStackProps): React.ReactElement {
 
 export function HorizontalStack(props: CenteredStackProps): React.ReactElement {
   return (
-    <span id={props.id} className={getClassName("horizontal-stack", props.className)}>
+    <span id={props.id} className={getClassName("horizontal-stack", props.className)} style={props.style}>
       {props.children}
     </span>
   );
