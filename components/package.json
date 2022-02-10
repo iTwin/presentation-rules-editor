@@ -3,12 +3,11 @@
   "description": "iTwin.js Presentation Rules Editor React components",
   "version": "0.0.1",
   "scripts": {
-    "build": "tsc",
-    "test": "mocha -r ts-node/register -r jsdom-global/register -r ignore-styles '**/*.test.ts' '**/*.test.tsx'",
+    "build": "tsc --project tsconfig.build.json",
     "test:cover": "nyc npm test",
     "lint": "eslint **/*.{ts,tsx}",
-    "typecheck": "tsc --noEmit --project tsconfig.test.json",
-    "typecheck:watch": "tsc --noEmit --watch --project tsconfig.test.json"
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch"
   },
   "license": "MIT",
   "private": true,
