@@ -32,7 +32,7 @@ export interface PropertyGridProps {
   /** Whether to automatically expand all categories when loading property data. */
   keepCategoriesExpanded?: boolean | undefined;
 
-  /** Component to be rendered wile there are no elements in Unified Selection set. */
+  /** Component to be rendered while there are no elements in Unified Selection set. */
   noElementsSelectedState?: (() => React.ReactElement) | undefined;
 
   /** Component to be rendered while too many elements are present in Unified Selection set. */
