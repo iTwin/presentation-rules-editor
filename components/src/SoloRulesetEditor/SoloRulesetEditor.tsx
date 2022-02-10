@@ -2,13 +2,21 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as monaco from "monaco-editor";
+import type * as monaco from "monaco-editor";
 import * as React from "react";
 import { assert, IDisposable } from "@itwin/core-bentley";
 import { Button } from "@itwin/itwinui-react";
 import { Ruleset } from "@itwin/presentation-common";
 import * as presentationRulesetSchema from "@itwin/presentation-common/Ruleset.schema.json";
-import { EditableRuleset, EditableRulesetParams } from "../EditableRuleset";
+import { EditableRuleset } from "../EditableRuleset";
+
+export interface SoloRulesetEditorParams {
+  /** Ruleset that is going to be associated with the editor. */
+  editableRuleset: EditableRuleset;
+
+  /** Object that holds all monaco-editor exports. */
+  monaco: typeof monaco;
+}
 
 /**
  * Represents a single monaco editor instance that is used to edit an associated ruleset. Instances of this class hold
@@ -20,15 +28,15 @@ export class SoloRulesetEditor implements IDisposable {
   private sharedData: SoloRulesetEditorSharedData = { savedViewState: undefined };
 
   /**
-   * Instantiates a monaco editor for a specific {@linkcode EditableRuleset}. If multiple editors are created for the
-   * same ruleset, they share the same underlying monaco editor model.
-   * @param editableRuleset Ruleset that is going to be associated with the editor.
+   * Instantiates a monaco editor for a specific {@linkcode EditableRuleset}. If multiple editors are created with the
+   * same {@linkcode EditableRuleset} object, they will share the same underlying monaco editor model.
    */
-  constructor(editableRuleset: EditableRuleset) {
-    const uri = monaco.Uri.parse(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
-    this.model = monaco.editor.getModel(uri)
-      ?? monaco.editor.createModel(JSON.stringify(editableRuleset.rulesetContent, undefined, 2), "json", uri);
-    this.Component = createEditor(this.model, editableRuleset, this.sharedData);
+  constructor(params: SoloRulesetEditorParams) {
+    const editableRuleset = params.editableRuleset;
+    const uri = params.monaco.Uri.parse(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
+    this.model = params.monaco.editor.getModel(uri)
+      ?? params.monaco.editor.createModel(JSON.stringify(editableRuleset.rulesetContent, undefined, 2), "json", uri);
+    this.Component = createEditor(params.monaco, this.model, editableRuleset, this.sharedData);
   }
 
   /** React component that renders a monaco editor for the associated {@linkcode EditableRuleset}. */
@@ -37,10 +45,11 @@ export class SoloRulesetEditor implements IDisposable {
   public dispose(): void {
     this.model.dispose();
   }
-}
 
-interface SoloRulesetEditorSharedData {
-  savedViewState: monaco.editor.ICodeEditorViewState | undefined;
+  /** Tells whether {@linkcode dispose} method has been called on this object. */
+  public get disposed() {
+    return this.model.isDisposed();
+  }
 }
 
 export interface SoloRulesetEditorProps {
@@ -51,7 +60,13 @@ export interface SoloRulesetEditorProps {
   height: number;
 }
 
+interface SoloRulesetEditorSharedData {
+  savedViewState: monaco.editor.ICodeEditorViewState | undefined;
+}
+
+/* istanbul ignore next */
 function createEditor(
+  monacoModule: typeof monaco,
   model: monaco.editor.ITextModel,
   ruleset: EditableRuleset,
   sharedData: SoloRulesetEditorSharedData,
@@ -68,7 +83,7 @@ function createEditor(
         assert(divRef.current !== null);
         assert(buttonWidgetRef.current !== null);
 
-        editorRef.current = monaco.editor.create(
+        editorRef.current = monacoModule.editor.create(
           divRef.current,
           {
             model,
@@ -90,11 +105,11 @@ function createEditor(
             setButtonIsVisible(true);
             return buttonWidgetRef.current;
           },
-          getPosition: () => ({ preference: monaco.editor.OverlayWidgetPositionPreference.TOP_RIGHT_CORNER }),
+          getPosition: () => ({ preference: monacoModule.editor.OverlayWidgetPositionPreference.TOP_RIGHT_CORNER }),
         });
 
         contributeToMonacoEditor(
-          monaco,
+          monacoModule,
           editorRef.current,
           { submitRuleset: (newRuleset) => void ruleset.updateRuleset(newRuleset) },
         );
@@ -118,7 +133,7 @@ function createEditor(
 
     return (
       <>
-        <div ref={buttonWidgetRef} className="widget-submit-ruleset">
+        <div ref={buttonWidgetRef} className="widget-submit-ruleset" style={{ paddingTop: 11 }}>
           {
             buttonIsVisible &&
             <Button styleType={"cta"} title={"Submit ruleset (Alt + Enter)"} onClick={handleSubmitButtonClick}>
@@ -136,6 +151,7 @@ interface ContributionSettings {
   submitRuleset?: (ruleset: Ruleset) => void | undefined;
 }
 
+/* istanbul ignore next */
 function contributeToMonacoEditor(
   monacoModule: typeof monaco,
   editor: monaco.editor.IStandaloneCodeEditor,
@@ -171,36 +187,3 @@ function contributeToMonacoEditor(
 }
 
 let initialized = false;
-
-export interface UseSoloRulesetEditorReturnType {
-  editableRuleset: EditableRuleset;
-  rulesetEditor: SoloRulesetEditor;
-}
-
-export interface UseSoloRulesetEditorParameters {
-  initialRuleset: Ruleset;
-}
-
-/** Instantiates and manages the lifetimes of {@linkcode EditableRuleset} and {@linkcode SoloRulesetEditor}. */
-export function useSoloRulesetEditor(
-  initialEditableRulesetParams: EditableRulesetParams,
-): UseSoloRulesetEditorReturnType {
-  const result = React.useRef(undefined as unknown as UseSoloRulesetEditorReturnType);
-  if (result.current === undefined) {
-    const editableRuleset = new EditableRuleset(initialEditableRulesetParams);
-    const rulesetEditor = new SoloRulesetEditor(editableRuleset);
-    result.current = { editableRuleset, rulesetEditor };
-  }
-
-  React.useEffect(
-    () => {
-      return () => {
-        result.current.rulesetEditor.dispose();
-        result.current.editableRuleset.dispose();
-      };
-    },
-    [],
-  );
-
-  return result.current;
-}

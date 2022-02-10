@@ -9,9 +9,16 @@ import { usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } fr
 import { EditableRuleset } from "../EditableRuleset";
 
 export interface TreeProps {
+  /** Width of the tree element. */
   width: number;
+
+  /** Height of the tree element. */
   height: number;
-  imodel: IModelConnection;
+
+  /** Connection to an iModel from which to pull tree node data. */
+  iModel: IModelConnection;
+
+  /** {@linkcode EditableRuleset} to keep track of. */
   editableRuleset: EditableRuleset;
 }
 
@@ -19,9 +26,9 @@ export interface TreeProps {
  * Displays a tree hierarchy defined by a Presentation ruleset. This component will reload the tree when content of the
  * {@linkcode EditableRuleset} changes.
  */
-export function Tree(props: TreeProps): React.ReactElement {
+export function Tree(props: TreeProps) {
   const { nodeLoader, onItemsRendered } = usePresentationTreeNodeLoader({
-    imodel: props.imodel,
+    imodel: props.iModel,
     ruleset: props.editableRuleset.id,
     pagingSize: 20,
     enableHierarchyAutoUpdate: true,

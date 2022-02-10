@@ -13,30 +13,40 @@ npm install @itwin/presentation-rules-editor-react
 The following example demonstrates how to assemble a basic Presentation rules editor out of provided React components:
 
 ```tsx
-import * as React from "react";
+import * as monaco from "monaco-editor";
+import { useEffect, useState } from "react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
-import { PropertyGrid, Tree, useStandaloneRulesetEditor } from "@itwin/presentation-rules-editor-react";
+import { EditableRuleset, PropertyGrid, SoloRulesetEditor, Tree } from "@itwin/presentation-rules-editor-react";
 
-interface MyComponentProps {
-  imodel: IModelConnection;
-}
+function MyComponent(props: { iModel: IModelConnection }): React.ReactElement {
+  const [editableRuleset] = useState(() => new EditableRuleset({ initialRuleset: ruleset }));
+  const [rulesetEditor] = useState(() => new SoloRulesetEditor({ editableRuleset, monaco }));
 
-function MyComponent(props: MyComponentProps): React.ReactElement {
-  const { editableRuleset, rulesetEditor } = useStandaloneRulesetEditor({ initialRuleset: ruleset });
+  useEffect(
+    () => {
+      // Free resources when MyComponent unmounts
+      return () => {
+        rulesetEditor.dispose();
+        editableRuleset.dispose();
+      };
+    },
+    [editableRuleset, rulesetEditor],
+  );
+
   return (
     <>
       <rulesetEditor.Component width={800} height={600} />
       <Tree
         width={350}
         height={400}
-        imodel={props.imodel}
+        iModel={props.iModel}
         editableRuleset={editableRuleset}
       />
       <PropertyGrid
         width={350}
         height={400}
-        imodel={props.imodel}
+        iModel={props.iModel}
         editableRuleset={editableRuleset}
       />
     </>

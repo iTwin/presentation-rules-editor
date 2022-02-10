@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { IDisposable } from "@itwin/core-bentley";
+import { BeEvent, IDisposable } from "@itwin/core-bentley";
 import { RegisteredRuleset, Ruleset } from "@itwin/presentation-common";
 import { Presentation } from "@itwin/presentation-frontend";
 
@@ -33,7 +33,10 @@ export class EditableRuleset implements IDisposable {
   /** Unique identifier for this {@linkcode EditableRuleset}. Has no relation to ruleset id. */
   public readonly id: string;
 
-  /** Whether {@linkcode dispose} method has been called on this object. */
+  /** Fires after a completed ruleset update. */
+  public readonly onAfterRulesetUpdated = new BeEvent<() => void>();
+
+  /** Tells whether {@linkcode dispose} method has been called on this object. */
   public get disposed(): boolean {
     return this._disposed;
   }
@@ -70,5 +73,6 @@ export class EditableRuleset implements IDisposable {
     this._rulesetContent = newContent;
     this._registeredRulesetPromise = Presentation.presentation.rulesets().modify(registeredRuleset, newContent);
     await this._registeredRulesetPromise;
+    this.onAfterRulesetUpdated.raiseEvent();
   }
 }
