@@ -196,7 +196,7 @@ importers:
       '@itwin/presentation-common': 3.0.0-dev.154_44ec7ebd88ae331b82cdee5d2ec0b9b8
       '@itwin/presentation-components': 3.0.0-dev.154_381579dc57a658ef428f1cb84bd313bd
       '@itwin/presentation-frontend': 3.0.0-dev.154_13e789e2a33d6ccfa3faeab05238c5e0
-      '@itwin/presentation-rules-editor-react': link:../../components
+      '@itwin/presentation-rules-editor-react': link:../../presentation-rules-editor-react
       '@itwin/webgl-compatibility': 3.0.0-dev.154
       '@microsoft/applicationinsights-web': 2.7.1_tslib@2.3.1
       '@types/copy-webpack-plugin': 8.0.1_webpack-cli@4.9.1
@@ -238,7 +238,7 @@ importers:
       webpack-cli: 4.9.1_372fac462f92eb5de4f7e5d44899566e
       webpack-dev-server: 4.5.0_webpack-cli@4.9.1+webpack@5.64.0
 
-  components:
+  presentation-rules-editor-react:
     specifiers:
       '@bentley/itwin-client': 3.0.0-dev.154
       '@itwin/appui-abstract': 3.0.0-dev.154
