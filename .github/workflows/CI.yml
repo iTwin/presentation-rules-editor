@@ -42,7 +42,7 @@ jobs:
       run: npm run typecheck
 
     - name: Check unit test coverage
-      run: npm run test:cover --prefix ./components
+      run: npm run test:cover --prefix ./presentation-rules-editor-react
 
     - name: Run end-to-end tests
       run: npm test --prefix ./app/e2e-tests
