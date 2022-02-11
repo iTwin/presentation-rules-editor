@@ -3,13 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { expect } from "chai";
-import { render } from "@testing-library/react";
-import { TestComponent } from "./TestComponent";
+import { LoadingIndicator } from "../../common/LoadingIndicator";
 
-describe("TestComponent", () => {
-  it("renders text", () => {
-    const { getByText } = render(<TestComponent />);
-    expect(getByText("TestComponent")).not.to.be.null;
-  });
-});
+export function LoadingHint(): React.ReactElement {
+  return <LoadingIndicator>Loading...</LoadingIndicator>;
+}

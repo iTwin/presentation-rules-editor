@@ -2,8 +2,5 @@
   "extends": [
     "plugin:@itwin/ui",
     "../eslintrc.base.json"
-  ],
-  "parserOptions": {
-    "project": "tsconfig.test.json"
-  }
+  ]
 }

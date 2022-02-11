@@ -7,13 +7,13 @@ import { Id64String } from "@itwin/core-bentley";
 import { IModelConnection } from "@itwin/core-frontend";
 import { ViewportComponent } from "@itwin/imodel-components-react";
 import { viewWithUnifiedSelection } from "@itwin/presentation-components";
-import { backendApiContext } from "../../ITwinJsAppContext";
+import { backendApiContext } from "../ITwinJsAppContext";
 
-export interface ViewportProps {
+export interface ViewportTabProps {
   imodel: IModelConnection;
 }
 
-export function Viewport(props: ViewportProps): React.ReactElement {
+export function ViewportTab(props: ViewportTabProps): React.ReactElement {
   return <ViewportForIModel key={props.imodel.key} imodel={props.imodel} />;
 }
 
@@ -38,10 +38,18 @@ function useViewDefinitionId(imodel: IModelConnection): Id64String | undefined {
 
   React.useEffect(
     () => {
+      let disposed = false;
+
       void (async () => {
         const viewId = await backendApi.getViewDefinition(imodel);
-        setViewDefinitionId(viewId);
+        if (!disposed) {
+          setViewDefinitionId(viewId);
+        }
       })();
+
+      return () => {
+        disposed = true;
+      };
     },
     [backendApi, imodel],
   );

@@ -6,36 +6,45 @@ import * as React from "react";
 import { ControlledTree, SelectionMode, useTreeModel } from "@itwin/components-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@itwin/presentation-components";
-import { AutoSizer } from "../common/AutoSizer";
+import { EditableRuleset } from "../EditableRuleset";
 
 export interface TreeProps {
-  imodel: IModelConnection;
-  rulesetId: string;
+  /** Width of the tree element. */
+  width: number;
+
+  /** Height of the tree element. */
+  height: number;
+
+  /** Connection to an iModel from which to pull tree node data. */
+  iModel: IModelConnection;
+
+  /** {@linkcode EditableRuleset} to keep track of. */
+  editableRuleset: EditableRuleset;
 }
 
-export function Tree(props: TreeProps): React.ReactElement {
+/**
+ * Displays a tree hierarchy defined by a Presentation ruleset. This component will reload the tree when content of the
+ * {@linkcode EditableRuleset} changes.
+ */
+export function Tree(props: TreeProps) {
   const { nodeLoader, onItemsRendered } = usePresentationTreeNodeLoader({
-    imodel: props.imodel,
-    ruleset: props.rulesetId,
-    pagingSize: 10,
+    imodel: props.iModel,
+    ruleset: props.editableRuleset.id,
+    pagingSize: 20,
     enableHierarchyAutoUpdate: true,
   });
   const eventHandler = useUnifiedSelectionTreeEventHandler({ nodeLoader });
   const treeModel = useTreeModel(nodeLoader.modelSource);
 
   return (
-    <AutoSizer>
-      {({ width, height }) =>
-        <ControlledTree
-          width={width}
-          height={height}
-          model={treeModel}
-          eventsHandler={eventHandler}
-          nodeLoader={nodeLoader}
-          selectionMode={SelectionMode.Extended}
-          onItemsRendered={onItemsRendered}
-        />
-      }
-    </AutoSizer>
+    <ControlledTree
+      width={props.width}
+      height={props.height}
+      model={treeModel}
+      eventsHandler={eventHandler}
+      nodeLoader={nodeLoader}
+      selectionMode={SelectionMode.Extended}
+      onItemsRendered={onItemsRendered}
+    />
   );
 }

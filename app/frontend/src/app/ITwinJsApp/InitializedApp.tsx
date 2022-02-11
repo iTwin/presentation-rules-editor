@@ -3,19 +3,16 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "./InitializedApp.scss";
+import * as monaco from "monaco-editor";
 import * as React from "react";
 import { WidgetState } from "@itwin/appui-abstract";
 import { MessageManager, StatusMessageRenderer } from "@itwin/appui-react";
 import {
   CheckpointConnection, IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, OutputMessageType,
 } from "@itwin/core-frontend";
-import {
-  ChildNodeSpecificationTypes, ContentSpecificationTypes, RegisteredRuleset, Ruleset, RuleTypes,
-} from "@itwin/presentation-common";
-import { Presentation } from "@itwin/presentation-frontend";
-import { LoadingIndicator } from "../common/LoadingIndicator";
+import { ChildNodeSpecificationTypes, ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
+import { EditableRuleset, SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
 import { BackendApi } from "./api/BackendApi";
-import { OpeningIModelHint } from "./common/OpeningIModelHint";
 import { ContentTabs } from "./content-tabs/ContentTabs";
 import { IModelIdentifier, isSnapshotIModel } from "./IModelIdentifier";
 import { backendApiContext } from "./ITwinJsAppContext";
@@ -23,17 +20,17 @@ import { Frontstage } from "./ui-framework/Frontstage";
 import { StagePanel, StagePanelZone } from "./ui-framework/StagePanel";
 import { UIFramework } from "./ui-framework/UIFramework";
 import { Widget } from "./ui-framework/Widget/Widget";
-import { PropertyGrid } from "./widgets/PropertyGrid";
-import { Tree } from "./widgets/Tree";
+import { PropertyGridWidget } from "./widgets/PropertyGridWidget";
+import { TreeWidget } from "./widgets/TreeWidget";
 
 export interface InitializedAppProps {
   backendApi: BackendApi;
   imodelIdentifier: IModelIdentifier;
 }
 
-export function InitializedApp(props: InitializedAppProps): React.ReactElement {
+export function InitializedApp(props: InitializedAppProps): React.ReactElement | null {
   const imodel = useIModel(props.backendApi, props.imodelIdentifier);
-  const [registeredRuleset, modifyRuleset] = useRegisteredRuleset();
+  const { editableRuleset, rulesetEditor } = useSoloRulesetEditor(defaultRuleset);
 
   return (
     <backendApiContext.Provider value={props.backendApi}>
@@ -48,13 +45,7 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
                     label={IModelApp.localization.getLocalizedString("App:label:tree-widget")}
                     defaultState={WidgetState.Open}
                   >
-                    {
-                      imodel !== undefined
-                        ? registeredRuleset !== undefined
-                          ? <Tree imodel={imodel} rulesetId={registeredRuleset.id} />
-                          : <LoadingIndicator>Loading...</LoadingIndicator>
-                        : <OpeningIModelHint />
-                    }
+                    <TreeWidget imodel={imodel} ruleset={editableRuleset} />
                   </Widget>
                 </StagePanelZone>
                 <StagePanelZone>
@@ -63,19 +54,13 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement {
                     label={IModelApp.localization.getLocalizedString("App:label:property-grid-widget")}
                     defaultState={WidgetState.Open}
                   >
-                    {
-                      imodel !== undefined
-                        ? registeredRuleset !== undefined
-                          ? <PropertyGrid imodel={imodel} ruleset={registeredRuleset} />
-                          : <LoadingIndicator>Loading...</LoadingIndicator>
-                        : <OpeningIModelHint />
-                    }
+                    <PropertyGridWidget imodel={imodel} ruleset={editableRuleset} />
                   </Widget>
                 </StagePanelZone>
               </StagePanel>
             }
           >
-            <ContentTabs imodel={imodel} defaultRuleset={defaultRulesetText} submitRuleset={modifyRuleset} />
+            <ContentTabs imodel={imodel} editor={rulesetEditor} />
           </Frontstage>
         </UIFramework>
         <StatusMessageRenderer />
@@ -105,67 +90,6 @@ const defaultRuleset: Ruleset = {
     },
   ],
 };
-
-const defaultRulesetText = JSON.stringify(defaultRuleset, undefined, 2);
-
-function useRegisteredRuleset(): [RegisteredRuleset | undefined, (newRuleset: Ruleset) => Promise<void>] {
-  interface MutableState {
-    lastRegisteredRuleset: RegisteredRuleset | undefined;
-    componentIsDisposed: boolean;
-  }
-
-  const mutableState = React.useRef<MutableState>({
-    lastRegisteredRuleset: undefined,
-    componentIsDisposed: false,
-  }).current;
-
-  const [registeredRuleset, setRegisteredRuleset] = React.useState<RegisteredRuleset>();
-
-  React.useEffect(
-    () => {
-      // On mount, register the default ruleset
-      void (async () => {
-        const addedRuleset = await Presentation.presentation.rulesets().add(defaultRuleset);
-        if (mutableState.componentIsDisposed) {
-          await Presentation.presentation.rulesets().remove(addedRuleset);
-          return;
-        }
-
-        mutableState.lastRegisteredRuleset = addedRuleset;
-        setRegisteredRuleset(addedRuleset);
-      })();
-
-      // On unmount, unregister the last registered ruleset
-      return () => {
-        mutableState.componentIsDisposed = true;
-        if (mutableState.lastRegisteredRuleset !== undefined) {
-          void Presentation.presentation.rulesets().remove(mutableState.lastRegisteredRuleset);
-          mutableState.lastRegisteredRuleset = undefined;
-        }
-      };
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
-
-  const modifyRuleset = async (newRuleset: Ruleset) => {
-    if (mutableState.lastRegisteredRuleset === undefined) {
-      return;
-    }
-
-    const modifiedRuleset = await Presentation.presentation.rulesets()
-      .modify(mutableState.lastRegisteredRuleset, newRuleset);
-    if (mutableState.componentIsDisposed) {
-      await Presentation.presentation.rulesets().remove(modifiedRuleset);
-      return;
-    }
-
-    mutableState.lastRegisteredRuleset = modifiedRuleset;
-    setRegisteredRuleset(modifiedRuleset);
-  };
-
-  return [registeredRuleset, modifyRuleset];
-}
 
 function useIModel(backendApi: BackendApi, imodelIdentifier: IModelIdentifier): IModelConnection | undefined {
   const [imodel, setIModel] = React.useState<IModelConnection>();
@@ -224,10 +148,7 @@ function useIModel(backendApi: BackendApi, imodelIdentifier: IModelIdentifier): 
 
 function displayIModelError(message: string, error: unknown): void {
   const errorMessage = (error && typeof error === "object") ? (error as { message: unknown }).message : error;
-  displayErrorToast(
-    message,
-    typeof errorMessage === "string" ? errorMessage : undefined,
-  );
+  displayErrorToast(message, typeof errorMessage === "string" ? errorMessage : undefined);
 }
 
 function displayErrorToast(messageShort: string, messageDetail: string | undefined): void {
@@ -238,4 +159,31 @@ function displayErrorToast(messageShort: string, messageDetail: string | undefin
     OutputMessageType.Toast,
   );
   MessageManager.outputMessage(messageDetails);
+}
+
+interface UseSoloRulesetEditorReturnType {
+  editableRuleset: EditableRuleset;
+  rulesetEditor: SoloRulesetEditor;
+}
+
+/** Instantiates and manages the lifetimes of {@linkcode EditableRuleset} and {@linkcode SoloRulesetEditor}. */
+function useSoloRulesetEditor(initialRuleset: Ruleset): UseSoloRulesetEditorReturnType {
+  const result = React.useRef(undefined as unknown as UseSoloRulesetEditorReturnType);
+  if (result.current === undefined) {
+    const editableRuleset = new EditableRuleset({ initialRuleset });
+    const rulesetEditor = new SoloRulesetEditor({ editableRuleset, monaco });
+    result.current = { editableRuleset, rulesetEditor };
+  }
+
+  React.useEffect(
+    () => {
+      return () => {
+        result.current.rulesetEditor.dispose();
+        result.current.editableRuleset.dispose();
+      };
+    },
+    [],
+  );
+
+  return result.current;
 }

@@ -7,7 +7,7 @@ Follow the [steps for running the application](./README.md#using). These actuall
 ## Directory structure
 
 * `app/` - contains source code for the editor application.
-* `components/` - contains reusable components that can be added to other applications that wish to integrate a presentation ruleset editor.
+* `presentation-rules-editor-react/` - contains reusable components that can be added to other applications that wish to integrate a presentation ruleset editor.
 
 ## Testing
 
@@ -16,7 +16,7 @@ We have two sets of tests:
 * Unit tests for `presentation-rules-editor` package, which require 100% test coverage.
 * End-to-end tests for the editor application.
 
-To run these tests, execute `npm test` in `components/` and `app/e2e-tests` directories respectively.
+To run these tests, execute `npm test` in `presentation-rules-editor-react/` and `app/e2e-tests` directories respectively.
 
 ## Debugging frontend code
 

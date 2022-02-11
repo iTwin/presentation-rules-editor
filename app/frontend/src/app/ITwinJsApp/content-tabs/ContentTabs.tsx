@@ -4,17 +4,16 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelApp, IModelConnection } from "@itwin/core-frontend";
-import { Ruleset } from "@itwin/presentation-common";
+import { SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
 import { appLayoutContext } from "../../AppContext";
 import { OpeningIModelHint } from "../common/OpeningIModelHint";
 import { TabView, TabViewItem } from "../ui-framework/TabView/TabView";
-import { Editor } from "./editor/Editor";
-import { Viewport } from "./viewport/Viewport";
+import { EditorTab } from "./EditorTab";
+import { ViewportTab } from "./ViewportTab";
 
 export interface ContentTabsProps {
-  imodel?: IModelConnection;
-  defaultRuleset: string;
-  submitRuleset: (ruleset: Ruleset) => void;
+  imodel: IModelConnection | undefined;
+  editor: SoloRulesetEditor;
 }
 
 export function ContentTabs(props: ContentTabsProps): React.ReactElement {
@@ -22,10 +21,10 @@ export function ContentTabs(props: ContentTabsProps): React.ReactElement {
   return (
     <TabView activeTab={appLayout.activeTab} setActiveTab={appLayout.setActiveTab}>
       <TabViewItem label={IModelApp.localization.getLocalizedString("App:label:editor")}>
-        <Editor initialText={props.defaultRuleset} submitRuleset={props.submitRuleset} />
+        <EditorTab editor={props.editor} />
       </TabViewItem>
       <TabViewItem label={IModelApp.localization.getLocalizedString("App:label:viewport")}>
-        {props.imodel !== undefined ? <Viewport imodel={props.imodel} /> : <OpeningIModelHint />}
+        {props.imodel !== undefined ? <ViewportTab imodel={props.imodel} /> : <OpeningIModelHint />}
       </TabViewItem>
     </TabView>
   );

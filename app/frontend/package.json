@@ -40,7 +40,7 @@
     "@itwin/presentation-common": "3.0.0-dev.154",
     "@itwin/presentation-components": "3.0.0-dev.154",
     "@itwin/presentation-frontend": "3.0.0-dev.154",
-    "@itwin/presentation-rules-editor": "workspace:*",
+    "@itwin/presentation-rules-editor-react": "workspace:*",
     "@itwin/webgl-compatibility": "3.0.0-dev.154",
     "@microsoft/applicationinsights-web": "^2.7.1",
     "@types/copy-webpack-plugin": "^8.0.1",
