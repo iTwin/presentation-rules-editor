@@ -41,6 +41,9 @@ jobs:
     - name: Typecheck
       run: npm run typecheck
 
+    - name: Build presentation-rules-editor-react package
+      run: npm run build --prefix ./presentation-rules-editor-react
+
     - name: Check unit test coverage
       run: npm run test:cover --prefix ./presentation-rules-editor-react
 

@@ -3,10 +3,13 @@
   "compilerOptions": {
     "lib": ["DOM"],
     "jsx": "react",
-    "outDir": "lib",
-    "declaration": true,
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
+    "outDir": "lib/cjs",
+    "declaration": true,
+    "sourceMap": true,
   },
   "include": ["index.ts"],
 }
