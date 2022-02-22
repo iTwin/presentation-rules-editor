@@ -3,7 +3,11 @@
   "description": "iTwin.js Presentation Rules Editor React components",
   "version": "0.0.1",
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
+    "build": "run-p build:* copy:*",
+    "build:cjs": "tsc --project tsconfig.build.json --outDir ./lib/cjs --module CommonJS",
+    "build:esm": "tsc --project tsconfig.build.json --outDir ./lib/esm --module ES2020",
+    "copy:cjs": "cpx \"./src/**/*.*css\" ./lib/cjs/src",
+    "copy:esm": "cpx \"./src/**/*.*css\" ./lib/esm/src",
     "test": "cross-env TS_NODE_TRANSPILE_ONLY=1 mocha -r ts-node/register -r jsdom-global/register -r ignore-styles --file ./src/TestSetup.ts '**/*.test.ts' '**/*.test.tsx'",
     "test:cover": "nyc npm test",
     "lint": "eslint **/*.{ts,tsx}",
@@ -32,8 +36,11 @@
   "engines": {
     "node": ">=12"
   },
-  "browser": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
+  "types": "lib/esm/index.d.ts",
+  "files": ["lib/"],
+  "sideEffects": ["*.scss"],
   "dependencies": {
     "@itwin/itwinui-react": "^1.19.0"
   },
@@ -85,6 +92,7 @@
     "@types/sinon-chai": "^3.2.5",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
+    "cpx2": "^4.2.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.30.0",
     "ignore-styles": "^5.0.1",
@@ -92,6 +100,7 @@
     "jsdom-global": "^3.0.2",
     "mocha": "^8.3.2",
     "monaco-editor": "^0.25.2",
+    "npm-run-all": "^4.1.5",
     "nyc": "^14.0.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",

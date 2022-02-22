@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "./PropertyGrid.css";
+import "./PropertyGrid.scss";
 import * as React from "react";
 import {
   FlatGridItemType, IMutableFlatGridItem, IMutableGridCategoryItem, IMutablePropertyGridModel, PropertyCategory,
