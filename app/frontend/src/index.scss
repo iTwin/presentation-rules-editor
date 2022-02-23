@@ -10,7 +10,6 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
   height: 100%;
 }
 
@@ -21,11 +20,6 @@ body > div {
 // Fix for silent authorization iframe causing body to overflow
 iframe {
   border: 0;
-}
-
-// Fix iTwinUI bug where form elements do not inherit Open Sans font
-button {
-  font-family: inherit;
 }
 
 // Expensive font goes first so that browser considers it last

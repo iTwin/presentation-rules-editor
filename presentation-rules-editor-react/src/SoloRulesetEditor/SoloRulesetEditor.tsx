@@ -2,13 +2,15 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import type * as monaco from "monaco-editor";
+import "./SoloRulesetEditor.scss";
 import * as React from "react";
 import { assert, IDisposable } from "@itwin/core-bentley";
 import { Button } from "@itwin/itwinui-react";
 import { Ruleset } from "@itwin/presentation-common";
 import * as presentationRulesetSchema from "@itwin/presentation-common/Ruleset.schema.json";
 import { EditableRuleset } from "../EditableRuleset";
+
+import type * as monaco from "monaco-editor";
 
 export interface SoloRulesetEditorParams {
   /** Ruleset that is going to be associated with the editor. */
@@ -133,7 +135,7 @@ function createEditor(
 
     return (
       <>
-        <div ref={buttonWidgetRef} className="widget-submit-ruleset" style={{ paddingTop: 11 }}>
+        <div ref={buttonWidgetRef}>
           {
             buttonIsVisible &&
             <Button styleType={"cta"} title={"Submit ruleset (Alt + Enter)"} onClick={handleSubmitButtonClick}>

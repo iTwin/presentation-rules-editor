@@ -36,7 +36,20 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
         {
           test: /\.js$/,
           enforce: "pre",
-          use: ["source-map-loader"],
+          use: [
+            {
+              loader: "source-map-loader",
+              options: {
+                // TODO: Remove this filter when these packages get updated
+                filterSourceMappingUrl: (_url: string, resourcePath: string) => {
+                  return !(
+                    resourcePath.includes("@itwin/imodels-client-management")
+                    || resourcePath.includes("@itwin/imodels-access-frontend")
+                  );
+                },
+              },
+            },
+          ],
         },
         {
           test: /\.(s[ac]ss|css)$/,

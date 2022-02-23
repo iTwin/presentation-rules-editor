@@ -71,7 +71,7 @@ function HeaderUserIcon(props: HeaderUserIconProps): React.ReactElement | null {
   const preferredName = profile?.preferred_username || profile?.name || profile?.nickname;
   const initials = (profile?.given_name && profile?.family_name)
     ? profile.given_name[0] + profile.family_name[0]
-    : (preferredName ?? "?").substr(0, 2);
+    : (preferredName ?? "?").substring(0, 2);
   const displayName = preferredName ?? "Unknown Account";
 
   return (

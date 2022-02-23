@@ -5,14 +5,15 @@
 import { UserManager } from "oidc-client";
 import * as React from "react";
 import { rpcInterfaces } from "@app/common";
-import { IModelHubFrontend } from "@bentley/imodelhub-client";
 import {
   AppNotificationManager, ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework,
 } from "@itwin/appui-react";
 import { AccessToken, Logger, LogLevel } from "@itwin/core-bentley";
-import { AuthorizationClient, BentleyCloudRpcManager } from "@itwin/core-common";
+import { AuthorizationClient, BentleyCloudRpcManager, RpcConfiguration } from "@itwin/core-common";
 import { IModelApp } from "@itwin/core-frontend";
 import { ITwinLocalization } from "@itwin/core-i18n";
+import { FrontendIModelsAccess } from "@itwin/imodels-access-frontend";
+import { IModelsClient } from "@itwin/imodels-client-management";
 import { Presentation } from "@itwin/presentation-frontend";
 import { AuthorizationState, useAuthorization } from "../Authorization";
 import { LoadingIndicator } from "../common/LoadingIndicator";
@@ -56,6 +57,8 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
   Logger.initializeToConsole();
   Logger.setLevelDefault(LogLevel.Warning);
 
+  RpcConfiguration.developmentMode = process.env.DEPLOYMENT_TYPE === "dev";
+  RpcConfiguration.disableRoutingValidation = process.env.DEPLOYMENT_TYPE !== "web";
   const rpcParams = process.env.DEPLOYMENT_TYPE === "web"
     ? {
       info: { title: "visualization", version: "v3.0" },
@@ -67,6 +70,7 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
     };
 
   const authClient = new AuthClient(userManager);
+  const iModelsClient = new IModelsClient({ api: { baseUrl: applyUrlPrefix("https://api.bentley.com/imodels") } });
   await IModelApp.startup({
     rpcInterfaces,
     notifications: new AppNotificationManager(),
@@ -78,7 +82,7 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
       // Default template lacks the leading forward slash, which results in relative urls being requested
       urlTemplate: "/locales/{{lng}}/{{ns}}.json",
     }),
-    hubAccess: new IModelHubFrontend(),
+    hubAccess: new FrontendIModelsAccess(iModelsClient),
   });
   BentleyCloudRpcManager.initializeClient(rpcParams, rpcInterfaces);
 
