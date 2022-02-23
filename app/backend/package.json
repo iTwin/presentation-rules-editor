@@ -24,12 +24,13 @@
     "@itwin/ecschema-metadata": "3.0.0",
     "@itwin/eslint-plugin": "3.0.0",
     "@itwin/express-server": "3.0.0",
+    "@itwin/imodels-access-backend": "^1.0.1",
     "@itwin/presentation-backend": "3.0.0",
     "@itwin/presentation-common": "3.0.0",
     "@types/node": "^15.0.0",
     "dotenv": "^10.0.0",
     "eslint": "^7.30.0",
     "ts-node-dev": "^1.1.8",
-    "typescript": "^4.4.2"
+    "typescript": "~4.4.2"
   }
 }

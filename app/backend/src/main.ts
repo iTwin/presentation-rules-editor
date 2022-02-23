@@ -4,10 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 import * as dotenv from "dotenv";
 import { rpcInterfaces } from "@app/common";
-import { IModelHubBackend } from "@bentley/imodelhub-client/lib/cjs/imodelhub-node";
 import { IModelHost, IModelHostConfiguration } from "@itwin/core-backend";
 import { Logger, LogLevel } from "@itwin/core-bentley";
 import { RpcConfiguration } from "@itwin/core-common";
+import { BackendIModelsAccess } from "@itwin/imodels-access-backend";
 import {
   Presentation, PresentationBackendLoggerCategory, PresentationBackendNativeLoggerCategory, PresentationManagerMode,
 } from "@itwin/presentation-backend";
@@ -25,7 +25,7 @@ void (async () => {
   Logger.setLevel(PresentationBackendLoggerCategory.Package, LogLevel.Info);
 
   const config = new IModelHostConfiguration();
-  config.hubAccess = new IModelHubBackend();
+  config.hubAccess = new BackendIModelsAccess();
   await IModelHost.startup(config);
   IModelHost.snapshotFileNameResolver = new SnapshotFileNameResolver();
 
