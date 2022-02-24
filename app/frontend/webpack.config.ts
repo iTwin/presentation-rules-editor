@@ -142,8 +142,14 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
       }),
       new MonacoWebpackPlugin({ languages: ["json"] }),
       new DefinePlugin({
-        ["process.env.APPLICATION_INSIGHTS_CONNECTION_STRING"]: JSON.stringify(
-          process.env.APPLICATION_INSIGHTS_CONNECTION_STRING,
+        ["process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_DEV"]: JSON.stringify(
+          process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_DEV,
+        ),
+        ["process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_QA"]: JSON.stringify(
+          process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_QA,
+        ),
+        ["process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_PROD"]: JSON.stringify(
+          process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_PROD,
         ),
         ["process.env.DEPLOYMENT_TYPE"]: JSON.stringify(process.env.DEPLOYMENT_TYPE),
         ["process.env.IMJS_URL_PREFIX"]: JSON.stringify(process.env.IMJS_URL_PREFIX),
