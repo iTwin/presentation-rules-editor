@@ -152,7 +152,7 @@ function ITwinJsAppAwaiter(props: ITwinJsAppAwaiterProps): React.ReactElement {
 function useApplicationInsights(): void {
   React.useEffect(
     () => {
-      const connectionString = process.env.APPLICATION_INSIGHTS_CONNECTION_STRING;
+      const connectionString = getConnectionString();
       if (connectionString) {
         void (async () => {
           try {
@@ -167,4 +167,17 @@ function useApplicationInsights(): void {
     },
     [],
   );
+
+  function getConnectionString(): string | undefined {
+    const hostname = window.location.hostname;
+    if (hostname.startsWith("dev-")) {
+      return process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_DEV;
+    }
+
+    if (hostname.startsWith("qa-")) {
+      return process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_QA;
+    }
+
+    return process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_PROD;
+  }
 }
