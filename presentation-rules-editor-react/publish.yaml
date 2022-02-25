@@ -1,0 +1,73 @@
+trigger:
+  tags:
+    include:
+      - v*.*.*
+
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: iModelTechnologies/imodeljs-build-pipeline-scripts
+
+stages:
+  - stage: build
+    displayName: Build
+    jobs:
+      - job: Build
+        steps:
+          - checkout: self
+            clean: true
+            fetchDepth: 1
+
+          - task: NodeTool@0
+            displayName: Use Node.js 14.x
+            inputs:
+              versionSpec: 14.x
+
+          - task: CmdLine@2
+            displayName: Install pnpm
+            inputs:
+              script: npm install -g pnpm
+
+          - task: CmdLine@2
+            displayName: Audit
+            inputs:
+              script: pnpm audit --audit-level=high
+
+          - task: CmdLine@2
+            displayName: Install dependencies
+            inputs:
+              script: pnpm install
+
+          - task: CmdLine@2
+            displayName: Build package
+            inputs:
+              script: npm run build
+              workingDirectory: presentation-rules-editor-react/
+
+          - task: CmdLine@2
+            displayName: Run unit tests
+            inputs:
+              script: npm run test:cover
+              workingDirectory: presentation-rules-editor-react/
+
+          - task: CmdLine@2
+            displayName: Pack package files
+            inputs:
+             script: pnpm pack
+             workingDirectory: presentation-rules-editor-react/
+
+          - publish: presentation-rules-editor-react/itwin-presentation-rules-editor-react-${{ replace(variables['Build.SourceBranch'], 'refs/tags/v', '') }}.tgz
+            displayName: Publish package artifact
+            artifact: published-package
+
+  - stage: publish
+    dependsOn: build
+    displayName: Publish
+    jobs:
+      - template: templates/npmjs-publish-deployment.yaml@templates
+        parameters:
+          path: presentation-rules-editor-react/
+          artifactName: published-package
+          dryrun: true
+          releaseTag: pre-release
