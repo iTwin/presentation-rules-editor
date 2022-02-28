@@ -16,15 +16,7 @@
 
   "typescript.format.semicolons": "insert",
 
-  "[javascript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-  },
-
-  "[typescript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-  },
-
-  "[typescriptreact]": {
+  "[javascript][typescript][typescriptreact]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   },
 
@@ -33,11 +25,7 @@
   },
 
   "eslint.format.enable": true,
-  "eslint.workingDirectories": [
-    {
-      "mode": "auto"
-    }
-  ],
+  "eslint.workingDirectories": [{ "mode": "auto" }],
 
   "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.count": 120,
   "importSorter.importStringConfiguration.quoteMark": "double",
@@ -65,4 +53,8 @@
     }
   ],
   "importSorter.sortConfiguration.removeUnusedImports": true,
+
+  "markdownlint.config": {
+    "no-duplicate-heading": { "siblings_only": true },
+  },
 }
