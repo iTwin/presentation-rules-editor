@@ -8,8 +8,8 @@ import { rpcInterfaces } from "@app/common";
 import {
   AppNotificationManager, ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework,
 } from "@itwin/appui-react";
-import { AccessToken, Logger, LogLevel } from "@itwin/core-bentley";
-import { AuthorizationClient, BentleyCloudRpcManager, RpcConfiguration } from "@itwin/core-common";
+import { Logger, LogLevel } from "@itwin/core-bentley";
+import { BentleyCloudRpcManager, RpcConfiguration } from "@itwin/core-common";
 import { IModelApp } from "@itwin/core-frontend";
 import { ITwinLocalization } from "@itwin/core-i18n";
 import { FrontendIModelsAccess } from "@itwin/imodels-access-frontend";
@@ -18,7 +18,7 @@ import { Presentation } from "@itwin/presentation-frontend";
 import { AuthorizationState, useAuthorization } from "../Authorization";
 import { LoadingIndicator } from "../common/LoadingIndicator";
 import { applyUrlPrefix } from "../utils/Environment";
-import { BackendApi } from "./api/BackendApi";
+import { AuthClient, BackendApi } from "./api/BackendApi";
 import { IModelIdentifier } from "./IModelIdentifier";
 import { InitializedApp } from "./InitializedApp";
 
@@ -86,7 +86,7 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
   });
   BentleyCloudRpcManager.initializeClient(rpcParams, rpcInterfaces);
 
-  const backendApi = new BackendApi();
+  const backendApi = new BackendApi(authClient);
   await Promise.all([
     IModelApp.localization.registerNamespace("App"),
     initializePresentation(backendApi),
@@ -112,14 +112,4 @@ async function initializeUIFramework(): Promise<void> {
   await UiFramework.initialize(undefined);
   new StateManager({ frameworkState: FrameworkReducer });
   ConfigurableUiManager.initialize();
-}
-
-class AuthClient implements AuthorizationClient {
-
-  constructor(private userManager: UserManager) { }
-
-  public async getAccessToken(): Promise<AccessToken> {
-    const user = await this.userManager.getUser();
-    return user === null ? "" : `${user.token_type} ${user.access_token}`;
-  }
 }

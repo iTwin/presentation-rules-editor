@@ -2,11 +2,16 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { UserManager } from "oidc-client";
 import { PresentationRulesEditorRpcInterface } from "@app/common";
-import { Guid, Id64, Id64String, Logger } from "@itwin/core-bentley";
-import { IModelConnection, SnapshotConnection } from "@itwin/core-frontend";
+import { AccessToken, Guid, Id64, Id64String, Logger } from "@itwin/core-bentley";
+import { AuthorizationClient, IModelVersion } from "@itwin/core-common";
+import { CheckpointConnection, IModelConnection, SnapshotConnection } from "@itwin/core-frontend";
+import { IModelIdentifier, isDemoIModel, isSnapshotIModel } from "../IModelIdentifier";
 
 export class BackendApi {
+  constructor(private readonly authorizationClient: AuthClient) {}
+
   public async getAvailableIModels(): Promise<string[]> {
     return PresentationRulesEditorRpcInterface.getClient().getAvailableIModels();
   }
@@ -15,11 +20,32 @@ export class BackendApi {
     return PresentationRulesEditorRpcInterface.getClient().openIModelsDirectory();
   }
 
-  public async openIModel(path: string): Promise<IModelConnection> {
-    Logger.logInfo("presentation", `Opening snapshot: ${path}`);
-    const imodel = await SnapshotConnection.openFile(path);
-    Logger.logInfo("presentation", `Opened snapshot: ${imodel.name}`);
-    return imodel;
+  public async openIModel(iModelIdentifier: IModelIdentifier): Promise<IModelConnection> {
+    if (isSnapshotIModel(iModelIdentifier)) {
+      Logger.logInfo("presentation", `Opening snapshot: ${iModelIdentifier}`);
+      return SnapshotConnection.openFile(iModelIdentifier);
+    }
+
+    if (isDemoIModel(iModelIdentifier)) {
+      this.authorizationClient.useDemoUser = true;
+      const response = await fetch(
+        `https://api.bentley.com/imodelhub/sv1.1/Repositories/iModel--${iModelIdentifier.iModelId}/iModelScope/Version/?$top=1`,
+        {
+          headers: {
+            authorization: await this.authorizationClient.getAccessToken(),
+          },
+        }
+      );
+      const json = await response.json();
+      return CheckpointConnection.openRemote(
+        iModelIdentifier.iTwinId,
+        iModelIdentifier.iModelId,
+        IModelVersion.asOfChangeSet(json.instanceId),
+      );
+    }
+
+    this.authorizationClient.useDemoUser = false;
+    return CheckpointConnection.openRemote(iModelIdentifier.iTwinId, iModelIdentifier.iModelId);
   }
 
   public getClientId(): string {
@@ -41,5 +67,32 @@ export class BackendApi {
 
     const viewDefinitionProps = await imodel.views.queryProps({ wantPrivate: false, limit: 1 });
     return viewDefinitionProps[0].id ?? Id64.invalid;
+  }
+}
+
+export class AuthClient implements AuthorizationClient {
+  private demoAccessToken: Promise<string> | undefined = undefined;
+  public useDemoUser = false;
+
+  constructor(private userManager: UserManager) { }
+
+  public async getAccessToken(): Promise<AccessToken> {
+    if (this.useDemoUser) {
+      this.demoAccessToken ??= (async () => {
+        const response = await fetch(
+          "https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser",
+        );
+        const result = await response.json();
+        setTimeout(
+          () => this.demoAccessToken = undefined,
+          new Date(result._expiresAt).getTime() - new Date().getTime() - 5000,
+        );
+        return `Bearer ${result._jwt}`;
+      })();
+      return this.demoAccessToken;
+    }
+
+    const user = await this.userManager.getUser();
+    return user === null ? "" : `${user.token_type} ${user.access_token}`;
   }
 }
