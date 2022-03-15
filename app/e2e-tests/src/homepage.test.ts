@@ -6,7 +6,7 @@ import { expect } from "chai";
 import { page } from "./setup";
 import { getServiceUrl, loadHomepage } from "./utils";
 
-describe("#local homepage", () => {
+describe("homepage #local", () => {
   before(async () => {
     // eslint-disable-next-line no-console
     console.time("Homepage load");
@@ -21,7 +21,7 @@ describe("#local homepage", () => {
   });
 });
 
-describe("#web homepage", () => {
+describe("homepage #web", () => {
   before(async () => {
     await loadHomepage(page);
   });
