@@ -71,10 +71,14 @@ export class BackendApi {
 }
 
 export class AuthClient implements AuthorizationClient {
+  private userManager: UserManager | undefined;
   private demoAccessToken: Promise<string> | undefined = undefined;
+
   public useDemoUser = false;
 
-  constructor(private userManager: UserManager) { }
+  constructor(userManager?: UserManager) {
+    this.userManager = userManager;
+  }
 
   public async getAccessToken(): Promise<AccessToken> {
     if (this.useDemoUser) {
@@ -92,7 +96,7 @@ export class AuthClient implements AuthorizationClient {
       return this.demoAccessToken;
     }
 
-    const user = await this.userManager.getUser();
-    return user === null ? "" : `${user.token_type} ${user.access_token}`;
+    const user = await this.userManager?.getUser();
+    return user ? `${user.token_type} ${user.access_token}` : "";
   }
 }
