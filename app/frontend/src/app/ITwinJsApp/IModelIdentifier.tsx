@@ -16,7 +16,7 @@ export function isSnapshotIModel(identifier: IModelIdentifier): identifier is Sn
 }
 
 export function isDemoIModel(identifier: IModelIdentifier): boolean {
-  return !isSnapshotIModel(identifier) && demoIModelsIndex.get(identifier.iTwinId) === identifier.iModelId;
+  return !isSnapshotIModel(identifier) && demoIModelsIndex.get(identifier.iModelId) === identifier.iTwinId;
 }
 
 export const demoIModels = new Map([
@@ -62,4 +62,4 @@ export const demoIModels = new Map([
   ],
 ]);
 
-const demoIModelsIndex = new Map([...demoIModels.values()].map(({ iTwinId, iModelId }) => [iTwinId, iModelId]));
+const demoIModelsIndex = new Map([...demoIModels.values()].map(({ iTwinId, iModelId }) => [iModelId, iTwinId]));
