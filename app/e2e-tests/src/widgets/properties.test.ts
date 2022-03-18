@@ -6,7 +6,7 @@ import { Page } from "playwright";
 import { page } from "../setup";
 import { getEditor, getWidget, openTestIModel } from "../utils";
 
-describe("#local properties widget", () => {
+describe("properties widget #local", () => {
   before(async () => {
     await openTestIModel(page);
   });

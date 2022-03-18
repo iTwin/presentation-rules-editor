@@ -8,7 +8,7 @@ import * as React from "react";
 import { WidgetState } from "@itwin/appui-abstract";
 import { MessageManager, StatusMessageRenderer } from "@itwin/appui-react";
 import {
-  CheckpointConnection, IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, OutputMessageType,
+  IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, OutputMessageType,
 } from "@itwin/core-frontend";
 import { ChildNodeSpecificationTypes, ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
 import { EditableRuleset, SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
@@ -91,7 +91,7 @@ const defaultRuleset: Ruleset = {
   ],
 };
 
-function useIModel(backendApi: BackendApi, imodelIdentifier: IModelIdentifier): IModelConnection | undefined {
+function useIModel(backendApi: BackendApi, iModelIdentifier: IModelIdentifier): IModelConnection | undefined {
   const [imodel, setIModel] = React.useState<IModelConnection>();
 
   React.useEffect(
@@ -99,20 +99,17 @@ function useIModel(backendApi: BackendApi, imodelIdentifier: IModelIdentifier): 
       setIModel(undefined);
 
       let disposed = false;
-      let imodelPromise: Promise<IModelConnection>;
+      const iModelPromise = backendApi.openIModel(iModelIdentifier);
       void (async () => {
         try {
-          imodelPromise = isSnapshotIModel(imodelIdentifier)
-            ? backendApi.openIModel(imodelIdentifier)
-            : CheckpointConnection.openRemote(imodelIdentifier.itwinId, imodelIdentifier.imodelId);
-          const openedIModel = await imodelPromise;
+          const openedIModel = await iModelPromise;
           if (!disposed) {
             setIModel(openedIModel);
           }
         } catch (error) {
-          if (isSnapshotIModel(imodelIdentifier)) {
+          if (isSnapshotIModel(iModelIdentifier)) {
             displayIModelError(
-              IModelApp.localization.getLocalizedString("App:error:imodel-open-local", { imodel: imodelIdentifier }),
+              IModelApp.localization.getLocalizedString("App:error:imodel-open-local", { imodel: iModelIdentifier }),
               error,
             );
           } else {
@@ -124,13 +121,13 @@ function useIModel(backendApi: BackendApi, imodelIdentifier: IModelIdentifier): 
       return () => {
         disposed = true;
         void (async () => {
-          const openedIModel = await imodelPromise;
+          const openedIModel = await iModelPromise;
           try {
             await openedIModel.close();
           } catch (error) {
-            if (isSnapshotIModel(imodelIdentifier)) {
+            if (isSnapshotIModel(iModelIdentifier)) {
               displayIModelError(
-                IModelApp.localization.getLocalizedString("App:error:imodel-close-local", { imodel: imodelIdentifier }),
+                IModelApp.localization.getLocalizedString("App:error:imodel-close-local", { imodel: iModelIdentifier }),
                 error,
               );
             } else {
@@ -140,7 +137,7 @@ function useIModel(backendApi: BackendApi, imodelIdentifier: IModelIdentifier): 
         })();
       };
     },
-    [backendApi, imodelIdentifier],
+    [backendApi, iModelIdentifier],
   );
 
   return imodel;

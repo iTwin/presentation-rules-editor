@@ -284,7 +284,7 @@ const OnlineSelector = React.memo(() => {
         projectId={selectedProject.id}
         apiOverrides={{ serverEnvironmentPrefix }}
         onThumbnailClick={({ id, projectId }) => {
-          history.push(`/open-imodel?itwinId=${projectId}&imodelId=${id}`);
+          history.push(`/open-imodel?iTwinId=${projectId}&iModelId=${id}`);
         }}
       />
     </IModelSelectorSection>
