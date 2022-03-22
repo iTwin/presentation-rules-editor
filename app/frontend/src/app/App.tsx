@@ -79,10 +79,11 @@ function Main(): React.ReactElement {
               return <ITwinJsAppAwaiter itwinJsApp={itwinJsApp} imodelIdentifier={snapshotPath} />;
             }
 
-            const itwinId = params.get("itwinId");
-            const imodelId = params.get("imodelId");
-            if (itwinId && imodelId) {
-              return <ITwinJsAppAwaiter itwinJsApp={itwinJsApp} imodelIdentifier={{ itwinId, imodelId }} />;
+            // Attempt to get properly capitalized parameters and fallback to legacy capitalisation
+            const iTwinId = params.get("iTwinId") ?? params.get("itwinId");
+            const iModelId = params.get("iModelId") ?? params.get("imodelId");
+            if (iTwinId && iModelId) {
+              return <ITwinJsAppAwaiter itwinJsApp={itwinJsApp} imodelIdentifier={{ iTwinId, iModelId }} />;
             }
 
             return <PageNotFound />;
@@ -130,10 +131,11 @@ function ITwinJsAppAwaiter(props: ITwinJsAppAwaiterProps): React.ReactElement {
   // Keep the same identifier object between renders if its properties have not changed
   const imodelIdentifier = React.useMemo(
     () => props.imodelIdentifier,
+    // Dependency array must not change its length between renders
     // eslint-disable-next-line react-hooks/exhaustive-deps
     isSnapshotIModel(props.imodelIdentifier)
-      ? [props.imodelIdentifier]
-      : [props.imodelIdentifier.imodelId, props.imodelIdentifier.itwinId],
+      ? [props.imodelIdentifier, undefined, undefined]
+      : [undefined, props.imodelIdentifier.iModelId, props.imodelIdentifier.iTwinId],
   );
 
   if (props.itwinJsApp === undefined) {
