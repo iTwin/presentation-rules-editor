@@ -1,0 +1,21 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
+.content-tabs {
+  display: grid;
+  height: 100%;
+  grid-template-rows: min-content minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.content-tabs-header {
+  display: grid;
+  grid-template-columns: 1fr min-content;
+  align-items: center;
+
+  button#share {
+    margin: 0 16px;
+  }
+}
