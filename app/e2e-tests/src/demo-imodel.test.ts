@@ -5,7 +5,7 @@
 import { page } from "./setup";
 import { getWidget, openDemoIModel } from "./utils";
 
-describe("demo iModel #integration", () => {
+describe("demo iModel #web", () => {
   it("opens", async () => {
     await openDemoIModel(page);
     const treeWidget = await getWidget(page, "Tree");
