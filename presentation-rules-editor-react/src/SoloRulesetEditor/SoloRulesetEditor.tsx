@@ -25,9 +25,10 @@ export interface SoloRulesetEditorParams {
  * global resources until {@linkcode dispose} method is called.
  */
 export class SoloRulesetEditor implements IDisposable {
-  private model: monaco.editor.ITextModel;
-
   private sharedData: SoloRulesetEditorSharedData = { savedViewState: undefined };
+
+  /** Underlying monaco model used by the editor. */
+  public readonly model: monaco.editor.ITextModel;
 
   /**
    * Instantiates a monaco editor for a specific {@linkcode EditableRuleset}. If multiple editors are created with the
