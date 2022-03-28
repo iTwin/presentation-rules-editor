@@ -43,8 +43,8 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
                 // TODO: Remove this filter when these packages get updated
                 filterSourceMappingUrl: (_url: string, resourcePath: string) => {
                   return !(
-                    resourcePath.includes("@itwin/imodels-client-management")
-                    || resourcePath.includes("@itwin/imodels-access-frontend")
+                    resourcePath.search(/@itwin[\\\/]imodels-client-management/)
+                    || resourcePath.search(/@itwin[\\\/]imodels-access-frontend/)
                   );
                 },
               },
