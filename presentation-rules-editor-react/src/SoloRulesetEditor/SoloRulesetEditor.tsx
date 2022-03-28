@@ -182,10 +182,20 @@ function contributeToMonacoEditor(
       label: "Submit ruleset",
       keybindings: [monacoModule.KeyMod.Alt | monacoModule.KeyCode.Enter],
       run: () => {
-        submitRuleset(JSON.parse(editor.getValue()) as Ruleset);
+        submitRuleset(parseRuleset(editor.getValue()));
       },
     });
   }
 }
 
 let initialized = false;
+
+/* istanbul ignore next */
+function parseRuleset(rulesetContent: string): Ruleset {
+  try {
+    const ruleset = JSON.parse(rulesetContent);
+    return ruleset;
+  } catch {
+    return { id: "", rules: [] };
+  }
+}
