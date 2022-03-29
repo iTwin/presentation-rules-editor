@@ -1,4 +1,6 @@
 trigger:
+  branches: none
+  pr: none
   tags:
     include:
       - v*.*.*
