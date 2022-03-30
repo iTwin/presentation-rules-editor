@@ -2,13 +2,20 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { page } from "./setup";
-import { getWidget, openDemoIModel } from "./utils";
 
-describe("demo iModel #web", () => {
-  it("opens", async () => {
-    await openDemoIModel(page);
-    const treeWidget = await getWidget(page, "Tree");
-    await treeWidget.waitForSelector(".core-tree-node");
-  });
-});
+.content-tabs {
+  display: grid;
+  height: 100%;
+  grid-template-rows: min-content minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.content-tabs-header {
+  display: grid;
+  grid-template-columns: 1fr min-content;
+  align-items: center;
+
+  button#share {
+    margin: 0 16px;
+  }
+}

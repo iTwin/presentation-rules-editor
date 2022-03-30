@@ -18,6 +18,9 @@ export interface SoloRulesetEditorParams {
 
   /** Object that holds all monaco-editor exports. */
   monaco: typeof monaco;
+
+  /** Initial editor content. When not specified, content is taken from the {@linkcode editableRuleset}. */
+  initialContent?: string | undefined;
 }
 
 /**
@@ -25,9 +28,10 @@ export interface SoloRulesetEditorParams {
  * global resources until {@linkcode dispose} method is called.
  */
 export class SoloRulesetEditor implements IDisposable {
-  private model: monaco.editor.ITextModel;
-
   private sharedData: SoloRulesetEditorSharedData = { savedViewState: undefined };
+
+  /** Underlying monaco model used by the editor. */
+  public readonly model: monaco.editor.ITextModel;
 
   /**
    * Instantiates a monaco editor for a specific {@linkcode EditableRuleset}. If multiple editors are created with the
@@ -36,8 +40,11 @@ export class SoloRulesetEditor implements IDisposable {
   constructor(params: SoloRulesetEditorParams) {
     const editableRuleset = params.editableRuleset;
     const uri = params.monaco.Uri.parse(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
-    this.model = params.monaco.editor.getModel(uri)
-      ?? params.monaco.editor.createModel(JSON.stringify(editableRuleset.rulesetContent, undefined, 2), "json", uri);
+    this.model = params.monaco.editor.getModel(uri) ?? params.monaco.editor.createModel(
+      params.initialContent ?? JSON.stringify(editableRuleset.rulesetContent, undefined, 2),
+      "json",
+      uri,
+    );
     this.Component = createEditor(params.monaco, this.model, editableRuleset, this.sharedData);
   }
 
@@ -182,10 +189,20 @@ function contributeToMonacoEditor(
       label: "Submit ruleset",
       keybindings: [monacoModule.KeyMod.Alt | monacoModule.KeyCode.Enter],
       run: () => {
-        submitRuleset(JSON.parse(editor.getValue()) as Ruleset);
+        submitRuleset(parseRuleset(editor.getValue()));
       },
     });
   }
 }
 
 let initialized = false;
+
+/* istanbul ignore next */
+function parseRuleset(rulesetContent: string): Ruleset {
+  try {
+    const ruleset = JSON.parse(rulesetContent);
+    return ruleset;
+  } catch {
+    return { id: "", rules: [] };
+  }
+}
