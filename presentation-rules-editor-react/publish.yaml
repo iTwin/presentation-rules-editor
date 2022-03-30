@@ -1,9 +1,9 @@
 trigger:
-  branches: none
-  pr: none
   tags:
     include:
       - v*.*.*
+
+pr: none
 
 resources:
   repositories:
