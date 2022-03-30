@@ -7,7 +7,7 @@ import * as fs from "fs";
 import { JestDevServerOptions, setup as setupDevServers, teardown as teardownDevServers } from "jest-dev-server";
 import { Socket } from "net";
 import { chromium, ChromiumBrowser, Page } from "playwright";
-import { loadHomepage } from "./utils";
+import { getServiceUrl, loadHomepage } from "./utils";
 
 export let browser: ChromiumBrowser;
 export let page: Page;
@@ -82,6 +82,7 @@ async function execute(command: string): Promise<void> {
 async function setupBrowser({ debug }: { debug: boolean }): Promise<void> {
   browser = await chromium.launch({ headless: !debug, slowMo: debug ? 100 : undefined });
   page = await browser.newPage();
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"], { origin: getServiceUrl() });
 }
 
 interface SetupServersArgs {

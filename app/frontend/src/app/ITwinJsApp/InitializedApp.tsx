@@ -6,16 +6,16 @@ import "./InitializedApp.scss";
 import * as monaco from "monaco-editor";
 import * as React from "react";
 import { WidgetState } from "@itwin/appui-abstract";
-import { MessageManager, StatusMessageRenderer } from "@itwin/appui-react";
-import {
-  IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, OutputMessageType,
-} from "@itwin/core-frontend";
+import { StatusMessageRenderer } from "@itwin/appui-react";
+import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-frontend";
 import { ChildNodeSpecificationTypes, ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
 import { EditableRuleset, SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
 import { BackendApi } from "./api/BackendApi";
 import { ContentTabs } from "./content-tabs/ContentTabs";
 import { IModelIdentifier, isSnapshotIModel } from "./IModelIdentifier";
 import { backendApiContext } from "./ITwinJsAppContext";
+import { parseEditorState } from "./misc/EditorStateSerializer";
+import { displayToast } from "./misc/Notifications";
 import { Frontstage } from "./ui-framework/Frontstage";
 import { StagePanel, StagePanelZone } from "./ui-framework/StagePanel";
 import { UIFramework } from "./ui-framework/UIFramework";
@@ -145,17 +145,7 @@ function useIModel(backendApi: BackendApi, iModelIdentifier: IModelIdentifier): 
 
 function displayIModelError(message: string, error: unknown): void {
   const errorMessage = (error && typeof error === "object") ? (error as { message: unknown }).message : error;
-  displayErrorToast(message, typeof errorMessage === "string" ? errorMessage : undefined);
-}
-
-function displayErrorToast(messageShort: string, messageDetail: string | undefined): void {
-  const messageDetails = new NotifyMessageDetails(
-    OutputMessagePriority.Error,
-    messageShort,
-    messageDetail,
-    OutputMessageType.Toast,
-  );
-  MessageManager.outputMessage(messageDetails);
+  displayToast(OutputMessagePriority.Error, message, typeof errorMessage === "string" ? errorMessage : undefined);
 }
 
 interface UseSoloRulesetEditorReturnType {
@@ -167,8 +157,11 @@ interface UseSoloRulesetEditorReturnType {
 function useSoloRulesetEditor(initialRuleset: Ruleset): UseSoloRulesetEditorReturnType {
   const result = React.useRef(undefined as unknown as UseSoloRulesetEditorReturnType);
   if (result.current === undefined) {
-    const editableRuleset = new EditableRuleset({ initialRuleset });
-    const rulesetEditor = new SoloRulesetEditor({ editableRuleset, monaco });
+    const editorSettings = parseEditorState(window.location.hash);
+    const editableRuleset = new EditableRuleset({
+      initialRuleset: editorSettings ? parseRuleset(editorSettings.ruleset) : initialRuleset,
+    });
+    const rulesetEditor = new SoloRulesetEditor({ editableRuleset, monaco, initialContent: editorSettings?.ruleset });
     result.current = { editableRuleset, rulesetEditor };
   }
 
@@ -183,4 +176,13 @@ function useSoloRulesetEditor(initialRuleset: Ruleset): UseSoloRulesetEditorRetu
   );
 
   return result.current;
+}
+
+function parseRuleset(rulesetContent: string): Ruleset {
+  try {
+    const ruleset = JSON.parse(rulesetContent);
+    return ruleset;
+  } catch {
+    return { id: "", rules: [] };
+  }
 }

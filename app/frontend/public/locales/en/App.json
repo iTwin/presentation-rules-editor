@@ -9,6 +9,7 @@
     "editor": "Ruleset",
     "tree-widget": "Tree",
     "property-grid-widget": "Properties",
+    "share": "Share",
     "viewport": "Viewport"
   },
   "opening-imodel": "Opening iModel...",
@@ -17,5 +18,8 @@
     "no-elements-selected": "Select element(s) to view properties.",
     "over-limit": "Too many elements selected.",
     "show-viewport": "Show viewport"
+  },
+  "toast": {
+    "link-copied": "URL copied to clipboard."
   }
 }

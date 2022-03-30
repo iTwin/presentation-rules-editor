@@ -32,6 +32,6 @@ export async function getWidget(page: Page, widget: string): Promise<ElementHand
 export async function getEditor(page: Page): Promise<ElementHandle<SVGElement | HTMLElement>> {
   const element = await page.waitForSelector("[role=code]");
   // Wait for syntax highlighting to kick in so that text nodes do not disappear while we interact with them
-  await element.waitForSelector(".mtk20");
+  await Promise.race([element.waitForSelector(".mtk20"), element.waitForSelector(".mtk1")]);
   return element;
 }
