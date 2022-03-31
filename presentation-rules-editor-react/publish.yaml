@@ -11,6 +11,10 @@ resources:
       type: git
       name: iModelTechnologies/imodeljs-build-pipeline-scripts
 
+variables:
+  - name: tarballName
+    value: itwin-presentation-rules-editor-react-${{ replace(variables['Build.SourceBranch'], 'refs/tags/v', '') }}.tgz
+
 stages:
   - stage: build
     displayName: Build
@@ -59,7 +63,7 @@ stages:
              script: pnpm pack
              workingDirectory: presentation-rules-editor-react/
 
-          - publish: presentation-rules-editor-react/itwin-presentation-rules-editor-react-${{ replace(variables['Build.SourceBranch'], 'refs/tags/v', '') }}.tgz
+          - publish: presentation-rules-editor-react/$(tarballName)
             displayName: Publish package artifact
             artifact: published-package
 
@@ -69,7 +73,7 @@ stages:
     jobs:
       - template: templates/npmjs-publish-deployment.yaml@templates
         parameters:
-          path: presentation-rules-editor-react/
+          path: $(tarballName)
           artifactName: published-package
           dryrun: true
           releaseTag: pre-release
