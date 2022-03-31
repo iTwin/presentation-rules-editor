@@ -21,6 +21,15 @@ export interface SoloRulesetEditorParams {
 
   /** Initial editor content. When not specified, content is taken from the {@linkcode editableRuleset}. */
   initialContent?: string | undefined;
+
+  /** Specifies which monaco editor contributions will be enabled. By default, no contributions are enabled. */
+  contributions?: ContributionSettings | undefined;
+}
+
+/** A set of configurable editor contributions. */
+export interface ContributionSettings {
+  /** Adds a button that submits current editor model value as ruleset. */
+  submitButton?: boolean | undefined;
 }
 
 /**
@@ -45,7 +54,13 @@ export class SoloRulesetEditor implements IDisposable {
       "json",
       uri,
     );
-    this.Component = createEditor(params.monaco, this.model, editableRuleset, this.sharedData);
+    this.Component = createEditor(
+      params.monaco,
+      this.model,
+      editableRuleset,
+      params.contributions ?? {},
+      this.sharedData,
+    );
   }
 
   /** React component that renders a monaco editor for the associated {@linkcode EditableRuleset}. */
@@ -78,6 +93,7 @@ function createEditor(
   monacoModule: typeof monaco,
   model: monaco.editor.ITextModel,
   ruleset: EditableRuleset,
+  contributions: ContributionSettings,
   sharedData: SoloRulesetEditorSharedData,
 ): (props: SoloRulesetEditorProps) => React.ReactElement {
   return function StandaloneEditorComponent(props: SoloRulesetEditorProps): React.ReactElement {
@@ -90,7 +106,6 @@ function createEditor(
     React.useLayoutEffect(
       () => {
         assert(divRef.current !== null);
-        assert(buttonWidgetRef.current !== null);
 
         editorRef.current = monacoModule.editor.create(
           divRef.current,
@@ -107,20 +122,22 @@ function createEditor(
           editorRef.current.focus();
         }
 
-        editorRef.current.addOverlayWidget({
-          getId: () => "presentation-rules-editor:submit-ruleset-widget",
-          getDomNode: () => {
-            assert(buttonWidgetRef.current !== null);
-            setButtonIsVisible(true);
-            return buttonWidgetRef.current;
-          },
-          getPosition: () => ({ preference: monacoModule.editor.OverlayWidgetPositionPreference.TOP_RIGHT_CORNER }),
-        });
+        if (contributions.submitButton) {
+          editorRef.current.addOverlayWidget({
+            getId: () => "presentation-rules-editor:submit-ruleset-widget",
+            getDomNode: () => {
+              assert(buttonWidgetRef.current !== null);
+              setButtonIsVisible(true);
+              return buttonWidgetRef.current;
+            },
+            getPosition: () => ({ preference: monacoModule.editor.OverlayWidgetPositionPreference.TOP_RIGHT_CORNER }),
+          });
+        }
 
         contributeToMonacoEditor(
           monacoModule,
           editorRef.current,
-          { submitRuleset: (newRuleset) => void ruleset.updateRuleset(newRuleset) },
+          (newRuleset) => void ruleset.updateRuleset(newRuleset),
         );
 
         return () => {
@@ -135,36 +152,49 @@ function createEditor(
 
     editorRef.current?.layout({ width: props.width, height: props.height });
 
-    function handleSubmitButtonClick() {
-      assert(editorRef.current !== undefined);
-      editorRef.current.trigger(undefined, "presentation-rules-editor:submit-ruleset", {});
-    }
-
     return (
       <>
-        <div ref={buttonWidgetRef}>
-          {
-            buttonIsVisible &&
-            <Button styleType={"cta"} title={"Submit ruleset (Alt + Enter)"} onClick={handleSubmitButtonClick}>
-              Submit ruleset
-            </Button>
-          }
-        </div>
+        {
+          contributions.submitButton &&
+          <SubmitRulesetWidget ref={buttonWidgetRef} editor={editorRef.current} visible={buttonIsVisible} />
+        }
         <div ref={divRef} />
       </>
     );
   };
 }
 
-interface ContributionSettings {
-  submitRuleset?: (ruleset: Ruleset) => void | undefined;
+interface SubmitRulesetWidgetProps {
+  editor: monaco.editor.IStandaloneCodeEditor | undefined;
+  visible: boolean;
 }
+
+/* istanbul ignore next */
+const SubmitRulesetWidget = React.forwardRef<HTMLDivElement, SubmitRulesetWidgetProps>(
+  function SubmitRulesetWidget(props, ref) {
+    const handleSubmitButtonClick = () => {
+      assert(props.editor !== undefined);
+      props.editor.trigger(undefined, "presentation-rules-editor:submit-ruleset", {});
+    };
+
+    return (
+      <div ref={ref}>
+        {
+          props.visible &&
+          <Button styleType={"cta"} title={"Submit ruleset (Alt + Enter)"} onClick={handleSubmitButtonClick}>
+            Submit ruleset
+          </Button>
+        }
+      </div>
+    );
+  },
+);
 
 /* istanbul ignore next */
 function contributeToMonacoEditor(
   monacoModule: typeof monaco,
   editor: monaco.editor.IStandaloneCodeEditor,
-  settings: ContributionSettings,
+  submitRuleset: (ruleset: Ruleset) => void,
 ): void {
   if (!initialized) {
     monacoModule.languages.json.jsonDefaults.setDiagnosticsOptions({
@@ -182,17 +212,14 @@ function contributeToMonacoEditor(
     initialized = true;
   }
 
-  const submitRuleset = settings.submitRuleset;
-  if (submitRuleset !== undefined) {
-    editor.addAction({
-      id: "presentation-rules-editor:submit-ruleset",
-      label: "Submit ruleset",
-      keybindings: [monacoModule.KeyMod.Alt | monacoModule.KeyCode.Enter],
-      run: () => {
-        submitRuleset(parseRuleset(editor.getValue()));
-      },
-    });
-  }
+  editor.addAction({
+    id: "presentation-rules-editor:submit-ruleset",
+    label: "Presentation Rules Editor: Submit ruleset",
+    keybindings: [monacoModule.KeyMod.Alt | monacoModule.KeyCode.Enter],
+    run: () => {
+      submitRuleset(parseRuleset(editor.getValue()));
+    },
+  });
 }
 
 let initialized = false;
