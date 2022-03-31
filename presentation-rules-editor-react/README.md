@@ -21,7 +21,9 @@ import { EditableRuleset, PropertyGrid, SoloRulesetEditor, Tree } from "@itwin/p
 
 function MyComponent(props: { iModel: IModelConnection }): React.ReactElement {
   const [editableRuleset] = useState(() => new EditableRuleset({ initialRuleset: ruleset }));
-  const [rulesetEditor] = useState(() => new SoloRulesetEditor({ editableRuleset, monaco }));
+  const [rulesetEditor] = useState(
+    () => new SoloRulesetEditor({ editableRuleset, monaco, contributions: { submitButton: true } }),
+  );
 
   useEffect(
     () => {
