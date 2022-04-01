@@ -54,10 +54,6 @@ export function OpenITwinIModel(props: OpenITwinIModelProps): React.ReactElement
   const history = useHistory();
 
   const iModelRequiresSignIn = !isDemoIModel(props.iModelIdentifier);
-  if (props.iTwinJsApp === undefined || (iModelRequiresSignIn && state === AuthorizationState.Pending)) {
-    return <LoadingIndicator id="app-loader">Loading...</LoadingIndicator>;
-  }
-
   if (iModelRequiresSignIn && state === AuthorizationState.Offline) {
     return (
       <LandingPage headline="Cannot open this iModel while in offline mode">
@@ -72,6 +68,10 @@ export function OpenITwinIModel(props: OpenITwinIModelProps): React.ReactElement
         <Tile thumbnail={<SvgUser onClick={signIn} />} name="Sign In" />
       </LandingPage>
     );
+  }
+
+  if (props.iTwinJsApp === undefined || (iModelRequiresSignIn && state === AuthorizationState.Pending)) {
+    return <LoadingIndicator id="app-loader">Loading...</LoadingIndicator>;
   }
 
   return React.createElement(
