@@ -5,13 +5,13 @@
 import * as React from "react";
 import { SvgUser } from "@itwin/itwinui-icons-react";
 import { Text } from "@itwin/itwinui-react";
-import { AuthorizationState, useAuthorization } from "../Authorization";
-import { CheckingSignInStatusHint } from "../common/CheckingSignInStatusHint";
-import { GitHubLogoSmall } from "../common/GitHubLogo";
-import { LandingPage } from "../common/LandingPage";
-import { Tile } from "../common/Tile";
-import { IModelSelector } from "../IModelSelector/IModelSelector";
-import { BackendApi } from "../ITwinJsApp/api/BackendApi";
+import { AuthorizationState, useAuthorization } from "./Authorization";
+import { CheckingSignInStatusHint } from "./common/CheckingSignInStatusHint";
+import { GitHubLogoSmall } from "./common/GitHubLogo";
+import { LandingPage } from "./common/LandingPage";
+import { Tile } from "./common/Tile";
+import { IModelSelector } from "./IModelSelector/IModelSelector";
+import { BackendApi } from "./ITwinJsApp/api/BackendApi";
 
 interface HomepageProps {
   backendApiPromise: Promise<BackendApi> | undefined;

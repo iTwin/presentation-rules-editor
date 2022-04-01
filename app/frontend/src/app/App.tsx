@@ -11,7 +11,7 @@ import { AppHeader } from "./AppHeader";
 import { createAuthorizationProvider, SignInCallback, SignInSilent, useAuthorization } from "./Authorization";
 import { LoadingIndicator } from "./common/LoadingIndicator";
 import { PageNotFound } from "./errors/PageNotFound";
-import { Homepage } from "./Homepage/Homepage";
+import { Homepage } from "./Homepage";
 import { ITwinJsAppData, OpenITwinIModel, OpenSnapshotIModel } from "./OpenIModel";
 import { applyUrlPrefix } from "./utils/Environment";
 
