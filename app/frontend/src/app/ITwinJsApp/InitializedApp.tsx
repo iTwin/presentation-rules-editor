@@ -161,7 +161,12 @@ function useSoloRulesetEditor(initialRuleset: Ruleset): UseSoloRulesetEditorRetu
     const editableRuleset = new EditableRuleset({
       initialRuleset: editorSettings ? parseRuleset(editorSettings.ruleset) : initialRuleset,
     });
-    const rulesetEditor = new SoloRulesetEditor({ editableRuleset, monaco, initialContent: editorSettings?.ruleset });
+    const rulesetEditor = new SoloRulesetEditor({
+      editableRuleset,
+      monaco,
+      initialContent: editorSettings?.ruleset,
+      contributions: { submitButton: true },
+    });
     result.current = { editableRuleset, rulesetEditor };
   }
 
