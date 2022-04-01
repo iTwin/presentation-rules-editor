@@ -37,7 +37,11 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
     console.warn(error);
   });
 
-  const signIn = async () => userManager.signinRedirect();
+  const signIn = async () => {
+    await userManager.signinRedirect({
+      state: window.location.pathname + window.location.search + window.location.hash,
+    });
+  };
   const signOut = async () => userManager.signoutRedirect();
 
   return function AuthorizationProvider(props: React.PropsWithChildren<{}>): React.ReactElement {
@@ -160,8 +164,6 @@ const authorizationContext = React.createContext<AuthorizationContext>({
 });
 
 export interface SignInCallbackProps {
-  /** Application URL to activate when signin is complete. */
-  returnTo: string;
   /** Content to display while processing signin response. */
   children?: React.ReactNode | Array<React.ReactNode>;
 }
@@ -187,12 +189,12 @@ export function SignInCallback(props: SignInCallbackProps): React.ReactElement {
       let disposed = false;
       void (async () => {
         try {
-          await userManager.signinRedirectCallback();
+          const user = await userManager.signinRedirectCallback();
           if (disposed) {
             return;
           }
 
-          history.replace(props.returnTo);
+          history.replace(user.state || "/");
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error(error);
@@ -205,7 +207,7 @@ export function SignInCallback(props: SignInCallbackProps): React.ReactElement {
 
       return () => { disposed = true; };
     },
-    [userManager, props.returnTo, history],
+    [userManager, history],
   );
 
   if (authError === undefined) {

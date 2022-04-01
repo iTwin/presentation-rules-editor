@@ -12,9 +12,7 @@ import { createAuthorizationProvider, SignInCallback, SignInSilent, useAuthoriza
 import { LoadingIndicator } from "./common/LoadingIndicator";
 import { PageNotFound } from "./errors/PageNotFound";
 import { Homepage } from "./Homepage/Homepage";
-import { BackendApi } from "./ITwinJsApp/api/BackendApi";
-import { IModelIdentifier, isSnapshotIModel } from "./ITwinJsApp/IModelIdentifier";
-import { ITwinJsApp } from "./ITwinJsApp/ITwinJsApp";
+import { ITwinJsAppData, OpenITwinIModel, OpenSnapshotIModel } from "./OpenIModel";
 import { applyUrlPrefix } from "./utils/Environment";
 
 export function App(): React.ReactElement {
@@ -27,7 +25,7 @@ export function App(): React.ReactElement {
             <AppHeader />
             <Switch>
               <Route path="/auth/callback">
-                <SignInCallback returnTo="/">
+                <SignInCallback>
                   <LoadingIndicator>
                     Signing in...
                   </LoadingIndicator>
@@ -76,14 +74,16 @@ function Main(): React.ReactElement {
             const params = new URLSearchParams(props.location.search);
             const snapshotPath = params.get("snapshot");
             if (snapshotPath) {
-              return <ITwinJsAppAwaiter itwinJsApp={itwinJsApp} imodelIdentifier={snapshotPath} />;
+              return process.env.DEPLOYMENT_TYPE !== "web"
+                ? <OpenSnapshotIModel iTwinJsApp={itwinJsApp} iModelIdentifier={snapshotPath} />
+                : <PageNotFound />;
             }
 
             // Attempt to get properly capitalized parameters and fallback to legacy capitalisation
             const iTwinId = params.get("iTwinId") ?? params.get("itwinId");
             const iModelId = params.get("iModelId") ?? params.get("imodelId");
             if (iTwinId && iModelId) {
-              return <ITwinJsAppAwaiter itwinJsApp={itwinJsApp} imodelIdentifier={{ iTwinId, iModelId }} />;
+              return <OpenITwinIModel iTwinJsApp={itwinJsApp} iModelIdentifier={{ iTwinId, iModelId }} />;
             }
 
             return <PageNotFound />;
@@ -93,11 +93,6 @@ function Main(): React.ReactElement {
       <Route path="*" component={PageNotFound} />
     </Switch>
   );
-}
-
-interface ITwinJsAppData {
-  component: typeof ITwinJsApp;
-  backendApiPromise: Promise<BackendApi>;
 }
 
 function useBackgroundITwinJsAppLoading(): ITwinJsAppData | undefined {
@@ -120,35 +115,6 @@ function useBackgroundITwinJsAppLoading(): ITwinJsAppData | undefined {
   );
 
   return itwinJsApp;
-}
-
-interface ITwinJsAppAwaiterProps {
-  itwinJsApp: ITwinJsAppData | undefined;
-  imodelIdentifier: IModelIdentifier;
-}
-
-function ITwinJsAppAwaiter(props: ITwinJsAppAwaiterProps): React.ReactElement {
-  // Keep the same identifier object between renders if its properties have not changed
-  const imodelIdentifier = React.useMemo(
-    () => props.imodelIdentifier,
-    // Dependency array must not change its length between renders
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    isSnapshotIModel(props.imodelIdentifier)
-      ? [props.imodelIdentifier, undefined, undefined]
-      : [undefined, props.imodelIdentifier.iModelId, props.imodelIdentifier.iTwinId],
-  );
-
-  if (props.itwinJsApp === undefined) {
-    return <LoadingIndicator id="app-loader">Loading...</LoadingIndicator>;
-  }
-
-  return React.createElement(
-    props.itwinJsApp.component,
-    {
-      backendApiPromise: props.itwinJsApp.backendApiPromise,
-      imodelIdentifier,
-    },
-  );
 }
 
 function useApplicationInsights(): void {

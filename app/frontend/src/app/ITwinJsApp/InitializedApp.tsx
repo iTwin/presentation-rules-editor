@@ -25,11 +25,11 @@ import { TreeWidget } from "./widgets/TreeWidget";
 
 export interface InitializedAppProps {
   backendApi: BackendApi;
-  imodelIdentifier: IModelIdentifier;
+  iModelIdentifier: IModelIdentifier;
 }
 
 export function InitializedApp(props: InitializedAppProps): React.ReactElement | null {
-  const imodel = useIModel(props.backendApi, props.imodelIdentifier);
+  const imodel = useIModel(props.backendApi, props.iModelIdentifier);
   const { editableRuleset, rulesetEditor } = useSoloRulesetEditor(defaultRuleset);
 
   return (
