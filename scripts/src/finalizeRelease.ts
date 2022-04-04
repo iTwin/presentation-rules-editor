@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -57,8 +57,8 @@ const updatedChangelogContent = changelogContent
 fs.writeFileSync(changelogFilePath, updatedChangelogContent);
 
 try {
-  execSync(`git add ${packageJsonFilePath} ${changelogFilePath}`);
-  execSync(`git commit -e -m \"Release ${packageName}@${packageVersion}\"`);
+  execFileSync("git", ["add", packageJsonFilePath, changelogFilePath]);
+  execFileSync("git", ["commit", "-e", "-m", `Release ${packageName}@${packageVersion}`]);
 } catch (error) {
   console.error(error instanceof Error ? `${error.name}: ${error.message}` : "Could not commit file changes.");
   process.exit(1);
