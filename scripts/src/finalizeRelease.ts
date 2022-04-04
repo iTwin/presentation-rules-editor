@@ -14,13 +14,14 @@ void (async function () {
     process.exit(1);
   }
 
-  const packageName: string = JSON.parse(String(fs.readFileSync(packageJsonFilePath))).name;
+  const packageJson = JSON.parse(String(fs.readFileSync(packageJsonFilePath)));
+  const packageName: string = packageJson.name;
   if (!packageName) {
     console.error("Could not obtain package name.");
     process.exit(1);
   }
 
-  const packageVersion: string = JSON.parse(String(fs.readFileSync(packageJsonFilePath))).version;
+  const packageVersion: string = packageJson.version;
   if (!packageVersion) {
     console.error("Could not obtain package version.");
     process.exit(1);
