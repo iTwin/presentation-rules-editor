@@ -45,7 +45,10 @@ if (unreleasedHeaderEndPosition === -1) {
 }
 
 const unreleasedHeader = changelogContent.substring(unreleasedHeaderStartPosition, unreleasedHeaderEndPosition);
-const releaseHeader = unreleasedHeader.replace("Unreleased", packageVersion).replace("HEAD", `v${packageVersion}`);
+const releaseHeader = unreleasedHeader
+  .replace("Unreleased", packageVersion)
+  .replace("HEAD", `v${packageVersion}`)
+  .concat(` - ${formatDate(new Date())}`);
 
 const updatedChangelogContent = changelogContent
   .slice(0, unreleasedHeaderEndPosition)
@@ -59,4 +62,12 @@ try {
 } catch (error) {
   console.error(error instanceof Error ? `${error.name}: ${error.message}` : "Could not commit file changes.");
   process.exit(1);
+}
+
+function formatDate(date: Date): string {
+  return `${pad(date.getUTCFullYear())}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}`;
+
+  function pad(component: number): string {
+    return String(component).padStart(2, "0");
+  }
 }
