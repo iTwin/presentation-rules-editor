@@ -16,7 +16,6 @@
     "release": "ts-node --transpile-only ../scripts/src/finalizeRelease.ts"
   },
   "license": "MIT",
-  "private": true,
   "author": {
     "name": "Bentley Systems, Inc.",
     "url": "https://www.bentley.com"
