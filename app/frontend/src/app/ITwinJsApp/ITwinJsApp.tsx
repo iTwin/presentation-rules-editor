@@ -15,7 +15,6 @@ import { ITwinLocalization } from "@itwin/core-i18n";
 import { FrontendIModelsAccess } from "@itwin/imodels-access-frontend";
 import { IModelsClient } from "@itwin/imodels-client-management";
 import { Presentation } from "@itwin/presentation-frontend";
-import { AuthorizationState, useAuthorization } from "../Authorization";
 import { LoadingIndicator } from "../common/LoadingIndicator";
 import { applyUrlPrefix } from "../utils/Environment";
 import { AuthClient, BackendApi } from "./api/BackendApi";
@@ -24,12 +23,11 @@ import { InitializedApp } from "./InitializedApp";
 
 export interface ITwinJsAppProps {
   backendApiPromise: Promise<BackendApi>;
-  imodelIdentifier: IModelIdentifier;
+  iModelIdentifier: IModelIdentifier;
 }
 
 export function ITwinJsApp(props: ITwinJsAppProps): React.ReactElement {
   const [backendApi, setBackendApi] = React.useState<BackendApi>();
-  const { state } = useAuthorization();
 
   React.useEffect(
     () => {
@@ -46,11 +44,11 @@ export function ITwinJsApp(props: ITwinJsAppProps): React.ReactElement {
     [props.backendApiPromise],
   );
 
-  if (backendApi === undefined || state === AuthorizationState.Pending) {
+  if (backendApi === undefined) {
     return <LoadingIndicator>Initializing...</LoadingIndicator>;
   }
 
-  return <InitializedApp backendApi={backendApi} imodelIdentifier={props.imodelIdentifier} />;
+  return <InitializedApp backendApi={backendApi} iModelIdentifier={props.iModelIdentifier} />;
 }
 
 export async function initializeApp(userManager: UserManager): Promise<BackendApi> {

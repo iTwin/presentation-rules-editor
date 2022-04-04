@@ -9,12 +9,12 @@ import { getEditor, getServiceUrl, getWidget, openDemoIModel, openTestIModel } f
 describe("share button #local #web", () => {
   const testConfiguration = process.env.WEB_TEST
     ? {
-      openIModel: openTestIModel,
-      expectedLink: `${getServiceUrl()}/open-imodel?snapshot=Baytown.bim#editor/N4IgTgrgNgpgzjALiAXCR9EAJKwdjAD2QF8g`,
-    }
-    : {
       openIModel: openDemoIModel,
       expectedLink: `${getServiceUrl()}/open-imodel?iTwinId=b27dc251-0e53-4a36-9a38-182fc309be07&iModelId=f30566da-8fdf-4cba-b09a-fd39f5397ae6#editor/N4IgTgrgNgpgzjALiAXCR9EAJKwdjAD2QF8g`,
+    }
+    : {
+      openIModel: openTestIModel,
+      expectedLink: `${getServiceUrl()}/open-imodel?snapshot=Baytown.bim#editor/N4IgTgrgNgpgzjALiAXCR9EAJKwdjAD2QF8g`,
     };
 
   before(async () => {
@@ -75,5 +75,22 @@ describe("opening shared link #local #web", () => {
     const editorContent = await (await editor.$(".lines-content"))?.textContent();
     // A non-breaking space is separating these words
     expect(editorContent).to.be.equal("<invalid\xa0ruleset>");
+  });
+
+  it("offers user to sign in when link points to a private iModel", async () => {
+    await page.goto(`${getServiceUrl()}/open-imodel?iTwinId=test_itwin&iModelId=test_imodel`);
+
+    const appHeader = await page.waitForSelector(".iui-page-header");
+    const options = await page.waitForSelector(".landing-page-options");
+    expect(await options?.textContent()).to.contain(
+      (process.env.WEB_TEST || await appHeader.$('text="Offline mode"') === null) ? "Sign In" : "Go to homepage",
+    );
+  });
+});
+
+describe("opening snapshot link in #web", () => {
+  it("shows user 404 error", async () => {
+    await page.goto(`${getServiceUrl()}/open-imodel?snapshot=test_snapshot`);
+    await page.waitForSelector('text="Page Not Found"');
   });
 });

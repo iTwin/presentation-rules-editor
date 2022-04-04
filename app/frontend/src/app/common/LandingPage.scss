@@ -12,8 +12,7 @@
 }
 
 .landing-page-options {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   gap: 24px;
   align-items: center;
 }
