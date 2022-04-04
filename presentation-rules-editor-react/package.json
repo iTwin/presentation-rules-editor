@@ -12,7 +12,8 @@
     "test:cover": "nyc npm test",
     "lint": "eslint **/*.{ts,tsx}",
     "typecheck": "tsc --noEmit",
-    "typecheck:watch": "tsc --noEmit --watch"
+    "typecheck:watch": "tsc --noEmit --watch",
+    "release": "ts-node --transpile-only ../scripts/src/finalizeRelease.ts"
   },
   "license": "MIT",
   "private": true,
