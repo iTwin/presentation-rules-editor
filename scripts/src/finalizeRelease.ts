@@ -65,7 +65,7 @@ try {
 }
 
 function formatDate(date: Date): string {
-  return `${pad(date.getUTCFullYear())}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}`;
+  return `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}`;
 
   function pad(component: number): string {
     return String(component).padStart(2, "0");
