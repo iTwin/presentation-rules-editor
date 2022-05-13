@@ -36,6 +36,14 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
     // eslint-disable-next-line no-console
     console.warn(error);
   });
+  userManager.events.addAccessTokenExpiring(async () => {
+    try {
+      await userManager.signinSilent();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(`Silent sign in failed: ${error}`);
+    }
+  });
 
   const signIn = async () => {
     await userManager.signinRedirect({
