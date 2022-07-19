@@ -4,8 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 import { User, UserManager, WebStorageStateStore } from "oidc-client";
 import * as React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Code } from "@itwin/itwinui-react";
+import { LoadingIndicator } from "./common/LoadingIndicator";
 import { ErrorPage } from "./errors/ErrorPage";
 import { applyUrlPrefix } from "./utils/Environment";
 
@@ -171,15 +172,10 @@ const authorizationContext = React.createContext<AuthorizationContext>({
   signOut: async () => { },
 });
 
-export interface SignInCallbackProps {
-  /** Content to display while processing signin response. */
-  children?: React.ReactNode | Array<React.ReactNode>;
-}
-
 /** Finalizes signin process when user is redirected back to the application. */
-export function SignInCallback(props: SignInCallbackProps): React.ReactElement {
+export function SignInCallback(): React.ReactElement {
   const { userManager } = useAuthorization();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [authError, setAuthError] = React.useState<OAuthError>();
 
   React.useEffect(
@@ -202,7 +198,7 @@ export function SignInCallback(props: SignInCallbackProps): React.ReactElement {
             return;
           }
 
-          history.replace(user.state || "/");
+          navigate(user.state || "/");
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error(error);
@@ -215,11 +211,11 @@ export function SignInCallback(props: SignInCallbackProps): React.ReactElement {
 
       return () => { disposed = true; };
     },
-    [userManager, history],
+    [userManager, navigate],
   );
 
   if (authError === undefined) {
-    return <>{props.children}</>;
+    return <LoadingIndicator>Signing in...</LoadingIndicator>;
   }
 
   return <AuthenticationError error={authError} />;

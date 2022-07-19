@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { Profile } from "oidc-client";
 import * as React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
 import {
   Button, DropdownMenu, getUserColor, Header, HeaderBreadcrumbs, HeaderLogo, IconButton, MenuItem, UserIcon,
@@ -17,7 +17,7 @@ import { OfflineModeExplainer } from "./common/OfflineModeExplainer";
 
 export function AppHeader(): React.ReactElement {
   const { state, user, signIn, signOut } = useAuthorization();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const actions = [
     <a
@@ -50,7 +50,7 @@ export function AppHeader(): React.ReactElement {
   return (
     <Header
       appLogo={
-        <HeaderLogo logo={<SvgImodelHollow />} onClick={() => history.push("/")}>
+        <HeaderLogo logo={<SvgImodelHollow />} onClick={() => navigate("/")}>
           Presentation Rules Editor
         </HeaderLogo>
       }

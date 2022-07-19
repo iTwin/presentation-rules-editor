@@ -4,12 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import "./App.scss";
 import * as React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Footer } from "@itwin/itwinui-react";
 import { appLayoutContext, AppLayoutContext, AppTab } from "./AppContext";
 import { AppHeader } from "./AppHeader";
 import { createAuthorizationProvider, SignInCallback, SignInSilent, useAuthorization } from "./Authorization";
-import { LoadingIndicator } from "./common/LoadingIndicator";
 import { PageNotFound } from "./errors/PageNotFound";
 import { Homepage } from "./Homepage";
 import { ITwinJsAppData, OpenITwinIModel, OpenSnapshotIModel } from "./OpenIModel";
@@ -23,17 +22,11 @@ export function App(): React.ReactElement {
         <appLayoutContext.Provider value={appLayoutContextValue}>
           <BrowserRouter>
             <AppHeader />
-            <Switch>
-              <Route path="/auth/callback">
-                <SignInCallback>
-                  <LoadingIndicator>
-                    Signing in...
-                  </LoadingIndicator>
-                </SignInCallback>
-              </Route>
-              <Route path="/auth/silent" component={SignInSilent} />
-              <Route path="/" component={Main} />
-            </Switch>
+            <Routes>
+              <Route path="/auth/callback" element={<SignInCallback />} />
+              <Route path="/auth/silent" element={<SignInSilent />} />
+              <Route path="/*" element={<Main />} />
+            </Routes>
             <Footer />
           </BrowserRouter>
         </appLayoutContext.Provider>
@@ -61,37 +54,14 @@ const AuthorizationProvider = process.env.OAUTH_CLIENT_ID
 
 function Main(): React.ReactElement {
   useApplicationInsights();
-  const itwinJsApp = useBackgroundITwinJsAppLoading();
+  const iTwinJsApp = useBackgroundITwinJsAppLoading();
 
   return (
-    <Switch>
-      <Route path="/" exact={true}>
-        <Homepage backendApiPromise={itwinJsApp?.backendApiPromise} />
-      </Route>
-      <Route path="/open-imodel">
-        {
-          (props) => {
-            const params = new URLSearchParams(props.location.search);
-            const snapshotPath = params.get("snapshot");
-            if (snapshotPath) {
-              return process.env.DEPLOYMENT_TYPE !== "web"
-                ? <OpenSnapshotIModel iTwinJsApp={itwinJsApp} iModelIdentifier={snapshotPath} />
-                : <PageNotFound />;
-            }
-
-            // Attempt to get properly capitalized parameters and fallback to legacy capitalisation
-            const iTwinId = params.get("iTwinId") ?? params.get("itwinId");
-            const iModelId = params.get("iModelId") ?? params.get("imodelId");
-            if (iTwinId && iModelId) {
-              return <OpenITwinIModel iTwinJsApp={itwinJsApp} iModelIdentifier={{ iTwinId, iModelId }} />;
-            }
-
-            return <PageNotFound />;
-          }
-        }
-      </Route>
-      <Route path="*" component={PageNotFound} />
-    </Switch>
+    <Routes>
+      <Route index element={<Homepage backendApiPromise={iTwinJsApp?.backendApiPromise} />} />
+      <Route path="open-imodel" element={<OpenIModel iTwinJsApp={iTwinJsApp} />} />
+      <Route path="*" element={<PageNotFound />} />
+    </Routes>
   );
 }
 
@@ -148,4 +118,28 @@ function useApplicationInsights(): void {
 
     return process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_PROD;
   }
+}
+
+interface OpenIModelProps {
+  iTwinJsApp: ITwinJsAppData | undefined;
+}
+
+function OpenIModel(props: OpenIModelProps): React.ReactElement {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const snapshotPath = params.get("snapshot");
+  if (snapshotPath) {
+    return process.env.DEPLOYMENT_TYPE !== "web"
+      ? <OpenSnapshotIModel iTwinJsApp={props.iTwinJsApp} iModelIdentifier={snapshotPath} />
+      : <PageNotFound />;
+  }
+
+  // Attempt to get properly capitalized parameters and fallback to legacy capitalisation
+  const iTwinId = params.get("iTwinId") ?? params.get("itwinId");
+  const iModelId = params.get("iModelId") ?? params.get("imodelId");
+  if (iTwinId && iModelId) {
+    return <OpenITwinIModel iTwinJsApp={props.iTwinJsApp} iModelIdentifier={{ iTwinId, iModelId }} />;
+  }
+
+  return <PageNotFound />;
 }
