@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "./ErrorPage.scss";
 import * as React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { SvgError } from "@itwin/itwinui-illustrations-react";
 import { Button, ExpandableBlock, Title } from "@itwin/itwinui-react";
 
@@ -21,7 +21,7 @@ export interface ErrorPageProps {
 
 /** An error page with illustration */
 export function ErrorPage(props: ErrorPageProps): React.ReactElement {
-  const history = useHistory();
+  const navigate = useNavigate();
   React.useEffect(
     () => {
       document.title = `${props.title} - Presentation Rules Editor`;
@@ -45,7 +45,7 @@ export function ErrorPage(props: ErrorPageProps): React.ReactElement {
           {props.troubleshooting}
         </ExpandableBlock>
       }
-      <Button styleType="high-visibility" onClick={() => history.push("/")}>Go to homepage</Button>
+      <Button styleType="high-visibility" onClick={() => navigate("/")}>Go to homepage</Button>
     </div>
   );
 }

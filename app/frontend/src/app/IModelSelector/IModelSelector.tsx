@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "./IModelSelector.scss";
 import * as React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { IModelGrid, ProjectFull, ProjectGrid } from "@itwin/imodel-browser-react";
 import { SvgChevronRight, SvgImodel, SvgImodelHollow } from "@itwin/itwinui-icons-react";
 import { Button, MenuItem, ProgressRadial, Text } from "@itwin/itwinui-react";
@@ -40,13 +40,13 @@ const OfflineSelector = React.memo((props: OfflineSelectorProps) => {
   const backendApi = useBackendApi(props.backendApiPromise);
   const { availableIModels, reload } = useAvailableModels(backendApi);
   const { openContainingFolder, snapshotFolderIsOpening } = useOpenContainingFolder(backendApi);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   // TODO: Fix potential performance issue when hundreds of snapshot imodels are available
   const gridItems = availableIModels?.map(
     (name) => {
       function handleOpen() {
-        history.push(`/open-imodel?snapshot=${name}`);
+        navigate(`/open-imodel?snapshot=${name}`);
       }
 
       return (
@@ -215,7 +215,7 @@ function OfflineIModelSelectorSection(props: OfflineIModelSelectorSectionProps):
 
 const OnlineSelector = React.memo(() => {
   const authContext = useAuthorization();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = React.useState<ProjectFull>();
 
   if (authContext.state === AuthorizationState.Offline) {
@@ -284,7 +284,7 @@ const OnlineSelector = React.memo(() => {
         projectId={selectedProject.id}
         apiOverrides={{ serverEnvironmentPrefix }}
         onThumbnailClick={({ id, projectId }) => {
-          history.push(`/open-imodel?iTwinId=${projectId}&iModelId=${id}`);
+          navigate(`/open-imodel?iTwinId=${projectId}&iModelId=${id}`);
         }}
       />
     </IModelSelectorSection>

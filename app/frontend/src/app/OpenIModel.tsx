@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { User } from "oidc-client";
 import * as React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { SvgHome, SvgUser } from "@itwin/itwinui-icons-react";
 import { HeaderButton } from "@itwin/itwinui-react";
 import { appLayoutContext } from "./AppContext";
@@ -72,13 +72,13 @@ export function OpenITwinIModel(props: OpenITwinIModelProps): React.ReactElement
 
   const { state, user, signIn } = useAuthorization();
   usePopulateHeaderBreadcrumbs(iModelIdentifier, user);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const iModelRequiresSignIn = !isDemoIModel(iModelIdentifier);
   if (iModelRequiresSignIn && state === AuthorizationState.Offline) {
     return (
       <LandingPage headline="Cannot open this iModel while in offline mode">
-        <Tile thumbnail={<SvgHome onClick={() => history.push("/")} />} name="Go to homepage" />
+        <Tile thumbnail={<SvgHome onClick={() => navigate("/")} />} name="Go to homepage" />
       </LandingPage>
     );
   }
