@@ -28,19 +28,10 @@ export class BackendApi {
 
     if (isDemoIModel(iModelIdentifier)) {
       this.authorizationClient.useDemoUser = true;
-      const response = await fetch(
-        `https://api.bentley.com/imodelhub/sv1.1/Repositories/iModel--${iModelIdentifier.iModelId}/iModelScope/Version/?$top=1`,
-        {
-          headers: {
-            authorization: await this.authorizationClient.getAccessToken(),
-          },
-        }
-      );
-      const json = await response.json();
       return CheckpointConnection.openRemote(
         iModelIdentifier.iTwinId,
         iModelIdentifier.iModelId,
-        IModelVersion.asOfChangeSet(json.instanceId),
+        IModelVersion.latest(),
       );
     }
 
