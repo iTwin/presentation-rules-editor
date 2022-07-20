@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { execSync } from "child_process";
 import * as fs from "fs";
+import * as os from "os";
 import { PresentationRulesEditorRpcInterface } from "@app/common";
 import { RpcManager } from "@itwin/core-common";
 import { SnapshotFileNameResolver } from "./SnapshotFileNameResolver";
@@ -24,18 +25,25 @@ export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcIn
     let command: string;
     switch (process.platform) {
       case "darwin":
-        command = "open";
+        command = `open ${SnapshotFileNameResolver.getIModelsDirectory()}`;
         break;
 
       case "win32":
         // "start" will switch focus to the explorer window
-        command = "start explorer";
+        command = `start explorer ${SnapshotFileNameResolver.getIModelsDirectory()}`;
+        break;
+
+      case "linux":
+        // Check if we are running under WSL
+        command = os.release().includes("microsoft")
+          ? `powershell.exe start explorer.exe ${SnapshotFileNameResolver.getIModelsDirectory().split("/").join("\\\\")}`
+          : `xdg-open ${SnapshotFileNameResolver.getIModelsDirectory()}`;
         break;
 
       default:
-        command = "xdg-open";
+        command = `xdg-open ${SnapshotFileNameResolver.getIModelsDirectory()}`;
     }
 
-    execSync(`${command} ${SnapshotFileNameResolver.getIModelsDirectory()}`);
+    execSync(command);
   }
 }
