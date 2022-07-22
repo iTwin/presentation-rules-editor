@@ -18,8 +18,21 @@ export abstract class PresentationRulesEditorRpcInterface extends RpcInterface {
   }
 
   @RpcOperation.setRoutingProps(localDeploymentOnly)
-  public async getAvailableIModels(): Promise<string[]> { return this.forward(arguments); }
+  public async getAvailableIModels(): Promise<IModelMetadata[]> {
+    const response: IModelMetadata[] = await this.forward(arguments);
+    for (const iModel of response) {
+      iModel.dateModified = new Date(iModel.dateModified);
+    }
+
+    return response;
+  }
 
   @RpcOperation.setRoutingProps(localDeploymentOnly)
   public async openIModelsDirectory(): Promise<void> { return this.forward(arguments); }
+}
+
+export interface IModelMetadata {
+  name: string;
+  dateModified: Date;
+  size: string;
 }

@@ -8,16 +8,11 @@ import { getServiceUrl, loadHomepage } from "./utils";
 
 describe("homepage #local", () => {
   before(async () => {
-    // eslint-disable-next-line no-console
-    console.time("Homepage load");
     await loadHomepage(page);
-    // eslint-disable-next-line no-console
-    console.timeEnd("Homepage load");
   });
 
-  it("allows opening local imodel snapshot", async () => {
-    await page.click('.iui-tile:has-text("Baytown.bim") .iui-thumbnail');
-    expect(page.url()).to.be.equal(`${getServiceUrl()}/open-imodel?snapshot=Baytown.bim`);
+  it("opens iModel browser", async () => {
+    expect(page.url().startsWith(`${getServiceUrl()}/browse-imodels`)).to.be.true;
   });
 });
 
@@ -26,8 +21,7 @@ describe("homepage #web", () => {
     await loadHomepage(page);
   });
 
-  it("gives options to sign in or clone", async () => {
-    expect(await page.waitForSelector("text=Sign In"));
-    expect(await page.waitForSelector("text=Clone"));
+  it("opens default demo iModel", async () => {
+    expect(page.url().startsWith(`${getServiceUrl()}/open-imodel?`)).to.be.true;
   });
 });

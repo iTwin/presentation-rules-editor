@@ -3,19 +3,22 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-.content-tabs {
-  display: grid;
+.content-tabs-wrapper {
   height: 100%;
-  grid-template-rows: min-content minmax(0, 1fr);
-  grid-template-columns: minmax(0, 1fr);
+  background-color: var(--iui-color-background-1);
 }
 
-.content-tabs-header {
+.content-tabs-content.content-tabs-content {
   display: grid;
-  grid-template-columns: 1fr min-content;
-  align-items: center;
+  height: 100%;
+  grid-template-rows: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+  padding: 0;
+}
 
-  button#share {
-    margin: 0 16px;
-  }
+button#share {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 4px 16px;
 }

@@ -3,42 +3,49 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "./App.scss";
+import "@itwin/itwinui-layouts-css/styles.css";
 import * as React from "react";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
-import { Footer } from "@itwin/itwinui-react";
-import { appLayoutContext, AppLayoutContext, AppTab } from "./AppContext";
-import { AppHeader } from "./AppHeader";
-import { createAuthorizationProvider, SignInCallback, SignInSilent, useAuthorization } from "./Authorization";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { SvgDeveloper, SvgFolderOpened } from "@itwin/itwinui-icons-react";
+import { PageLayout } from "@itwin/itwinui-layouts-react";
+import { Footer, SidenavButton, SideNavigation } from "@itwin/itwinui-react";
+import { appNavigationContext, AppNavigationContext } from "./AppContext";
+import { AppHeader, breadcrumbsContext } from "./AppHeader";
+import {
+  AuthorizationState, createAuthorizationProvider, SignInCallback, SignInSilent, useAuthorization,
+} from "./Authorization";
+import { CheckingSignInStatusHint } from "./common/CheckingSignInStatusHint";
 import { PageNotFound } from "./errors/PageNotFound";
-import { Homepage } from "./Homepage";
-import { ITwinJsAppData, OpenITwinIModel, OpenSnapshotIModel } from "./OpenIModel";
+import { DemoIModelBrowser } from "./IModelBrowser/DemoIModelBrowser";
+import { IModelBrowser, IModelBrowserTab, IModelBrowserTabs } from "./IModelBrowser/IModelBrowser";
+import { ITwinBrowser, ITwinIModelBrowser } from "./IModelBrowser/ITwinIModelBrowser";
+import { LocalIModelBrowser } from "./IModelBrowser/LocalIModelBrowser";
+import { isSnapshotIModel } from "./ITwinJsApp/IModelIdentifier";
+import { ITwinJsAppData, OpenIModel } from "./OpenIModel";
 import { applyUrlPrefix } from "./utils/Environment";
 
 export function App(): React.ReactElement {
-  const appLayoutContextValue = useAppLayout();
+  const appContextValue = useAppNavigationContext();
+  const [breadcrumbs, setBreadcrumbs] = React.useState<React.ReactNode[]>([]);
   return (
-    <div className="app">
-      <AuthorizationProvider>
-        <appLayoutContext.Provider value={appLayoutContextValue}>
-          <BrowserRouter>
-            <AppHeader />
+    <AuthorizationProvider>
+      <appNavigationContext.Provider value={appContextValue}>
+        <breadcrumbsContext.Provider value={{ breadcrumbs, setBreadcrumbs }}>
+          <PageLayout>
+            <PageLayout.Header>
+              <AppHeader />
+            </PageLayout.Header>
             <Routes>
               <Route path="/auth/callback" element={<SignInCallback />} />
               <Route path="/auth/silent" element={<SignInSilent />} />
               <Route path="/*" element={<Main />} />
             </Routes>
             <Footer />
-          </BrowserRouter>
-        </appLayoutContext.Provider>
-      </AuthorizationProvider>
-    </div>
+          </PageLayout>
+        </breadcrumbsContext.Provider>
+      </appNavigationContext.Provider>
+    </AuthorizationProvider>
   );
-}
-
-function useAppLayout(): AppLayoutContext {
-  const [activeTab, setActiveTab] = React.useState(AppTab.Editor);
-  const [breadcrumbs, setBreadcrumbs] = React.useState<React.ReactNode[]>([]);
-  return { activeTab, setActiveTab, breadcrumbs, setBreadcrumbs };
 }
 
 const AuthorizationProvider = process.env.OAUTH_CLIENT_ID
@@ -58,32 +65,72 @@ function Main(): React.ReactElement {
 
   return (
     <Routes>
-      <Route index element={<Homepage backendApiPromise={iTwinJsApp?.backendApiPromise} />} />
+      <Route index element={<IndexRedirect />} />
       <Route path="open-imodel" element={<OpenIModel iTwinJsApp={iTwinJsApp} />} />
-      <Route path="*" element={<PageNotFound />} />
+      <Route path="browse-imodels" element={<IModelBrowser />}>
+        <Route index element={<Navigate replace to={process.env.DEPLOYMENT_TYPE === "web" ? "iTwins" : "local"} />} />
+        {
+          process.env.DEPLOYMENT_TYPE !== "web" &&
+          <Route path="local" element={<IModelBrowserTabs activeTab={IModelBrowserTab.Local} />}>
+            <Route index element={<LocalIModelBrowser backendApiPromise={iTwinJsApp?.backendApiPromise} />} />
+          </Route>
+        }
+        <Route path="iTwins" element={<IModelBrowserTabs activeTab={IModelBrowserTab.iTwins} />}>
+          <Route index element={<ITwinBrowser />} />
+          <Route path=":iTwin" element={<ITwinIModelBrowser />} />
+        </Route>
+        <Route path="demo" element={<IModelBrowserTabs activeTab={IModelBrowserTab.Demo} />}>
+          <Route index element={<DemoIModelBrowser />} />
+        </Route>
+      </Route>
+      <Route path="*" element={<PageLayout.Content><PageNotFound /></PageLayout.Content>} />
     </Routes>
+  );
+}
+
+function useAppNavigationContext(): AppNavigationContext {
+  const navigate = useNavigate();
+  return React.useMemo(
+    () => ({
+      openRulesetEditor: (iModelIdentifier) => {
+        if (!iModelIdentifier) {
+          navigate("/open-imodel");
+        } else {
+          navigate(
+            `/open-imodel?${isSnapshotIModel(iModelIdentifier)
+              ? `snapshot=${iModelIdentifier}`
+              : `iTwinId=${iModelIdentifier.iTwinId}&iModelId=${iModelIdentifier.iModelId}`}`,
+          );
+        }
+      },
+      openIModelBrowser: (tab) => {
+        if (!tab) {
+          navigate("/browse-imodels");
+        } else {
+          navigate(`/browse-imodels/${tab}`);
+        }
+      },
+    }),
+    [navigate],
   );
 }
 
 function useBackgroundITwinJsAppLoading(): ITwinJsAppData | undefined {
   const [itwinJsApp, setITwinJsApp] = React.useState<ITwinJsAppData>();
-  const { userManager } = useAuthorization();
-
   React.useEffect(
     () => {
       let disposed = false;
       void (async () => {
         const { ITwinJsApp: component, initializeApp } = await import("./ITwinJsApp/ITwinJsApp");
         if (!disposed) {
-          setITwinJsApp({ component, backendApiPromise: initializeApp(userManager) });
+          setITwinJsApp({ component, backendApiPromise: initializeApp() });
         }
       })();
 
       return () => { disposed = true; };
     },
-    [userManager],
+    [],
   );
-
   return itwinJsApp;
 }
 
@@ -120,26 +167,56 @@ function useApplicationInsights(): void {
   }
 }
 
-interface OpenIModelProps {
-  iTwinJsApp: ITwinJsAppData | undefined;
+interface AppSideNavigationProps {
+  activePage: AppPage;
 }
 
-function OpenIModel(props: OpenIModelProps): React.ReactElement {
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const snapshotPath = params.get("snapshot");
-  if (snapshotPath) {
-    return process.env.DEPLOYMENT_TYPE !== "web"
-      ? <OpenSnapshotIModel iTwinJsApp={props.iTwinJsApp} iModelIdentifier={snapshotPath} />
-      : <PageNotFound />;
+export enum AppPage {
+  RulesetEditor = "ruleset-editor",
+  iModelBrowser = "imodel-browser",
+}
+
+export const AppSideNavigation = React.memo<AppSideNavigationProps>(
+  function AppSideNavigation(props) {
+    const navigation = React.useContext(appNavigationContext);
+    return (
+      <PageLayout.SideNavigation>
+        <SideNavigation
+          expanderPlacement="bottom"
+          items={[
+            <SidenavButton
+              key={AppPage.RulesetEditor}
+              startIcon={<SvgDeveloper />}
+              isActive={props.activePage === AppPage.RulesetEditor}
+              onClick={() => navigation.openRulesetEditor()}
+            >
+              Ruleset Editor
+            </SidenavButton>,
+            <SidenavButton
+              key={AppPage.iModelBrowser}
+              startIcon={<SvgFolderOpened />}
+              isActive={props.activePage === AppPage.iModelBrowser}
+              onClick={() => navigation.openIModelBrowser()}
+            >
+              Browse iModels
+            </SidenavButton>,
+          ]}
+        />
+      </PageLayout.SideNavigation>
+    );
+  },
+);
+
+function IndexRedirect(): React.ReactElement {
+  const { state } = useAuthorization();
+
+  if (process.env.DEPLOYMENT_TYPE !== "web") {
+    return <Navigate replace to={"/browse-imodels"} />;
   }
 
-  // Attempt to get properly capitalized parameters and fallback to legacy capitalisation
-  const iTwinId = params.get("iTwinId") ?? params.get("itwinId");
-  const iModelId = params.get("iModelId") ?? params.get("imodelId");
-  if (iTwinId && iModelId) {
-    return <OpenITwinIModel iTwinJsApp={props.iTwinJsApp} iModelIdentifier={{ iTwinId, iModelId }} />;
+  if (state === AuthorizationState.Pending) {
+    return <><div /><CheckingSignInStatusHint /></>;
   }
 
-  return <PageNotFound />;
+  return <Navigate replace to={state === AuthorizationState.SignedIn ? "/browse-imodels" : "/open-imodel"} />;
 }

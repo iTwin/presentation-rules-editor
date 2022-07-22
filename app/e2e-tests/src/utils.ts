@@ -13,6 +13,11 @@ export async function loadHomepage(page: Page): Promise<void> {
   await page.waitForSelector("text=Presentation Rules Editor");
 }
 
+export async function openIModelBrowser(page: Page): Promise<void> {
+  await page.goto(`${getServiceUrl()}/browse-imodels`);
+  await page.waitForSelector("text=Browse iModels");
+}
+
 export async function openTestIModel(page: Page): Promise<void> {
   await page.goto(`${getServiceUrl()}/open-imodel?snapshot=Baytown.bim`);
   await page.waitForSelector("id=app-loader", { state: "detached" });

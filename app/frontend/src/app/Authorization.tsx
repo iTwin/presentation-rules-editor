@@ -5,10 +5,13 @@
 import { User, UserManager, WebStorageStateStore } from "oidc-client";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import { AccessToken } from "@itwin/core-bentley";
+import { AuthorizationClient } from "@itwin/core-common";
 import { Code } from "@itwin/itwinui-react";
 import { LoadingIndicator } from "./common/LoadingIndicator";
 import { ErrorPage } from "./errors/ErrorPage";
 import { applyUrlPrefix } from "./utils/Environment";
+import { PageLayout } from "@itwin/itwinui-layouts-react";
 
 export interface AuthorizationProviderConfig {
   authority: string;
@@ -46,6 +49,8 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
     }
   });
 
+  const demoAuthorizationClient = new DemoAuthClient();
+
   const signIn = async () => {
     await userManager.signinRedirect({
       state: window.location.pathname + window.location.search + window.location.hash,
@@ -56,8 +61,10 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
   return function AuthorizationProvider(props: React.PropsWithChildren<{}>): React.ReactElement {
     const [authorizationContextValue, setAuthorizationContextValue] = React.useState<AuthorizationContext>({
       userManager,
+      demoAuthorizationClient,
       state: AuthorizationState.Pending,
       user: undefined,
+      userAuthorizationClient: undefined,
       signIn,
       signOut,
     });
@@ -67,8 +74,10 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
         const handleUserLoaded = (user: User) => {
           setAuthorizationContextValue({
             userManager,
+            demoAuthorizationClient,
             state: AuthorizationState.SignedIn,
             user,
+            userAuthorizationClient: new AuthClient(userManager),
             signIn,
             signOut,
           });
@@ -77,8 +86,10 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
         const handleUserUnloaded = () => {
           setAuthorizationContextValue({
             userManager,
+            demoAuthorizationClient,
             state: AuthorizationState.SignedOut,
             user: undefined,
+            userAuthorizationClient: undefined,
             signIn,
             signOut,
           });
@@ -115,8 +126,10 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
 
             setAuthorizationContextValue({
               userManager,
+              demoAuthorizationClient,
               state: AuthorizationState.SignedOut,
               user: undefined,
+              userAuthorizationClient: undefined,
               signIn,
               signOut,
             });
@@ -138,6 +151,7 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
 
 export type AuthorizationContext = {
   userManager: UserManager;
+  demoAuthorizationClient: AuthorizationClient;
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
 } & (AuthorizationContextWithUser | AuthorizationContextWithoutUser);
@@ -145,11 +159,13 @@ export type AuthorizationContext = {
 interface AuthorizationContextWithUser {
   state: AuthorizationState.SignedIn;
   user: User;
+  userAuthorizationClient: AuthorizationClient;
 }
 
 interface AuthorizationContextWithoutUser {
   state: Exclude<AuthorizationState, AuthorizationState.SignedIn>;
   user: undefined;
+  userAuthorizationClient: undefined;
 }
 
 export enum AuthorizationState {
@@ -159,6 +175,34 @@ export enum AuthorizationState {
   SignedIn,
 }
 
+class AuthClient implements AuthorizationClient {
+  constructor(private userManager: UserManager) {}
+
+  public async getAccessToken(): Promise<AccessToken> {
+    const user = await this.userManager.getUser();
+    return user ? `${user.token_type} ${user.access_token}` : "";
+  }
+}
+
+class DemoAuthClient implements AuthorizationClient {
+  private accessToken: Promise<string> | undefined = undefined;
+
+  public async getAccessToken(): Promise<string> {
+    this.accessToken ??= (async () => {
+      const response = await fetch(
+        "https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser",
+      );
+      const result = await response.json();
+      setTimeout(
+        () => this.accessToken = undefined,
+        new Date(result._expiresAt).getTime() - new Date().getTime() - 5000,
+      );
+      return `Bearer ${result._jwt}`;
+    })();
+    return this.accessToken;
+  }
+}
+
 /** Returns current authorization state. */
 export function useAuthorization(): AuthorizationContext {
   return React.useContext(authorizationContext);
@@ -166,8 +210,10 @@ export function useAuthorization(): AuthorizationContext {
 
 const authorizationContext = React.createContext<AuthorizationContext>({
   userManager: new UserManager({}),
+  demoAuthorizationClient: new DemoAuthClient(),
   state: AuthorizationState.Offline,
   user: undefined,
+  userAuthorizationClient: undefined,
   signIn: async () => { },
   signOut: async () => { },
 });
@@ -198,7 +244,7 @@ export function SignInCallback(): React.ReactElement {
             return;
           }
 
-          navigate(user.state || "/");
+          navigate(user.state || "/", { replace: true });
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error(error);
@@ -215,7 +261,11 @@ export function SignInCallback(): React.ReactElement {
   );
 
   if (authError === undefined) {
-    return <LoadingIndicator>Signing in...</LoadingIndicator>;
+    return (
+      <PageLayout.Content>
+        <LoadingIndicator style={{ height: "100%" }}>Signing in...</LoadingIndicator>
+      </PageLayout.Content>
+    );
   }
 
   return <AuthenticationError error={authError} />;
@@ -283,7 +333,7 @@ function getTroubleshootingText(userManager: UserManager): React.ReactNode {
   return (
     <>
       Visit the application&apos;s registration page
-      on <a title="iTwin Platform" href={applyUrlPrefix("https://developer.bentley.com/my-apps/")}>iTwin Platform</a> to
+      on <a title="iTwin Platform" href={applyUrlPrefix("https://developer.bentley.com/")}>iTwin Platform</a> to
       check if it has access to the following scopes: {scopeList}.
     </>
   );

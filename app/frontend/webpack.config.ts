@@ -21,7 +21,7 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
     mode: isProductionEnvironment ? "production" : "development",
     bail: isProductionEnvironment,
     entry: {
-      app: "./src/index.ts",
+      app: "./src/index.tsx",
     },
     module: {
       rules: [

@@ -5,7 +5,9 @@
 import { execSync } from "child_process";
 import * as fs from "fs";
 import * as os from "os";
-import { PresentationRulesEditorRpcInterface } from "@app/common";
+import * as path from "path";
+import * as prettyBytes from "pretty-bytes";
+import { IModelMetadata, PresentationRulesEditorRpcInterface } from "@app/common";
 import { RpcManager } from "@itwin/core-common";
 import { SnapshotFileNameResolver } from "./SnapshotFileNameResolver";
 
@@ -15,10 +17,14 @@ export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcIn
     RpcManager.registerImpl(PresentationRulesEditorRpcInterface, PresentationRulesEditorRpcImpl);
   }
 
-  public override async getAvailableIModels(): Promise<string[]> {
+  public override async getAvailableIModels(): Promise<IModelMetadata[]> {
     const dir = SnapshotFileNameResolver.getIModelsDirectory();
-    const files = fs.readdirSync(dir);
-    return files.filter((name) => name.endsWith(".ibim") || name.endsWith(".bim"));
+    return fs.readdirSync(dir, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && (entry.name.endsWith(".ibim") || entry.name.endsWith(".bim")))
+      .map((file) => {
+        const entry = fs.statSync(path.join(dir, file.name));
+        return { name: file.name, dateModified: entry.mtime, size: prettyBytes(entry.size) };
+      });
   }
 
   public override async openIModelsDirectory(): Promise<void> {
