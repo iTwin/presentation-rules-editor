@@ -2,6 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import * as React from "react";
 import { IModelMetadata, PresentationRulesEditorRpcInterface } from "@app/common";
 import { Guid, Id64, Id64String, Logger } from "@itwin/core-bentley";
 import { IModelVersion } from "@itwin/core-common";
@@ -54,4 +55,24 @@ export class BackendApi {
     const viewDefinitionProps = await imodel.views.queryProps({ wantPrivate: false, limit: 1 });
     return viewDefinitionProps[0].id ?? Id64.invalid;
   }
+}
+
+export function useBackendApi(backendApiPromise: Promise<BackendApi> | undefined): BackendApi | undefined {
+  const [backendApi, setBackendApi] = React.useState<BackendApi>();
+  React.useEffect(
+    () => {
+      let disposed = false;
+      void (async () => {
+        const backendApiResult = await backendApiPromise;
+        if (!disposed) {
+          setBackendApi(backendApiResult);
+        }
+      })();
+
+      return () => { disposed = true; };
+    },
+    [backendApiPromise],
+  );
+
+  return backendApi;
 }

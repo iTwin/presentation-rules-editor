@@ -6,31 +6,35 @@ import "./IModelBrowser.scss";
 import * as React from "react";
 import { Outlet, useMatch, useNavigate } from "react-router-dom";
 import { AuthorizationClient } from "@itwin/core-common";
-import { SvgList, SvgSearch, SvgThumbnails } from "@itwin/itwinui-icons-react";
+import { SvgHistory, SvgImodel, SvgList, SvgSearch, SvgThumbnails } from "@itwin/itwinui-icons-react";
 import { FluidGrid, Grid, PageLayout } from "@itwin/itwinui-layouts-react";
 import {
-  ButtonGroup, Headline, IconButton, LabeledInput, Surface, Tab, Text, Tile, Title, VerticalTabs,
+  ButtonGroup, Headline, IconButton, LabeledInput, MenuItem, Surface, Tab, Text, Tile, Title, VerticalTabs,
 } from "@itwin/itwinui-react";
 import { AppPage, AppSideNavigation } from "../App";
 import { appNavigationContext } from "../AppContext";
-import { getIModelThumbnail } from "../ITwinApi";
+import { useAuthorization } from "../Authorization";
+import { VerticalStack } from "../common/CenteredStack";
+import { useLocalStorage } from "../common/LocalStorage";
+import { getIModel, getIModelThumbnail } from "../ITwinApi";
+import { BackendApi, useBackendApi } from "../ITwinJsApp/api/BackendApi";
+import {
+  demoIModels, IModelIdentifier, isDemoIModel, isIModelIdentifier, isSnapshotIModel, ITwinIModelIdentifier,
+} from "../ITwinJsApp/IModelIdentifier";
+
+export interface IModelBrowserProps {
+  backendApiPromise: Promise<BackendApi> | undefined;
+}
 
 export const IModelBrowser = React.memo(
-  function IModelBrowser(): React.ReactElement {
-    const [settings, setSettings] = useLocalStorage(
-      "imodel-browser",
-      (initialValue) => ({
-        displayMode: (typeof initialValue !== "object" || (initialValue as any).displayMode !== "list")
-          ? "grid"
-          : "list",
-      }) as const,
-    );
-
+  function IModelBrowser(props: IModelBrowserProps): React.ReactElement {
+    const [settings, setSettings] = useIModelBrowserSettings();
     const [intersectionObserver] = React.useState(() => new ViewportIntersectionObserver());
+    const backendApi = useBackendApi(props.backendApiPromise);
     React.useEffect(() => () => intersectionObserver.dispose(), [intersectionObserver]);
     const match = useMatch("/browse-imodels/:tab");
     return (
-      <>
+      <iModelBrowserContext.Provider value={{ displayMode: settings.displayMode, intersectionObserver }}>
         <AppSideNavigation activePage={AppPage.iModelBrowser} />
         <PageLayout.Content padded>
           <Headline>Browse iModels</Headline>
@@ -38,12 +42,26 @@ export const IModelBrowser = React.memo(
             <Grid.Item columnSpan={12}>
               <PaddedSurface>
                 <Title>Recent</Title>
-                <FluidGrid>
-                  <Tile name="Test1.bim" description="Snapshop iModel" thumbnail={<></>} isActionable />
-                  <Tile name="Test2" description="Demo iModel" thumbnail={<></>} isActionable />
-                  <Tile name="Test3" description="My Project1" thumbnail={<></>} isActionable />
-                  <Tile name="Test4" description="My Project2" thumbnail={<></>} isActionable />
-                </FluidGrid>
+                <MinimalTileAreaHeight>
+                  {
+                    settings.recentIModels.length === 0
+                      ? <VerticalStack className="imodel-browser-no-data">
+                        <SvgHistory />
+                        <Title isMuted>No recent iModels</Title>
+                      </VerticalStack>
+                      : <FluidGrid>
+                        {settings.recentIModels.slice(-5).reverse().map(
+                          (iModelIdentifier) => isSnapshotIModel(iModelIdentifier)
+                            ? <IModelSnapshotTile
+                              key={iModelIdentifier}
+                              name={iModelIdentifier}
+                              openSnapshotsFolder={() => backendApi?.openIModelsDirectory()}
+                            />
+                            : <RecentIModelTile key={iModelIdentifier.iModelId} iModelIdentifier={iModelIdentifier} />,
+                        )}
+                      </FluidGrid>
+                  }
+                </MinimalTileAreaHeight>
               </PaddedSurface>
             </Grid.Item>
             <Grid.Item columnSpan={12}>
@@ -57,13 +75,13 @@ export const IModelBrowser = React.memo(
                       <ButtonGroup>
                         <IconButton
                           isActive={settings.displayMode === "grid"}
-                          onClick={() => setSettings({ displayMode: "grid" })}
+                          onClick={() => setSettings((prevState) => ({ ...prevState, displayMode: "grid" }))}
                         >
                           <SvgThumbnails />
                         </IconButton>
                         <IconButton
                           isActive={settings.displayMode === "list"}
-                          onClick={() => setSettings({ displayMode: "list" })}
+                          onClick={() => setSettings((prevState) => ({ ...prevState, displayMode: "list" }))}
                         >
                           <SvgList />
                         </IconButton>
@@ -71,55 +89,19 @@ export const IModelBrowser = React.memo(
                     }
                   </Grid.Item>
                   <Grid.Item columnSpan={12}>
-                    <iModelBrowserContext.Provider value={{ displayMode: settings.displayMode, intersectionObserver }}>
-                      <Outlet />
-                    </iModelBrowserContext.Provider>
+                    <Outlet />
                   </Grid.Item>
                 </Grid>
               </PaddedSurface>
             </Grid.Item>
           </Grid>
         </PageLayout.Content>
-      </>
+      </iModelBrowserContext.Provider>
     );
   },
 );
 
-/** Retrieves the value in local storage under the specified key. The key value change is not tracked by this hook. */
-function useLocalStorage<T>(key: string, init: (initialValue: {} | string | undefined) => T): [T, (value: T) => void] {
-  const [state, setState] = React.useState<T>(() => {
-    const initialValue = init(getLocalStorageValue(key));
-    localStorage.setItem(normalizeKey(key), JSON.stringify(initialValue));
-    return initialValue;
-  });
-  const setValue = React.useCallback(
-    (value: T) => {
-      const stringifiedValue = JSON.stringify(value);
-      localStorage.setItem(normalizeKey(key), stringifiedValue);
-      // Unstringified value may differ from original
-      setState(JSON.parse(stringifiedValue));
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
-  return [state, setValue];
-}
-
-function getLocalStorageValue(key: string): {} | string | undefined {
-  const value = localStorage.getItem(normalizeKey(key));
-  try {
-    // JSON.parse returns null when the input is null
-    return JSON.parse(value!) ?? undefined;
-  } catch {
-    return undefined;
-  }
-}
-
-function normalizeKey(key: string): string {
-  return `presentation-rules-editor/${key}`;
-}
-
-export class ViewportIntersectionObserver {
+class ViewportIntersectionObserver {
   private observer: IntersectionObserver;
   private observers: Map<Element, (isIntersecting: boolean) => void>;
 
@@ -197,19 +179,32 @@ export function IModelBrowserTabs(props: IModelBrowserTabsProps): React.ReactEle
       activeIndex={indexToTab.indexOf(props.activeTab)}
       onTabSelected={(index) => navigate(`../${indexToTab[index]}`, { replace: true })}
     >
-      <MinimalTabHeight>
+      <MinimalTileAreaHeight>
         <Outlet />
-      </MinimalTabHeight>
+      </MinimalTileAreaHeight>
     </VerticalTabs>
+  );
+}
+
+interface MinimalTileAreaHeightProps {
+  children: React.ReactNode;
+}
+
+function MinimalTileAreaHeight(props: MinimalTileAreaHeightProps): React.ReactElement {
+  return (
+    <div className="minimal-tab-height">
+      <Tile id="invisible" name="Invisible" description="Reserves vertical space" thumbnail={<></>} />
+      {props.children}
+    </div>
   );
 }
 
 export interface IModelTileProps {
   iModelId: string;
   iTwinId: string;
-  name: string;
+  name: React.ReactNode;
   description: string | undefined;
-  authorizationClient: AuthorizationClient;
+  authorizationClient: AuthorizationClient | undefined;
   onVisible?: (() => void) | undefined;
 }
 
@@ -224,7 +219,8 @@ export function IModelTile(props: IModelTileProps): React.ReactElement {
       let disposed = false;
       const onVisible = props.onVisible;
       const element = divRef.current;
-      if (!element) {
+      const authorizationClient = props.authorizationClient;
+      if (!element || !authorizationClient) {
         return;
       }
 
@@ -235,7 +231,7 @@ export function IModelTile(props: IModelTileProps): React.ReactElement {
             return;
           }
 
-          const response = await getIModelThumbnail(props.iModelId, props.authorizationClient);
+          const response = await getIModelThumbnail(props.iModelId, authorizationClient);
           if (!disposed && response) {
             setThumbnail(URL.createObjectURL(response));
           }
@@ -267,15 +263,104 @@ export function IModelTile(props: IModelTileProps): React.ReactElement {
   );
 }
 
-interface MinimalTabHeightProps {
-  children: React.ReactNode;
+export interface IModelSnapshotTileProps {
+  name: string;
+  openSnapshotsFolder: () => void;
 }
 
-function MinimalTabHeight(props: MinimalTabHeightProps): React.ReactElement {
+export function IModelSnapshotTile(props: IModelSnapshotTileProps): React.ReactElement {
+  const navigation = React.useContext(appNavigationContext);
+  const handleTileClick = (name: string) => (event: React.MouseEvent) => {
+    // This function is called whenever any element within the tile is clicked
+    if ((event.target as Element).matches("button[aria-label='More options'], button[aria-label='More options'] *")) {
+      return;
+    }
+
+    navigation.openRulesetEditor(name);
+  };
+
   return (
-    <div className="minimal-tab-height">
-      <Tile id="invisible" name="Invisible" description="Reserves vertical space" thumbnail={<></>} />
-      {props.children}
-    </div>
+    <Tile
+      name={props.name}
+      description="Snapshot iModel"
+      thumbnail={<SvgImodel />}
+      isActionable
+      onClick={handleTileClick(props.name)}
+      moreOptions={[
+        <MenuItem key="open-folder" onClick={props.openSnapshotsFolder}>Open containing folder</MenuItem>,
+      ]}
+    />
+  );
+}
+
+interface RecentIModelTileProps {
+  iModelIdentifier: ITwinIModelIdentifier;
+}
+
+function RecentIModelTile(props: RecentIModelTileProps): React.ReactElement {
+  const { demoAuthorizationClient, userAuthorizationClient } = useAuthorization();
+  const [iModel, setIModel] = React.useState<{ name: string, description: string }>();
+  const authClient = isDemoIModel(props.iModelIdentifier) ? demoAuthorizationClient : userAuthorizationClient;
+
+  React.useEffect(
+    () => {
+      if (isDemoIModel(props.iModelIdentifier)) {
+        setIModel({ name: demoIModels.get(props.iModelIdentifier.iModelId)?.name ?? "", description: "Demo iModel" });
+        return;
+      }
+
+      if (!authClient) {
+        return;
+      }
+
+      let disposed = false;
+      void (async () => {
+        const response = await getIModel(props.iModelIdentifier.iModelId, authClient);
+        if (!disposed && response) {
+          setIModel({ name: response.displayName, description: response.description ?? "" });
+        }
+      })();
+
+      return () => { disposed = true; };
+    },
+    [authClient, props.iModelIdentifier],
+  );
+
+  return (
+    <IModelTile
+      name={iModel?.name ?? <></>}
+      description={iModel?.description ?? ""}
+      iModelId={props.iModelIdentifier.iModelId}
+      iTwinId={props.iModelIdentifier.iTwinId}
+      authorizationClient={authClient}
+    />
+  );
+}
+
+export interface IModelBrowserSettings {
+  displayMode: "grid" | "list";
+  recentIModels: IModelIdentifier[];
+}
+
+export function useIModelBrowserSettings(): [
+  IModelBrowserSettings,
+  (action: React.SetStateAction<IModelBrowserSettings>) => void,
+] {
+  return useLocalStorage(
+    "imodel-browser",
+    (initialValue: any) => {
+      if (typeof initialValue !== "object") {
+        return {
+          displayMode: "grid",
+          recentIModels: [],
+        };
+      }
+
+      const displayMode = initialValue.displayMode !== "list" ? "grid" : "list";
+      const recentIModels = Array.isArray(initialValue.recentIModels)
+        ? initialValue.recentIModels.filter(isIModelIdentifier)
+        : [];
+      return { displayMode, recentIModels };
+    },
   );
 }
