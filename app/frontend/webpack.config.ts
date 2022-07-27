@@ -84,17 +84,6 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
             strict: true,
           },
         },
-        // Patch @itwin/core-common package to remove dependency on Node.js module
-        {
-          test: /BentleyCloudRpcProtocol\.js$/,
-          loader: "string-replace-loader",
-          options: {
-            search: /^import \{ URL \} from "url";$/m,
-            replace: "// import { URL } from \"url\"; // Our workaround",
-            // Throw if replacement hasn't been performed at least once
-            strict: true,
-          },
-        },
       ],
     },
     output: {
