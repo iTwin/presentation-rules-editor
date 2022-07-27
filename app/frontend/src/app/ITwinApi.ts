@@ -27,16 +27,22 @@ export type ProjectMinimal = Pick<ProjectRepresentation, "id" | "displayName" | 
 export async function getUserProjects(
   detail: "minimal",
   authorizationClient: AuthorizationClient,
+  search?: string,
 ): Promise<ProjectMinimal[] | undefined>;
 export async function getUserProjects(
   detail: "representation",
   authorizationClient: AuthorizationClient,
+  search?: string,
 ): Promise<ProjectRepresentation[] | undefined>;
 export async function getUserProjects(
   detail: "minimal" | "representation",
   authorizationClient: AuthorizationClient,
+  search?: string,
 ): Promise<ProjectMinimal[] | ProjectRepresentation[] | undefined> {
-  const response = await callITwinApi(`projects`, authorizationClient, { Prefer: `return=${detail}` });
+  // Search query should contain non-whitespace characters and not exceed 255 characters.
+  search = search?.trim().slice(0, 256);
+  const searchQuery = search ? `?$search=${search}` : "";
+  const response = await callITwinApi(`projects${searchQuery}`, authorizationClient, { Prefer: `return=${detail}` });
   if (!response.ok) {
     return;
   }
@@ -84,19 +90,25 @@ export async function getProjectIModels(
   projectId: string,
   detail: "minimal",
   authorizationClient: AuthorizationClient,
+  name?: string,
 ): Promise<IModelMinimal[] | undefined>;
 export async function getProjectIModels(
   projectId: string,
   detail: "representation",
   authorizationClient: AuthorizationClient,
+  name?: string,
 ): Promise<IModelRepresentation[] | undefined>;
 export async function getProjectIModels(
   projectId: string,
   detail: "minimal" | "representation",
   authorizationClient: AuthorizationClient,
+  name?: string,
 ): Promise<IModelMinimal[] | IModelRepresentation[] | undefined> {
+  // Search query should contain non-whitespace characters and not exceed 255 characters.
+  name = name?.trim().slice(0, 256);
+  const nameQuery = name ? `&name=${name}` : "";
   const response = await callITwinApi(
-    `imodels?projectId=${projectId}`,
+    `imodels?projectId=${projectId}${nameQuery}`,
     authorizationClient,
     { Prefer: `return=${detail}` },
   );

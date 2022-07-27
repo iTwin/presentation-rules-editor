@@ -33,8 +33,17 @@ export const IModelBrowser = React.memo(
     const backendApi = useBackendApi(props.backendApiPromise);
     React.useEffect(() => () => intersectionObserver.dispose(), [intersectionObserver]);
     const match = useMatch("/browse-imodels/:tab");
+    const [searchQuery, setSearchQuery] = React.useState("");
+    const clearSearchQuery = React.useRef(() => setSearchQuery("")).current;
     return (
-      <iModelBrowserContext.Provider value={{ displayMode: settings.displayMode, intersectionObserver }}>
+      <iModelBrowserContext.Provider
+        value={{
+          displayMode: settings.displayMode,
+          intersectionObserver,
+          searchQuery,
+          clearSearchQuery,
+        }}
+      >
         <AppSideNavigation activePage={AppPage.iModelBrowser} />
         <PageLayout.Content padded>
           <Headline>Browse iModels</Headline>
@@ -69,7 +78,14 @@ export const IModelBrowser = React.memo(
                 <Title>All</Title>
                 <Grid>
                   <Grid.Item className="imodel-browser-controls" columnSpan={12}>
-                    <LabeledInput placeholder="Search" svgIcon={<SvgSearch />} iconDisplayStyle="inline" />
+                    <LabeledInput
+                      placeholder="Search"
+                      svgIcon={<SvgSearch />}
+                      iconDisplayStyle="inline"
+                      value={searchQuery}
+                      maxLength={255}
+                      onChange={(event) => setSearchQuery(event.target.value)}
+                    />
                     {
                       match?.params.tab !== "demo" &&
                       <ButtonGroup>
@@ -140,11 +156,15 @@ function PaddedSurface(props: PaddedSurfaceProps): React.ReactElement {
 export interface IModelBrowserContext {
   displayMode: "grid" | "list";
   intersectionObserver: ViewportIntersectionObserver | undefined;
+  searchQuery: string;
+  clearSearchQuery: () => void;
 }
 
 export const iModelBrowserContext = React.createContext<IModelBrowserContext>({
   displayMode: "grid",
   intersectionObserver: undefined,
+  searchQuery: "",
+  clearSearchQuery: () => {},
 });
 
 export interface IModelBrowserTabsProps {

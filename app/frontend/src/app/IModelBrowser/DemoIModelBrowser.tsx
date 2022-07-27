@@ -4,28 +4,46 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { AuthorizationClient } from "@itwin/core-common";
+import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
 import { FluidGrid } from "@itwin/itwinui-layouts-react";
+import { Title } from "@itwin/itwinui-react";
 import { useAuthorization } from "../Authorization";
+import { VerticalStack } from "../common/CenteredStack";
 import { getIModel } from "../ITwinApi";
 import { demoIModels } from "../ITwinJsApp/IModelIdentifier";
-import { IModelTile } from "./IModelBrowser";
+import { iModelBrowserContext, IModelTile } from "./IModelBrowser";
 
 export function DemoIModelBrowser(): React.ReactElement {
   const { demoAuthorizationClient } = useAuthorization();
   const { demoIModelData, loadIModelData } = useDemoIModelData(demoAuthorizationClient);
+  let { searchQuery } = React.useContext(iModelBrowserContext);
+  searchQuery = searchQuery.trim().toLowerCase();
+  const iModels = [...demoIModels.entries()]
+    .filter(([_, { name }]) => searchQuery === "" || name.toLowerCase().includes(searchQuery));
+  if (iModels.length === 0) {
+    return (
+      <VerticalStack className="imodel-browser-no-data">
+        <SvgImodelHollow />
+        <Title isMuted>No iModels match given search query</Title>
+      </VerticalStack>
+    );
+  }
+
   return (
     <FluidGrid>
-      {[...demoIModels.entries()].map(([iModelId, { name, iTwinId }]) => (
-        <IModelTile
-          key={iModelId}
-          iModelId={iModelId}
-          iTwinId={iTwinId}
-          name={name}
-          description={demoIModelData.get(iModelId)?.description}
-          authorizationClient={demoAuthorizationClient}
-          onVisible={() => demoIModelData.get(iModelId) === undefined && loadIModelData(iModelId)}
-        />
-      ))}
+      {
+        iModels.map(([iModelId, { name, iTwinId }]) => (
+          <IModelTile
+            key={iModelId}
+            iModelId={iModelId}
+            iTwinId={iTwinId}
+            name={name}
+            description={demoIModelData.get(iModelId)?.description}
+            authorizationClient={demoAuthorizationClient}
+            onVisible={() => demoIModelData.get(iModelId) === undefined && loadIModelData(iModelId)}
+          />
+        ))
+      }
     </FluidGrid>
   );
 }
