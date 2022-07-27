@@ -5,15 +5,15 @@
 import "./PropertyGridWidget.scss";
 import * as React from "react";
 import { IModelApp, IModelConnection } from "@itwin/core-frontend";
+import { SvgCollapseAll, SvgExpandAll } from "@itwin/itwinui-icons-react";
 import { Button, IconButton } from "@itwin/itwinui-react";
 import { EditableRuleset, PropertyGrid, PropertyGridAttributes } from "@itwin/presentation-rules-editor-react";
-import { appLayoutContext, AppTab } from "../../AppContext";
 import { VerticalStack } from "../../common/CenteredStack";
+import { LoadingIndicator } from "../../common/LoadingIndicator";
 import { AutoSizer } from "../common/AutoSizer";
 import { LoadingHint } from "../common/LoadingHint";
 import { OpeningIModelHint } from "../common/OpeningIModelHint";
-import { SvgCollapseAll, SvgExpandAll } from "@itwin/itwinui-icons-react";
-import { LoadingIndicator } from "../../common/LoadingIndicator";
+import { rulesetEditorContext, RulesetEditorTab } from "../ITwinJsAppContext";
 
 export interface PropertyGridProps {
   imodel: IModelConnection | undefined;
@@ -132,14 +132,14 @@ interface NoElementsSelectedStateProps {
 
 function NoElementsSelectedState(props: NoElementsSelectedStateProps): React.ReactElement {
   useSuppressControls(props.setSuppressControls);
-  const appLayout = React.useContext(appLayoutContext);
+  const { activeTab, setActiveTab } = React.useContext(rulesetEditorContext);
 
   return (
     <VerticalStack style={{ height: props.height }}>
       <span>{IModelApp.localization.getLocalizedString("App:property-grid.no-elements-selected")}</span>
       {
-        appLayout.activeTab !== AppTab.Viewport &&
-        <Button onClick={() => appLayout.setActiveTab(AppTab.Viewport)}>
+        activeTab !== RulesetEditorTab.Viewport &&
+        <Button onClick={() => setActiveTab(RulesetEditorTab.Viewport)}>
           {IModelApp.localization. getLocalizedString("App:property-grid.show-viewport")}
         </Button>
       }

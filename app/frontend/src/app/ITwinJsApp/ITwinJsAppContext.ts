@@ -3,6 +3,21 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { AuthClient, BackendApi } from "./api/BackendApi";
+import { BackendApi } from "./api/BackendApi";
 
-export const backendApiContext = React.createContext<BackendApi>(new BackendApi(new AuthClient()));
+export const backendApiContext = React.createContext<BackendApi>(new BackendApi());
+
+export interface RulesetEditorContext {
+  activeTab: RulesetEditorTab;
+  setActiveTab: (tab: RulesetEditorTab) => void;
+}
+
+export enum RulesetEditorTab {
+  Editor,
+  Viewport,
+}
+
+export const rulesetEditorContext = React.createContext<RulesetEditorContext>({
+  activeTab: RulesetEditorTab.Editor,
+  setActiveTab: () => { },
+});

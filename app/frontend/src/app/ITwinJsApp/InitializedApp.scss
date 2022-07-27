@@ -3,6 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-.app > .content {
+.ruleset-editor-content {
+  height: 100%;
+  box-sizing: border-box;
   border-bottom: 1px solid var(--buic-background-5);
 }

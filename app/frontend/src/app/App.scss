@@ -3,8 +3,14 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-.app {
-  display: grid;
-  grid-template-rows: min-content auto min-content;
-  height: 100%;
+.app > .iui-layouts-page {
+  // The original grid areas does not include the footer
+  grid-template:
+    "header header" auto
+    "sidenav content" 1fr
+    "sidenav footer" min-content/auto 1fr;
+}
+
+footer {
+  grid-area: footer;
 }

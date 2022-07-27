@@ -1,0 +1,42 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+.imodel-browser-controls {
+  display: flex;
+  justify-content: space-between;
+
+  .iui-input-container {
+    width: 384px;
+  }
+}
+
+.imodel-browser-tab-content {
+  // Prevents tiles from overflowing on extremely narrow viewports
+  overflow: auto;
+}
+
+.imodel-browser-no-snapshots {
+  svg {
+    height: 88px;
+    fill: var(--iui-icons-color);
+  }
+}
+
+.minimal-tab-height {
+  display: grid;
+  grid-template-columns: 0 auto;
+
+  #invisible {
+    visibility: hidden;
+  }
+}
+
+.padded-surface {
+  padding: 22px 24px;
+}
+
+#imodel-thumbnail-placeholder {
+  width: 100%;
+  height: 100%;
+}

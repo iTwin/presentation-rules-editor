@@ -8,8 +8,8 @@ import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-
 import { SvgLink } from "@itwin/itwinui-icons-react";
 import { Button, HorizontalTabs } from "@itwin/itwinui-react";
 import { SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
-import { appLayoutContext, AppTab } from "../../AppContext";
 import { OpeningIModelHint } from "../common/OpeningIModelHint";
+import { rulesetEditorContext, RulesetEditorTab } from "../ITwinJsAppContext";
 import { serializeEditorState } from "../misc/EditorStateSerializer";
 import { displayToast } from "../misc/Notifications";
 import { EditorTab } from "./EditorTab";
@@ -21,7 +21,7 @@ export interface ContentTabsProps {
 }
 
 export function ContentTabs(props: ContentTabsProps): React.ReactElement {
-  const appLayout = React.useContext(appLayoutContext);
+  const { activeTab, setActiveTab } = React.useContext(rulesetEditorContext);
   const tabLabels = React.useMemo(
     () => [
       IModelApp.localization.getLocalizedString("App:label:editor"),
@@ -31,22 +31,23 @@ export function ContentTabs(props: ContentTabsProps): React.ReactElement {
   );
 
   return (
-    <div className="content-tabs">
-      <div className="content-tabs-header">
-        <HorizontalTabs
-          type={"borderless"}
-          labels={tabLabels}
-          activeIndex={appLayout.activeTab}
-          onTabSelected={appLayout.setActiveTab}
-        />
-        {appLayout.activeTab === AppTab.Editor && <ShareButton editor={props.editor} />}
-      </div>
-      {
-        appLayout.activeTab === AppTab.Editor
-          ? <EditorTab editor={props.editor} />
-          : (props.imodel !== undefined ? <ViewportTab imodel={props.imodel} /> : <OpeningIModelHint />)
-      }
-    </div>
+    <>
+      <HorizontalTabs
+        wrapperClassName="content-tabs-wrapper"
+        contentClassName="content-tabs-content"
+        type="borderless"
+        labels={tabLabels}
+        activeIndex={activeTab}
+        onTabSelected={setActiveTab}
+      >
+        {
+          activeTab === RulesetEditorTab.Editor
+            ? <EditorTab editor={props.editor} />
+            : props.imodel !== undefined ? <ViewportTab imodel={props.imodel} /> : <OpeningIModelHint />
+        }
+      </HorizontalTabs>
+      <ShareButton editor={props.editor} />
+    </>
   );
 }
 
