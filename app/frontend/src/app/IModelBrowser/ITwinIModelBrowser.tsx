@@ -164,7 +164,9 @@ export function ITwinIModelBrowser(): React.ReactElement {
     return (
       <VerticalStack className="imodel-browser-no-data">
         <SvgImodelHollow />
-        <Title isMuted>No iModels match search query exactly</Title>
+        <Title isMuted>
+          {searchQuery ? "No iModels match search query exactly" : "No iModels found in this iTwin"}
+        </Title>
       </VerticalStack>
     );
   }
