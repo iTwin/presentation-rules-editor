@@ -28,7 +28,7 @@ export function LocalIModelBrowser(props: LocalIModelBrowserProps): React.ReactE
       <VerticalStack className="imodel-browser-no-data">
         <SvgImodelHollow />
         <Title isMuted>
-          {searchQuery.length > 0 ? "No local iModels match search query" : "No local iModel snapshots found"}
+          {searchQuery ? "No local iModels match search query" : "No local iModel snapshots found"}
         </Title>
         <AsyncActionButton onClick={async () => backendApi?.openIModelsDirectory()}>
           Open snapshots folder
