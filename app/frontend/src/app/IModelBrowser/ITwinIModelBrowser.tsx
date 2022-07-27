@@ -7,9 +7,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { CellProps } from "react-table";
 import { assert } from "@itwin/core-bentley";
 import { AuthorizationClient } from "@itwin/core-common";
-import { SvgProject } from "@itwin/itwinui-icons-react";
+import { SvgImodelHollow, SvgProject } from "@itwin/itwinui-icons-react";
 import { FluidGrid } from "@itwin/itwinui-layouts-react";
-import { Anchor, Button, Table, TableProps, Tile } from "@itwin/itwinui-react";
+import { Anchor, Button, Table, TableProps, Tile, Title } from "@itwin/itwinui-react";
 import { appNavigationContext } from "../AppContext";
 import { AuthorizationState, useAuthorization } from "../Authorization";
 import { HorizontalStack, VerticalStack } from "../common/CenteredStack";
@@ -21,24 +21,23 @@ import { iModelBrowserContext, IModelTile } from "./IModelBrowser";
 export function ITwinBrowser(): React.ReactElement {
   const { userAuthorizationClient, state, signIn } = useAuthorization();
   const [iTwins, setITwins] = React.useState<ProjectRepresentation[]>();
-  const { displayMode } = React.useContext(iModelBrowserContext);
-  React.useEffect(
-    () => {
+  const { displayMode, searchQuery } = React.useContext(iModelBrowserContext);
+
+  React.useEffect(() => setITwins(undefined), [userAuthorizationClient, searchQuery]);
+
+  useDebouncedAsyncEffect(
+    async (disposedRef) => {
       if (userAuthorizationClient === undefined) {
         return;
       }
 
-      let disposed = false;
-      void (async () => {
-        const response = await getUserProjects("representation", userAuthorizationClient);
-        if (!disposed && response) {
-          setITwins(response.sort((a, b) => Date.parse(b.registrationDateTime) - Date.parse(a.registrationDateTime)));
-        }
-      })();
-
-      return () => { disposed = true; };
+      const response = await getUserProjects("representation", userAuthorizationClient, searchQuery);
+      if (!disposedRef.current && response) {
+        setITwins(response.sort((a, b) => Date.parse(b.registrationDateTime) - Date.parse(a.registrationDateTime)));
+      }
     },
-    [userAuthorizationClient],
+    [userAuthorizationClient, searchQuery],
+    500,
   );
 
   if (state === AuthorizationState.SignedOut) {
@@ -54,6 +53,15 @@ export function ITwinBrowser(): React.ReactElement {
     return (
       <VerticalStack>
         <HorizontalStack>Projects are unavailable in offline mode. <OfflineModeExplainer /></HorizontalStack>
+      </VerticalStack>
+    );
+  }
+
+  if (iTwins?.length === 0) {
+    return (
+      <VerticalStack className="imodel-browser-no-data">
+        <SvgProject />
+        <Title isMuted>{searchQuery ? "No projects match given search query" : "No projects found"}</Title>
       </VerticalStack>
     );
   }
@@ -75,17 +83,20 @@ function ITwinBrowserGridView(props: ITwinBrowserGridViewProps): React.ReactElem
 
   return (
     <FluidGrid>
-      {props.iTwins.map((iTwin) => (
-        <Tile
-          key={iTwin.id}
-          name={iTwin.displayName}
-          variant="folder"
-          isActionable
-          thumbnail={<SvgProject />}
-          description={iTwin.projectNumber}
-          onClick={() => navigate(iTwin.id)}
-        />
-      ))}
+      {
+        props.iTwins.map((iTwin) => (
+          <div key={iTwin.id}>
+            <Tile
+              name={iTwin.displayName}
+              variant="folder"
+              isActionable
+              thumbnail={<SvgProject />}
+              description={iTwin.projectNumber}
+              onClick={() => navigate(iTwin.id)}
+            />
+          </div>
+        ))
+      }
     </FluidGrid>
   );
 }
@@ -128,25 +139,37 @@ export function ITwinIModelBrowser(): React.ReactElement {
 
   const { userAuthorizationClient } = useAuthorization();
   const [iModels, setIModels] = React.useState<IModelRepresentation[]>();
-  const { displayMode } = React.useContext(iModelBrowserContext);
-  React.useEffect(
-    () => {
+  const { displayMode, searchQuery, clearSearchQuery } = React.useContext(iModelBrowserContext);
+
+  // We do not want to inherit search query that was intended for iTwins
+  React.useEffect(() => clearSearchQuery(), [clearSearchQuery]);
+  React.useEffect(() => setIModels(undefined), [userAuthorizationClient, iTwin, searchQuery]);
+
+  useDebouncedAsyncEffect(
+    async (disposedRef) => {
       if (userAuthorizationClient === undefined) {
         return;
       }
 
-      let disposed = false;
-      void (async () => {
-        const response = await getProjectIModels(iTwin, "representation", userAuthorizationClient);
-        if (!disposed && response) {
-          setIModels(response.sort((a, b) => Date.parse(b.createdDateTime) - Date.parse(a.createdDateTime)));
-        }
-      })();
-
-      return () => { disposed = true; };
+      const response = await getProjectIModels(iTwin, "representation", userAuthorizationClient, searchQuery);
+      if (!disposedRef.current && response) {
+        setIModels(response.sort((a, b) => Date.parse(b.createdDateTime) - Date.parse(a.createdDateTime)));
+      }
     },
-    [userAuthorizationClient, iTwin],
+    [userAuthorizationClient, iTwin, searchQuery],
+    500,
   );
+
+  if (iModels?.length === 0) {
+    return (
+      <VerticalStack className="imodel-browser-no-data">
+        <SvgImodelHollow />
+        <Title isMuted>
+          {searchQuery ? "No iModels match search query exactly" : "No iModels found in this iTwin"}
+        </Title>
+      </VerticalStack>
+    );
+  }
 
   return displayMode === "grid"
     ? <IModelBrowserGridView iModels={iModels} authorizationClient={userAuthorizationClient} />
@@ -214,4 +237,40 @@ function IModelBrowserTableView(props: IModelBrowserTableViewProps): React.React
     dateCreated: new Date(iModel.createdDateTime).toLocaleDateString(),
   }));
   return <Table columns={columns} data={tableData ?? []} isLoading={tableData === undefined} emptyTableContent="" />;
+}
+
+function useDebouncedAsyncEffect(
+  effect: (disposedRef: { current: boolean }) => Promise<void>,
+  dependencies: unknown[],
+  cooldownMilliseconds: number,
+): void {
+  const activeEffectRef = React.useRef(Promise.resolve());
+
+  React.useEffect(
+    () => {
+      const disposedRef = { current: false };
+      let timeout: any;
+      void (async () => {
+        await activeEffectRef.current;
+        if (disposedRef.current) {
+          return;
+        }
+
+        timeout = setTimeout(
+          () => {
+            if (!disposedRef.current) {
+              activeEffectRef.current = effect(disposedRef);
+            }
+          },
+          cooldownMilliseconds,
+        );
+      })();
+      return () => {
+        disposedRef.current = true;
+        clearTimeout(timeout);
+      };
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    dependencies,
+  );
 }

@@ -21,14 +21,15 @@ export interface LocalIModelBrowserProps {
 
 export function LocalIModelBrowser(props: LocalIModelBrowserProps): React.ReactElement {
   const backendApi = useBackendApi(props.backendApiPromise);
-  const availableIModels = useAvailableIModels(backendApi);
-  const { displayMode } = React.useContext(iModelBrowserContext);
-
+  const { displayMode, searchQuery } = React.useContext(iModelBrowserContext);
+  const availableIModels = useAvailableIModels(backendApi, searchQuery);
   if (availableIModels?.length === 0) {
     return (
       <VerticalStack className="imodel-browser-no-data">
         <SvgImodelHollow />
-        <Title isMuted>No local iModel snapshots found</Title>
+        <Title isMuted>
+          {searchQuery ? "No local iModels match search query" : "No local iModel snapshots found"}
+        </Title>
         <AsyncActionButton onClick={async () => backendApi?.openIModelsDirectory()}>
           Open snapshots folder
         </AsyncActionButton>
@@ -43,7 +44,7 @@ export function LocalIModelBrowser(props: LocalIModelBrowserProps): React.ReactE
     : <TableView availableIModels={availableIModels} openSnapshotsFolder={openSnapshotsFolder} />;
 }
 
-function useAvailableIModels(backendApi: BackendApi | undefined): IModelMetadata[] | undefined {
+function useAvailableIModels(backendApi: BackendApi | undefined, searchQuery: string): IModelMetadata[] | undefined {
   const [availableIModels, setAvailableIModels] = React.useState<IModelMetadata[]>();
   React.useEffect(
     () => {
@@ -60,7 +61,8 @@ function useAvailableIModels(backendApi: BackendApi | undefined): IModelMetadata
     [backendApi],
   );
 
-  return availableIModels;
+  searchQuery = searchQuery.trim().toLowerCase();
+  return availableIModels?.filter(({ name }) => searchQuery === "" || name.toLowerCase().includes(searchQuery));
 }
 
 interface GridViewProps {
