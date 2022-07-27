@@ -236,11 +236,7 @@ export function IModelTile(props: IModelTileProps): React.ReactElement {
           }
 
           const response = await getIModelThumbnail(props.iModelId, props.authorizationClient);
-          if (disposed || !response) {
-            return;
-          }
-
-          if (!disposed) {
+          if (!disposed && response) {
             setThumbnail(URL.createObjectURL(response));
           }
         }
