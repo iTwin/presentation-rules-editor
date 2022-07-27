@@ -67,7 +67,7 @@ function Main(): React.ReactElement {
     <Routes>
       <Route index element={<IndexRedirect />} />
       <Route path="open-imodel" element={<OpenIModel iTwinJsApp={iTwinJsApp} />} />
-      <Route path="browse-imodels" element={<IModelBrowser />}>
+      <Route path="browse-imodels" element={<IModelBrowser backendApiPromise={iTwinJsApp?.backendApiPromise} />}>
         <Route index element={<Navigate replace to={process.env.DEPLOYMENT_TYPE === "web" ? "iTwins" : "local"} />} />
         {
           process.env.DEPLOYMENT_TYPE !== "web" &&

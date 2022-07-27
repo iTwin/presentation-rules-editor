@@ -11,6 +11,11 @@ export interface ITwinIModelIdentifier {
   iModelId: string;
 }
 
+export function isIModelIdentifier(identifier: unknown): identifier is IModelIdentifier {
+  return typeof identifier === "string"
+    || (typeof identifier === "object" && !!identifier && "iTwinId" in identifier && "iModelId" in identifier);
+}
+
 export function isSnapshotIModel(identifier: IModelIdentifier): identifier is SnapshotIModelIdentifier {
   return typeof identifier === "string";
 }

@@ -11,6 +11,7 @@ import { AuthorizationClient } from "@itwin/core-common";
 import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-frontend";
 import { ChildNodeSpecificationTypes, ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
 import { EditableRuleset, SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
+import { useIModelBrowserSettings } from "../IModelBrowser/IModelBrowser";
 import { BackendApi } from "./api/BackendApi";
 import { ContentTabs } from "./content-tabs/ContentTabs";
 import { IModelIdentifier, isSnapshotIModel } from "./IModelIdentifier";
@@ -105,7 +106,8 @@ const defaultRuleset: Ruleset = {
 };
 
 function useIModel(backendApi: BackendApi, iModelIdentifier: IModelIdentifier): IModelConnection | undefined {
-  const [imodel, setIModel] = React.useState<IModelConnection>();
+  const [iModel, setIModel] = React.useState<IModelConnection>();
+  const setMostRecentIModel = useRecentIModels();
 
   React.useEffect(
     () => {
@@ -118,6 +120,7 @@ function useIModel(backendApi: BackendApi, iModelIdentifier: IModelIdentifier): 
           const openedIModel = await iModelPromise;
           if (!disposed) {
             setIModel(openedIModel);
+            setMostRecentIModel(iModelIdentifier);
           }
         } catch (error) {
           if (isSnapshotIModel(iModelIdentifier)) {
@@ -150,10 +153,21 @@ function useIModel(backendApi: BackendApi, iModelIdentifier: IModelIdentifier): 
         })();
       };
     },
-    [backendApi, iModelIdentifier],
+    [backendApi, iModelIdentifier, setMostRecentIModel],
   );
 
-  return imodel;
+  return iModel;
+}
+
+function useRecentIModels(): (iModelIdentifer: IModelIdentifier) => void {
+  const [_, setRecentIModels] = useIModelBrowserSettings();
+  return React.useRef((iModelIdentifier: IModelIdentifier) => {
+    setRecentIModels((prevState) => {
+      const newRecentIModels = prevState.recentIModels.filter((value) => value !== iModelIdentifier);
+      newRecentIModels.push(iModelIdentifier);
+      return { ...prevState, recentIModels: newRecentIModels.slice(-10) };
+    });
+  }).current;
 }
 
 function displayIModelError(message: string, error: unknown): void {
