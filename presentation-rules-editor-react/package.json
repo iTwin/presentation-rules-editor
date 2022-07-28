@@ -8,7 +8,7 @@
     "build:esm": "tsc --project tsconfig.build.json --outDir ./lib/esm --module ES2020",
     "copy:cjs": "cpx \"./src/**/*.*css\" ./lib/cjs/src",
     "copy:esm": "cpx \"./src/**/*.*css\" ./lib/esm/src",
-    "test": "cross-env TS_NODE_TRANSPILE_ONLY=1 mocha -r ts-node/register -r jsdom-global/register -r ignore-styles --file ./src/TestSetup.ts '**/*.test.ts' '**/*.test.tsx'",
+    "test": "cross-env TS_NODE_TRANSPILE_ONLY=1 mocha -r ts-node/register -r jsdom-global/register -r ignore-styles --exit --file ./src/TestSetup.ts '**/*.test.ts' '**/*.test.tsx'",
     "test:cover": "nyc npm test",
     "lint": "eslint **/*.{ts,tsx}",
     "typecheck": "tsc --noEmit",
