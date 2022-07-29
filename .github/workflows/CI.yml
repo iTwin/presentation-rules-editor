@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14]
+        node-version: [16]
 
     name: Build and run tests
     steps:
@@ -24,7 +24,7 @@ jobs:
     - name: Install pnpm
       uses: pnpm/action-setup@v2.0.1
       with:
-        version: 6.19.0
+        version: 6.24.2
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
