@@ -13,7 +13,6 @@
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch"
   },
-  "type": "module",
   "dependencies": {
     "@app/common": "workspace:*",
     "@itwin/core-backend": "3.2.6",
