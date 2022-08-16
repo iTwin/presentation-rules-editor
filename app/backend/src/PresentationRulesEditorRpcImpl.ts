@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
@@ -29,27 +29,36 @@ export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcIn
 
   public override async openIModelsDirectory(): Promise<void> {
     let command: string;
+    let args: string[];
+    const iModelsDirectory = SnapshotFileNameResolver.getIModelsDirectory();
     switch (process.platform) {
       case "darwin":
-        command = `open ${SnapshotFileNameResolver.getIModelsDirectory()}`;
+        command = "open";
+        args = [iModelsDirectory];
         break;
 
       case "win32":
         // "start" will switch focus to the explorer window
-        command = `start explorer ${SnapshotFileNameResolver.getIModelsDirectory()}`;
+        command = "start";
+        args = ["explorer", iModelsDirectory];
         break;
 
       case "linux":
         // Check if we are running under WSL
-        command = os.release().includes("microsoft")
-          ? `powershell.exe start explorer.exe ${SnapshotFileNameResolver.getIModelsDirectory().split("/").join("\\\\")}`
-          : `xdg-open ${SnapshotFileNameResolver.getIModelsDirectory()}`;
+        if (os.release().includes("microsoft")) {
+          command = "powershell.exe";
+          args = ["start", "explorer.exe", iModelsDirectory.split("/").join("\\\\")];
+        } else {
+          command = "xdg-open";
+          args = [iModelsDirectory];
+        }
         break;
 
       default:
-        command = `xdg-open ${SnapshotFileNameResolver.getIModelsDirectory()}`;
+        command = "xdg-open";
+        args = [iModelsDirectory];
     }
 
-    execSync(command);
+    execFileSync(command, args, { shell: true });
   }
 }
