@@ -4,12 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import { Profile } from "oidc-client";
 import * as React from "react";
-import { useHistory } from "react-router-dom";
 import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
 import {
   Button, DropdownMenu, getUserColor, Header, HeaderBreadcrumbs, HeaderLogo, IconButton, MenuItem, UserIcon,
 } from "@itwin/itwinui-react";
-import { appLayoutContext } from "./AppContext";
+import { appNavigationContext } from "./AppContext";
 import { AuthorizationState, useAuthorization } from "./Authorization";
 import { HorizontalStack } from "./common/CenteredStack";
 import { GitHubLogoSmall } from "./common/GitHubLogo";
@@ -17,17 +16,18 @@ import { OfflineModeExplainer } from "./common/OfflineModeExplainer";
 
 export function AppHeader(): React.ReactElement {
   const { state, user, signIn, signOut } = useAuthorization();
-  const history = useHistory();
+  const navigation = React.useContext(appNavigationContext);
 
   const actions = [
-    <a
+    <IconButton
       key="Repository"
-      className="iui-button iui-borderless iui-button-split-menu"
+      as="a"
       href="https://github.com/iTwin/presentation-rules-editor"
       title="Source code"
+      styleType="borderless"
     >
-      <GitHubLogoSmall className="iui-button-icon" />
-    </a>,
+      <GitHubLogoSmall />
+    </IconButton>,
   ];
   switch (state) {
     case AuthorizationState.Offline:
@@ -50,7 +50,7 @@ export function AppHeader(): React.ReactElement {
   return (
     <Header
       appLogo={
-        <HeaderLogo logo={<SvgImodelHollow />} onClick={() => history.push("/")}>
+        <HeaderLogo logo={<SvgImodelHollow />} onClick={() => navigation.openIModelBrowser()}>
           Presentation Rules Editor
         </HeaderLogo>
       }
@@ -84,6 +84,16 @@ function HeaderUserIcon(props: HeaderUserIconProps): React.ReactElement | null {
 }
 
 function Breadcrumbs(): React.ReactElement {
-  const appLayout = React.useContext(appLayoutContext);
-  return <HeaderBreadcrumbs items={appLayout.breadcrumbs} />;
+  const { breadcrumbs } = React.useContext(breadcrumbsContext);
+  return <HeaderBreadcrumbs items={breadcrumbs} />;
 }
+
+export interface BreadcrumbsContext {
+  breadcrumbs: React.ReactNode[];
+  setBreadcrumbs: (action: React.SetStateAction<React.ReactNode[]>) => void;
+}
+
+export const breadcrumbsContext = React.createContext<BreadcrumbsContext>({
+  breadcrumbs: [],
+  setBreadcrumbs: () => {},
+});

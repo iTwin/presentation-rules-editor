@@ -7,7 +7,7 @@ import * as fs from "fs";
 import { JestDevServerOptions, setup as setupDevServers, teardown as teardownDevServers } from "jest-dev-server";
 import { Socket } from "net";
 import { chromium, ChromiumBrowser, Page } from "playwright";
-import { getServiceUrl, loadHomepage } from "./utils";
+import { getServiceUrl, openTestIModel } from "./utils";
 
 export let browser: ChromiumBrowser;
 export let page: Page;
@@ -30,8 +30,8 @@ before(async function () {
 
   // Make sure the server is responding before beginning any tests
   // eslint-disable-next-line no-console
-  console.log("Preloading homepage...");
-  await loadHomepage(page);
+  console.log("Preloading app...");
+  await openTestIModel(page);
   await page.waitForSelector("text=Baytown.bim");
 });
 

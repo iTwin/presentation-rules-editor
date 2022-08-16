@@ -7,13 +7,15 @@ import * as monaco from "monaco-editor";
 import * as React from "react";
 import { WidgetState } from "@itwin/appui-abstract";
 import { StatusMessageRenderer } from "@itwin/appui-react";
+import { AuthorizationClient } from "@itwin/core-common";
 import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-frontend";
 import { ChildNodeSpecificationTypes, ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
 import { EditableRuleset, SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
+import { useIModelBrowserSettings } from "../IModelBrowser/IModelBrowser";
 import { BackendApi } from "./api/BackendApi";
 import { ContentTabs } from "./content-tabs/ContentTabs";
 import { IModelIdentifier, isSnapshotIModel } from "./IModelIdentifier";
-import { backendApiContext } from "./ITwinJsAppContext";
+import { backendApiContext, rulesetEditorContext, RulesetEditorTab } from "./ITwinJsAppContext";
 import { parseEditorState } from "./misc/EditorStateSerializer";
 import { displayToast } from "./misc/Notifications";
 import { Frontstage } from "./ui-framework/Frontstage";
@@ -26,45 +28,57 @@ import { TreeWidget } from "./widgets/TreeWidget";
 export interface InitializedAppProps {
   backendApi: BackendApi;
   iModelIdentifier: IModelIdentifier;
+  authorizationClient: AuthorizationClient | undefined;
 }
 
 export function InitializedApp(props: InitializedAppProps): React.ReactElement | null {
   const imodel = useIModel(props.backendApi, props.iModelIdentifier);
   const { editableRuleset, rulesetEditor } = useSoloRulesetEditor(defaultRuleset);
+  const [editorContext, setEditorContext] = React.useState({
+    activeTab: RulesetEditorTab.Editor,
+    setActiveTab: (tab: RulesetEditorTab) => setEditorContext((prevState) => ({ ...prevState, activeTab: tab })),
+  });
+
+  React.useEffect(
+    () => { IModelApp.authorizationClient = props.authorizationClient; },
+    [props.authorizationClient],
+  );
 
   return (
     <backendApiContext.Provider value={props.backendApi}>
-      <div className="content">
-        <UIFramework>
-          <Frontstage
-            rightPanel={
-              <StagePanel size={450}>
-                <StagePanelZone>
-                  <Widget
-                    id="TreeWidget"
-                    label={IModelApp.localization.getLocalizedString("App:label:tree-widget")}
-                    defaultState={WidgetState.Open}
-                  >
-                    <TreeWidget imodel={imodel} ruleset={editableRuleset} />
-                  </Widget>
-                </StagePanelZone>
-                <StagePanelZone>
-                  <Widget
-                    id="PropertyGridWidget"
-                    label={IModelApp.localization.getLocalizedString("App:label:property-grid-widget")}
-                    defaultState={WidgetState.Open}
-                  >
-                    <PropertyGridWidget imodel={imodel} ruleset={editableRuleset} />
-                  </Widget>
-                </StagePanelZone>
-              </StagePanel>
-            }
-          >
-            <ContentTabs imodel={imodel} editor={rulesetEditor} />
-          </Frontstage>
-        </UIFramework>
-        <StatusMessageRenderer />
-      </div>
+      <rulesetEditorContext.Provider value={editorContext}>
+        <div className="ruleset-editor-content">
+          <UIFramework>
+            <Frontstage
+              rightPanel={
+                <StagePanel size={450}>
+                  <StagePanelZone>
+                    <Widget
+                      id="TreeWidget"
+                      label={IModelApp.localization.getLocalizedString("App:label:tree-widget")}
+                      defaultState={WidgetState.Open}
+                    >
+                      <TreeWidget imodel={imodel} ruleset={editableRuleset} />
+                    </Widget>
+                  </StagePanelZone>
+                  <StagePanelZone>
+                    <Widget
+                      id="PropertyGridWidget"
+                      label={IModelApp.localization.getLocalizedString("App:label:property-grid-widget")}
+                      defaultState={WidgetState.Open}
+                    >
+                      <PropertyGridWidget imodel={imodel} ruleset={editableRuleset} />
+                    </Widget>
+                  </StagePanelZone>
+                </StagePanel>
+              }
+            >
+              <ContentTabs imodel={imodel} editor={rulesetEditor} />
+            </Frontstage>
+          </UIFramework>
+          <StatusMessageRenderer />
+        </div>
+      </rulesetEditorContext.Provider>
     </backendApiContext.Provider>
   );
 }
@@ -92,7 +106,8 @@ const defaultRuleset: Ruleset = {
 };
 
 function useIModel(backendApi: BackendApi, iModelIdentifier: IModelIdentifier): IModelConnection | undefined {
-  const [imodel, setIModel] = React.useState<IModelConnection>();
+  const [iModel, setIModel] = React.useState<IModelConnection>();
+  const setMostRecentIModel = useRecentIModels();
 
   React.useEffect(
     () => {
@@ -105,6 +120,7 @@ function useIModel(backendApi: BackendApi, iModelIdentifier: IModelIdentifier): 
           const openedIModel = await iModelPromise;
           if (!disposed) {
             setIModel(openedIModel);
+            setMostRecentIModel(iModelIdentifier);
           }
         } catch (error) {
           if (isSnapshotIModel(iModelIdentifier)) {
@@ -137,10 +153,21 @@ function useIModel(backendApi: BackendApi, iModelIdentifier: IModelIdentifier): 
         })();
       };
     },
-    [backendApi, iModelIdentifier],
+    [backendApi, iModelIdentifier, setMostRecentIModel],
   );
 
-  return imodel;
+  return iModel;
+}
+
+function useRecentIModels(): (iModelIdentifer: IModelIdentifier) => void {
+  const [_, setRecentIModels] = useIModelBrowserSettings();
+  return React.useRef((iModelIdentifier: IModelIdentifier) => {
+    setRecentIModels((prevState) => {
+      const newRecentIModels = prevState.recentIModels.filter((value) => value !== iModelIdentifier);
+      newRecentIModels.push(iModelIdentifier);
+      return { ...prevState, recentIModels: newRecentIModels.slice(-10) };
+    });
+  }).current;
 }
 
 function displayIModelError(message: string, error: unknown): void {

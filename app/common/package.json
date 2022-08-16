@@ -11,12 +11,12 @@
     "lint": "eslint **/*.{ts,tsx}"
   },
   "dependencies": {
-    "@itwin/core-bentley": "3.0.0",
-    "@itwin/core-common": "3.0.0",
-    "@itwin/core-geometry": "3.0.0",
-    "@itwin/core-quantity": "3.0.0",
-    "@itwin/eslint-plugin": "3.0.0",
-    "@itwin/presentation-common": "3.0.0",
+    "@itwin/core-bentley": "3.2.6",
+    "@itwin/core-common": "3.2.6",
+    "@itwin/core-geometry": "3.2.6",
+    "@itwin/core-quantity": "3.2.6",
+    "@itwin/eslint-plugin": "3.2.6",
+    "@itwin/presentation-common": "3.2.6",
     "eslint": "^7.30.0",
     "typescript": "~4.4.2"
   }

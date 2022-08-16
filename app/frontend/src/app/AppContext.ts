@@ -3,22 +3,15 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
+import { IModelBrowserTab } from "./IModelBrowser/IModelBrowser";
+import { IModelIdentifier } from "./ITwinJsApp/IModelIdentifier";
 
-export interface AppLayoutContext {
-  activeTab: AppTab;
-  setActiveTab: (action: React.SetStateAction<AppTab>) => void;
-  breadcrumbs: React.ReactNode[];
-  setBreadcrumbs: (action: React.SetStateAction<React.ReactNode[]>) => void;
+export interface AppNavigationContext {
+  openRulesetEditor(iModelIdentifier?: IModelIdentifier): void;
+  openIModelBrowser(tab?: IModelBrowserTab): void;
 }
 
-export enum AppTab {
-  Editor = 0,
-  Viewport = 1,
-}
-
-export const appLayoutContext = React.createContext<AppLayoutContext>({
-  activeTab: AppTab.Editor,
-  setActiveTab: (tab) => tab,
-  breadcrumbs: [],
-  setBreadcrumbs: (breadcrumbs) => breadcrumbs,
+export const appNavigationContext = React.createContext<AppNavigationContext>({
+  openRulesetEditor: () => { },
+  openIModelBrowser: () => { },
 });

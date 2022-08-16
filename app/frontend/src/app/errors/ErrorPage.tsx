@@ -4,9 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 import "./ErrorPage.scss";
 import * as React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { SvgError } from "@itwin/itwinui-illustrations-react";
 import { Button, ExpandableBlock, Title } from "@itwin/itwinui-react";
+import { PageLayout } from "@itwin/itwinui-layouts-react";
 
 export interface ErrorPageProps {
   /** Illustration component. Default: {@link SvgError}. */
@@ -21,7 +22,7 @@ export interface ErrorPageProps {
 
 /** An error page with illustration */
 export function ErrorPage(props: ErrorPageProps): React.ReactElement {
-  const history = useHistory();
+  const navigate = useNavigate();
   React.useEffect(
     () => {
       document.title = `${props.title} - Presentation Rules Editor`;
@@ -33,7 +34,7 @@ export function ErrorPage(props: ErrorPageProps): React.ReactElement {
   );
 
   return (
-    <div className="error-page">
+    <PageLayout.Content className="error-page">
       {React.createElement(props.illustration ?? SvgError, { className: "error-illustration" })}
       <div className="error-details">
         <Title>{props.title}</Title>
@@ -45,7 +46,7 @@ export function ErrorPage(props: ErrorPageProps): React.ReactElement {
           {props.troubleshooting}
         </ExpandableBlock>
       }
-      <Button styleType="high-visibility" onClick={() => history.push("/")}>Go to homepage</Button>
-    </div>
+      <Button styleType="high-visibility" onClick={() => navigate("/")}>Go to homepage</Button>
+    </PageLayout.Content>
   );
 }

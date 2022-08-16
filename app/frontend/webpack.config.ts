@@ -21,7 +21,7 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
     mode: isProductionEnvironment ? "production" : "development",
     bail: isProductionEnvironment,
     entry: {
-      app: "./src/index.ts",
+      app: "./src/index.tsx",
     },
     module: {
       rules: [
@@ -80,17 +80,6 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
           options: {
             search: "document.head.prepend(openSans);",
             replace: "// document.head.prepend(openSans); // Our workaround",
-            // Throw if replacement hasn't been performed at least once
-            strict: true,
-          },
-        },
-        // Patch @itwin/core-common package to remove dependency on Node.js module
-        {
-          test: /BentleyCloudRpcProtocol\.js$/,
-          loader: "string-replace-loader",
-          options: {
-            search: /^import \{ URL \} from "url";$/m,
-            replace: "// import { URL } from \"url\"; // Our workaround",
             // Throw if replacement hasn't been performed at least once
             strict: true,
           },

@@ -12,6 +12,6 @@ export class SnapshotFileNameResolver extends FileNameResolver {
 
   public static getIModelsDirectory(): string {
     const assetsDir = IModelHost.appAssetsDir ? IModelHost.appAssetsDir : "assets";
-    return path.join(assetsDir, "imodels");
+    return path.resolve(path.join(assetsDir, "imodels"));
   }
 }

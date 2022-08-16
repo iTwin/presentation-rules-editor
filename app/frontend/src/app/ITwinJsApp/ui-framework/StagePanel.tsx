@@ -11,7 +11,6 @@ export interface StagePanelProps {
   /** Stage panel contents */
   children?: React.ReactElement<StagePanelZoneProps> | [
     React.ReactElement<StagePanelZoneProps>,
-    React.ReactElement<StagePanelZoneProps>,
     React.ReactElement<StagePanelZoneProps>?,
   ];
 }

@@ -2,14 +2,13 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { UserManager } from "oidc-client";
 import * as React from "react";
 import { rpcInterfaces } from "@app/common";
 import {
   AppNotificationManager, ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework,
 } from "@itwin/appui-react";
 import { Logger, LogLevel } from "@itwin/core-bentley";
-import { BentleyCloudRpcManager, RpcConfiguration } from "@itwin/core-common";
+import { AuthorizationClient, BentleyCloudRpcManager, RpcConfiguration } from "@itwin/core-common";
 import { IModelApp } from "@itwin/core-frontend";
 import { ITwinLocalization } from "@itwin/core-i18n";
 import { FrontendIModelsAccess } from "@itwin/imodels-access-frontend";
@@ -17,13 +16,14 @@ import { IModelsClient } from "@itwin/imodels-client-management";
 import { Presentation } from "@itwin/presentation-frontend";
 import { LoadingIndicator } from "../common/LoadingIndicator";
 import { applyUrlPrefix } from "../utils/Environment";
-import { AuthClient, BackendApi } from "./api/BackendApi";
+import { BackendApi } from "./api/BackendApi";
 import { IModelIdentifier } from "./IModelIdentifier";
 import { InitializedApp } from "./InitializedApp";
 
 export interface ITwinJsAppProps {
   backendApiPromise: Promise<BackendApi>;
   iModelIdentifier: IModelIdentifier;
+  authorizationClient: AuthorizationClient | undefined;
 }
 
 export function ITwinJsApp(props: ITwinJsAppProps): React.ReactElement {
@@ -48,10 +48,16 @@ export function ITwinJsApp(props: ITwinJsAppProps): React.ReactElement {
     return <LoadingIndicator>Initializing...</LoadingIndicator>;
   }
 
-  return <InitializedApp backendApi={backendApi} iModelIdentifier={props.iModelIdentifier} />;
+  return (
+    <InitializedApp
+      backendApi={backendApi}
+      iModelIdentifier={props.iModelIdentifier}
+      authorizationClient={props.authorizationClient}
+    />
+  );
 }
 
-export async function initializeApp(userManager: UserManager): Promise<BackendApi> {
+export async function initializeApp(): Promise<BackendApi> {
   Logger.initializeToConsole();
   Logger.setLevelDefault(LogLevel.Warning);
 
@@ -67,12 +73,10 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
       uriPrefix: "http://localhost:3001",
     };
 
-  const authClient = new AuthClient(userManager);
   const iModelsClient = new IModelsClient({ api: { baseUrl: applyUrlPrefix("https://api.bentley.com/imodels") } });
   await IModelApp.startup({
     rpcInterfaces,
     notifications: new AppNotificationManager(),
-    authorizationClient: authClient,
     localization: new ITwinLocalization({
       initOptions: {
         lng: "en",
@@ -84,7 +88,7 @@ export async function initializeApp(userManager: UserManager): Promise<BackendAp
   });
   BentleyCloudRpcManager.initializeClient(rpcParams, rpcInterfaces);
 
-  const backendApi = new BackendApi(authClient);
+  const backendApi = new BackendApi();
   await Promise.all([
     IModelApp.localization.registerNamespace("App"),
     initializePresentation(backendApi),

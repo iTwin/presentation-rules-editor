@@ -131,14 +131,10 @@ function createStagePanel(panelChildren: StagePanelProps["children"]): Map<Stage
 
   const children = React.Children.toArray(panelChildren) as Array<React.ReactElement<StagePanelZoneProps>>;
   if (children.length === 1) {
-    stagePanelSections.set(StagePanelSection.Middle, makeZone(children[0]));
+    stagePanelSections.set(StagePanelSection.Start, makeZone(children[0]));
   } else if (children.length === 2) {
     stagePanelSections.set(StagePanelSection.Start, makeZone(children[0]));
     stagePanelSections.set(StagePanelSection.End, makeZone(children[1]));
-  } else if (children.length === 3) {
-    stagePanelSections.set(StagePanelSection.Start, makeZone(children[0]));
-    stagePanelSections.set(StagePanelSection.Middle, makeZone(children[1]));
-    stagePanelSections.set(StagePanelSection.End, makeZone(children[2]));
   }
 
   return stagePanelSections;

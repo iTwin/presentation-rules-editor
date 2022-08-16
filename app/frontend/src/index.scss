@@ -3,18 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-html {
-  height: 100%;
-}
-
 body {
   margin: 0;
   padding: 0;
-  height: 100%;
-}
-
-body > div {
-  height: 100%;
 }
 
 // Fix for silent authorization iframe causing body to overflow
