@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=file://EXTPRDSEC07/threagile/schema-1.1.3.json
+
+# PLEASE SEE REFERENCE DOCUMENTATION (https://github.com/BentleySystems/threagile/blob/master/docs/reference/index.md)
+# FOR GUIDANCE ON ALL AVAILABLE BLOCKS AND ATTRIBUTES.
+title: Presentation Rules Editor (Web)
+author:
+  name: iTwin.js Presentation team
+date: "2022-08-12"
+business_criticality: important
+data_assets:
+  Storage account:
+    id: storage-account
+    description: "Stores static site data"
+    usage: business
+    quantity: very-few
+    confidentiality: public
+    integrity: critical
+    availability: critical
+technical_assets:
+  Front Door and CDN profiles:
+    id: front-door
+    type: process
+    usage: business
+    out_of_scope: false
+    size: component
+    technology: gateway
+    internet: true
+    machine: virtual
+    encryption: none
+    confidentiality: internal
+    integrity: critical
+    availability: critical
+    multi_tenant: true
+    data_assets_processed:
+      - storage-account
+    data_assets_stored: []
+    data_formats_accepted: []
+    owner: ""
+    diagram_tweak_order: 0
+    communication_links: {}
+trust_boundaries:
+  Microsoft Azure:
+    id: microsoft-azure
+    type: network-cloud-provider
+    technical_assets_inside: [front-door]
+shared_runtimes: {}
+individual_risk_categories: {}
+risk_tracking: {}
+# OK to ignore the following Graphviz controls
+diagram_tweak_nodesep: 0
+diagram_tweak_ranksep: 0
+diagram_tweak_edge_layout: ""
+diagram_tweak_suppress_edge_labels: false
+diagram_tweak_layout_left_to_right: false
+diagram_tweak_invisible_connections_between_assets: []
+diagram_tweak_same_rank_assets: []
