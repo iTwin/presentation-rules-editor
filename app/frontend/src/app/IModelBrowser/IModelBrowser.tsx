@@ -17,7 +17,7 @@ import { useAuthorization } from "../Authorization";
 import { VerticalStack } from "../common/CenteredStack";
 import { useLocalStorage } from "../common/LocalStorage";
 import { getIModel, getIModelThumbnail } from "../ITwinApi";
-import { BackendApi, useBackendApi } from "../ITwinJsApp/api/BackendApi";
+import { BackendApi } from "../ITwinJsApp/api/BackendApi";
 import {
   demoIModels, IModelIdentifier, isDemoIModel, isIModelIdentifier, isSnapshotIModel, ITwinIModelIdentifier,
 } from "../ITwinJsApp/IModelIdentifier";
@@ -383,4 +383,24 @@ export function useIModelBrowserSettings(): [
       return { displayMode, recentIModels };
     },
   );
+}
+
+export function useBackendApi(backendApiPromise: Promise<BackendApi> | undefined): BackendApi | undefined {
+  const [backendApi, setBackendApi] = React.useState<BackendApi>();
+  React.useEffect(
+    () => {
+      let disposed = false;
+      void (async () => {
+        const backendApiResult = await backendApiPromise;
+        if (!disposed) {
+          setBackendApi(backendApiResult);
+        }
+      })();
+
+      return () => { disposed = true; };
+    },
+    [backendApiPromise],
+  );
+
+  return backendApi;
 }
