@@ -18,7 +18,7 @@ const packagesToLink = new Set([
 
 const repositoryRootLocation = getRepositoryRootLocation();
 
-const args = yargs(process.argv.slice(2))
+const args: any = yargs(process.argv.slice(2))
   .scriptName(path.basename(__filename))
   .command(
     "link [imodeljs_repo]",
