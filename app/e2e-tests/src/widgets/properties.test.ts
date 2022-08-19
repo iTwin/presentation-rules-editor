@@ -12,17 +12,17 @@ describe("properties widget #local", () => {
   });
 
   it("displays properties", async () => {
-    const propertiesWidget = await getWidget(page, "Properties");
-    await propertiesWidget.waitForSelector("text=Select element(s) to view properties.");
+    const propertiesWidget = getWidget(page, "Properties");
+    await propertiesWidget.locator("text=Select element(s) to view properties.").waitFor();
 
     await selectAnyTreeNode(page);
-    await propertiesWidget.waitForSelector("text=Selected Item(s)");
+    await propertiesWidget.locator("text=Selected Item(s)").waitFor();
   });
 
   it("updates properties when ruleset changes", async () => {
     await selectAnyTreeNode(page);
 
-    const editor = await getEditor(page);
+    const editor = getEditor(page);
     await page.click('text=""SelectedNodeInstances""');
     await editor.press("End");
     await editor.type(`,
@@ -30,14 +30,13 @@ describe("properties widget #local", () => {
 "propertyCategories": [{ "id": "custom", "label": "custom_category" }]`);
     await editor.press("Alt+Enter");
 
-    const propertiesWidget = await getWidget(page, "Properties");
-    await propertiesWidget.waitForSelector("text=custom_category");
+    const propertiesWidget = getWidget(page, "Properties");
+    await propertiesWidget.locator("text=custom_category").waitFor();
   });
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
   async function selectAnyTreeNode(page: Page): Promise<void> {
-    const treeWidget = await getWidget(page, "Tree");
-    await treeWidget.waitForSelector(".core-tree-node");
-    await (await treeWidget.$(".core-tree-node"))!.click();
+    const treeWidget = getWidget(page, "Tree");
+    await treeWidget.locator(".core-tree-node").first().click();
   }
 });

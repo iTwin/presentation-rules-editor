@@ -19,8 +19,8 @@ describe("share button #local #web", () => {
 
   before(async () => {
     await testConfiguration.openIModel(page);
-    const editor = await getEditor(page);
-    await (await editor.$("text={"))?.click();
+    const editor = getEditor(page);
+    await editor.locator("text={").first().click();
     await editor.press("Control+a");
     await editor.type("test ruleset text");
     await page.click('button:has-text("Share")');
@@ -49,11 +49,11 @@ describe("opening shared link #local #web", () => {
     // When only hash part of the URL changes, the reload will not happen, so we trigger it manually
     await page.reload();
 
-    const editor = await getEditor(page);
-    expect(await editor.$("text=test_ruleset")).not.to.be.null;
+    const editor = getEditor(page);
+    await editor.locator("text=test_ruleset").waitFor();
 
-    const treeWidget = await getWidget(page, "Tree");
-    expect(await treeWidget.waitForSelector("text=test_node")).not.to.be.null;
+    const treeWidget = getWidget(page, "Tree");
+    await treeWidget.locator("text=test_node").waitFor();
   });
 
   it("populates editor with ruleset when shared ruleset is invalid", async () => {
@@ -61,8 +61,8 @@ describe("opening shared link #local #web", () => {
     // When only hash part of the URL changes, the reload will not happen, so we trigger it manually
     await page.reload();
 
-    const editor = await getEditor(page);
-    const editorContent = await (await editor.$(".lines-content"))?.textContent();
+    const editor = getEditor(page);
+    const editorContent = await editor.locator(".lines-content").textContent();
     expect(editorContent).to.be.equal("invalid_test_ruleset");
   });
 
@@ -71,8 +71,8 @@ describe("opening shared link #local #web", () => {
     // When only hash part of the URL changes, the reload will not happen, so we trigger it manually
     await page.reload();
 
-    const editor = await getEditor(page);
-    const editorContent = await (await editor.$(".lines-content"))?.textContent();
+    const editor = getEditor(page);
+    const editorContent = await editor.locator(".lines-content").textContent();
     // A non-breaking space is separating these words
     expect(editorContent).to.be.equal("<invalid\xa0ruleset>");
   });
