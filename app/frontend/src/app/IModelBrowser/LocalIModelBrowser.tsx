@@ -11,9 +11,9 @@ import { Anchor, DropdownMenu, IconButton, MenuItem, Table, TableProps, Title } 
 import { appNavigationContext } from "../AppContext";
 import { AsyncActionButton } from "../common/AsyncActionButton";
 import { VerticalStack } from "../common/CenteredStack";
-import { BackendApi, useBackendApi } from "../ITwinJsApp/api/BackendApi";
+import { BackendApi } from "../ITwinJsApp/api/BackendApi";
 import { LoadingHint } from "../ITwinJsApp/common/LoadingHint";
-import { iModelBrowserContext, IModelSnapshotTile } from "./IModelBrowser";
+import { iModelBrowserContext, IModelSnapshotTile, useBackendApi } from "./IModelBrowser";
 
 export interface LocalIModelBrowserProps {
   backendApiPromise: Promise<BackendApi> | undefined;
