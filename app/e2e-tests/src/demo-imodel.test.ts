@@ -8,7 +8,7 @@ import { getWidget, openDemoIModel } from "./utils";
 describe("demo iModel #web", () => {
   it("opens", async () => {
     await openDemoIModel(page);
-    const treeWidget = await getWidget(page, "Tree");
-    await treeWidget.waitForSelector(".core-tree-node");
+    const treeWidget = getWidget(page, "Tree");
+    await treeWidget.locator(".core-tree-node").first().waitFor();
   });
 });
