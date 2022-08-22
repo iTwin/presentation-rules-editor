@@ -14,7 +14,7 @@ import { EditableRuleset, SoloRulesetEditor } from "@itwin/presentation-rules-ed
 import { useIModelBrowserSettings } from "../IModelBrowser/IModelBrowser";
 import { BackendApi } from "./api/BackendApi";
 import { ContentTabs } from "./content-tabs/ContentTabs";
-import { IModelIdentifier, isSnapshotIModel } from "./IModelIdentifier";
+import { areIModelIdentifiersEqual, IModelIdentifier, isSnapshotIModel } from "./IModelIdentifier";
 import { backendApiContext, rulesetEditorContext, RulesetEditorTab } from "./ITwinJsAppContext";
 import { parseEditorState } from "./misc/EditorStateSerializer";
 import { displayToast } from "./misc/Notifications";
@@ -163,7 +163,9 @@ function useRecentIModels(): (iModelIdentifer: IModelIdentifier) => void {
   const [_, setRecentIModels] = useIModelBrowserSettings();
   return React.useRef((iModelIdentifier: IModelIdentifier) => {
     setRecentIModels((prevState) => {
-      const newRecentIModels = prevState.recentIModels.filter((value) => value !== iModelIdentifier);
+      const newRecentIModels = prevState.recentIModels.filter(
+        (value) => !areIModelIdentifiersEqual(value, iModelIdentifier),
+      );
       newRecentIModels.push(iModelIdentifier);
       return { ...prevState, recentIModels: newRecentIModels.slice(-10) };
     });

@@ -12,16 +12,24 @@ export interface ITwinIModelIdentifier {
 }
 
 export function isIModelIdentifier(identifier: unknown): identifier is IModelIdentifier {
-  return typeof identifier === "string"
-    || (typeof identifier === "object" && !!identifier && "iTwinId" in identifier && "iModelId" in identifier);
+  return isSnapshotIModel(identifier) || isITwinIModel(identifier);
 }
 
-export function isSnapshotIModel(identifier: IModelIdentifier): identifier is SnapshotIModelIdentifier {
+export function isSnapshotIModel(identifier: unknown): identifier is SnapshotIModelIdentifier {
   return typeof identifier === "string";
+}
+
+export function isITwinIModel(identifier: unknown): identifier is ITwinIModelIdentifier {
+  return !!identifier && typeof identifier === "object" && "iTwinId" in identifier && "iModelId" in identifier;
 }
 
 export function isDemoIModel(identifier: IModelIdentifier): boolean {
   return !isSnapshotIModel(identifier) && demoIModels.get(identifier.iModelId)?.iTwinId === identifier.iTwinId;
+}
+
+export function areIModelIdentifiersEqual(a: IModelIdentifier, b: IModelIdentifier): boolean {
+  return (isSnapshotIModel(a) && a === b)
+    || (isITwinIModel(a) && isITwinIModel(b) && a.iTwinId === b.iTwinId && a.iModelId === b.iModelId);
 }
 
 export const demoIModels = new Map([
