@@ -9,7 +9,7 @@ import { FluidGrid } from "@itwin/itwinui-layouts-react";
 import { Title } from "@itwin/itwinui-react";
 import { useAuthorization } from "../Authorization";
 import { VerticalStack } from "../common/CenteredStack";
-import { getIModel } from "../ITwinApi";
+import { callITwinApi, getIModel } from "../ITwinApi";
 import { demoIModels } from "../ITwinJsApp/IModelIdentifier";
 import { iModelBrowserContext, IModelTile } from "./IModelBrowser";
 
@@ -61,7 +61,7 @@ function useDemoIModelData(authorizationClient: AuthorizationClient): {
   const ref = React.useRef({
     disposed: false,
     loadIModelData: async (iModelId: string) => {
-      const response = await getIModel(iModelId, authorizationClient);
+      const response = await callITwinApi(getIModel(iModelId), authorizationClient);
       if (ref.current.disposed || !response) {
         return;
       }

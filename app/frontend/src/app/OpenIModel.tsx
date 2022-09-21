@@ -15,7 +15,7 @@ import { LandingPage } from "./common/LandingPage";
 import { LoadingIndicator } from "./common/LoadingIndicator";
 import { PageNotFound } from "./errors/PageNotFound";
 import { IModelBrowserTab } from "./IModelBrowser/IModelBrowser";
-import { getIModel, getProject } from "./ITwinApi";
+import { callITwinApi, getIModel, getProject } from "./ITwinApi";
 import { BackendApi } from "./ITwinJsApp/api/BackendApi";
 import {
   demoIModels, IModelIdentifier, isDemoIModel, isSnapshotIModel, ITwinIModelIdentifier, SnapshotIModelIdentifier,
@@ -196,8 +196,8 @@ function usePopulateHeaderBreadcrumbs(
       } else if (authorizationClient) {
         void (async () => {
           const [project, iModel] = await Promise.all([
-            getProject(iModelIdentifier.iTwinId, authorizationClient),
-            getIModel(iModelIdentifier.iModelId, authorizationClient),
+            callITwinApi(getProject(iModelIdentifier.iTwinId), authorizationClient),
+            callITwinApi(getIModel(iModelIdentifier.iModelId), authorizationClient),
           ]);
           if (!disposed && project && iModel) {
             setBreadcrumbs([

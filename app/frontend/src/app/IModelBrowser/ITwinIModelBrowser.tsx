@@ -14,7 +14,9 @@ import { appNavigationContext } from "../AppContext";
 import { AuthorizationState, useAuthorization } from "../Authorization";
 import { HorizontalStack, VerticalStack } from "../common/CenteredStack";
 import { OfflineModeExplainer } from "../common/OfflineModeExplainer";
-import { getProjectIModels, getUserProjects, IModelRepresentation, ProjectRepresentation } from "../ITwinApi";
+import {
+  callITwinApi, getProjectIModels, getUserProjects, IModelRepresentation, ProjectRepresentation,
+} from "../ITwinApi";
 import { LoadingHint } from "../ITwinJsApp/common/LoadingHint";
 import { iModelBrowserContext, IModelTile } from "./IModelBrowser";
 
@@ -31,7 +33,7 @@ export function ITwinBrowser(): React.ReactElement {
         return;
       }
 
-      const response = await getUserProjects("representation", userAuthorizationClient, searchQuery);
+      const response = await callITwinApi(getUserProjects("representation", searchQuery), userAuthorizationClient);
       if (!disposedRef.current && response) {
         setITwins(response.sort((a, b) => Date.parse(b.registrationDateTime) - Date.parse(a.registrationDateTime)));
       }
@@ -151,7 +153,10 @@ export function ITwinIModelBrowser(): React.ReactElement {
         return;
       }
 
-      const response = await getProjectIModels(iTwin, "representation", userAuthorizationClient, searchQuery);
+      const response = await callITwinApi(
+        getProjectIModels(iTwin, "representation", searchQuery),
+        userAuthorizationClient,
+      );
       if (!disposedRef.current && response) {
         setIModels(response.sort((a, b) => Date.parse(b.createdDateTime) - Date.parse(a.createdDateTime)));
       }

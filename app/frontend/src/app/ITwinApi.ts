@@ -24,44 +24,27 @@ export interface ProjectRepresentation {
 
 export type ProjectMinimal = Pick<ProjectRepresentation, "id" | "displayName" | "projectNumber">;
 
-export async function getUserProjects(
-  detail: "minimal",
-  authorizationClient: AuthorizationClient,
-  search?: string,
-): Promise<ProjectMinimal[] | undefined>;
-export async function getUserProjects(
-  detail: "representation",
-  authorizationClient: AuthorizationClient,
-  search?: string,
-): Promise<ProjectRepresentation[] | undefined>;
-export async function getUserProjects(
+export function getUserProjects(detail: "minimal", search?: string): CallITwinApiArgs<ProjectMinimal[]>;
+export function getUserProjects(detail: "representation", search?: string): CallITwinApiArgs<ProjectRepresentation[]>;
+export function getUserProjects(
   detail: "minimal" | "representation",
-  authorizationClient: AuthorizationClient,
   search?: string,
-): Promise<ProjectMinimal[] | ProjectRepresentation[] | undefined> {
+): CallITwinApiArgs<ProjectMinimal[] | ProjectRepresentation[]> {
   // Search query should contain non-whitespace characters and not exceed 255 characters.
   search = search?.trim().slice(0, 256);
   const searchQuery = search ? `?$search=${search}` : "";
-  const response = await callITwinApi(`projects${searchQuery}`, authorizationClient, { Prefer: `return=${detail}` });
-  if (!response.ok) {
-    return;
-  }
-
-  const json = await response.json();
-  return json.projects;
+  return {
+    endpoint: `projects${searchQuery}`,
+    additionalHeaders: { Prefer: `return=${detail}` },
+    postProcess: async (response) => (await response.json()).projects,
+  };
 }
 
-export async function getProject(
-  projectId: string,
-  authorizationClient: AuthorizationClient,
-): Promise<ProjectRepresentation | undefined> {
-  const response = await callITwinApi(`projects/${projectId}`, authorizationClient);
-  if (!response.ok) {
-    return;
-  }
-
-  const json = await response.json();
-  return json.project;
+export function getProject(projectId: string): CallITwinApiArgs<ProjectRepresentation> {
+  return {
+    endpoint: `projects/${projectId}`,
+    postProcess: async (response) => (await response.json()).project,
+  };
 }
 
 export interface IModelRepresentation {
@@ -86,82 +69,119 @@ interface GeoCoordinates {
   longitude: number;
 }
 
-export async function getProjectIModels(
+export function getProjectIModels(
   projectId: string,
   detail: "minimal",
-  authorizationClient: AuthorizationClient,
   name?: string,
-): Promise<IModelMinimal[] | undefined>;
-export async function getProjectIModels(
+): CallITwinApiArgs<IModelMinimal[]>;
+export function getProjectIModels(
   projectId: string,
   detail: "representation",
-  authorizationClient: AuthorizationClient,
   name?: string,
-): Promise<IModelRepresentation[] | undefined>;
-export async function getProjectIModels(
+): CallITwinApiArgs<IModelRepresentation[]>;
+export function getProjectIModels(
   projectId: string,
   detail: "minimal" | "representation",
-  authorizationClient: AuthorizationClient,
   name?: string,
-): Promise<IModelMinimal[] | IModelRepresentation[] | undefined> {
+): CallITwinApiArgs<IModelMinimal[] | IModelRepresentation[]> {
   // Search query should contain non-whitespace characters and not exceed 255 characters.
   name = name?.trim().slice(0, 256);
   const nameQuery = name ? `&name=${name}` : "";
-  const response = await callITwinApi(
-    `imodels?projectId=${projectId}${nameQuery}`,
-    authorizationClient,
-    { Prefer: `return=${detail}` },
-  );
-  if (!response.ok) {
-    return;
-  }
-
-  const json = await response.json();
-  return json.iModels;
+  return {
+    endpoint: `imodels?projectId=${projectId}${nameQuery}`,
+    additionalHeaders: { Prefer: `return=${detail}` },
+    postProcess: async (response) => (await response.json()).iModels,
+  };
 }
 
-export async function getIModel(
-  iModelId: string,
-  authorizationClient: AuthorizationClient,
-): Promise<IModelRepresentation | undefined> {
-  const response = await callITwinApi(`imodels/${iModelId}`, authorizationClient);
-  if (!response.ok) {
-    return;
-  }
-
-  const json = await response.json();
-  return json.iModel;
+export function getIModel(iModelId: string): CallITwinApiArgs<IModelRepresentation> {
+  return {
+    endpoint: `imodels/${iModelId}`,
+    postProcess: async (response) => (await response.json()).iModel,
+  };
 }
 
-export async function getIModelThumbnail(
-  iModelId: string,
-  authorizationClient: AuthorizationClient,
-): Promise<Blob | undefined> {
-  const response = await callITwinApi(`imodels/${iModelId}/thumbnail?size=small`, authorizationClient);
-  if (!response.ok) {
-    return;
-  }
-
-  return response.blob();
+export function getIModelThumbnail(iModelId: string): CallITwinApiArgs<Blob> {
+  return {
+    endpoint: `imodels/${iModelId}/thumbnail?size=small`,
+    immutable: true,
+    postProcess: async (response) => response.blob(),
+  };
 }
 
 type Links<T extends string> = {
   [K in T]: { href: string };
 };
 
-async function callITwinApi(
-  endpoint: string,
-  authorizationClient: AuthorizationClient,
-  additionalHeaders?: Record<string, string>,
-): Promise<Response> {
-  return fetch(
-    applyUrlPrefix("https://api.bentley.com/") + endpoint,
-    {
-      headers: {
-        ...additionalHeaders,
-        Authorization: await authorizationClient.getAccessToken(),
-        Accept: "application/vnd.bentley.itwin-platform.v1+json",
-      },
-    },
-  );
+interface CallITwinApiArgs<T> {
+  endpoint: string;
+  additionalHeaders?: Record<string, string>;
+  immutable?: boolean;
+  postProcess: (response: Response) => Promise<T>;
 }
+
+export async function callITwinApi<T>(
+  args: CallITwinApiArgs<T>,
+  authorizationClient: AuthorizationClient,
+): Promise<T | undefined> {
+  const url = applyUrlPrefix("https://api.bentley.com/") + args.endpoint;
+  const headers = {
+    ...args.additionalHeaders,
+    Authorization: await authorizationClient.getAccessToken(),
+    Accept: "application/vnd.bentley.itwin-platform.v1+json",
+  };
+  const key = JSON.stringify({ url, headers });
+  const fetcher = async () => {
+    const response = await fetch(url, { headers });
+    return response.ok ? args.postProcess(response) : undefined;
+  };
+  return args.immutable ? requestStore.fetchImmutable(key, fetcher) : requestStore.fetch(key, fetcher);
+}
+
+class RequestStore {
+  private requestCache = new Map<string, Promise<unknown>>();
+  private responseCache = new Map<string, unknown>();
+
+  /** Executes fetch while being aware of duplicate requests. */
+  public async fetch<T>(key: string, fetcher: () => Promise<T>): Promise<T> {
+    let request = this.requestCache.get(key) as Promise<T> | undefined;
+    if (request) {
+      return request;
+    }
+
+    request = fetcher()
+      .then((result) => {
+        setTimeout(() => this.requestCache.delete(key), 2000);
+        return result;
+      })
+      .catch((error) => {
+        this.requestCache.delete(key);
+        throw error;
+      });
+    this.requestCache.set(key, request);
+    return request;
+  }
+
+  /** Execute fetch the first time unique URL and header combination is encountered. */
+  public async fetchImmutable<T>(requestKey: string, fetcher: () => Promise<T>): Promise<T> {
+    const cacheEntry = this.responseCache.get(requestKey) as Promise<T> | undefined;
+    if (cacheEntry) {
+      return cacheEntry;
+    }
+
+    const response = await this.fetch(requestKey, fetcher);
+    if (!this.responseCache.has(requestKey)) {
+      this.responseCache.set(requestKey, response);
+
+      const cleanupThreshold = 1500;
+      const amountToForget = 500;
+      if (this.responseCache.size > cleanupThreshold) {
+        [...this.responseCache.keys()].slice(0, amountToForget).forEach((key) => this.responseCache.delete(key));
+      }
+    }
+
+    return response;
+  }
+}
+
+const requestStore = new RequestStore();

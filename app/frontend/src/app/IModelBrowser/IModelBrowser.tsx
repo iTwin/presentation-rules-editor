@@ -16,7 +16,7 @@ import { appNavigationContext } from "../AppContext";
 import { useAuthorization } from "../Authorization";
 import { VerticalStack } from "../common/CenteredStack";
 import { useLocalStorage } from "../common/LocalStorage";
-import { getIModel, getIModelThumbnail } from "../ITwinApi";
+import { callITwinApi, getIModel, getIModelThumbnail } from "../ITwinApi";
 import { BackendApi } from "../ITwinJsApp/api/BackendApi";
 import {
   demoIModels, IModelIdentifier, isDemoIModel, isIModelIdentifier, isSnapshotIModel, ITwinIModelIdentifier,
@@ -251,7 +251,7 @@ export function IModelTile(props: IModelTileProps): React.ReactElement {
             return;
           }
 
-          const response = await getIModelThumbnail(props.iModelId, authorizationClient);
+          const response = await callITwinApi(getIModelThumbnail(props.iModelId), authorizationClient);
           if (!disposed && response) {
             setThumbnail(URL.createObjectURL(response));
           }
@@ -335,7 +335,7 @@ function RecentIModelTile(props: RecentIModelTileProps): React.ReactElement {
 
       let disposed = false;
       void (async () => {
-        const response = await getIModel(props.iModelIdentifier.iModelId, authClient);
+        const response = await callITwinApi(getIModel(props.iModelIdentifier.iModelId), authClient);
         if (!disposed && response) {
           setIModel({ name: response.displayName, description: response.description ?? "" });
         }
