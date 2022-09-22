@@ -225,7 +225,7 @@ export interface IModelTileProps {
   name: React.ReactNode;
   description: string | undefined;
   authorizationClient: AuthorizationClient | undefined;
-  onVisible?: (() => void) | undefined;
+  onVisible?: ((iModelId: string) => void) | undefined;
 }
 
 export function IModelTile(props: IModelTileProps): React.ReactElement {
@@ -246,7 +246,7 @@ export function IModelTile(props: IModelTileProps): React.ReactElement {
 
       const handleObservation = async (isIntersecting: boolean) => {
         if (isIntersecting) {
-          onVisible?.();
+          onVisible?.(props.iModelId);
           if (thumbnail !== undefined) {
             return;
           }

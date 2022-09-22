@@ -16,6 +16,10 @@ import { iModelBrowserContext, IModelTile } from "./IModelBrowser";
 export function DemoIModelBrowser(): React.ReactElement {
   const { demoAuthorizationClient } = useAuthorization();
   const { demoIModelData, loadIModelData } = useDemoIModelData(demoAuthorizationClient);
+  const handleVisible = useEvent(
+    (iModelId: string) => demoIModelData.get(iModelId) === undefined && loadIModelData(iModelId),
+  );
+
   let { searchQuery } = React.useContext(iModelBrowserContext);
   searchQuery = searchQuery.trim().toLowerCase();
   const iModels = [...demoIModels.entries()]
@@ -40,7 +44,7 @@ export function DemoIModelBrowser(): React.ReactElement {
             name={name}
             description={demoIModelData.get(iModelId)?.description}
             authorizationClient={demoAuthorizationClient}
-            onVisible={() => demoIModelData.get(iModelId) === undefined && loadIModelData(iModelId)}
+            onVisible={handleVisible}
           />
         ))
       }
@@ -80,4 +84,11 @@ function useDemoIModelData(authorizationClient: AuthorizationClient): {
     demoIModelData,
     loadIModelData: ref.current.loadIModelData,
   };
+}
+
+// Loosely based on useEvent proposal https://github.com/reactjs/rfcs/blob/useevent/text/0000-useevent.md
+function useEvent<T extends unknown[], U>(handleEvent: (...args: T) => U): (...args: T) => U {
+  const handleEventRef = React.useRef(handleEvent);
+  handleEventRef.current = handleEvent;
+  return React.useCallback((...args) => handleEventRef.current(...args), []);
 }
