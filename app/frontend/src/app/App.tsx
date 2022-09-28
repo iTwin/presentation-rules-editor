@@ -22,7 +22,7 @@ import { ITwinBrowser, ITwinIModelBrowser } from "./IModelBrowser/ITwinIModelBro
 import { LocalIModelBrowser } from "./IModelBrowser/LocalIModelBrowser";
 import { isSnapshotIModel } from "./ITwinJsApp/IModelIdentifier";
 import { ITwinJsAppData, OpenIModel } from "./OpenIModel";
-import { applyUrlPrefix } from "./utils/Environment";
+import { appInsightsConnectionString, applyUrlPrefix, clientId } from "./utils/Environment";
 
 export function App(): React.ReactElement {
   const appContextValue = useAppNavigationContext();
@@ -48,10 +48,10 @@ export function App(): React.ReactElement {
   );
 }
 
-const AuthorizationProvider = process.env.OAUTH_CLIENT_ID
+const AuthorizationProvider = clientId
   ? createAuthorizationProvider({
     authority: applyUrlPrefix("https://ims.bentley.com"),
-    client_id: process.env.OAUTH_CLIENT_ID,
+    client_id: clientId,
     redirect_uri: "/auth/callback",
     silent_redirect_uri: "/auth/silent",
     post_logout_redirect_uri: "/",
@@ -137,12 +137,11 @@ function useBackgroundITwinJsAppLoading(): ITwinJsAppData | undefined {
 function useApplicationInsights(): void {
   React.useEffect(
     () => {
-      const connectionString = getConnectionString();
-      if (connectionString) {
+      if (appInsightsConnectionString) {
         void (async () => {
           try {
             const { initialize } = await import("./ApplicationInsights");
-            initialize(connectionString);
+            initialize(appInsightsConnectionString);
           } catch (error) {
             // eslint-disable-next-line no-console
             console.warn("ApplicationInsights initialization failed", error);
@@ -152,19 +151,6 @@ function useApplicationInsights(): void {
     },
     [],
   );
-
-  function getConnectionString(): string | undefined {
-    const hostname = window.location.hostname;
-    if (hostname.startsWith("dev-")) {
-      return process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_DEV;
-    }
-
-    if (hostname.startsWith("qa-")) {
-      return process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_QA;
-    }
-
-    return process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_PROD;
-  }
 }
 
 interface AppSideNavigationProps {
