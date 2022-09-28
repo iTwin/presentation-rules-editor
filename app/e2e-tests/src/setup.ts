@@ -82,6 +82,7 @@ async function execute(command: string): Promise<void> {
 async function setupBrowser({ debug }: { debug: boolean }): Promise<void> {
   browser = await chromium.launch({ headless: !debug, slowMo: debug ? 100 : undefined });
   page = await browser.newPage();
+  page.setDefaultTimeout(60_000);
   await page.context().grantPermissions(["clipboard-read", "clipboard-write"], { origin: getServiceUrl() });
 }
 
