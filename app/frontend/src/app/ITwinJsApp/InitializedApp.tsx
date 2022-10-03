@@ -12,9 +12,10 @@ import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-
 import { ChildNodeSpecificationTypes, ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
 import { EditableRuleset, SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
 import { useIModelBrowserSettings } from "../IModelBrowser/IModelBrowser";
+import { applyUrlPrefix } from "../utils/Environment";
 import { BackendApi } from "./api/BackendApi";
 import { ContentTabs } from "./content-tabs/ContentTabs";
-import { areIModelIdentifiersEqual, IModelIdentifier, isSnapshotIModel } from "./IModelIdentifier";
+import { areIModelIdentifiersEqual, IModelIdentifier, isDemoIModel, isSnapshotIModel } from "./IModelIdentifier";
 import { backendApiContext, rulesetEditorContext, RulesetEditorTab } from "./ITwinJsAppContext";
 import { parseEditorState } from "./misc/EditorStateSerializer";
 import { displayToast } from "./misc/Notifications";
@@ -32,17 +33,12 @@ export interface InitializedAppProps {
 }
 
 export function InitializedApp(props: InitializedAppProps): React.ReactElement | null {
-  const imodel = useIModel(props.backendApi, props.iModelIdentifier);
+  const imodel = useIModel(props.backendApi, props.iModelIdentifier, props.authorizationClient);
   const { editableRuleset, rulesetEditor } = useSoloRulesetEditor(defaultRuleset);
   const [editorContext, setEditorContext] = React.useState({
     activeTab: RulesetEditorTab.Editor,
     setActiveTab: (tab: RulesetEditorTab) => setEditorContext((prevState) => ({ ...prevState, activeTab: tab })),
   });
-
-  React.useEffect(
-    () => { IModelApp.authorizationClient = props.authorizationClient; },
-    [props.authorizationClient],
-  );
 
   return (
     <backendApiContext.Provider value={props.backendApi}>
@@ -105,13 +101,22 @@ const defaultRuleset: Ruleset = {
   ],
 };
 
-function useIModel(backendApi: BackendApi, iModelIdentifier: IModelIdentifier): IModelConnection | undefined {
+function useIModel(
+  backendApi: BackendApi,
+  iModelIdentifier: IModelIdentifier,
+  authorizationClient: AuthorizationClient | undefined,
+): IModelConnection | undefined {
   const [iModel, setIModel] = React.useState<IModelConnection>();
   const setMostRecentIModel = useRecentIModels();
 
   React.useEffect(
     () => {
       setIModel(undefined);
+
+      IModelApp.authorizationClient = authorizationClient;
+      const backendUrl = "https://api.bentley.com/imodeljs";
+      backendApi.protocol.pathPrefix = (process.env.DEPLOYMENT_TYPE === "web"
+        && isDemoIModel(iModelIdentifier)) ? backendUrl : applyUrlPrefix(backendUrl);
 
       let disposed = false;
       const iModelPromise = backendApi.openIModel(iModelIdentifier);
@@ -153,7 +158,7 @@ function useIModel(backendApi: BackendApi, iModelIdentifier: IModelIdentifier): 
         })();
       };
     },
-    [backendApi, iModelIdentifier, setMostRecentIModel],
+    [authorizationClient, backendApi, iModelIdentifier, setMostRecentIModel],
   );
 
   return iModel;

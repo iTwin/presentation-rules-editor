@@ -4,11 +4,13 @@
 *--------------------------------------------------------------------------------------------*/
 import { IModelMetadata, PresentationRulesEditorRpcInterface } from "@app/common";
 import { Guid, Id64, Id64String, Logger } from "@itwin/core-bentley";
-import { IModelVersion } from "@itwin/core-common";
+import { BentleyCloudRpcProtocol, IModelVersion } from "@itwin/core-common";
 import { CheckpointConnection, IModelConnection, SnapshotConnection } from "@itwin/core-frontend";
 import { IModelIdentifier, isDemoIModel, isSnapshotIModel } from "../IModelIdentifier";
 
 export class BackendApi {
+  constructor(public protocol: BentleyCloudRpcProtocol) { }
+
   public async getAvailableIModels(): Promise<IModelMetadata[]> {
     return PresentationRulesEditorRpcInterface.getClient().getAvailableIModels();
   }
