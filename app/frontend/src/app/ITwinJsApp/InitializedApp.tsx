@@ -114,9 +114,10 @@ function useIModel(
       setIModel(undefined);
 
       IModelApp.authorizationClient = authorizationClient;
-      const backendUrl = "https://api.bentley.com/imodeljs";
-      backendApi.protocol.pathPrefix = (process.env.DEPLOYMENT_TYPE === "web"
-        && isDemoIModel(iModelIdentifier)) ? backendUrl : applyUrlPrefix(backendUrl);
+      if (process.env.DEPLOYMENT_TYPE === "web") {
+        const backendUrl = "https://api.bentley.com/imodeljs";
+        backendApi.protocol.pathPrefix = isDemoIModel(iModelIdentifier) ? backendUrl : applyUrlPrefix(backendUrl);
+      }
 
       let disposed = false;
       const iModelPromise = backendApi.openIModel(iModelIdentifier);
