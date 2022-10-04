@@ -10,8 +10,8 @@
   "scripts": {
     "start": "npm test",
     "lint": "eslint ./src/**/*.{ts,tsx}",
-    "test": "mocha -r ts-node/register/transpile-only --timeout 60000 --exit --grep '#local' '**/*.test.ts'",
-    "test:web": "cross-env WEB_TEST=1 mocha -r ts-node/register/transpile-only --timeout 60000 --exit --grep '#web' '**/*.test.ts'",
+    "test": "mocha -r ts-node/register/transpile-only --timeout 30000 --exit --grep '#local' '**/*.test.ts'",
+    "test:web": "cross-env WEB_TEST=1 mocha -r ts-node/register/transpile-only --timeout 30000 --exit --grep '#web' '**/*.test.ts'",
     "test:web:junit": "npm run test:web -- --reporter mocha-junit-reporter",
     "test:debug": "cross-env PWDEBUG=1 mocha -r ts-node/register/transpile-only --timeout 99999999 --exit --grep '#local' '**/*.test.ts'",
     "typecheck": "tsc --noEmit",
