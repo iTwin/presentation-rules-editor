@@ -40,6 +40,12 @@ after(async () => {
   await teardownDevServers();
 });
 
+afterEach(async function () {
+  if (this.currentTest?.isFailed()) {
+    await page.screenshot({ path: `screenshots/${this.currentTest.title}.png` });
+  }
+});
+
 /** Implements Promise.allSettled behaviour */
 async function settleAllPromises(args: Array<Promise<unknown>>): Promise<void> {
   type WrappedPromise<T> = Promise<{ status: "fulfilled", value: T } | { status: "rejected", error: unknown }>;
@@ -82,7 +88,6 @@ async function execute(command: string): Promise<void> {
 async function setupBrowser({ debug }: { debug: boolean }): Promise<void> {
   browser = await chromium.launch({ headless: !debug, slowMo: debug ? 100 : undefined });
   page = await browser.newPage();
-  page.setDefaultTimeout(60_000);
   await page.context().grantPermissions(["clipboard-read", "clipboard-write"], { origin: getServiceUrl() });
 }
 
