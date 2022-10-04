@@ -30,7 +30,6 @@ export const IModelBrowser = React.memo(
   function IModelBrowser(props: IModelBrowserProps): React.ReactElement {
     const [settings, setSettings] = useIModelBrowserSettings();
     const [intersectionObserver] = React.useState(() => new ViewportIntersectionObserver());
-    const backendApi = useBackendApi(props.backendApiPromise);
     React.useEffect(() => () => intersectionObserver.dispose(), [intersectionObserver]);
     const match = useMatch("/browse-imodels/:tab");
     const [searchQuery, setSearchQuery] = React.useState("");
@@ -52,24 +51,7 @@ export const IModelBrowser = React.memo(
               <PaddedSurface>
                 <Title>Recent</Title>
                 <MinimalTileAreaHeight>
-                  {
-                    settings.recentIModels.length === 0
-                      ? <VerticalStack className="imodel-browser-no-data">
-                        <SvgHistory />
-                        <Title isMuted>No recent iModels</Title>
-                      </VerticalStack>
-                      : <FluidGrid>
-                        {settings.recentIModels.slice(-5).reverse().map(
-                          (iModelIdentifier) => isSnapshotIModel(iModelIdentifier)
-                            ? <IModelSnapshotTile
-                              key={iModelIdentifier}
-                              name={iModelIdentifier}
-                              openSnapshotsFolder={() => backendApi?.openIModelsDirectory()}
-                            />
-                            : <RecentIModelTile key={iModelIdentifier.iModelId} iModelIdentifier={iModelIdentifier} />,
-                        )}
-                      </FluidGrid>
-                  }
+                  <RecentIModels backendApiPromise={props.backendApiPromise} recentIModels={settings.recentIModels} />
                 </MinimalTileAreaHeight>
               </PaddedSurface>
             </Grid.Item>
@@ -219,6 +201,42 @@ function MinimalTileAreaHeight(props: MinimalTileAreaHeightProps): React.ReactEl
   );
 }
 
+interface RecentIModelsProps {
+  backendApiPromise: Promise<BackendApi> | undefined;
+  recentIModels: IModelIdentifier[];
+}
+
+function RecentIModels(props: RecentIModelsProps): React.ReactElement {
+  const backendApi = useBackendApi(props.backendApiPromise);
+  const { userAuthorizationClient } = useAuthorization();
+  const availableIModels = userAuthorizationClient
+    ? props.recentIModels
+    : props.recentIModels.filter((identifier) => isDemoIModel(identifier) || isSnapshotIModel(identifier));
+
+  if (availableIModels.length === 0) {
+    return (
+      <VerticalStack className="imodel-browser-no-data">
+        <SvgHistory />
+        <Title isMuted>No recent iModels</Title>
+      </VerticalStack>
+    );
+  }
+
+  return (
+    <FluidGrid>
+      {availableIModels.slice(-5).reverse().map(
+        (iModelIdentifier) => isSnapshotIModel(iModelIdentifier)
+          ? <IModelSnapshotTile
+            key={iModelIdentifier}
+            name={iModelIdentifier}
+            openSnapshotsFolder={() => backendApi?.openIModelsDirectory()}
+          />
+          : <RecentIModelTile key={iModelIdentifier.iModelId} iModelIdentifier={iModelIdentifier} />,
+      )}
+    </FluidGrid>
+  );
+}
+
 export interface IModelTileProps {
   iModelId: string;
   iTwinId: string;
@@ -319,7 +337,7 @@ interface RecentIModelTileProps {
 
 function RecentIModelTile(props: RecentIModelTileProps): React.ReactElement {
   const { demoAuthorizationClient, userAuthorizationClient } = useAuthorization();
-  const [iModel, setIModel] = React.useState<{ name: string, description: string }>();
+  const [iModel, setIModel] = React.useState<{ name: string, description: string } | "unknown">();
   const authorizationClient = isDemoIModel(props.iModelIdentifier) ? demoAuthorizationClient : userAuthorizationClient;
 
   React.useEffect(
@@ -336,8 +354,8 @@ function RecentIModelTile(props: RecentIModelTileProps): React.ReactElement {
       let disposed = false;
       void (async () => {
         const response = await getIModel(props.iModelIdentifier.iModelId, { authorizationClient });
-        if (!disposed && response) {
-          setIModel({ name: response.displayName, description: response.description ?? "" });
+        if (!disposed) {
+          setIModel(response ? { name: response.displayName, description: response.description ?? "" } : "unknown");
         }
       })();
 
@@ -345,6 +363,10 @@ function RecentIModelTile(props: RecentIModelTileProps): React.ReactElement {
     },
     [authorizationClient, props.iModelIdentifier],
   );
+
+  if (iModel === "unknown") {
+    return <Tile name="(unknown iModel)" thumbnail={<></>} />;
+  }
 
   return (
     <IModelTile
