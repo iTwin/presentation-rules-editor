@@ -5,7 +5,7 @@
 import * as React from "react";
 import { BackendApi } from "./api/BackendApi";
 
-export const backendApiContext = React.createContext<BackendApi>(new BackendApi());
+export const backendApiContext = React.createContext<BackendApi>(new BackendApi({} as any));
 
 export interface RulesetEditorContext {
   activeTab: RulesetEditorTab;

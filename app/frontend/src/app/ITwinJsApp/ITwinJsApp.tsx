@@ -8,8 +8,10 @@ import {
   AppNotificationManager, ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework,
 } from "@itwin/appui-react";
 import { Logger, LogLevel } from "@itwin/core-bentley";
-import { AuthorizationClient, BentleyCloudRpcManager, RpcConfiguration } from "@itwin/core-common";
-import { IModelApp } from "@itwin/core-frontend";
+import {
+  AuthorizationClient, BentleyCloudRpcManager, ChangesetIndexAndId, IModelVersion, RpcConfiguration,
+} from "@itwin/core-common";
+import { FrontendHubAccess, IModelApp, IModelIdArg } from "@itwin/core-frontend";
 import { ITwinLocalization } from "@itwin/core-i18n";
 import { FrontendIModelsAccess } from "@itwin/imodels-access-frontend";
 import { IModelsClient } from "@itwin/imodels-client-management";
@@ -17,7 +19,7 @@ import { Presentation } from "@itwin/presentation-frontend";
 import { LoadingIndicator } from "../common/LoadingIndicator";
 import { applyUrlPrefix } from "../utils/Environment";
 import { BackendApi } from "./api/BackendApi";
-import { IModelIdentifier } from "./IModelIdentifier";
+import { demoIModels, IModelIdentifier } from "./IModelIdentifier";
 import { InitializedApp } from "./InitializedApp";
 
 export interface ITwinJsAppProps {
@@ -64,31 +66,24 @@ export async function initializeApp(): Promise<BackendApi> {
   RpcConfiguration.developmentMode = process.env.DEPLOYMENT_TYPE === "dev";
   RpcConfiguration.disableRoutingValidation = process.env.DEPLOYMENT_TYPE !== "web";
   const rpcParams = process.env.DEPLOYMENT_TYPE === "web"
-    ? {
-      info: { title: "visualization", version: "v3.0" },
-      uriPrefix: applyUrlPrefix("https://api.bentley.com/imodeljs"),
-    }
+    ? { info: { title: "visualization", version: "v3.0" } }
     : {
       info: { title: "presentation-rules-editor", version: "v1.0" },
       uriPrefix: "http://localhost:3001",
     };
 
-  const iModelsClient = new IModelsClient({ api: { baseUrl: applyUrlPrefix("https://api.bentley.com/imodels") } });
   await IModelApp.startup({
     rpcInterfaces,
     notifications: new AppNotificationManager(),
     localization: new ITwinLocalization({
-      initOptions: {
-        lng: "en",
-      },
+      initOptions: { lng: "en" },
       // Default template lacks the leading forward slash, which results in relative urls being requested
       urlTemplate: "/locales/{{lng}}/{{ns}}.json",
     }),
-    hubAccess: new FrontendIModelsAccess(iModelsClient),
+    hubAccess: new HubAccess(),
   });
-  BentleyCloudRpcManager.initializeClient(rpcParams, rpcInterfaces);
-
-  const backendApi = new BackendApi();
+  const configuration = BentleyCloudRpcManager.initializeClient(rpcParams, rpcInterfaces);
+  const backendApi = new BackendApi(configuration.protocol);
   await Promise.all([
     IModelApp.localization.registerNamespace("App"),
     initializePresentation(backendApi),
@@ -114,4 +109,29 @@ async function initializeUIFramework(): Promise<void> {
   await UiFramework.initialize(undefined);
   new StateManager({ frameworkState: FrameworkReducer });
   ConfigurableUiManager.initialize();
+}
+
+class HubAccess implements FrontendHubAccess {
+  private demoAccess = new FrontendIModelsAccess(
+    new IModelsClient({ api: { baseUrl: "https://api.bentley.com/imodels" } }),
+  );
+  private privateAccess = new FrontendIModelsAccess(
+    new IModelsClient({ api: { baseUrl: applyUrlPrefix("https://api.bentley.com/imodels") } }),
+  );
+
+  private getHubAccess(arg: IModelIdArg): FrontendIModelsAccess {
+    return demoIModels.has(arg.iModelId) ? this.demoAccess : this.privateAccess;
+  }
+
+  public async getLatestChangeset(arg: IModelIdArg): Promise<ChangesetIndexAndId> {
+    return this.getHubAccess(arg).getLatestChangeset(arg);
+  }
+
+  public async getChangesetFromVersion(arg: IModelIdArg & { version: IModelVersion }): Promise<ChangesetIndexAndId> {
+    return this.getHubAccess(arg).getChangesetFromVersion(arg);
+  }
+
+  public async getChangesetFromNamedVersion(arg: IModelIdArg & { versionName?: string | undefined }): Promise<ChangesetIndexAndId> {
+    return this.getHubAccess(arg).getChangesetFromNamedVersion(arg);
+  }
 }
