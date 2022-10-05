@@ -150,8 +150,8 @@ importers:
       html-webpack-plugin: ^5.5.0
       https-browserify: ^1.0.0
       lz-string: ^1.4.4
-      monaco-editor: ^0.25.2
-      monaco-editor-webpack-plugin: ^4.0.0
+      monaco-editor: ^0.34.0
+      monaco-editor-webpack-plugin: ^7.0.0
       npm-run-all: ^4.1.5
       oidc-client: ^1.11.5
       process: ^0.11.10
@@ -222,8 +222,8 @@ importers:
       html-webpack-plugin: 5.5.0_webpack@5.69.1
       https-browserify: 1.0.0
       lz-string: 1.4.4
-      monaco-editor: 0.25.2
-      monaco-editor-webpack-plugin: 4.2.0_s56hyrxulejek2wbl57dnn6gyu
+      monaco-editor: 0.34.0
+      monaco-editor-webpack-plugin: 7.0.1_hjzmwublc37lc7kmmxjgsqydki
       npm-run-all: 4.1.5
       oidc-client: 1.11.5
       process: 0.11.10
@@ -284,7 +284,7 @@ importers:
       jsdom: ^16.5.3
       jsdom-global: ^3.0.2
       mocha: ^9.2.0
-      monaco-editor: ^0.25.2
+      monaco-editor: ^0.34.0
       npm-run-all: ^4.1.5
       nyc: ^15.1.0
       react: ^17.0.0
@@ -329,7 +329,7 @@ importers:
       jsdom: 16.7.0
       jsdom-global: 3.0.2_jsdom@16.7.0
       mocha: 9.2.1
-      monaco-editor: 0.25.2
+      monaco-editor: 0.34.0
       npm-run-all: 4.1.5
       nyc: 15.1.0
       react: 17.0.2
@@ -5739,19 +5739,19 @@ packages:
       yargs-parser: 20.2.4
       yargs-unparser: 2.0.0
 
-  /monaco-editor-webpack-plugin/4.2.0_s56hyrxulejek2wbl57dnn6gyu:
-    resolution: {integrity: sha512-/P3sFiEgBl+Y50he4mbknMhbLJVop5gBUZiPS86SuHUDOOnQiQ5rL1jU5lwt1XKAwMEkhwZbUwqaHxTPkb1Utw==}
+  /monaco-editor-webpack-plugin/7.0.1_hjzmwublc37lc7kmmxjgsqydki:
+    resolution: {integrity: sha512-M8qIqizltrPlIbrb73cZdTWfU9sIsUVFvAZkL3KGjAHmVWEJ0hZKa/uad14JuOckc0GwnCaoGHvMoYtJjVyCzw==}
     peerDependencies:
-      monaco-editor: 0.25.x || 0.26.x || 0.27.x || 0.28.x
+      monaco-editor: '>= 0.31.0'
       webpack: ^4.5.0 || 5.x
     dependencies:
       loader-utils: 2.0.2
-      monaco-editor: 0.25.2
+      monaco-editor: 0.34.0
       webpack: 5.69.1_webpack-cli@4.9.2
     dev: false
 
-  /monaco-editor/0.25.2:
-    resolution: {integrity: sha512-5iylzSJevCnzJn9UVsW8yOZ3yHjmAs4TfvH3zsbftKiFKmHG0xirGN6DK9Kk04VSWxYCZZAIafYJoNJJMAU1KA==}
+  /monaco-editor/0.34.0:
+    resolution: {integrity: sha512-VF+S5zG8wxfinLKLrWcl4WUizMx+LeJrG4PM/M78OhcwocpV0jiyhX/pG6Q9jIOhrb/ckYi6nHnaR5OojlOZCQ==}
 
   /ms/2.0.0:
     resolution: {integrity: sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=}
