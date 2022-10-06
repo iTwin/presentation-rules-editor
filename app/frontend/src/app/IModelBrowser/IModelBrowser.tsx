@@ -16,7 +16,7 @@ import { appNavigationContext } from "../AppContext";
 import { useAuthorization } from "../Authorization";
 import { VerticalStack } from "../common/CenteredStack";
 import { useLocalStorage } from "../common/LocalStorage";
-import { callITwinApi, getIModel, getIModelThumbnail } from "../ITwinApi";
+import { getIModel, getIModelThumbnail } from "../ITwinApi";
 import { BackendApi } from "../ITwinJsApp/api/BackendApi";
 import {
   demoIModels, IModelIdentifier, isDemoIModel, isIModelIdentifier, isSnapshotIModel, ITwinIModelIdentifier,
@@ -251,7 +251,7 @@ export function IModelTile(props: IModelTileProps): React.ReactElement {
             return;
           }
 
-          const response = await callITwinApi(getIModelThumbnail(props.iModelId), authorizationClient);
+          const response = await getIModelThumbnail(props.iModelId, { authorizationClient });
           if (!disposed && response) {
             setThumbnail(URL.createObjectURL(response));
           }
@@ -320,7 +320,7 @@ interface RecentIModelTileProps {
 function RecentIModelTile(props: RecentIModelTileProps): React.ReactElement {
   const { demoAuthorizationClient, userAuthorizationClient } = useAuthorization();
   const [iModel, setIModel] = React.useState<{ name: string, description: string }>();
-  const authClient = isDemoIModel(props.iModelIdentifier) ? demoAuthorizationClient : userAuthorizationClient;
+  const authorizationClient = isDemoIModel(props.iModelIdentifier) ? demoAuthorizationClient : userAuthorizationClient;
 
   React.useEffect(
     () => {
@@ -329,13 +329,13 @@ function RecentIModelTile(props: RecentIModelTileProps): React.ReactElement {
         return;
       }
 
-      if (!authClient) {
+      if (!authorizationClient) {
         return;
       }
 
       let disposed = false;
       void (async () => {
-        const response = await callITwinApi(getIModel(props.iModelIdentifier.iModelId), authClient);
+        const response = await getIModel(props.iModelIdentifier.iModelId, { authorizationClient });
         if (!disposed && response) {
           setIModel({ name: response.displayName, description: response.description ?? "" });
         }
@@ -343,7 +343,7 @@ function RecentIModelTile(props: RecentIModelTileProps): React.ReactElement {
 
       return () => { disposed = true; };
     },
-    [authClient, props.iModelIdentifier],
+    [authorizationClient, props.iModelIdentifier],
   );
 
   return (
@@ -352,7 +352,7 @@ function RecentIModelTile(props: RecentIModelTileProps): React.ReactElement {
       description={iModel?.description ?? ""}
       iModelId={props.iModelIdentifier.iModelId}
       iTwinId={props.iModelIdentifier.iTwinId}
-      authorizationClient={authClient}
+      authorizationClient={authorizationClient}
     />
   );
 }

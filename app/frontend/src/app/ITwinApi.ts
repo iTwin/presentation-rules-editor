@@ -24,27 +24,47 @@ export interface ProjectRepresentation {
 
 export type ProjectMinimal = Pick<ProjectRepresentation, "id" | "displayName" | "projectNumber">;
 
-export function getUserProjects(detail: "minimal", search?: string): CallITwinApiArgs<ProjectMinimal[]>;
-export function getUserProjects(detail: "representation", search?: string): CallITwinApiArgs<ProjectRepresentation[]>;
-export function getUserProjects(
-  detail: "minimal" | "representation",
-  search?: string,
-): CallITwinApiArgs<ProjectMinimal[] | ProjectRepresentation[]> {
-  // Search query should contain non-whitespace characters and not exceed 255 characters.
-  search = search?.trim().slice(0, 256);
-  const searchQuery = search ? `?$search=${search}` : "";
-  return {
-    endpoint: `projects${searchQuery}`,
-    additionalHeaders: { Prefer: `return=${detail}` },
-    postProcess: async (response) => (await response.json()).projects,
-  };
+export interface GetUserProjectsArgs<Detail extends string> {
+  detail: Detail;
+  search?: string;
 }
 
-export function getProject(projectId: string): CallITwinApiArgs<ProjectRepresentation> {
-  return {
-    endpoint: `projects/${projectId}`,
-    postProcess: async (response) => (await response.json()).project,
-  };
+export async function getUserProjects(
+  args: GetUserProjectsArgs<"minimal">,
+  requestArgs: RequestArgs,
+): Promise<ProjectMinimal[] | undefined>;
+export async function getUserProjects(
+  args: GetUserProjectsArgs<"representation">,
+  requestArgs: RequestArgs,
+): Promise<ProjectRepresentation[] | undefined>;
+export async function getUserProjects(
+  args: GetUserProjectsArgs<string>,
+  requestArgs: RequestArgs,
+): Promise<ProjectMinimal[] | ProjectRepresentation[] | undefined> {
+  // Search query should contain non-whitespace characters and not exceed 255 characters.
+  const search = args.search?.trim().slice(0, 256);
+  const searchQuery = search ? `?$search=${search}` : "";
+  return callITwinApi(
+    {
+      endpoint: `projects${searchQuery}`,
+      additionalHeaders: { Prefer: `return=${args.detail}` },
+      postProcess: async (response) => (await response.json()).projects,
+    },
+    requestArgs,
+  );
+}
+
+export async function getProject(
+  projectId: string,
+  requestArgs: RequestArgs,
+): Promise<ProjectRepresentation | undefined> {
+  return callITwinApi(
+    {
+      endpoint: `projects/${projectId}`,
+      postProcess: async (response) => (await response.json()).project,
+    },
+    requestArgs,
+  );
 }
 
 export interface IModelRepresentation {
@@ -69,44 +89,56 @@ interface GeoCoordinates {
   longitude: number;
 }
 
-export function getProjectIModels(
-  projectId: string,
-  detail: "minimal",
-  name?: string,
-): CallITwinApiArgs<IModelMinimal[]>;
-export function getProjectIModels(
-  projectId: string,
-  detail: "representation",
-  name?: string,
-): CallITwinApiArgs<IModelRepresentation[]>;
-export function getProjectIModels(
-  projectId: string,
-  detail: "minimal" | "representation",
-  name?: string,
-): CallITwinApiArgs<IModelMinimal[] | IModelRepresentation[]> {
+export interface GetProjectIModelsArgs<Detail extends string> {
+  projectId: string;
+  detail: Detail;
+  name?: string;
+}
+
+export async function getProjectIModels(
+  args: GetProjectIModelsArgs<"minimal">,
+  requestArgs: RequestArgs,
+): Promise<IModelMinimal[] | undefined>;
+export async function getProjectIModels(
+  args: GetProjectIModelsArgs<"representation">,
+  requestArgs: RequestArgs,
+): Promise<IModelRepresentation[] | undefined>;
+export async function getProjectIModels(
+  args: GetProjectIModelsArgs<string>,
+  requestArgs: RequestArgs,
+): Promise<IModelMinimal[] | IModelRepresentation[] | undefined> {
   // Search query should contain non-whitespace characters and not exceed 255 characters.
-  name = name?.trim().slice(0, 256);
+  const name = args.name?.trim().slice(0, 256);
   const nameQuery = name ? `&name=${name}` : "";
-  return {
-    endpoint: `imodels?projectId=${projectId}${nameQuery}`,
-    additionalHeaders: { Prefer: `return=${detail}` },
-    postProcess: async (response) => (await response.json()).iModels,
-  };
+  return callITwinApi(
+    {
+      endpoint: `imodels?projectId=${args.projectId}${nameQuery}`,
+      additionalHeaders: { Prefer: `return=${args.detail}` },
+      postProcess: async (response) => (await response.json()).iModels,
+    },
+    requestArgs,
+  );
 }
 
-export function getIModel(iModelId: string): CallITwinApiArgs<IModelRepresentation> {
-  return {
-    endpoint: `imodels/${iModelId}`,
-    postProcess: async (response) => (await response.json()).iModel,
-  };
+export async function getIModel(iModelId: string, requestArgs: RequestArgs): Promise<IModelRepresentation | undefined> {
+  return callITwinApi(
+    {
+      endpoint: `imodels/${iModelId}`,
+      postProcess: async (response) => (await response.json()).iModel,
+    },
+    requestArgs,
+  );
 }
 
-export function getIModelThumbnail(iModelId: string): CallITwinApiArgs<Blob> {
-  return {
-    endpoint: `imodels/${iModelId}/thumbnail?size=small`,
-    immutable: true,
-    postProcess: async (response) => response.blob(),
-  };
+export async function getIModelThumbnail(iModelId: string, requestArgs: RequestArgs): Promise<Blob | undefined> {
+  return callITwinApi(
+    {
+      endpoint: `imodels/${iModelId}/thumbnail?size=small`,
+      immutable: true,
+      postProcess: async (response) => response.blob(),
+    },
+    requestArgs,
+  );
 }
 
 type Links<T extends string> = {
@@ -120,14 +152,18 @@ interface CallITwinApiArgs<T> {
   postProcess: (response: Response) => Promise<T>;
 }
 
-export async function callITwinApi<T>(
+export interface RequestArgs {
+  authorizationClient: AuthorizationClient;
+}
+
+async function callITwinApi<T>(
   args: CallITwinApiArgs<T>,
-  authorizationClient: AuthorizationClient,
+  requestArgs: RequestArgs,
 ): Promise<T | undefined> {
   const url = applyUrlPrefix("https://api.bentley.com/") + args.endpoint;
   const headers = {
     ...args.additionalHeaders,
-    Authorization: await authorizationClient.getAccessToken(),
+    Authorization: await requestArgs.authorizationClient.getAccessToken(),
     Accept: "application/vnd.bentley.itwin-platform.v1+json",
   };
   const key = JSON.stringify({ url, headers });
