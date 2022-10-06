@@ -19,24 +19,27 @@ import { LoadingHint } from "../ITwinJsApp/common/LoadingHint";
 import { iModelBrowserContext, IModelTile } from "./IModelBrowser";
 
 export function ITwinBrowser(): React.ReactElement {
-  const { userAuthorizationClient, state, signIn } = useAuthorization();
+  const { userAuthorizationClient: authorizationClient, state, signIn } = useAuthorization();
   const [iTwins, setITwins] = React.useState<ProjectRepresentation[]>();
   const { displayMode, searchQuery } = React.useContext(iModelBrowserContext);
 
-  React.useEffect(() => setITwins(undefined), [userAuthorizationClient, searchQuery]);
+  React.useEffect(() => setITwins(undefined), [authorizationClient, searchQuery]);
 
   useDebouncedAsyncEffect(
     async (disposedRef) => {
-      if (userAuthorizationClient === undefined) {
+      if (authorizationClient === undefined) {
         return;
       }
 
-      const response = await getUserProjects("representation", userAuthorizationClient, searchQuery);
+      const response = await getUserProjects(
+        { detail: "representation", search: searchQuery },
+        { authorizationClient },
+      );
       if (!disposedRef.current && response) {
         setITwins(response.sort((a, b) => Date.parse(b.registrationDateTime) - Date.parse(a.registrationDateTime)));
       }
     },
-    [userAuthorizationClient, searchQuery],
+    [authorizationClient, searchQuery],
     500,
   );
 
@@ -137,26 +140,29 @@ export function ITwinIModelBrowser(): React.ReactElement {
   const { iTwin } = useParams<{ iTwin: string }>();
   assert(iTwin !== undefined);
 
-  const { userAuthorizationClient } = useAuthorization();
+  const { userAuthorizationClient: authorizationClient } = useAuthorization();
   const [iModels, setIModels] = React.useState<IModelRepresentation[]>();
   const { displayMode, searchQuery, clearSearchQuery } = React.useContext(iModelBrowserContext);
 
   // We do not want to inherit search query that was intended for iTwins
   React.useEffect(() => clearSearchQuery(), [clearSearchQuery]);
-  React.useEffect(() => setIModels(undefined), [userAuthorizationClient, iTwin, searchQuery]);
+  React.useEffect(() => setIModels(undefined), [authorizationClient, iTwin, searchQuery]);
 
   useDebouncedAsyncEffect(
     async (disposedRef) => {
-      if (userAuthorizationClient === undefined) {
+      if (authorizationClient === undefined) {
         return;
       }
 
-      const response = await getProjectIModels(iTwin, "representation", userAuthorizationClient, searchQuery);
+      const response = await getProjectIModels(
+        { projectId: iTwin, detail: "representation", name: searchQuery },
+        { authorizationClient },
+      );
       if (!disposedRef.current && response) {
         setIModels(response.sort((a, b) => Date.parse(b.createdDateTime) - Date.parse(a.createdDateTime)));
       }
     },
-    [userAuthorizationClient, iTwin, searchQuery],
+    [authorizationClient, iTwin, searchQuery],
     500,
   );
 
@@ -172,7 +178,7 @@ export function ITwinIModelBrowser(): React.ReactElement {
   }
 
   return displayMode === "grid"
-    ? <IModelBrowserGridView iModels={iModels} authorizationClient={userAuthorizationClient} />
+    ? <IModelBrowserGridView iModels={iModels} authorizationClient={authorizationClient} />
     : <IModelBrowserTableView iModels={iModels} />;
 }
 

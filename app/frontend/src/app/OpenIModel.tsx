@@ -196,8 +196,8 @@ function usePopulateHeaderBreadcrumbs(
       } else if (authorizationClient) {
         void (async () => {
           const [project, iModel] = await Promise.all([
-            getProject(iModelIdentifier.iTwinId, authorizationClient),
-            getIModel(iModelIdentifier.iModelId, authorizationClient),
+            getProject(iModelIdentifier.iTwinId, { authorizationClient }),
+            getIModel(iModelIdentifier.iModelId, { authorizationClient }),
           ]);
           if (!disposed && project && iModel) {
             setBreadcrumbs([
