@@ -125,24 +125,18 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
       new FontPreloadPlugin({
         assetPatterns: [/OpenSans-subset\.woff2/],
       }),
+      new AppMetadataPlugin({
+        clientId: process.env.OAUTH_CLIENT_ID ?? "",
+        urlPrefix: process.env.IMJS_URL_PREFIX ?? "",
+        appInsights: process.env.APPLICATION_INSIGHTS_CONNECTION_STRING ?? "",
+      }),
       new ProvidePlugin({
         Buffer: ["buffer", "Buffer"],
         process: "process/browser",
       }),
       new MonacoWebpackPlugin({ languages: ["json"] }),
       new DefinePlugin({
-        ["process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_DEV"]: JSON.stringify(
-          process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_DEV,
-        ),
-        ["process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_QA"]: JSON.stringify(
-          process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_QA,
-        ),
-        ["process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_PROD"]: JSON.stringify(
-          process.env.APPLICATION_INSIGHTS_CONNECTION_STRING_PROD,
-        ),
         ["process.env.DEPLOYMENT_TYPE"]: JSON.stringify(process.env.DEPLOYMENT_TYPE),
-        ["process.env.IMJS_URL_PREFIX"]: JSON.stringify(process.env.IMJS_URL_PREFIX),
-        ["process.env.OAUTH_CLIENT_ID"]: JSON.stringify(process.env.OAUTH_CLIENT_ID),
       }),
       new CopyPlugin({
         patterns: [
@@ -266,4 +260,25 @@ function findAssets(compilation: Compilation, patterns: RegExp[]): string[] {
   }
 
   return result;
+}
+
+class AppMetadataPlugin implements WebpackPluginInstance {
+  constructor(private metadata: Record<string, string>) {}
+
+  public apply(compiler: Compiler): void {
+    compiler.hooks.compilation.tap(AppMetadataPlugin.name, (compilation) => {
+      HtmlWebpackPlugin.getHooks(compilation).alterAssetTags.tap(AppMetadataPlugin.name, (htmlPluginData) => {
+        for (const [key, value] of Object.entries(this.metadata)) {
+          htmlPluginData.assetTags.meta.push({
+            tagName: "meta",
+            voidTag: true,
+            attributes: { itemprop: key, content: value },
+            meta: {},
+          });
+        }
+
+        return htmlPluginData;
+      });
+    });
+  }
 }

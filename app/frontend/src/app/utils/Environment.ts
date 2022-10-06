@@ -3,13 +3,21 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-/** Adds process.env.IMJS_URL_PREFIX to URL hostname. */
+/** Adds urlPrefix to URL hostname. */
 export function applyUrlPrefix(url: string): string {
-  if (!process.env.IMJS_URL_PREFIX) {
+  if (!urlPrefix) {
     return url;
   }
 
   const modifierUrl = new URL(url);
-  modifierUrl.hostname = process.env.IMJS_URL_PREFIX + modifierUrl.hostname;
+  modifierUrl.hostname = urlPrefix + modifierUrl.hostname;
   return modifierUrl.toString();
+}
+
+export const clientId = getAppMetadata("clientId");
+export const urlPrefix = getAppMetadata("urlPrefix");
+export const appInsightsConnectionString = getAppMetadata("appInsights");
+
+function getAppMetadata(propertyName: string): string {
+  return document.head.querySelector(`meta[itemprop=${propertyName}]`)?.getAttribute("content") ?? "";
 }

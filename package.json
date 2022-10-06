@@ -29,7 +29,8 @@
   },
   "engines": {
     "pnpm": ">=6",
-    "npm": "<0"
+    "npm": "<0",
+    "node": ">=16"
   },
   "dependencies": {
     "cross-env": "^7.0.3",

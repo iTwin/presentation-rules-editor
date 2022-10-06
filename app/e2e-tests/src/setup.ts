@@ -40,6 +40,12 @@ after(async () => {
   await teardownDevServers();
 });
 
+afterEach(async function () {
+  if (this.currentTest?.isFailed()) {
+    await page.screenshot({ path: `screenshots/${this.currentTest.title}.png` });
+  }
+});
+
 /** Implements Promise.allSettled behaviour */
 async function settleAllPromises(args: Array<Promise<unknown>>): Promise<void> {
   type WrappedPromise<T> = Promise<{ status: "fulfilled", value: T } | { status: "rejected", error: unknown }>;
