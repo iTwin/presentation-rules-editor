@@ -1,13 +1,21 @@
 # Contributing to this repository
 
-## Developing
+## Development
+
+### Setup
 
 Follow the [steps for running the application](./README.md#using). These actually start a development server which automatically reloads the application when source files are modified.
 
-## Directory structure
+### Directory structure
 
-* `app/` - contains source code for the editor application.
-* `presentation-rules-editor-react/` - contains reusable components that can be added to other applications that wish to integrate a presentation ruleset editor.
+* `app/` — contains source code for the editor application.
+* `presentation-rules-editor-react/` — contains reusable components that can be added to other applications that wish to integrate a presentation ruleset editor.
+
+### Localization
+
+Localization provides very limited value to Presentation Rules Editor because the ruleset schema and the documentation is only available in the English language. Nevertheless, we do attempt to prepare user-facing strings for localization when it is not inconvenient.
+
+iTwin.js packages present huge challenges to keeping bundle sizes sane. To maintain reasonable application startup performance, we load all iTwin.js libraries in the background, which makes built-in iTwin.js localization API inaccessible during the initial page render. React components hosted in application's `ITwinJsApp/` folder are loaded later and fully depend on iTwin.js code, so they do not have the same problem, thus you will only see attempts at localization in this subtree.
 
 ## Testing
 
@@ -16,19 +24,21 @@ We have two sets of tests:
 * Unit tests for `presentation-rules-editor` package, which require 100% test coverage.
 * End-to-end tests for the editor application.
 
-To run these tests, execute `npm test` in `presentation-rules-editor-react/` and `app/e2e-tests` directories respectively.
+To run these tests, execute `npm test` in `presentation-rules-editor-react/` and `app/e2e-tests/` directories respectively.
 
-## Debugging frontend code
+## Debugging
+
+### Frontend
 
 1. Launch Presentation Rules Editor application like you normally would.
 2. In Visual Studio Code, execute `Debug: Open Link` command and enter `http://localhost:8080`.
 
-## Debugging backend code
+### Backend
 
 1. In Visual Studio Code, open a  `JavaScript Debug Terminal`.
 2. Start the backend from the created terminal.
 
-## Debugging iTwin.js issues
+### Core iTwin.js libraries
 
 1. Clone the [iTwin.js](https://github.com/imodeljs/imodeljs) repository.
 2. `rush install` and `rush build` iTwin.js packages.
