@@ -3,6 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient } from "@itwin/core-common";
+import { demoIModels } from "./ITwinJsApp/IModelIdentifier";
 import { applyUrlPrefix } from "./utils/Environment";
 
 export interface ProjectRepresentation {
@@ -119,11 +120,11 @@ export async function getProjectIModels(
     requestArgs,
   );
 }
-
 export async function getIModel(iModelId: string, requestArgs: RequestArgs): Promise<IModelRepresentation | undefined> {
   return callITwinApi(
     {
       endpoint: `imodels/${iModelId}`,
+      skipUrlPrefix: demoIModels.has(iModelId),
       postProcess: async (response) => (await response.json()).iModel,
     },
     requestArgs,
@@ -135,6 +136,7 @@ export async function getIModelThumbnail(iModelId: string, requestArgs: RequestA
     {
       endpoint: `imodels/${iModelId}/thumbnail?size=small`,
       immutable: true,
+      skipUrlPrefix: demoIModels.has(iModelId),
       postProcess: async (response) => response.blob(),
     },
     requestArgs,
@@ -149,6 +151,7 @@ interface CallITwinApiArgs<T> {
   endpoint: string;
   additionalHeaders?: Record<string, string>;
   immutable?: boolean;
+  skipUrlPrefix?: boolean;
   postProcess: (response: Response) => Promise<T>;
 }
 
@@ -160,7 +163,8 @@ async function callITwinApi<T>(
   args: CallITwinApiArgs<T>,
   requestArgs: RequestArgs,
 ): Promise<T | undefined> {
-  const url = applyUrlPrefix("https://api.bentley.com/") + args.endpoint;
+  const iTwinApiUrl = "https://api.bentley.com/";
+  const url = (args.skipUrlPrefix ? iTwinApiUrl : applyUrlPrefix(iTwinApiUrl)) + args.endpoint;
   const headers = {
     ...args.additionalHeaders,
     Authorization: await requestArgs.authorizationClient.getAccessToken(),
