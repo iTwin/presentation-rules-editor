@@ -15,7 +15,9 @@ Follow the [steps for running the application](./README.md#using). These actuall
 
 Localization provides very limited value to Presentation Rules Editor because the ruleset schema and the documentation is only available in the English language. Nevertheless, we do attempt to prepare user-facing strings for localization when it is not inconvenient.
 
-iTwin.js packages present huge challenges to keeping bundle sizes sane. To maintain reasonable application startup performance, we load all iTwin.js libraries in the background, which makes built-in iTwin.js localization API inaccessible during the initial page render. React components hosted in application's `ITwinJsApp/` folder are loaded later and fully depend on iTwin.js code, so they do not have the same problem, thus you will only see attempts at localization in this subtree.
+We are using built-in iTwin.js localization API in the parts of application that already depend on iTwin.js. This is because, to maintain reasonable application startup performance, all iTwin.js libraries have to be loaded in the background, which makes localization unavailable in the initial app bundle.
+
+To summarise, we only do string localization inside `ITwinJsApp/` subdirectory.
 
 ## Testing
 
