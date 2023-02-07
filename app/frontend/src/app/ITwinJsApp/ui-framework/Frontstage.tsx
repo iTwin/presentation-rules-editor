@@ -5,13 +5,9 @@
 /* eslint-disable sort-imports */
 import React, { ReactElement } from "react";
 import {
-  AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsManager, UiItemsProvider,
-} from "@itwin/appui-abstract";
-import {
-  ConfigurableCreateInfo, ConfigurableUiContent, ContentControl as FrameworkContentControl, ContentGroup,
-  ContentLayoutDef, CoreTools, Frontstage as FrameworkFrontstage, FrontstageManager,
-  FrontstageProps as FrameworkFrontstageProps, FrontstageProvider, StagePanel as FrameworkStagePanel,
-  StagePanelProps as FrameworkStagePanelProps,
+  CommonWidgetProps, ConfigurableCreateInfo, ConfigurableUiContent, ContentControl as FrameworkContentControl, ContentGroup, ContentLayoutDef,
+  FrontstageConfig as FrameworkFrontstageConfig, FrontstageManager, FrontstageProvider, StagePanelLocation, StagePanelSection, UiItemsManager,
+  UiItemsProvider,
 } from "@itwin/appui-react";
 import { StagePanelProps, StagePanelZoneProps } from "./StagePanel";
 
@@ -71,12 +67,12 @@ function gatherWidgetContents(props: FrontstageProps): Map<string, ReactElement 
 /** Defines a Frontstage with content and widget shims. Content for the shims is provided via React Context API. */
 class CustomFrontstageProvider extends FrontstageProvider {
   private contentGroup: ContentGroup;
-  private rightPanel: React.ReactElement<FrameworkStagePanelProps>;
+  private rightPanelProps?: StagePanelProps;
 
   constructor(rightPanel: React.ReactElement<StagePanelProps> | undefined) {
     super();
 
-    this.rightPanel = <FrameworkStagePanel size={rightPanel?.props.size} />;
+    this.rightPanelProps = rightPanel?.props;
 
     this.contentGroup = new ContentGroup({
       id: "root_content_group",
@@ -90,15 +86,19 @@ class CustomFrontstageProvider extends FrontstageProvider {
 
   public readonly id = "main_frontstage_provider";
 
-  public get frontstage(): React.ReactElement<FrameworkFrontstageProps> {
-    return (
-      <FrameworkFrontstage
-        id="CustomFrontstage"
-        contentGroup={this.contentGroup}
-        defaultTool={CoreTools.selectElementCommand}
-        rightPanel={this.rightPanel}
-      />
-    );
+  public override get frontstage(): ReactElement<any> {
+    throw new Error("Expecting `frontstageConfig` to be called instead of this.");
+  }
+
+  public override frontstageConfig(): FrameworkFrontstageConfig {
+    return {
+      version: 1,
+      id: "CustomFrontstage",
+      contentGroup: this.contentGroup,
+      rightPanel: {
+        size: this.rightPanelProps?.size,
+      },
+    };
   }
 }
 
@@ -112,7 +112,7 @@ class WidgetsProvider implements UiItemsProvider {
     _stageUsage: string,
     location: StagePanelLocation,
     section?: StagePanelSection,
-  ): readonly AbstractWidgetProps[] {
+  ): readonly CommonWidgetProps[] {
     if (section === undefined) {
       return [];
     }
@@ -121,10 +121,10 @@ class WidgetsProvider implements UiItemsProvider {
   }
 }
 
-type StagePanels = Map<StagePanelLocation, Map<StagePanelSection, AbstractWidgetProps[]>>;
+type StagePanels = Map<StagePanelLocation, Map<StagePanelSection, CommonWidgetProps[]>>;
 
-function createStagePanel(panelChildren: StagePanelProps["children"]): Map<StagePanelSection, AbstractWidgetProps[]> {
-  const stagePanelSections = new Map<StagePanelSection, AbstractWidgetProps[]>();
+function createStagePanel(panelChildren: StagePanelProps["children"]): Map<StagePanelSection, CommonWidgetProps[]> {
+  const stagePanelSections = new Map<StagePanelSection, CommonWidgetProps[]>();
   if (panelChildren === undefined) {
     return stagePanelSections;
   }
@@ -139,7 +139,7 @@ function createStagePanel(panelChildren: StagePanelProps["children"]): Map<Stage
 
   return stagePanelSections;
 
-  function makeZone(stagePanelZone?: React.ReactElement<StagePanelZoneProps>): AbstractWidgetProps[] {
+  function makeZone(stagePanelZone?: React.ReactElement<StagePanelZoneProps>): CommonWidgetProps[] {
     return React.Children.map(
       stagePanelZone?.props.children ?? [],
       (widget) => ({

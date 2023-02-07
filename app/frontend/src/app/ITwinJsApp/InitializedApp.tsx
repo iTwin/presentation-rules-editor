@@ -5,8 +5,7 @@
 import "./InitializedApp.scss";
 import * as monaco from "monaco-editor";
 import * as React from "react";
-import { WidgetState } from "@itwin/appui-abstract";
-import { StatusMessageRenderer } from "@itwin/appui-react";
+import { WidgetState } from "@itwin/appui-react";
 import { AuthorizationClient } from "@itwin/core-common";
 import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-frontend";
 import { ChildNodeSpecificationTypes, ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
@@ -72,7 +71,6 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement |
               <ContentTabs imodel={imodel} editor={rulesetEditor} />
             </Frontstage>
           </UIFramework>
-          <StatusMessageRenderer />
         </div>
       </rulesetEditorContext.Provider>
     </backendApiContext.Provider>
