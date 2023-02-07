@@ -9,7 +9,7 @@ import HtmlWebpackPlugin, { HtmlTagObject } from "html-webpack-plugin";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
 import path from "path";
 import TerserPlugin from "terser-webpack-plugin";
-import { Compilation, Compiler, Configuration, DefinePlugin, ProvidePlugin, WebpackPluginInstance } from "webpack";
+import { Compilation, Compiler, Configuration, DefinePlugin, WebpackPluginInstance } from "webpack";
 
 dotenv.config({ path: "../../.env" });
 
@@ -130,10 +130,6 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
         urlPrefix: process.env.IMJS_URL_PREFIX ?? "",
         appInsights: process.env.APPLICATION_INSIGHTS_CONNECTION_STRING ?? "",
       }),
-      new ProvidePlugin({
-        Buffer: ["buffer", "Buffer"],
-        process: "process/browser",
-      }),
       new MonacoWebpackPlugin({ languages: ["json"] }),
       new DefinePlugin({
         ["process.env.DEPLOYMENT_TYPE"]: JSON.stringify(process.env.DEPLOYMENT_TYPE),
@@ -155,14 +151,12 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
       extensions: [".ts", ".tsx", ".js"],
       fallback: {
         assert: false,
-        buffer: "buffer",
-        http: "stream-http",
-        https: "https-browserify",
         os: false,
         path: false,
-        process: "process/browser",
+        fs: false,
+        browser: false,
+        buffer: false,
         stream: "stream-browserify",
-        timers: "timers-browserify",
       },
     },
     ...(!isProductionEnvironment && {
