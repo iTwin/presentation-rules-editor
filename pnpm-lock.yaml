@@ -141,20 +141,17 @@ importers:
       '@types/react-dom': ^17.0.0
       '@types/react-redux': ^7.1.24
       '@types/react-table': ^7.7.12
-      buffer: ^6.0.3
       copy-webpack-plugin: ^9.0.1
       css-loader: ^5.2.6
       dotenv: ^10.0.0
       esbuild-loader: ^2.15.1
       eslint: ^7.30.0
       html-webpack-plugin: ^5.5.0
-      https-browserify: ^1.0.0
       lz-string: ^1.4.4
       monaco-editor: ^0.34.0
       monaco-editor-webpack-plugin: ^7.0.0
       npm-run-all: ^4.1.5
       oidc-client: ^1.11.5
-      process: ^0.11.10
       react: ^17.0.0
       react-dom: ^17.0.0
       react-redux: ^7.2.4
@@ -163,12 +160,9 @@ importers:
       sass: ^1.32.11
       sass-loader: ^11.0.1
       source-map-loader: ^2.0.1
-      stream-browserify: ^3.0.0
-      stream-http: ^3.2.0
       string-replace-loader: ^3.0.3
       style-loader: ^2.0.0
       terser-webpack-plugin: ^5.2.4
-      timers-browserify: ^2.0.12
       ts-node: ^10.9.1
       tslib: ^2.3.1
       typescript: ^4.7.4
@@ -213,20 +207,17 @@ importers:
       '@types/react-dom': 17.0.11
       '@types/react-redux': 7.1.24
       '@types/react-table': 7.7.12
-      buffer: 6.0.3
       copy-webpack-plugin: 9.1.0_webpack@5.69.1
       css-loader: 5.2.7_webpack@5.69.1
       dotenv: 10.0.0
       esbuild-loader: 2.18.0_webpack@5.69.1
       eslint: 7.32.0
       html-webpack-plugin: 5.5.0_webpack@5.69.1
-      https-browserify: 1.0.0
       lz-string: 1.4.4
       monaco-editor: 0.34.0
       monaco-editor-webpack-plugin: 7.0.1_3a72cb502b16feb17d4c65d269430352
       npm-run-all: 4.1.5
       oidc-client: 1.11.5
-      process: 0.11.10
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-redux: 7.2.6_react-dom@17.0.2+react@17.0.2
@@ -235,12 +226,9 @@ importers:
       sass: 1.49.8
       sass-loader: 11.1.1_sass@1.49.8+webpack@5.69.1
       source-map-loader: 2.0.2_webpack@5.69.1
-      stream-browserify: 3.0.0
-      stream-http: 3.2.0
       string-replace-loader: 3.1.0_webpack@5.69.1
       style-loader: 2.0.0_webpack@5.69.1
       terser-webpack-plugin: 5.3.1_webpack@5.69.1
-      timers-browserify: 2.0.12
       ts-node: 10.9.1_694a704d85aebff0d6d2fc8ee64346d9
       tslib: 2.3.1
       typescript: 4.7.4
@@ -2891,17 +2879,6 @@ packages:
     resolution: {integrity: sha512-4/rOEg86jivtPTeOUUT61jJO1Ya1TrR/OkqCSZDyq84WJh3LuuiphBYJN+fm5xufIk4XAFcEwte/8WzC8If/1g==}
     dev: false
 
-  /buffer/6.0.3:
-    resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
-    dependencies:
-      base64-js: 1.5.1
-      ieee754: 1.2.1
-    dev: false
-
-  /builtin-status-codes/3.0.0:
-    resolution: {integrity: sha1-hZgoeOIbmOHGZCXgPQF0eI9Wnug=}
-    dev: false
-
   /bytes/3.0.0:
     resolution: {integrity: sha1-0ygVQE1olpn4Wk6k+odV3ROpYEg=}
     engines: {node: '>= 0.8'}
@@ -4983,10 +4960,6 @@ packages:
       - debug
     dev: false
 
-  /https-browserify/1.0.0:
-    resolution: {integrity: sha1-7AbBDgo0wPL68Zn3/X/Hj//QPHM=}
-    dev: false
-
   /https-proxy-agent/5.0.0:
     resolution: {integrity: sha512-EkYm5BcKUGiduxzSt3Eppko+PiNWNEpa4ySk9vTC6wDsQJW9rHSa+UhGNJoRYp7bz6Ht1eaRIa6QaJqO5rCFbA==}
     engines: {node: '>= 6'}
@@ -5039,10 +5012,6 @@ packages:
       postcss: ^8.1.0
     dependencies:
       postcss: 8.4.6
-    dev: false
-
-  /ieee754/1.2.1:
-    resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
     dev: false
 
   /ignore-styles/5.0.1:
@@ -7254,10 +7223,6 @@ packages:
     resolution: {integrity: sha1-BF+XgtARrppoA93TgrJDkrPYkPc=}
     dev: true
 
-  /setimmediate/1.0.5:
-    resolution: {integrity: sha1-KQy7Iy4waULX1+qbg3Mqt4VvgoU=}
-    dev: false
-
   /setprototypeof/1.1.0:
     resolution: {integrity: sha512-BvE/TwpZX4FXExxOxZyRGQQv651MSwmWKZGqvmPcRIjDqWub67kTKuIMx43cZZrS/cBBzwBcNDWoFxt2XEFIpQ==}
     dev: false
@@ -7478,22 +7443,6 @@ packages:
   /statuses/1.5.0:
     resolution: {integrity: sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==}
     engines: {node: '>= 0.6'}
-    dev: false
-
-  /stream-browserify/3.0.0:
-    resolution: {integrity: sha512-H73RAHsVBapbim0tU2JwwOiXUj+fikfiaoYAKHF3VJfA0pe2BCzkhAHBlLG6REzE+2WNZcxOXjK7lkso+9euLA==}
-    dependencies:
-      inherits: 2.0.4
-      readable-stream: 3.6.0
-    dev: false
-
-  /stream-http/3.2.0:
-    resolution: {integrity: sha512-Oq1bLqisTyK3TSCXpPbT4sdeYNdmyZJv1LxpEm2vu1ZhK89kSE5YXwZc3cWk0MagGaKriBh9mCFbVGtO+vY29A==}
-    dependencies:
-      builtin-status-codes: 3.0.0
-      inherits: 2.0.4
-      readable-stream: 3.6.0
-      xtend: 4.0.2
     dev: false
 
   /string-replace-loader/3.1.0_webpack@5.69.1:
@@ -7733,13 +7682,6 @@ packages:
 
   /thunky/1.1.0:
     resolution: {integrity: sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA==}
-    dev: false
-
-  /timers-browserify/2.0.12:
-    resolution: {integrity: sha512-9phl76Cqm6FhSX9Xe1ZUAMLtm1BLkKj2Qd5ApyWkXzsMRaA7dgr81kf4wJmQf/hAvg8EEyJxDo3du/0KlhPiKQ==}
-    engines: {node: '>=0.6.0'}
-    dependencies:
-      setimmediate: 1.0.5
     dev: false
 
   /tippy.js/6.3.7:

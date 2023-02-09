@@ -150,13 +150,6 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
     resolve: {
       extensions: [".ts", ".tsx", ".js"],
       fallback: {
-        assert: false,
-        os: false,
-        path: false,
-        fs: false,
-        browser: false,
-        buffer: false,
-        stream: "stream-browserify",
       },
     },
     ...(!isProductionEnvironment && {
