@@ -1,7 +1,7 @@
 {
   "name": "@itwin/presentation-rules-editor-react",
   "description": "iTwin.js Presentation Rules Editor React components",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "scripts": {
     "build": "run-p build:* copy:*",
     "build:cjs": "tsc --project tsconfig.build.json --outDir ./lib/cjs --module CommonJS",
