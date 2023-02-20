@@ -7,6 +7,7 @@ import * as React from "react";
 import { IModelApp, IModelConnection } from "@itwin/core-frontend";
 import { SvgCollapseAll, SvgExpandAll } from "@itwin/itwinui-icons-react";
 import { Button, IconButton } from "@itwin/itwinui-react";
+import { UnifiedSelectionContextProvider } from "@itwin/presentation-components";
 import { EditableRuleset, PropertyGrid, PropertyGridAttributes } from "@itwin/presentation-rules-editor-react";
 import { VerticalStack } from "../../common/CenteredStack";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
@@ -29,7 +30,11 @@ export function PropertyGridWidget(props: PropertyGridProps): React.ReactElement
     return <LoadingHint />;
   }
 
-  return <LoadedPropertyGrid iModel={props.imodel} ruleset={props.ruleset} />;
+  return (
+    <UnifiedSelectionContextProvider imodel={props.imodel} selectionLevel={0}>
+      <LoadedPropertyGrid iModel={props.imodel} ruleset={props.ruleset} />
+    </UnifiedSelectionContextProvider>
+  );
 }
 
 interface LoadedPropertyGridProps {

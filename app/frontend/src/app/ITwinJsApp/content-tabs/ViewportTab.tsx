@@ -6,7 +6,7 @@ import * as React from "react";
 import { Id64String } from "@itwin/core-bentley";
 import { IModelConnection } from "@itwin/core-frontend";
 import { ViewportComponent } from "@itwin/imodel-components-react";
-import { viewWithUnifiedSelection } from "@itwin/presentation-components";
+import { UnifiedSelectionContextProvider, viewWithUnifiedSelection } from "@itwin/presentation-components";
 import { backendApiContext } from "../ITwinJsAppContext";
 
 export interface ViewportTabProps {
@@ -29,7 +29,11 @@ function ViewportForIModel(props: ViewportForIModelProps): React.ReactElement | 
     return null;
   }
 
-  return <ViewportWithUnifiedSelection imodel={props.imodel} viewDefinitionId={viewDefinitionId} />;
+  return (
+    <UnifiedSelectionContextProvider imodel={props.imodel} selectionLevel={0}>
+      <ViewportWithUnifiedSelection imodel={props.imodel} viewDefinitionId={viewDefinitionId} />
+    </UnifiedSelectionContextProvider>
+  );
 }
 
 function useViewDefinitionId(imodel: IModelConnection): Id64String | undefined {
