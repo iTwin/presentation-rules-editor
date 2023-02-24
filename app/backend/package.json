@@ -21,6 +21,8 @@
     "@itwin/core-geometry": "3.6.0",
     "@itwin/core-quantity": "3.6.0",
     "@itwin/ecschema-metadata": "3.6.0",
+    "@itwin/ecschema-rpcinterface-common": "3.6.0",
+    "@itwin/ecschema-rpcinterface-impl": "3.6.0",
     "@itwin/eslint-plugin": "3.6.0",
     "@itwin/express-server": "3.6.0",
     "@itwin/imodels-access-backend": "^1.0.1",

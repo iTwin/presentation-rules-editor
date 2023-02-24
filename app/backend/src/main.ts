@@ -7,6 +7,7 @@ import { rpcInterfaces } from "@app/common";
 import { IModelHost, IModelHostConfiguration } from "@itwin/core-backend";
 import { Logger, LogLevel } from "@itwin/core-bentley";
 import { RpcConfiguration } from "@itwin/core-common";
+import { ECSchemaRpcImpl } from "@itwin/ecschema-rpcinterface-impl";
 import { BackendIModelsAccess } from "@itwin/imodels-access-backend";
 import { Presentation, PresentationBackendLoggerCategory, PresentationBackendNativeLoggerCategory } from "@itwin/presentation-backend";
 import { PresentationRulesEditorRpcImpl } from "./PresentationRulesEditorRpcImpl";
@@ -33,6 +34,7 @@ void (async () => {
   });
 
   RpcConfiguration.developmentMode = true;
+  ECSchemaRpcImpl.register();
   PresentationRulesEditorRpcImpl.register();
 
   await initialize(rpcInterfaces);

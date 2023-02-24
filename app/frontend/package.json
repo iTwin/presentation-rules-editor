@@ -29,6 +29,8 @@
     "@itwin/core-orbitgt": "3.6.0",
     "@itwin/core-quantity": "3.6.0",
     "@itwin/core-react": "3.6.0",
+    "@itwin/ecschema-metadata": "3.6.0",
+    "@itwin/ecschema-rpcinterface-common": "3.6.0",
     "@itwin/eslint-plugin": "3.6.0",
     "@itwin/imodel-browser-react": "^0.12.1",
     "@itwin/imodel-components-react": "3.6.0",
