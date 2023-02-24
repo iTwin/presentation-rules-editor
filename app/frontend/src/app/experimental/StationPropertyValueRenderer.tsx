@@ -102,7 +102,7 @@ function useIModelSelectedElementIds() {
   }, [selectionContext]));
 }
 
-function useComputedStationValue(props: { imodel: IModelConnection, elementId: Id64String; }) {
+function useComputedStationValue(props: { imodel: IModelConnection, elementId: Id64String }) {
   const schemaContext = React.useMemo(() => {
     const ctx = new SchemaContext();
     ctx.addLocater(new ECSchemaRpcLocater(props.imodel.getRpcProps()));
