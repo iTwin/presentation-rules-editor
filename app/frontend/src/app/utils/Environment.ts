@@ -21,3 +21,5 @@ export const appInsightsConnectionString = getAppMetadata("appInsights");
 function getAppMetadata(propertyName: string): string {
   return document.head.querySelector(`meta[itemprop=${propertyName}]`)?.getAttribute("content") ?? "";
 }
+
+export const EXPERIMENTAL_STATION_VALUE_RENDERER = true;
