@@ -47,7 +47,7 @@ export class StationPropertyValueRenderer implements IPropertyValueRenderer {
   }
 }
 
-function StationPropertyValueRendererImpl(props: { record: PropertyRecord, context?: PropertyValueRendererContext }) {
+function StationPropertyValueRendererImpl(props: { context?: PropertyValueRendererContext }) {
   const { value: iModelSelectedElementIds, inProgress } = useIModelSelectedElementIds();
 
   if (inProgress)
@@ -126,6 +126,9 @@ function useComputedStationValue(props: { imodel: IModelConnection, elementId: I
   }, [schemaContext]));
 
   return useDebouncedAsyncValue(React.useCallback(async () => {
+    if (formatterSpec.inProgress)
+      return null;
+
     const ecsql = `
       SELECT
         linearlyLocated.DistanceAlongFromStart DistanceAlong,
@@ -170,10 +173,10 @@ function useComputedStationValue(props: { imodel: IModelConnection, elementId: I
     }
     if (!queryResult)
       return "<no value>";
-    if (formatterSpec.inProgress)
-      return null;
+
     if (!formatterSpec.value)
       return `Distance along: ${queryResult.distanceAlong}; \nStation value: ${queryResult.stationValue}`;
+
     return Formatter.formatQuantity(queryResult.stationValue, formatterSpec.value);
   }, [formatterSpec.inProgress, formatterSpec.value, props.imodel, props.elementId]));
 }
