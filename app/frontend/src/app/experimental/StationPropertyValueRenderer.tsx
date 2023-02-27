@@ -42,8 +42,8 @@ export class StationPropertyValueRenderer implements IPropertyValueRenderer {
     return record.property.renderer?.name === "Station";
   }
 
-  public render(record: PropertyRecord, context?: PropertyValueRendererContext) {
-    return <StationPropertyValueRendererImpl record={record} context={context} />;
+  public render(_record: PropertyRecord, context?: PropertyValueRendererContext) {
+    return <StationPropertyValueRendererImpl context={context} />;
   }
 }
 
