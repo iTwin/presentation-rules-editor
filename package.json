@@ -30,7 +30,7 @@
   "engines": {
     "pnpm": ">=8",
     "npm": "<0",
-    "node": ">=16"
+    "node": ">=18"
   },
   "dependencies": {
     "cross-env": "^7.0.3",

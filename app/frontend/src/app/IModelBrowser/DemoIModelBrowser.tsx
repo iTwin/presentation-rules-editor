@@ -6,7 +6,7 @@ import * as React from "react";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
 import { FluidGrid } from "@itwin/itwinui-layouts-react";
-import { Title } from "@itwin/itwinui-react";
+import { Text } from "@itwin/itwinui-react";
 import { useAuthorization } from "../Authorization";
 import { VerticalStack } from "../common/CenteredStack";
 import { getIModel } from "../ITwinApi";
@@ -28,7 +28,7 @@ export function DemoIModelBrowser(): React.ReactElement {
     return (
       <VerticalStack className="imodel-browser-no-data">
         <SvgImodelHollow />
-        <Title isMuted>No iModels match given search query</Title>
+        <Text variant="title" as="h2" isMuted>No iModels match given search query</Text>
       </VerticalStack>
     );
   }

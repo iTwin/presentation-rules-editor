@@ -8,12 +8,10 @@ import * as React from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { SvgDeveloper, SvgFolderOpened } from "@itwin/itwinui-icons-react";
 import { PageLayout } from "@itwin/itwinui-layouts-react";
-import { Footer, SidenavButton, SideNavigation } from "@itwin/itwinui-react";
+import { Footer, SidenavButton, SideNavigation, ThemeProvider } from "@itwin/itwinui-react";
 import { appNavigationContext, AppNavigationContext } from "./AppContext";
 import { AppHeader, breadcrumbsContext } from "./AppHeader";
-import {
-  AuthorizationState, createAuthorizationProvider, SignInCallback, SignInSilent, useAuthorization,
-} from "./Authorization";
+import { AuthorizationState, createAuthorizationProvider, SignInCallback, SignInSilent, useAuthorization } from "./Authorization";
 import { CheckingSignInStatusHint } from "./common/CheckingSignInStatusHint";
 import { PageNotFound } from "./errors/PageNotFound";
 import { DemoIModelBrowser } from "./IModelBrowser/DemoIModelBrowser";
@@ -31,17 +29,19 @@ export function App(): React.ReactElement {
     <AuthorizationProvider>
       <appNavigationContext.Provider value={appContextValue}>
         <breadcrumbsContext.Provider value={{ breadcrumbs, setBreadcrumbs }}>
-          <PageLayout>
-            <PageLayout.Header>
-              <AppHeader />
-            </PageLayout.Header>
-            <Routes>
-              <Route path="/auth/callback" element={<SignInCallback />} />
-              <Route path="/auth/silent" element={<SignInSilent />} />
-              <Route path="/*" element={<Main />} />
-            </Routes>
-            <Footer />
-          </PageLayout>
+          <ThemeProvider theme="os">
+            <PageLayout>
+              <PageLayout.Header>
+                <AppHeader />
+              </PageLayout.Header>
+              <Routes>
+                <Route path="/auth/callback" element={<SignInCallback />} />
+                <Route path="/auth/silent" element={<SignInSilent />} />
+                <Route path="/*" element={<Main />} />
+              </Routes>
+              <Footer />
+            </PageLayout>
+          </ThemeProvider>
         </breadcrumbsContext.Provider>
       </appNavigationContext.Provider>
     </AuthorizationProvider>

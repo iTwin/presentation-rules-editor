@@ -5,9 +5,9 @@
 /* eslint-disable sort-imports */
 import React, { ReactElement } from "react";
 import {
-  CommonWidgetProps, ConfigurableCreateInfo, ConfigurableUiContent, ContentControl as FrameworkContentControl, ContentGroup, ContentLayoutDef,
-  FrontstageConfig as FrameworkFrontstageConfig, FrontstageManager, FrontstageProvider, StagePanelLocation, StagePanelSection, UiItemsManager,
-  UiItemsProvider,
+  ConfigurableCreateInfo, ConfigurableUiContent, ContentControl as FrameworkContentControl, ContentGroup, ContentLayoutDef,
+  FrontstageConfig as FrameworkFrontstageConfig, FrontstageProvider, StagePanelLocation, StagePanelSection, UiFramework, UiItemsManager,
+  UiItemsProvider, Widget,
 } from "@itwin/appui-react";
 import { StagePanelProps, StagePanelZoneProps } from "./StagePanel";
 
@@ -24,9 +24,9 @@ export const Frontstage: React.FC<FrontstageProps> = (props) => {
     () => {
       void (async () => {
         const frontstage = new CustomFrontstageProvider(props.rightPanel);
-        FrontstageManager.addFrontstageProvider(frontstage);
-        const frontstageDef = await FrontstageManager.getFrontstageDef(frontstage.id);
-        await FrontstageManager.setActiveFrontstageDef(frontstageDef);
+        UiFramework.frontstages.addFrontstageProvider(frontstage);
+        const frontstageDef = await UiFramework.frontstages.getFrontstageDef(frontstage.id);
+        await UiFramework.frontstages.setActiveFrontstageDef(frontstageDef);
       })();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -86,10 +86,6 @@ class CustomFrontstageProvider extends FrontstageProvider {
 
   public readonly id = "main_frontstage_provider";
 
-  public override get frontstage(): ReactElement<any> {
-    throw new Error("Expecting `frontstageConfig` to be called instead of this.");
-  }
-
   public override frontstageConfig(): FrameworkFrontstageConfig {
     return {
       version: 1,
@@ -112,7 +108,7 @@ class WidgetsProvider implements UiItemsProvider {
     _stageUsage: string,
     location: StagePanelLocation,
     section?: StagePanelSection,
-  ): readonly CommonWidgetProps[] {
+  ): readonly Widget[] {
     if (section === undefined) {
       return [];
     }
@@ -121,10 +117,10 @@ class WidgetsProvider implements UiItemsProvider {
   }
 }
 
-type StagePanels = Map<StagePanelLocation, Map<StagePanelSection, CommonWidgetProps[]>>;
+type StagePanels = Map<StagePanelLocation, Map<StagePanelSection, Widget[]>>;
 
-function createStagePanel(panelChildren: StagePanelProps["children"]): Map<StagePanelSection, CommonWidgetProps[]> {
-  const stagePanelSections = new Map<StagePanelSection, CommonWidgetProps[]>();
+function createStagePanel(panelChildren: StagePanelProps["children"]): Map<StagePanelSection, Widget[]> {
+  const stagePanelSections = new Map<StagePanelSection, Widget[]>();
   if (panelChildren === undefined) {
     return stagePanelSections;
   }
@@ -139,13 +135,12 @@ function createStagePanel(panelChildren: StagePanelProps["children"]): Map<Stage
 
   return stagePanelSections;
 
-  function makeZone(stagePanelZone?: React.ReactElement<StagePanelZoneProps>): CommonWidgetProps[] {
+  function makeZone(stagePanelZone?: React.ReactElement<StagePanelZoneProps>): Widget[] {
     return React.Children.map(
       stagePanelZone?.props.children ?? [],
       (widget) => ({
         ...widget.props,
-        // eslint-disable-next-line react/display-name
-        getWidgetContent: () => <WidgetFromContext id={widget.props.id} />,
+        content: <WidgetFromContext id={widget.props.id} />,
       }),
     );
   }

@@ -163,16 +163,14 @@ function useComputedStationValue(props: { imodel: IModelConnection, elementId: I
       LIMIT
         1
     `;
-    let queryResult: { distanceAlong: number, stationValue: number } | undefined;
-    for await (const row of props.imodel.query(ecsql, (new QueryBinder()).bindId(1, props.elementId), { rowFormat: QueryRowFormat.UseECSqlPropertyIndexes })) {
-      queryResult = {
-        distanceAlong: row[0],
-        stationValue: row[1],
-      };
-      break;
-    }
-    if (!queryResult)
+    const queryReader = props.imodel.createQueryReader(ecsql, (new QueryBinder()).bindId(1, props.elementId), { rowFormat: QueryRowFormat.UseECSqlPropertyIndexes });
+    if (!await queryReader.step())
       return "<no value>";
+
+    const queryResult = {
+      distanceAlong: queryReader.current[0],
+      stationValue: queryReader.current[1],
+    };
 
     if (!formatterSpec.value)
       return `Distance along: ${queryResult.distanceAlong}; \nStation value: ${queryResult.stationValue}`;

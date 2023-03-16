@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-.app > .iui-layouts-page {
+.app .iui-layouts-page {
   // The original grid areas does not include the footer
   grid-template:
     "header header" auto
