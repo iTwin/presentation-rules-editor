@@ -5,6 +5,7 @@
 
 .content-tabs-wrapper {
   height: 100%;
+  grid-template-rows: calc(var(--iui-size-s)*3 + var(--iui-size-xs)) auto;
   background-color: var(--iui-color-background-1);
 }
 

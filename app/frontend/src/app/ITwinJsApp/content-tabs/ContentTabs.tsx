@@ -6,7 +6,7 @@ import "./ContentTabs.scss";
 import * as React from "react";
 import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-frontend";
 import { SvgLink } from "@itwin/itwinui-icons-react";
-import { Button, HorizontalTabs } from "@itwin/itwinui-react";
+import { Button, Tabs } from "@itwin/itwinui-react";
 import { SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
 import { OpeningIModelHint } from "../common/OpeningIModelHint";
 import { rulesetEditorContext, RulesetEditorTab } from "../ITwinJsAppContext";
@@ -32,7 +32,8 @@ export function ContentTabs(props: ContentTabsProps): React.ReactElement {
 
   return (
     <>
-      <HorizontalTabs
+      <Tabs
+        orientation="horizontal"
         wrapperClassName="content-tabs-wrapper"
         contentClassName="content-tabs-content"
         type="borderless"
@@ -45,7 +46,7 @@ export function ContentTabs(props: ContentTabsProps): React.ReactElement {
             ? <EditorTab editor={props.editor} />
             : props.imodel !== undefined ? <ViewportTab imodel={props.imodel} /> : <OpeningIModelHint />
         }
-      </HorizontalTabs>
+      </Tabs>
       <ShareButton editor={props.editor} />
     </>
   );

@@ -7,7 +7,7 @@ import { CellProps } from "react-table";
 import { IModelMetadata } from "@app/common";
 import { SvgImodelHollow, SvgMore } from "@itwin/itwinui-icons-react";
 import { FluidGrid } from "@itwin/itwinui-layouts-react";
-import { Anchor, DropdownMenu, IconButton, MenuItem, Table, TableProps, Title } from "@itwin/itwinui-react";
+import { Anchor, DropdownMenu, IconButton, MenuItem, Table, TableProps, Text } from "@itwin/itwinui-react";
 import { appNavigationContext } from "../AppContext";
 import { AsyncActionButton } from "../common/AsyncActionButton";
 import { VerticalStack } from "../common/CenteredStack";
@@ -27,9 +27,9 @@ export function LocalIModelBrowser(props: LocalIModelBrowserProps): React.ReactE
     return (
       <VerticalStack className="imodel-browser-no-data">
         <SvgImodelHollow />
-        <Title isMuted>
+        <Text variant="title" as="h2" isMuted>
           {searchQuery ? "No local iModels match search query" : "No local iModel snapshots found"}
-        </Title>
+        </Text>
         <AsyncActionButton onClick={async () => backendApi?.openIModelsDirectory()}>
           Open snapshots folder
         </AsyncActionButton>
@@ -37,7 +37,7 @@ export function LocalIModelBrowser(props: LocalIModelBrowserProps): React.ReactE
     );
   }
 
-  const openSnapshotsFolder = () => backendApi?.openIModelsDirectory();
+  const openSnapshotsFolder = async () => backendApi?.openIModelsDirectory();
 
   return displayMode === "grid"
     ? <GridView availableIModels={availableIModels} openSnapshotsFolder={openSnapshotsFolder} />

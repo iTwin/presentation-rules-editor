@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { Leading, ProgressRadial } from "@itwin/itwinui-react";
+import { ProgressRadial, Text } from "@itwin/itwinui-react";
 import { VerticalStack } from "./CenteredStack";
 
 export interface LoadingIndicatorProps {
@@ -22,7 +22,7 @@ export function LoadingIndicator(props: LoadingIndicatorProps): React.ReactEleme
   return (
     <VerticalStack id={props.id} style={props.style}>
       <ProgressRadial size="large" indeterminate={true} />
-      <Leading>{props.children}</Leading>
+      <Text variant="leading" as="h3">{props.children}</Text>
     </VerticalStack>
   );
 }

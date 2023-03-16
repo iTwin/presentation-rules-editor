@@ -15,7 +15,7 @@
     "typecheck:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
-    "@itwin/eslint-plugin": "3.6.0",
+    "@itwin/eslint-plugin": "4.0.0-dev.32",
     "@types/node": "^16.0.0",
     "@types/yargs": "^17.0.11",
     "eslint": "^7.30.0",

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { Provider } from "react-redux";
-import { StateManager, UiFramework, UiStateStorageHandler } from "@itwin/appui-react";
+import { StateManager, ThemeManager, UiFramework, UiStateStorageHandler } from "@itwin/appui-react";
 import { MemoryUISettingsStorage } from "./MemoryUISettingsStorage";
 
 export interface UIFrameworkProps {
@@ -22,7 +22,9 @@ export function UIFramework(props: UIFrameworkProps): React.ReactElement {
   return (
     <Provider store={StateManager.store}>
       <UiStateStorageHandler>
-        {props.children}
+        <ThemeManager>
+          {props.children}
+        </ThemeManager>
       </UiStateStorageHandler>
     </Provider>
   );

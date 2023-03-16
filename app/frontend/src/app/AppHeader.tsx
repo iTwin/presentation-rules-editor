@@ -5,9 +5,7 @@
 import { Profile } from "oidc-client";
 import * as React from "react";
 import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
-import {
-  Button, DropdownMenu, getUserColor, Header, HeaderBreadcrumbs, HeaderLogo, IconButton, MenuItem, UserIcon,
-} from "@itwin/itwinui-react";
+import { Avatar, Button, DropdownMenu, getUserColor, Header, HeaderBreadcrumbs, HeaderLogo, IconButton, MenuItem } from "@itwin/itwinui-react";
 import { appNavigationContext } from "./AppContext";
 import { AuthorizationState, useAuthorization } from "./Authorization";
 import { HorizontalStack } from "./common/CenteredStack";
@@ -77,7 +75,7 @@ function HeaderUserIcon(props: HeaderUserIconProps): React.ReactElement | null {
   return (
     <DropdownMenu menuItems={() => [<MenuItem key="signout" onClick={signOut}>Sign Out</MenuItem>]}>
       <IconButton styleType="borderless" title="Account Actions">
-        <UserIcon title={displayName} abbreviation={initials} backgroundColor={getUserColor(displayName)} />
+        <Avatar title={displayName} abbreviation={initials} backgroundColor={getUserColor(displayName)} />
       </IconButton>
     </DropdownMenu>
   );
