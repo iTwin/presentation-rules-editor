@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { ControlledTree, SelectionMode, useTreeModel } from "@itwin/components-react";
+import { ControlledTree, SelectionMode, TreeRendererProps, useTreeModel } from "@itwin/components-react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@itwin/presentation-components";
+import { PresentationTreeRenderer, usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@itwin/presentation-components";
 import { EditableRuleset } from "../EditableRuleset";
 
 export interface TreeProps {
@@ -36,6 +36,17 @@ export function Tree(props: TreeProps) {
   const eventHandler = useUnifiedSelectionTreeEventHandler({ nodeLoader });
   const treeModel = useTreeModel(nodeLoader.modelSource);
 
+  const treeRenderer = React.useCallback(
+    (treeRendererProps: TreeRendererProps) => (
+      <PresentationTreeRenderer
+        {...treeRendererProps}
+        imodel={props.iModel}
+        modelSource={nodeLoader.modelSource}
+      />
+    ),
+    [props.iModel, nodeLoader.modelSource],
+  );
+
   return (
     <ControlledTree
       width={props.width}
@@ -45,6 +56,7 @@ export function Tree(props: TreeProps) {
       nodeLoader={nodeLoader}
       selectionMode={SelectionMode.Extended}
       onItemsRendered={onItemsRendered}
+      treeRenderer={treeRenderer}
     />
   );
 }
