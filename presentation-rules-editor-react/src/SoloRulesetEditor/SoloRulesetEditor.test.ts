@@ -67,7 +67,7 @@ describe("SoloRulesetEditor", () => {
     });
   });
 
-  describe("dipose", () => {
+  describe("dispose", () => {
     it("disposes underlying model", () => {
       const stubModel = sinon.spy({
         disposed: false,
