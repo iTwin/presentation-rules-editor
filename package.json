@@ -28,7 +28,7 @@
     "typecheck:watch:scripts": "npm run typecheck:watch --prefix ./scripts"
   },
   "engines": {
-    "pnpm": ">=6",
+    "pnpm": ">=8",
     "npm": "<0",
     "node": ">=16"
   },
