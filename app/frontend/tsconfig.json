@@ -4,7 +4,7 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "lib": ["DOM"],
-    "jsx": "react",
+    "jsx": "react-jsx",
     "experimentalDecorators": true,
     "resolveJsonModule": true,
   },

@@ -2,7 +2,7 @@
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "lib": ["DOM"],
-    "jsx": "react",
+    "jsx": "react-jsx",
     "module": "CommonJS",
     "moduleResolution": "node",
     "resolveJsonModule": true,
