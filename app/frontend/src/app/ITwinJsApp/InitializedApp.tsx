@@ -5,7 +5,7 @@
 import "./InitializedApp.scss";
 import * as monaco from "monaco-editor";
 import * as React from "react";
-import { WidgetState } from "@itwin/appui-react";
+import { StagePanelState, WidgetState } from "@itwin/appui-react";
 import { AuthorizationClient } from "@itwin/core-common";
 import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-frontend";
 import { ChildNodeSpecificationTypes, ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
@@ -23,6 +23,7 @@ import { StagePanel, StagePanelZone } from "./ui-framework/StagePanel";
 import { UIFramework } from "./ui-framework/UIFramework";
 import { Widget } from "./ui-framework/Widget/Widget";
 import { PropertyGridWidget } from "./widgets/PropertyGridWidget";
+import { TableWidget } from "./widgets/TableWidget";
 import { TreeWidget } from "./widgets/TreeWidget";
 
 export interface InitializedAppProps {
@@ -63,6 +64,19 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement |
                       defaultState={WidgetState.Open}
                     >
                       <PropertyGridWidget imodel={imodel} ruleset={editableRuleset} />
+                    </Widget>
+                  </StagePanelZone>
+                </StagePanel>
+              }
+              bottomPanel={
+                <StagePanel size={300} defaultState={StagePanelState.Minimized}>
+                  <StagePanelZone>
+                    <Widget
+                      id="TableWidget"
+                      label={IModelApp.localization.getLocalizedString("App:label:table-widget")}
+                      defaultState={WidgetState.Open}
+                    >
+                      <TableWidget imodel={imodel} ruleset={editableRuleset} />
                     </Widget>
                   </StagePanelZone>
                 </StagePanel>

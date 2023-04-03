@@ -11,7 +11,7 @@ export interface WidgetProps {
   id: string;
   /** Widget label */
   label: string;
-  /** The state in which this widget is initialy presented */
+  /** The state in which this widget is initially presented */
   defaultState?: WidgetState;
   /** Widget contents */
   children?: React.ReactElement;
