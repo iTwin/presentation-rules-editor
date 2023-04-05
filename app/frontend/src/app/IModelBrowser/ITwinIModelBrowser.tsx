@@ -9,7 +9,7 @@ import { assert } from "@itwin/core-bentley";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgImodelHollow, SvgProject } from "@itwin/itwinui-icons-react";
 import { FluidGrid } from "@itwin/itwinui-layouts-react";
-import { Anchor, Button, Table, TableProps, Tile, Title } from "@itwin/itwinui-react";
+import { Anchor, Button, Table, TableProps, Text, Tile } from "@itwin/itwinui-react";
 import { appNavigationContext } from "../AppContext";
 import { AuthorizationState, useAuthorization } from "../Authorization";
 import { HorizontalStack, VerticalStack } from "../common/CenteredStack";
@@ -64,7 +64,7 @@ export function ITwinBrowser(): React.ReactElement {
     return (
       <VerticalStack className="imodel-browser-no-data">
         <SvgProject />
-        <Title isMuted>{searchQuery ? "No projects match given search query" : "No projects found"}</Title>
+        <Text variant="title" as="h2" isMuted>{searchQuery ? "No projects match given search query" : "No projects found"}</Text>
       </VerticalStack>
     );
   }
@@ -170,9 +170,9 @@ export function ITwinIModelBrowser(): React.ReactElement {
     return (
       <VerticalStack className="imodel-browser-no-data">
         <SvgImodelHollow />
-        <Title isMuted>
+        <Text variant="title" as="h2" isMuted>
           {searchQuery ? "No iModels match search query exactly" : "No iModels found in this iTwin"}
-        </Title>
+        </Text>
       </VerticalStack>
     );
   }

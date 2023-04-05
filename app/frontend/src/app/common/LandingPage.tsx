@@ -5,7 +5,7 @@
 import "./LandingPage.scss";
 import * as React from "react";
 import { PageLayout } from "@itwin/itwinui-layouts-react";
-import { Headline } from "@itwin/itwinui-react";
+import { Text } from "@itwin/itwinui-react";
 
 export interface LandingPageProps {
   headline?: string | undefined;
@@ -15,7 +15,7 @@ export interface LandingPageProps {
 export function LandingPage(props: LandingPageProps): React.ReactElement {
   return (
     <PageLayout.Content className="landing-page">
-      {props.headline && <Headline>{props.headline}</Headline>}
+      {props.headline && <Text variant="headline" as="h1">{props.headline}</Text>}
       <div className="landing-page-options">
         {props.children}
       </div>

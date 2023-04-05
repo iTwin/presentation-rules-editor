@@ -53,7 +53,14 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
           ],
         },
         {
-          test: /\.(s[ac]ss|css)$/,
+          test: /\.(css)$/,
+          use: [
+            "style-loader",
+            "css-loader",
+          ],
+        },
+        {
+          test: /\.(s[ac]ss)$/,
           use: [
             "style-loader",
             "css-loader",

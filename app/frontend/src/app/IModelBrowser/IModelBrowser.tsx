@@ -8,9 +8,7 @@ import { Outlet, useMatch, useNavigate } from "react-router-dom";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgHistory, SvgImodel, SvgList, SvgSearch, SvgThumbnails } from "@itwin/itwinui-icons-react";
 import { FluidGrid, Grid, PageLayout } from "@itwin/itwinui-layouts-react";
-import {
-  ButtonGroup, Headline, IconButton, LabeledInput, MenuItem, Surface, Tab, Text, Tile, Title, VerticalTabs,
-} from "@itwin/itwinui-react";
+import { ButtonGroup, IconButton, LabeledInput, MenuItem, Surface, Tab, Tabs, Text, Tile } from "@itwin/itwinui-react";
 import { AppPage, AppSideNavigation } from "../App";
 import { appNavigationContext } from "../AppContext";
 import { useAuthorization } from "../Authorization";
@@ -45,11 +43,11 @@ export const IModelBrowser = React.memo(
       >
         <AppSideNavigation activePage={AppPage.iModelBrowser} />
         <PageLayout.Content padded>
-          <Headline>Browse iModels</Headline>
+          <Text variant="headline" as="h1">Browse iModels</Text>
           <Grid>
             <Grid.Item columnSpan={12}>
               <PaddedSurface>
-                <Title>Recent</Title>
+                <Text variant="title" as="h2">Recent</Text>
                 <MinimalTileAreaHeight>
                   <RecentIModels backendApiPromise={props.backendApiPromise} recentIModels={settings.recentIModels} />
                 </MinimalTileAreaHeight>
@@ -57,7 +55,7 @@ export const IModelBrowser = React.memo(
             </Grid.Item>
             <Grid.Item columnSpan={12}>
               <PaddedSurface>
-                <Title>All</Title>
+                <Text variant="title" as="h2">All</Text>
                 <Grid>
                   <Grid.Item className="imodel-browser-controls" columnSpan={12}>
                     <LabeledInput
@@ -174,7 +172,8 @@ export function IModelBrowserTabs(props: IModelBrowserTabsProps): React.ReactEle
   }
 
   return (
-    <VerticalTabs
+    <Tabs
+      orientation="vertical"
       contentClassName="imodel-browser-tab-content"
       type="borderless"
       labels={labels}
@@ -184,7 +183,7 @@ export function IModelBrowserTabs(props: IModelBrowserTabsProps): React.ReactEle
       <MinimalTileAreaHeight>
         <Outlet />
       </MinimalTileAreaHeight>
-    </VerticalTabs>
+    </Tabs>
   );
 }
 
@@ -217,7 +216,7 @@ function RecentIModels(props: RecentIModelsProps): React.ReactElement {
     return (
       <VerticalStack className="imodel-browser-no-data">
         <SvgHistory />
-        <Title isMuted>No recent iModels</Title>
+        <Text variant="title" as="h2" isMuted>No recent iModels</Text>
       </VerticalStack>
     );
   }
@@ -229,7 +228,7 @@ function RecentIModels(props: RecentIModelsProps): React.ReactElement {
           ? <IModelSnapshotTile
             key={iModelIdentifier}
             name={iModelIdentifier}
-            openSnapshotsFolder={() => backendApi?.openIModelsDirectory()}
+            openSnapshotsFolder={async () => backendApi?.openIModelsDirectory()}
           />
           : <RecentIModelTile key={iModelIdentifier.iModelId} iModelIdentifier={iModelIdentifier} />,
       )}

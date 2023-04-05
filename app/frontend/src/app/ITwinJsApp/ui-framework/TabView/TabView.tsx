@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "./TabView.scss";
 import * as React from "react";
-import { HorizontalTabs } from "@itwin/itwinui-react";
+import { Tabs } from "@itwin/itwinui-react";
 
 export interface TabViewProps {
   /** Index of currently active tab. */
@@ -20,7 +20,8 @@ export const TabView: React.FC<TabViewProps> = (props: TabViewProps) => {
   const tabLabels = React.Children.map(props.children, (item) => item.props.label);
   return (
     <div className="tab-view">
-      <HorizontalTabs
+      <Tabs
+        orientation="horizontal"
         type={"borderless"}
         labels={tabLabels}
         activeIndex={props.activeTab}

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { rpcInterfaces } from "@app/common";
-import { AppNotificationManager, ConfigurableUiManager, FrameworkReducer, StateManager, UiFramework } from "@itwin/appui-react";
+import { AppNotificationManager, FrameworkReducer, StateManager, UiFramework } from "@itwin/appui-react";
 import { Logger, LogLevel } from "@itwin/core-bentley";
 import { AuthorizationClient, BentleyCloudRpcManager, ChangesetIndexAndId, IModelVersion, RpcConfiguration } from "@itwin/core-common";
 import { FrontendHubAccess, IModelApp, IModelIdArg } from "@itwin/core-frontend";
@@ -108,7 +108,6 @@ async function initializePresentation(appFrontend: BackendApi): Promise<void> {
 async function initializeUIFramework(): Promise<void> {
   await UiFramework.initialize(undefined);
   new StateManager({ frameworkState: FrameworkReducer });
-  ConfigurableUiManager.initialize();
 }
 
 class HubAccess implements FrontendHubAccess {
