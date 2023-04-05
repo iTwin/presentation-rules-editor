@@ -35,6 +35,10 @@ jobs:
     - name: Install dependencies
       run: pnpm install
 
+    - name: Install playwright browsers
+      run: npx playwright install
+      working-directory: ./app/e2e-tests
+
     - name: ESLint
       run: npm run lint
 
