@@ -43,11 +43,11 @@
     "@itwin/presentation-frontend": "4.0.0-dev.61",
     "@itwin/webgl-compatibility": "4.0.0-dev.61",
 
-    "@itwin/appui-layout-react": "4.0.0-dev.13",
-    "@itwin/appui-react": "4.0.0-dev.13",
-    "@itwin/components-react": "4.0.0-dev.13",
-    "@itwin/core-react": "4.0.0-dev.13",
-    "@itwin/imodel-components-react": "4.0.0-dev.13",
+    "@itwin/appui-layout-react": "4.0.0-dev.15",
+    "@itwin/appui-react": "4.0.0-dev.15",
+    "@itwin/components-react": "4.0.0-dev.15",
+    "@itwin/core-react": "4.0.0-dev.15",
+    "@itwin/imodel-components-react": "4.0.0-dev.15",
 
     "@itwin/presentation-components": "4.0.0-dev.30",
 
