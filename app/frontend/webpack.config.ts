@@ -30,6 +30,7 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
           loader: "esbuild-loader",
           options: {
             loader: "tsx",
+            jsx: "automatic",
             target: "es2020",
           },
         },

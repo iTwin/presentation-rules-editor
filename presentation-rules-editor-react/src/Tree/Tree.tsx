@@ -2,7 +2,6 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
 import { ControlledTree, SelectionMode, TreeRendererProps, useTreeModel } from "@itwin/components-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { PresentationTreeRenderer, usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@itwin/presentation-components";

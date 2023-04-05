@@ -12,10 +12,7 @@ import * as presentationComponents from "@itwin/presentation-components";
 import { cleanup, render } from "@testing-library/react";
 import { EditableRuleset } from "../EditableRuleset";
 import { SinonStub, stubPresentationManager } from "../TestUtils";
-import {
-  AutoExpandingPropertyDataProvider, PropertyGrid, PropertyGridAttributes, PropertyGridProps,
-} from "./PropertyGrid";
-import { PropertyGridModelSource } from "@itwin/components-react";
+import { AutoExpandingPropertyDataProvider, PropertyGrid, PropertyGridAttributes, PropertyGridProps } from "./PropertyGrid";
 
 describe("PropertyGrid", () => {
   const commonProps: Omit<PropertyGridProps, "editableRuleset"> = {
@@ -154,7 +151,7 @@ describe("PropertyGrid", () => {
 
       const stubModelSource = {
         modifyModel: sinon.fake((callback: any) => callback(propertyGridModel)),
-      } as unknown as PropertyGridModelSource;
+      } as unknown as componentsReact.PropertyGridModelSource;
 
       stubUsePropertyGridModelSource.callsFake(() => stubModelSource);
     });
