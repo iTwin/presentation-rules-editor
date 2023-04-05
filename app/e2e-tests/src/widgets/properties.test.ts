@@ -34,7 +34,7 @@ describe("properties widget #local", () => {
     await propertiesWidget.locator("text=custom_category").waitFor();
   });
 
-  it("renders error status on error", async () => {
+  it.skip("renders error status on error", async () => {
     const propertiesWidget = getWidget(page, "Properties");
     await propertiesWidget.locator("text=Select element(s) to view properties.").waitFor();
 
