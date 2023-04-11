@@ -34,6 +34,10 @@ export function getWidget(page: Page, widget: string): Locator {
   return page.locator(`.nz-widget-widget:has([role=tab][title=${widget}]) .nz-widget-content`);
 }
 
+export function getStagePanelGrip(page: Page, location: "bottom" | "right"): Locator {
+  return page.locator(`.nz-widgetPanels-grip.nz-${location}[title="Resize widget panel"]`);
+}
+
 export function getEditor(page: Page): Locator {
   return page.locator("[role=code]");
 }

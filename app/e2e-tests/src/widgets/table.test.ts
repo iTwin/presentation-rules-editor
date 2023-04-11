@@ -4,15 +4,19 @@
 *--------------------------------------------------------------------------------------------*/
 import { Page } from "playwright";
 import { page } from "../setup";
-import { getEditor, getWidget, openTestIModel } from "../utils";
+import { getEditor, getStagePanelGrip, getWidget, openTestIModel } from "../utils";
 
-describe("properties widget #local", () => {
+describe("table widget #local", () => {
   const contentUrlIdentifier = (url: URL) => {
     return url.pathname.includes("getPagedContent");
   };
 
   beforeEach(async () => {
     await openTestIModel(page);
+
+    // expand the stage panel
+    const grip = getStagePanelGrip(page, "bottom");
+    await grip.dblclick();
   });
 
   afterEach(async () => {
@@ -20,11 +24,11 @@ describe("properties widget #local", () => {
   });
 
   it("displays properties", async () => {
-    const propertiesWidget = getWidget(page, "Properties");
-    await propertiesWidget.locator("text=Select element(s) to view properties.").waitFor();
+    const tableWidget = getWidget(page, "Table");
+    await tableWidget.locator("text=Select element(s) to view properties.").waitFor();
 
     await selectAnyTreeNode(page);
-    await propertiesWidget.locator("text=Selected Item(s)").waitFor();
+    await tableWidget.locator("role=table").waitFor();
   });
 
   it("updates properties when ruleset changes", async () => {
@@ -34,17 +38,16 @@ describe("properties widget #local", () => {
     await page.click('text=""SelectedNodeInstances""');
     await editor.press("End");
     await editor.type(`,
-"propertyOverrides": [{ "name": "*", "categoryId": "custom" }],
-"propertyCategories": [{ "id": "custom", "label": "custom_category" }]`);
+"propertyOverrides": [{ "name": "Model", "labelOverride": "Custom Property Label" }]`);
     await editor.press("Alt+Enter");
 
-    const propertiesWidget = getWidget(page, "Properties");
-    await propertiesWidget.locator("text=custom_category").waitFor();
+    const tableWidget = getWidget(page, "Table");
+    await tableWidget.locator(`text="Custom Property Label"`).waitFor();
   });
 
-  it.skip("renders error status on error", async () => {
-    const propertiesWidget = getWidget(page, "Properties");
-    await propertiesWidget.locator("text=Select element(s) to view properties.").waitFor();
+  it("renders error status on error", async () => {
+    const tableWidget = getWidget(page, "Table");
+    await tableWidget.locator("text=Select element(s) to view properties.").waitFor();
 
     // simulate network error
     await page.context().route(
@@ -53,7 +56,7 @@ describe("properties widget #local", () => {
     );
 
     await selectAnyTreeNode(page);
-    await propertiesWidget.locator(`text="Error"`).waitFor();
+    await tableWidget.locator(`text="Error"`).waitFor();
   });
 
   // eslint-disable-next-line @typescript-eslint/no-shadow

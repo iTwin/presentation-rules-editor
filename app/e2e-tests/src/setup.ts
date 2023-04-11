@@ -42,7 +42,7 @@ after(async () => {
 
 afterEach(async function () {
   if (this.currentTest?.isFailed()) {
-    await page.screenshot({ path: `screenshots/${this.currentTest.title}.png` });
+    await page.screenshot({ path: `screenshots/${this.currentTest.fullTitle()}.png` });
   }
 });
 
@@ -108,7 +108,7 @@ async function setupServers({ backendPort, frontendPort, debug }: SetupServersAr
       protocol: "http",
       port: backendPort,
       usedPortAction: "error",
-      launchTimeout: 10000,
+      launchTimeout: 60000,
       debug,
     });
   } else {

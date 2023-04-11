@@ -3,11 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
+import { StagePanelConfig } from "@itwin/appui-react";
 import { WidgetProps } from "./Widget/Widget";
 
-export interface StagePanelProps {
-  /** Initial stage panel size */
-  size?: number;
+export interface StagePanelProps extends StagePanelConfig {
   /** Stage panel contents */
   children?: React.ReactElement<StagePanelZoneProps> | [
     React.ReactElement<StagePanelZoneProps>,

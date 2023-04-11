@@ -6,14 +6,16 @@
 import React, { ReactElement } from "react";
 import {
   ConfigurableCreateInfo, ConfigurableUiContent, ContentControl as FrameworkContentControl, ContentGroup, ContentLayoutDef,
-  FrontstageConfig as FrameworkFrontstageConfig, FrontstageProvider, StagePanelLocation, StagePanelSection, UiFramework, UiItemsManager,
-  UiItemsProvider, Widget,
+  FrontstageConfig as FrameworkFrontstageConfig, FrontstageProvider, StagePanelConfig, StagePanelLocation, StagePanelSection, UiFramework,
+  UiItemsManager, UiItemsProvider, Widget,
 } from "@itwin/appui-react";
 import { StagePanelProps, StagePanelZoneProps } from "./StagePanel";
 
 export interface FrontstageProps {
   /** Widgets on the right-hand side */
   rightPanel?: React.ReactElement<StagePanelProps>;
+  /** Widgets at the bottom */
+  bottomPanel?: React.ReactElement<StagePanelProps>;
   /** Frontstage main contents */
   children: React.ReactElement;
 }
@@ -23,7 +25,10 @@ export const Frontstage: React.FC<FrontstageProps> = (props) => {
   React.useEffect(
     () => {
       void (async () => {
-        const frontstage = new CustomFrontstageProvider(props.rightPanel);
+        const frontstage = new CustomFrontstageProvider({
+          rightPanel: props.rightPanel,
+          bottomPanel: props.bottomPanel,
+        });
         UiFramework.frontstages.addFrontstageProvider(frontstage);
         const frontstageDef = await UiFramework.frontstages.getFrontstageDef(frontstage.id);
         await UiFramework.frontstages.setActiveFrontstageDef(frontstageDef);
@@ -47,32 +52,36 @@ function gatherWidgetContents(props: FrontstageProps): Map<string, ReactElement 
   const widgetContents = new Map<string, React.ReactElement | null>();
 
   // Collect all widgets from frontstage panels
-  React.Children.forEach(
-    props.rightPanel?.props.children,
-    (stagePanelZone) => {
-      React.Children.forEach(
-        stagePanelZone?.props.children,
-        (widget) => {
-          if (widget !== undefined) {
-            widgetContents.set(widget.props.id, widget.props.children ?? null);
-          }
-        },
-      );
-    },
-  );
-
+  function collectWidgetContentsFromStagePanels(panel: React.ReactElement<StagePanelProps>) {
+    React.Children.forEach(panel.props.children, (stagePanelZone) => {
+      React.Children.forEach(stagePanelZone?.props.children, (widget) => {
+        if (widget !== undefined)
+          widgetContents.set(widget.props.id, widget.props.children ?? null);
+      });
+    });
+  }
+  if (props.rightPanel)
+    collectWidgetContentsFromStagePanels(props.rightPanel);
+  if (props.bottomPanel)
+    collectWidgetContentsFromStagePanels(props.bottomPanel);
   return widgetContents;
 }
 
 /** Defines a Frontstage with content and widget shims. Content for the shims is provided via React Context API. */
+interface CustomFrontstageProviderProps {
+  rightPanel?: React.ReactElement<StagePanelProps>;
+  bottomPanel?: React.ReactElement<StagePanelProps>;
+}
 class CustomFrontstageProvider extends FrontstageProvider {
   private contentGroup: ContentGroup;
   private rightPanelProps?: StagePanelProps;
+  private bottomPanelProps?: StagePanelProps;
 
-  constructor(rightPanel: React.ReactElement<StagePanelProps> | undefined) {
+  constructor(props?: CustomFrontstageProviderProps) {
     super();
 
-    this.rightPanelProps = rightPanel?.props;
+    this.rightPanelProps = props?.rightPanel?.props;
+    this.bottomPanelProps = props?.bottomPanel?.props;
 
     this.contentGroup = new ContentGroup({
       id: "root_content_group",
@@ -80,7 +89,10 @@ class CustomFrontstageProvider extends FrontstageProvider {
       contents: [{ id: "root_content_group_content", classId: ContentControlShim }],
     });
 
-    const stagePanels = new Map([[StagePanelLocation.Right, createStagePanel(rightPanel?.props.children)]]);
+    const stagePanels = new Map([
+      [StagePanelLocation.Right, createStagePanel(props?.rightPanel?.props.children)],
+      [StagePanelLocation.Bottom, createStagePanel(props?.bottomPanel?.props.children)],
+    ]);
     UiItemsManager.register(new WidgetsProvider(stagePanels));
   }
 
@@ -91,11 +103,18 @@ class CustomFrontstageProvider extends FrontstageProvider {
       version: 1,
       id: "CustomFrontstage",
       contentGroup: this.contentGroup,
-      rightPanel: {
-        size: this.rightPanelProps?.size,
-      },
+      rightPanel: getStagePanelConfig(this.rightPanelProps),
+      bottomPanel: getStagePanelConfig(this.bottomPanelProps),
     };
   }
+}
+
+function getStagePanelConfig(props: StagePanelProps | undefined): StagePanelConfig | undefined {
+  if (!props)
+    return undefined;
+
+  const { children, ...config } = props;
+  return config;
 }
 
 class WidgetsProvider implements UiItemsProvider {
