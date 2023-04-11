@@ -171,7 +171,7 @@ describe("Table", () => {
 
     it("renders default message when component is not supplied", () => {
       const { getByText } = render(<Table {...commonProps} editableRuleset={editableRuleset} />);
-      expect(getByText("There is no content for current selection.")).not.to.be.null;
+      getByText("There is no content for current selection.");
     });
   });
 

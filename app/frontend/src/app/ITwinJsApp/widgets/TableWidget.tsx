@@ -49,10 +49,9 @@ function LoadedTable(props: LoadedTableProps): React.ReactElement {
     return <TableErrorState {...fallbackProps} ruleset={props.ruleset} />;
   }, [props.ruleset]);
 
-  const divRef = React.useRef<HTMLDivElement>(null);
   return (
     <ErrorBoundary fallbackRender={fallbackRender}>
-      <div className="presentation-rules-editor-table" ref={divRef}>
+      <div className="presentation-rules-editor-table">
         <AutoSizer>
           {({ width, height }) => (
             <>
