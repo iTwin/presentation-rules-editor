@@ -78,6 +78,14 @@ describe("Table", () => {
       }]);
     });
 
+    it("uses new ruleset when editable ruleset is updated", async () => {
+      render(<Table {...commonProps} editableRuleset={editableRuleset} />);
+      await editableRuleset.updateRuleset({ id: "", rules: [] });
+      expect(stubUsePresentationTable).to.have.been.calledTwice;
+      expect(stubUsePresentationTable.firstCall.args[0].ruleset)
+        .not.to.equal(stubUsePresentationTable.secondCall.args[0].ruleset);
+    });
+
     it("maps Presentation defs to iTwinUi Table defs", () => {
       stubPresentationTableCellRenderer.callsFake(() => <></>);
       render(<Table {...commonProps} editableRuleset={editableRuleset} />);
