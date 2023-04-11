@@ -145,12 +145,12 @@ describe("Table", () => {
           loadingContentState={() => <>Test Component</>}
         />,
       );
-      expect(getByText("Test Component")).not.to.be.null;
+      getByText("Test Component");
     });
 
     it("renders default message when component is not supplied", () => {
       const { getByText } = render(<Table {...commonProps} editableRuleset={editableRuleset} />);
-      expect(getByText("Loading table content...")).not.to.be.null;
+      getByText("Loading table content...");
     });
   });
 
@@ -174,7 +174,7 @@ describe("Table", () => {
           noContentState={() => <>Test Component</>}
         />,
       );
-      expect(getByText("Test Component")).not.to.be.null;
+      getByText("Test Component");
     });
 
     it("renders default message when component is not supplied", () => {
