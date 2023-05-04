@@ -7,8 +7,8 @@ import { page } from "../setup";
 import { getEditor, getStagePanelGrip, getWidget, openTestIModel } from "../utils";
 
 describe("table widget #local", () => {
-  const contentUrlIdentifier = (url: URL) => {
-    return url.pathname.includes("getPagedContent");
+  const contentDescriptorUrlIdentifier = (url: URL) => {
+    return url.pathname.includes("getContentDescriptor");
   };
 
   beforeEach(async () => {
@@ -20,7 +20,7 @@ describe("table widget #local", () => {
   });
 
   afterEach(async () => {
-    await page.context().unroute(contentUrlIdentifier);
+    await page.context().unroute(contentDescriptorUrlIdentifier);
   });
 
   it("displays properties", async () => {
@@ -51,7 +51,7 @@ describe("table widget #local", () => {
 
     // simulate network error
     await page.context().route(
-      contentUrlIdentifier,
+      contentDescriptorUrlIdentifier,
       async (route) => route.abort(),
     );
 
