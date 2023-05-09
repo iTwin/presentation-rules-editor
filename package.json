@@ -37,8 +37,6 @@
     "npm-run-all": "^4.1.5"
   },
   "pnpm": {
-    "overrides": {
-      "@itwin/core-telemetry": "4.0.0-dev.61"
-    }
+    "overrides": {}
   }
 }
