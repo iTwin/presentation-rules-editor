@@ -7,17 +7,28 @@
   },
   "label": {
     "editor": "Ruleset",
+    "table-widget": "Table",
     "tree-widget": "Tree",
     "property-grid-widget": "Properties",
     "share": "Share",
-    "viewport": "Viewport"
+    "viewport": "Viewport",
+    "retry": "Retry"
   },
   "opening-imodel": "Opening iModel...",
   "property-grid": {
     "loading-properties": "Loading properties...",
     "no-elements-selected": "Select element(s) to view properties.",
     "over-limit": "Too many elements selected.",
-    "show-viewport": "Show viewport"
+    "show-viewport": "Show viewport",
+    "error": "Error",
+    "generic-error-description": "An error occurred while loading properties."
+  },
+  "table": {
+    "loading-properties": "Loading table content...",
+    "no-elements-selected": "Select element(s) to view properties.",
+    "show-viewport": "Show viewport",
+    "error": "Error",
+    "generic-error-description": "An error occurred while loading table content."
   },
   "toast": {
     "link-copied": "URL copied to clipboard."

@@ -4,9 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import "./PropertyGridWidget.scss";
 import * as React from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { IModelApp, IModelConnection } from "@itwin/core-frontend";
 import { SvgCollapseAll, SvgExpandAll } from "@itwin/itwinui-icons-react";
-import { Button, IconButton } from "@itwin/itwinui-react";
+import { SvgError, SvgTimedOut } from "@itwin/itwinui-illustrations-react";
+import { Button, IconButton, NonIdealState } from "@itwin/itwinui-react";
+import { PresentationError, PresentationStatus } from "@itwin/presentation-common";
 import { UnifiedSelectionContextProvider } from "@itwin/presentation-components";
 import { EditableRuleset, PropertyGrid, PropertyGridAttributes } from "@itwin/presentation-rules-editor-react";
 import { VerticalStack } from "../../common/CenteredStack";
@@ -31,9 +34,11 @@ export function PropertyGridWidget(props: PropertyGridProps): React.ReactElement
   }
 
   return (
-    <UnifiedSelectionContextProvider imodel={props.imodel} selectionLevel={0}>
-      <LoadedPropertyGrid iModel={props.imodel} ruleset={props.ruleset} />
-    </UnifiedSelectionContextProvider>
+    <ErrorBoundary FallbackComponent={PropertyGridErrorState}>
+      <UnifiedSelectionContextProvider imodel={props.imodel} selectionLevel={0}>
+        <LoadedPropertyGrid iModel={props.imodel} ruleset={props.ruleset} />
+      </UnifiedSelectionContextProvider>
+    </ErrorBoundary>
   );
 }
 
@@ -65,42 +70,46 @@ function LoadedPropertyGrid(props: LoadedPropertyGridProps): React.ReactElement 
     });
   };
 
-  return <AutoSizer ref={divRef}>
-    {({ width, height }) => (
-      <>
-        <div className="presentation-rules-editor-property-grid-controls" data-hovered={!suppressControls && hovered}>
-          <IconButton
-            styleType="borderless"
-            isActive={keepExpanded}
-            title={keepExpanded ? "Turn off auto-expand" : "Expand"}
-            onClick={handleExpandClick}
-          >
-            <SvgExpandAll />
-          </IconButton>
-          <IconButton styleType="borderless" title="Collapse" onClick={handleCollapseClick}>
-            <SvgCollapseAll />
-          </IconButton>
-        </div>
-        <PropertyGrid
-          ref={propertyGridRef}
-          width={width}
-          height={height}
-          iModel={props.iModel}
-          editableRuleset={props.ruleset}
-          keepCategoriesExpanded={keepExpanded}
-          noElementsSelectedState={() => (
-            <NoElementsSelectedState height={height} setSuppressControls={setSuppressControls} />
-          )}
-          tooManyElementsSelectedState={() => (
-            <TooManyElementsSelectedState height={height} setSuppressControls={setSuppressControls} />
-          )}
-          loadingPropertiesState={() => (
-            <LoadingPropertiesState height={height} setSuppressControls={setSuppressControls} />
-          )}
-        />
-      </>
-    )}
-  </AutoSizer>;
+  return (
+    <div className="presentation-rules-editor-property-grid" ref={divRef}>
+      <AutoSizer>
+        {({ width, height }) => (
+          <>
+            <div className="presentation-rules-editor-property-grid-controls" data-hovered={!suppressControls && hovered}>
+              <IconButton
+                styleType="borderless"
+                isActive={keepExpanded}
+                title={keepExpanded ? "Turn off auto-expand" : "Expand"}
+                onClick={handleExpandClick}
+              >
+                <SvgExpandAll />
+              </IconButton>
+              <IconButton styleType="borderless" title="Collapse" onClick={handleCollapseClick}>
+                <SvgCollapseAll />
+              </IconButton>
+            </div>
+            <PropertyGrid
+              ref={propertyGridRef}
+              width={width}
+              height={height}
+              iModel={props.iModel}
+              editableRuleset={props.ruleset}
+              keepCategoriesExpanded={keepExpanded}
+              noElementsSelectedState={() => (
+                <NoElementsSelectedState height={height} setSuppressControls={setSuppressControls} />
+              )}
+              tooManyElementsSelectedState={() => (
+                <TooManyElementsSelectedState height={height} setSuppressControls={setSuppressControls} />
+              )}
+              loadingPropertiesState={() => (
+                <LoadingPropertiesState height={height} setSuppressControls={setSuppressControls} />
+              )}
+            />
+          </>
+        )}
+      </AutoSizer>
+    </div>
+  );
 }
 
 function useHover<T extends HTMLElement | null>(elementRef: React.MutableRefObject<T>): boolean {
@@ -189,5 +198,26 @@ function useSuppressControls(setSuppressControls: (value: boolean) => void): voi
       return () => setSuppressControls(false);
     },
     [setSuppressControls],
+  );
+}
+
+function PropertyGridErrorState(props: { error: Error, resetErrorBoundary: () => void }) {
+  let svg = <SvgError />;
+  if (props.error instanceof PresentationError && props.error.errorNumber === PresentationStatus.BackendTimeout) {
+    svg = <SvgTimedOut />;
+  }
+  return (
+    <div style={{ position: "relative" }}>
+      <NonIdealState
+        svg={svg}
+        heading={IModelApp.localization.getLocalizedString("App:property-grid.error")}
+        description={IModelApp.localization.getLocalizedString("App:property-grid.generic-error-description")}
+        actions={
+          <>
+            <Button styleType={"high-visibility"} onClick={props.resetErrorBoundary}>{IModelApp.localization.getLocalizedString("App:label.retry")}</Button>
+          </>
+        }
+      />
+    </div>
   );
 }

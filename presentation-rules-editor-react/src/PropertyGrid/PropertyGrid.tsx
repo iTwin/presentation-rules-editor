@@ -2,11 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "./PropertyGrid.scss";
 import * as React from "react";
 import {
-  FlatGridItemType, IMutableFlatGridItem, IMutableGridCategoryItem, IMutablePropertyGridModel, PropertyCategory,
-  PropertyData, usePropertyGridEventHandler, usePropertyGridModel, usePropertyGridModelSource, VirtualizedPropertyGrid,
+  FlatGridItemType, IMutableFlatGridItem, IMutableGridCategoryItem, IMutablePropertyGridModel, PropertyCategory, PropertyData,
+  usePropertyGridEventHandler, usePropertyGridModel, usePropertyGridModelSource, VirtualizedPropertyGrid,
 } from "@itwin/components-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { Orientation, useDisposable } from "@itwin/core-react";
@@ -14,6 +13,7 @@ import { ProgressRadial } from "@itwin/itwinui-react";
 import {
   PresentationPropertyDataProvider, PresentationPropertyDataProviderProps, usePropertyDataProviderWithUnifiedSelection,
 } from "@itwin/presentation-components";
+import { CenteredContent } from "../CenteredContent";
 import { EditableRuleset } from "../EditableRuleset";
 
 export interface PropertyGridProps {
@@ -184,18 +184,4 @@ function walkCategories(model: IMutablePropertyGridModel, action: (category: IMu
   function isCategory(item: IMutableFlatGridItem): item is IMutableGridCategoryItem {
     return item.type === FlatGridItemType.Category;
   }
-}
-
-interface CenteredContentProps {
-  width: number;
-  height: number;
-  children: React.ReactNode;
-}
-
-function CenteredContent(props: CenteredContentProps): React.ReactElement {
-  return (
-    <div className="presentation-rules-editor-centered-content" style={{ width: props.width, height: props.height }}>
-      {props.children}
-    </div>
-  );
 }

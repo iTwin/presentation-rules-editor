@@ -1,0 +1,12 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
+.presentation-rules-editor-table {
+  padding: var(--iui-size-2xs);
+
+  > div {
+    height: 100%;
+  }
+}

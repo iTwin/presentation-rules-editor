@@ -314,6 +314,9 @@ importers:
       react-dom:
         specifier: ^17.0.0
         version: 17.0.2(react@17.0.2)
+      react-error-boundary:
+        specifier: ^4.0.3
+        version: 4.0.3(react@17.0.2)
       react-redux:
         specifier: ^7.2.4
         version: 7.2.9(react-dom@17.0.2)(react@17.0.2)
@@ -7446,6 +7449,15 @@ packages:
       object-assign: 4.1.1
       react: 17.0.2
       scheduler: 0.20.2
+
+  /react-error-boundary@4.0.3(react@17.0.2):
+    resolution: {integrity: sha512-IzNKP/ViHWp2QRDgsDMirEcf0XLsLueN6Wgzm1TVwgbAH+paX8Z42VyKvZcFFRHgd+rPK2P4TLrOrHC/dommew==}
+    peerDependencies:
+      react: '>=16.13.1'
+    dependencies:
+      '@babel/runtime': 7.20.13
+      react: 17.0.2
+    dev: false
 
   /react-highlight-words@0.17.0(react@17.0.2):
     resolution: {integrity: sha512-uX1Qh5IGjnLuJT0Zok234QDwRC8h4hcVMnB99Cb7aquB1NlPPDiWKm0XpSZOTdSactvnClCk8LOmVlP+75dgHA==}

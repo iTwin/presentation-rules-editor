@@ -20,7 +20,7 @@
 
     "@itwin/imodels-access-frontend": "^3.1.0",
     "@itwin/imodels-client-management": "^3.1.0",
-    
+
     "@itwin/eslint-plugin": "4.0.0-dev.38",
 
     "@itwin/imodel-browser-react": "^0.12.1",
@@ -75,6 +75,7 @@
     "oidc-client": "^1.11.5",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
+    "react-error-boundary": "^4.0.3",
     "react-redux": "^7.2.4",
     "react-router-dom": "^6.3.0",
     "redux": "^4.1.0",

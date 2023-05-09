@@ -19,12 +19,21 @@
   }
 }
 
+.presentation-rules-editor-property-grid {
+  padding: var(--iui-size-2xs);
+  padding-right: 0;
+
+  > div {
+    height: 100%;
+  }
+}
+
 .presentation-rules-editor-property-grid-controls {
   display: none;
   position: absolute;
   right: 0;
   margin: 11px 15px;
-  background: var(--buic-background-2);
+  background: var(--iui-color-background-2);
   z-index: 1;
 }
 

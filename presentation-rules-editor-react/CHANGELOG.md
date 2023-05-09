@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `@itwin` peer dependencies have been upgraded to `^3.6.2`.
+- `@itwin` peer dependencies have been upgraded to `^3.6.2 || ^4.0.0-dev`.
+
+### Added
+
+- `Table`: React component that displays properties of selected elements and reacts to the ruleset changes.
 
 ## [0.1.1](https://github.com/iTwin/presentation-rules-editor/tree/v0.1.1) - 2023-02-13
 
