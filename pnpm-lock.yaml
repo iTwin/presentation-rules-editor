@@ -41,7 +41,7 @@ importers:
         specifier: ^4.0.0-dev.101
         version: 4.0.0-dev.101(@itwin/core-backend@4.0.0-dev.101)(@itwin/core-bentley@4.0.0-dev.101)(@itwin/core-common@4.0.0-dev.101)(@itwin/core-geometry@4.0.0-dev.101)(@itwin/ecschema-metadata@4.0.0-dev.101)(@itwin/ecschema-rpcinterface-common@4.0.0-dev.101)
       '@itwin/eslint-plugin':
-        specifier: 4.0.0-dev.38
+        specifier: ^4.0.0-dev.38
         version: 4.0.0-dev.38(eslint@8.40.0)(typescript@4.9.5)
       '@itwin/express-server':
         specifier: ^4.0.0-dev.101
@@ -95,7 +95,7 @@ importers:
         specifier: ^4.0.0-dev.101
         version: 4.0.0-dev.101(@itwin/core-bentley@4.0.0-dev.101)(@itwin/core-common@4.0.0-dev.101)(@itwin/core-geometry@4.0.0-dev.101)(@itwin/ecschema-metadata@4.0.0-dev.101)
       '@itwin/eslint-plugin':
-        specifier: 4.0.0-dev.38
+        specifier: ^4.0.0-dev.38
         version: 4.0.0-dev.38(eslint@8.40.0)(typescript@4.9.5)
       '@itwin/presentation-common':
         specifier: ^4.0.0-dev.101
@@ -111,7 +111,7 @@ importers:
   app/e2e-tests:
     dependencies:
       '@itwin/eslint-plugin':
-        specifier: 4.0.0-dev.38
+        specifier: ^4.0.0-dev.38
         version: 4.0.0-dev.38(eslint@8.40.0)(typescript@4.9.5)
       '@types/chai':
         specifier: ^4.2.17
@@ -207,7 +207,7 @@ importers:
         specifier: ^4.0.0-dev.101
         version: 4.0.0-dev.101(@itwin/core-bentley@4.0.0-dev.101)(@itwin/core-common@4.0.0-dev.101)(@itwin/core-geometry@4.0.0-dev.101)(@itwin/ecschema-metadata@4.0.0-dev.101)
       '@itwin/eslint-plugin':
-        specifier: 4.0.0-dev.38
+        specifier: ^4.0.0-dev.38
         version: 4.0.0-dev.38(eslint@8.40.0)(typescript@4.9.5)
       '@itwin/imodel-browser-react':
         specifier: ^0.12.1
@@ -2757,7 +2757,7 @@ packages:
       grapheme-splitter: 1.0.4
       ignore: 5.2.4
       natural-compare-lite: 1.4.0
-      semver: 7.3.8
+      semver: 7.5.0
       tsutils: 3.21.0(typescript@4.9.5)
       typescript: 4.9.5
     transitivePeerDependencies:
@@ -4383,7 +4383,7 @@ packages:
       has-proto: 1.0.1
       has-symbols: 1.0.3
       internal-slot: 1.0.5
-      is-array-buffer: 3.0.1
+      is-array-buffer: 3.0.2
       is-callable: 1.2.7
       is-negative-zero: 2.0.2
       is-regex: 1.1.4
@@ -4394,7 +4394,7 @@ packages:
       object-inspect: 1.12.3
       object-keys: 1.1.1
       object.assign: 4.1.4
-      regexp.prototype.flags: 1.4.3
+      regexp.prototype.flags: 1.5.0
       safe-regex-test: 1.0.0
       string.prototype.trimend: 1.0.6
       string.prototype.trimstart: 1.0.6
@@ -5904,13 +5904,6 @@ packages:
     dependencies:
       call-bind: 1.0.2
       has-tostringtag: 1.0.0
-
-  /is-array-buffer@3.0.1:
-    resolution: {integrity: sha512-ASfLknmY8Xa2XtB4wmbz13Wu202baeA18cJBCeCy0wXUHZF0IPyVEXqKEcd+t2fNSLLL1vC6k7lxZEojNbISXQ==}
-    dependencies:
-      call-bind: 1.0.2
-      get-intrinsic: 1.2.0
-      is-typed-array: 1.1.10
 
   /is-array-buffer@3.0.2:
     resolution: {integrity: sha512-y+FyyR/w8vfIRq4eQcM1EYgSTnmHXPqaF+IgzgraytCFq5Xh8lllDVmAZolPJiZttZLeFSINPYMaEJ7/vWUa1w==}
@@ -7670,14 +7663,6 @@ packages:
   /regenerator-runtime@0.13.11:
     resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
 
-  /regexp.prototype.flags@1.4.3:
-    resolution: {integrity: sha512-fjggEOO3slI6Wvgjwflkc4NFRCTZAu5CnNfBd5qOMYhWdn67nJBBu34/TkD++eeFmd8C9r9jfXJ27+nSiRkSUA==}
-    engines: {node: '>= 0.4'}
-    dependencies:
-      call-bind: 1.0.2
-      define-properties: 1.2.0
-      functions-have-names: 1.2.3
-
   /regexp.prototype.flags@1.5.0:
     resolution: {integrity: sha512-0SutC3pNudRKgquxGoRGIz946MZVHqbNfPjBdxeOhBrdgDKlRoXmYLQN9xRbrR09ZXWeGAdPuif7egofn6v5LA==}
     engines: {node: '>= 0.4'}
@@ -8269,7 +8254,7 @@ packages:
       get-intrinsic: 1.2.0
       has-symbols: 1.0.3
       internal-slot: 1.0.5
-      regexp.prototype.flags: 1.4.3
+      regexp.prototype.flags: 1.5.0
       side-channel: 1.0.4
 
   /string.prototype.padend@3.1.4:

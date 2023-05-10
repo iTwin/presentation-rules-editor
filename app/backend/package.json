@@ -15,11 +15,8 @@
   },
   "dependencies": {
     "@app/common": "workspace:*",
-
     "@itwin/imodels-access-backend": "^3.1.0",
-
-    "@itwin/eslint-plugin": "4.0.0-dev.38",
-
+    "@itwin/eslint-plugin": "^4.0.0-dev.38",
     "@itwin/core-backend": "^4.0.0-dev.101",
     "@itwin/core-bentley": "^4.0.0-dev.101",
     "@itwin/core-common": "^4.0.0-dev.101",
@@ -31,7 +28,6 @@
     "@itwin/express-server": "^4.0.0-dev.101",
     "@itwin/presentation-backend": "^4.0.0-dev.101",
     "@itwin/presentation-common": "^4.0.0-dev.101",
-
     "@types/node": "^18.0.0",
     "dotenv": "^10.0.0",
     "eslint": "^8.40.0",

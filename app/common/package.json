@@ -11,8 +11,7 @@
     "lint": "eslint **/*.{ts,tsx}"
   },
   "dependencies": {
-    "@itwin/eslint-plugin": "4.0.0-dev.38",
-
+    "@itwin/eslint-plugin": "^4.0.0-dev.38",
     "@itwin/core-bentley": "^4.0.0-dev.101",
     "@itwin/core-common": "^4.0.0-dev.101",
     "@itwin/core-geometry": "^4.0.0-dev.101",
