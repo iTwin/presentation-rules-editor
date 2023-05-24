@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `@itwin` peer dependencies have been upgraded to `^3.6.2 || ^4.0.0-dev`.
+- `@itwin` peer dependencies have been upgraded to `^3.6.2 || ^4.0.0`.
 
 ### Added
 
