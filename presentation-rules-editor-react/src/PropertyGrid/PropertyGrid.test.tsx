@@ -132,7 +132,7 @@ describe("PropertyGrid", () => {
           {...commonProps}
           editableRuleset={editableRuleset}
           loadingPropertiesState={() => <>Test Component</>}
-        />
+        />,
       );
       expect(getByText("Test Component")).not.to.be.null;
     });

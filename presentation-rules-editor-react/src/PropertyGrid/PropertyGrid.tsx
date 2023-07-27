@@ -100,6 +100,7 @@ export const PropertyGrid = React.forwardRef<PropertyGridAttributes, PropertyGri
     }
 
     return (
+      // eslint-disable-next-line @itwin/no-internal
       <VirtualizedPropertyGrid
         width={props.width}
         height={props.height}

@@ -121,7 +121,7 @@ function OpenSnapshotIModel(props: OpenSnapshotIModelProps): React.ReactElement 
       backendApiPromise: props.iTwinJsApp.backendApiPromise,
       iModelIdentifier: props.iModelIdentifier,
       authorizationClient: undefined,
-    }
+    },
   );
 }
 
@@ -135,7 +135,7 @@ function OpenITwinIModel(props: OpenITwinIModelProps): React.ReactElement {
   // the identifier components remain the same.
   const iModelIdentifier: ITwinIModelIdentifier = React.useMemo(
     () => ({ iModelId: props.iModelIdentifier.iModelId, iTwinId: props.iModelIdentifier.iTwinId }),
-    [props.iModelIdentifier.iModelId, props.iModelIdentifier.iTwinId]
+    [props.iModelIdentifier.iModelId, props.iModelIdentifier.iTwinId],
   );
 
   const { state, signIn, userAuthorizationClient, demoAuthorizationClient } = useAuthorization();
@@ -170,7 +170,7 @@ function OpenITwinIModel(props: OpenITwinIModelProps): React.ReactElement {
       backendApiPromise: props.iTwinJsApp.backendApiPromise,
       iModelIdentifier,
       authorizationClient: authClient,
-    }
+    },
   );
 }
 
