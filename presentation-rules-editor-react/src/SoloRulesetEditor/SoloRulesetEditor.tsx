@@ -7,7 +7,7 @@ import * as React from "react";
 import { assert, IDisposable } from "@itwin/core-bentley";
 import { Button } from "@itwin/itwinui-react";
 import { Ruleset } from "@itwin/presentation-common";
-import * as presentationRulesetSchema from "@itwin/presentation-common/Ruleset.schema.json";
+import presentationRulesetSchema from "@itwin/presentation-common/Ruleset.schema.json";
 import { EditableRuleset } from "../EditableRuleset";
 
 import type * as monaco from "monaco-editor";

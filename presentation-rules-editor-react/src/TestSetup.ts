@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as chai from "chai";
-import * as sinonChai from "sinon-chai";
-import * as m from "module";
+import sinonChai from "sinon-chai";
+import m from "module";
 
 chai.use(sinonChai);
 

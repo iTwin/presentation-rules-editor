@@ -1,9 +1,0 @@
-{
-  "extends": [
-    "plugin:@itwin/itwinjs-recommended",
-    "../eslintrc.base.json"
-  ],
-  "rules": {
-    "no-console": "off"
-  }
-}

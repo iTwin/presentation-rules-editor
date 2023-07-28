@@ -6,7 +6,7 @@ import { page } from "../setup";
 import { openTestIModel } from "../utils";
 
 describe("viewport #local", () => {
-  before(async () => {
+  beforeEach(async () => {
     await openTestIModel(page);
   });
 

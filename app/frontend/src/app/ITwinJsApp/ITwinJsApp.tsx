@@ -83,6 +83,7 @@ export async function initializeApp(): Promise<BackendApi> {
     hubAccess: new HubAccess(),
   });
   const configuration = BentleyCloudRpcManager.initializeClient(rpcParams, rpcInterfaces);
+  // eslint-disable-next-line @itwin/no-internal
   const backendApi = new BackendApi(configuration.protocol);
   await Promise.all([
     IModelApp.localization.registerNamespace("App"),

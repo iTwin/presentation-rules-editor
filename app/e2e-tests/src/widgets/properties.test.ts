@@ -31,7 +31,10 @@ describe("properties widget #local", () => {
     await selectAnyTreeNode(page);
 
     const editor = getEditor(page);
-    await page.click('text=""SelectedNodeInstances""');
+    await editor.click();
+    await editor.press("PageDown");
+    await editor.press("PageDown");
+    await editor.getByText(/^"SelectedNodeInstances"$/).click();
     await editor.press("End");
     await editor.type(`,
 "propertyOverrides": [{ "name": "*", "categoryId": "custom" }],
@@ -42,8 +45,7 @@ describe("properties widget #local", () => {
     await propertiesWidget.locator("text=custom_category").waitFor();
   });
 
-  // TODO: unskip after upgrading itwinjs-code dependencies to 4.0
-  it.skip("renders error status on error", async () => {
+  it("renders error status on error", async () => {
     const propertiesWidget = getWidget(page, "Properties");
     await propertiesWidget.locator("text=Select element(s) to view properties.").waitFor();
 

@@ -7,7 +7,7 @@ import { page } from "../setup";
 import { getEditor, getWidget, openTestIModel } from "../utils";
 
 describe("editor #local", () => {
-  before(async () => {
+  beforeEach(async () => {
     await openTestIModel(page);
   });
 
@@ -18,7 +18,7 @@ describe("editor #local", () => {
 
   it("suggests completions based on ruleset schema", async () => {
     const editor = getEditor(page);
-    await editor.locator("text=true").first().dblclick();
+    await editor.getByText(/^true$/).first().dblclick();
     await editor.press("Backspace");
     await editor.press("Control+Space");
     const options = editor.locator(".suggest-widget");
@@ -29,13 +29,9 @@ describe("editor #local", () => {
   });
 
   describe("ruleset submission", () => {
-    beforeEach(async () => {
-      await openTestIModel(page);
-    });
-
     it("submits ruleset when button is clicked", async () => {
       const editor = getEditor(page);
-      await editor.locator("text=Element").dblclick();
+      await editor.getByText(/^"Element"$/).dblclick();
       await editor.press("Backspace");
 
       await editor.locator("text=Submit ruleset").click();
@@ -46,7 +42,7 @@ describe("editor #local", () => {
 
     it("submits ruleset when keyboard shortcut is pressed", async () => {
       const editor = getEditor(page);
-      await editor.locator("text=Element").dblclick();
+      await editor.getByText(/^"Element"$/).dblclick();
       await editor.press("Backspace");
 
       await editor.press("Alt+Enter");
@@ -57,7 +53,7 @@ describe("editor #local", () => {
 
     it("submits ruleset when command is invoked from the command palette", async () => {
       const editor = getEditor(page);
-      await editor.locator("text=Element").dblclick();
+      await editor.getByText(/^"Element"$/).dblclick();
       await editor.press("Backspace");
 
       await editor.press("F1");

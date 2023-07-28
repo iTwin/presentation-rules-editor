@@ -11,7 +11,7 @@
 
 .content-tabs-content.content-tabs-content {
   display: grid;
-  height: 100%;
+  overflow: hidden;
   grid-template-rows: minmax(0, 1fr);
   grid-template-columns: minmax(0, 1fr);
   padding: 0;

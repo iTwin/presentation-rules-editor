@@ -15,6 +15,7 @@ export async function initialize(rpcs: RpcInterfaceDefinition[]): Promise<void> 
 
   // Create a basic express web server
   const port = Number(process.env.PORT || 3001);
+  // eslint-disable-next-line @itwin/no-internal
   const server = new IModelJsExpressServer(rpcConfig.protocol);
   await server.initialize(port);
   // eslint-disable-next-line no-console

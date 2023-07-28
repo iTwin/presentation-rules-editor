@@ -24,6 +24,7 @@ void (async () => {
   Logger.setLevel(PresentationBackendLoggerCategory.Package, LogLevel.Info);
 
   const config = new IModelHostConfiguration();
+  // eslint-disable-next-line @itwin/no-internal
   config.hubAccess = new BackendIModelsAccess();
   await IModelHost.startup(config);
   IModelHost.snapshotFileNameResolver = new SnapshotFileNameResolver();
@@ -34,6 +35,7 @@ void (async () => {
   });
 
   RpcConfiguration.developmentMode = true;
+  // eslint-disable-next-line @itwin/no-internal
   ECSchemaRpcImpl.register();
   PresentationRulesEditorRpcImpl.register();
 

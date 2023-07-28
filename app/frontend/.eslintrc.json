@@ -1,7 +1,0 @@
-{
-  "extends": [
-    "plugin:@itwin/ui",
-    "plugin:react/jsx-runtime",
-    "../../eslintrc.base.json"
-  ]
-}

@@ -35,7 +35,10 @@ describe("table widget #local", () => {
     await selectAnyTreeNode(page);
 
     const editor = getEditor(page);
-    await page.click('text=""SelectedNodeInstances""');
+    await editor.click();
+    await editor.press("PageDown");
+    await editor.press("PageDown");
+    await editor.getByText(/^"SelectedNodeInstances"$/).click();
     await editor.press("End");
     await editor.type(`,
 "propertyOverrides": [{ "name": "Model", "labelOverride": "Custom Property Label" }]`);
