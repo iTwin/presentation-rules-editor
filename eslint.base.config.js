@@ -12,7 +12,6 @@ module.exports = [
           tag: ["internal"],
         },
       ],
-      "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/object-curly-spacing": [
         "error",
         "always",

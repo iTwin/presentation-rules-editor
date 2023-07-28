@@ -7,7 +7,7 @@ import * as fs from "fs";
 import { JestDevServerOptions, setup as setupDevServers, teardown as teardownDevServers } from "jest-dev-server";
 import { Socket } from "net";
 import { chromium, ChromiumBrowser, Page } from "playwright";
-import { getServiceUrl, openTestIModel } from "./utils";
+import { getServiceUrl } from "./utils";
 
 export let browser: ChromiumBrowser;
 export let page: Page;

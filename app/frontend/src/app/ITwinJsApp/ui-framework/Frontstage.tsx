@@ -113,6 +113,7 @@ function getStagePanelConfig(props: StagePanelProps | undefined): StagePanelConf
   if (!props)
     return undefined;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { children, ...config } = props;
   return config;
 }
