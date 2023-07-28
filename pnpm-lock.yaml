@@ -478,8 +478,8 @@ importers:
         specifier: ^10.2.0
         version: 10.2.0
       monaco-editor:
-        specifier: ^0.34.1
-        version: 0.34.1
+        specifier: ^0.40.0
+        version: 0.40.0
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
@@ -6133,13 +6133,8 @@ packages:
       webpack: 5.88.2(webpack-cli@4.10.0)
     dev: false
 
-  /monaco-editor@0.34.1:
-    resolution: {integrity: sha512-FKc80TyiMaruhJKKPz5SpJPIjL+dflGvz4CpuThaPMc94AyN7SeC9HQ8hrvaxX7EyHdJcUY5i4D0gNyJj1vSZQ==}
-    dev: true
-
   /monaco-editor@0.40.0:
     resolution: {integrity: sha512-1wymccLEuFSMBvCk/jT1YDW/GuxMLYwnFwF9CDyYCxoTw2Pt379J3FUhwy9c43j51JdcxVPjwk0jm0EVDsBS2g==}
-    dev: false
 
   /ms@2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
