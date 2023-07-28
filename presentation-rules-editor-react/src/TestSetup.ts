@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as chai from "chai";
 import sinonChai from "sinon-chai";
-import * as m from "module";
+import m from "module";
 
 chai.use(sinonChai);
 
