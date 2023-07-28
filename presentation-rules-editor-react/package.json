@@ -64,7 +64,7 @@
     "@itwin/presentation-components": "^3.6.2 || ^4.0.0",
     "@itwin/presentation-frontend": "^3.6.2 || ^4.0.0",
     "@itwin/webgl-compatibility": "^3.6.2 || ^4.0.0",
-    "monaco-editor": "^0.34.0",
+    "monaco-editor": "^0.40.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0"
   },

@@ -7,7 +7,7 @@ import { page } from "./setup";
 import { openDemoIModel, openTestIModel } from "./utils";
 
 describe("header #local", () => {
-  before(async () => {
+  beforeEach(async () => {
     await openTestIModel(page);
   });
 
@@ -23,13 +23,14 @@ describe("header #local", () => {
   });
 
   it("clears breadcrumbs after navigating to home", async () => {
+    await page.click('text="Local snapshots"');
     const header = await page.waitForSelector(".iui-page-header nav", { state: "attached" });
     expect(await header.textContent()).to.be.empty;
   });
 });
 
 describe("header #web", () => {
-  before(async () => {
+  beforeEach(async () => {
     await openDemoIModel(page);
   });
 

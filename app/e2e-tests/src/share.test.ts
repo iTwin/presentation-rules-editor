@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
 import { expect } from "chai";
 import { page } from "./setup";
 import { getEditor, getServiceUrl, getWidget, openDemoIModel, openTestIModel } from "./utils";
@@ -11,13 +11,12 @@ describe("share button #local #web", () => {
     ? {
       openIModel: openDemoIModel,
       expectedLink: `${getServiceUrl()}/open-imodel?iTwinId=b27dc251-0e53-4a36-9a38-182fc309be07&iModelId=f30566da-8fdf-4cba-b09a-fd39f5397ae6#editor/N4IgTgrgNgpgzjALiAXCR9EAJKwdjAD2QF8g`,
-    }
-    : {
+    } : {
       openIModel: openTestIModel,
       expectedLink: `${getServiceUrl()}/open-imodel?snapshot=Baytown.bim#editor/N4IgTgrgNgpgzjALiAXCR9EAJKwdjAD2QF8g`,
     };
 
-  before(async () => {
+  beforeEach(async () => {
     await testConfiguration.openIModel(page);
     const editor = getEditor(page);
     await editor.locator("text={").first().click();
@@ -82,9 +81,7 @@ describe("opening shared link #local #web", () => {
 
     const appHeader = await page.waitForSelector(".iui-page-header");
     const options = await page.waitForSelector(".landing-page-options");
-    expect(await options?.textContent()).to.contain(
-      (process.env.WEB_TEST || await appHeader.$('text="Offline mode"') === null) ? "Sign In" : "Go to homepage",
-    );
+    expect(await options?.textContent()).to.contain(process.env.WEB_TEST || (await appHeader.$('text="Offline mode"')) === null ? "Sign In" : "Go to homepage");
   });
 });
 

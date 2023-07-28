@@ -7,7 +7,7 @@ import { page } from "./setup";
 import { getServiceUrl, loadHomepage } from "./utils";
 
 describe("homepage #local", () => {
-  before(async () => {
+  beforeEach(async () => {
     await loadHomepage(page);
   });
 
@@ -17,7 +17,7 @@ describe("homepage #local", () => {
 });
 
 describe("homepage #web", () => {
-  before(async () => {
+  beforeEach(async () => {
     await loadHomepage(page);
   });
 

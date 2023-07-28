@@ -27,12 +27,6 @@ before(async function () {
     setupBrowser({ debug }),
     setupServers({ backendPort: 3001, frontendPort: 8080, debug }),
   ]);
-
-  // Make sure the server is responding before beginning any tests
-  // eslint-disable-next-line no-console
-  console.log("Preloading app...");
-  await openTestIModel(page);
-  await page.waitForSelector("text=Baytown.bim");
 });
 
 after(async () => {
@@ -40,10 +34,16 @@ after(async () => {
   await teardownDevServers();
 });
 
+beforeEach(async () => {
+  page = await browser.newPage();
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"], { origin: getServiceUrl() });
+});
+
 afterEach(async function () {
   if (this.currentTest?.isFailed()) {
     await page.screenshot({ path: `screenshots/${this.currentTest.fullTitle()}.png` });
   }
+  await page.close();
 });
 
 /** Implements Promise.allSettled behaviour */
@@ -87,8 +87,6 @@ async function execute(command: string): Promise<void> {
 
 async function setupBrowser({ debug }: { debug: boolean }): Promise<void> {
   browser = await chromium.launch({ headless: !debug, slowMo: debug ? 100 : undefined });
-  page = await browser.newPage();
-  await page.context().grantPermissions(["clipboard-read", "clipboard-write"], { origin: getServiceUrl() });
 }
 
 interface SetupServersArgs {

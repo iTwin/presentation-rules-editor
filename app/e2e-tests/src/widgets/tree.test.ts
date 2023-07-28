@@ -17,7 +17,7 @@ describe("tree widget #local", () => {
 
   it("updates tree when ruleset changes", async () => {
     const editor = getEditor(page);
-    await page.click('text=""rules""');
+    await editor.getByText(/^"rules"$/).click();
     await editor.press("Control+Enter");
     await editor.type('{ "ruleType": "CheckBox" },');
     await editor.press("Alt+Enter");

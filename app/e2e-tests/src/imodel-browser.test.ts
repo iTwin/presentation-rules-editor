@@ -6,7 +6,7 @@ import { page } from "./setup";
 import { openIModelBrowser } from "./utils";
 
 describe("iModel browser #local", () => {
-  before(async () => {
+  beforeEach(async () => {
     await openIModelBrowser(page);
   });
 
@@ -24,7 +24,7 @@ describe("iModel browser #local", () => {
 });
 
 describe("iModel browser #web", () => {
-  before(async () => {
+  beforeEach(async () => {
     await openIModelBrowser(page);
   });
 
