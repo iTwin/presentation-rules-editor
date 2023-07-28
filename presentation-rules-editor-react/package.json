@@ -46,7 +46,7 @@
     "*.scss"
   ],
   "dependencies": {
-    "@itwin/itwinui-react": "^2.11.10"
+    "@itwin/itwinui-react": "~2.7.0"
   },
   "peerDependencies": {
     "@itwin/appui-abstract": "^3.6.2 || ^4.0.0",

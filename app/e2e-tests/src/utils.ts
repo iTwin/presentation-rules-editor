@@ -15,7 +15,7 @@ export async function loadHomepage(page: Page): Promise<void> {
 
 export async function openIModelBrowser(page: Page): Promise<void> {
   await page.goto(`${getServiceUrl()}/browse-imodels`);
-  await page.waitForSelector("text=Browse iModels");
+  await page.getByRole("heading", { name: "Browse iModels" }).waitFor();
 }
 
 export async function openTestIModel(page: Page): Promise<void> {
