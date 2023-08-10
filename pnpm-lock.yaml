@@ -243,8 +243,8 @@ importers:
         specifier: ^4.0.6
         version: 4.0.6(@itwin/core-bentley@4.0.6)(@itwin/core-common@4.0.6)(@itwin/core-quantity@4.0.6)(@itwin/ecschema-metadata@4.0.6)
       '@itwin/presentation-components':
-        specifier: ^4.0.1
-        version: 4.0.1(@itwin/appui-abstract@4.0.6)(@itwin/components-react@4.3.0)(@itwin/core-bentley@4.0.6)(@itwin/core-common@4.0.6)(@itwin/core-frontend@4.0.6)(@itwin/core-react@4.3.0)(@itwin/imodel-components-react@4.3.0)(@itwin/presentation-common@4.0.6)(@itwin/presentation-frontend@4.0.6)(@types/react@17.0.62)(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.1.0
+        version: 4.1.0(@itwin/appui-abstract@4.0.6)(@itwin/components-react@4.3.0)(@itwin/core-bentley@4.0.6)(@itwin/core-common@4.0.6)(@itwin/core-frontend@4.0.6)(@itwin/core-react@4.3.0)(@itwin/imodel-components-react@4.3.0)(@itwin/presentation-common@4.0.6)(@itwin/presentation-frontend@4.0.6)(@types/react@17.0.62)(react-dom@17.0.2)(react@17.0.2)
       '@itwin/presentation-frontend':
         specifier: ^4.0.6
         version: 4.0.6(@itwin/core-bentley@4.0.6)(@itwin/core-common@4.0.6)(@itwin/core-frontend@4.0.6)(@itwin/core-quantity@4.0.6)(@itwin/ecschema-metadata@4.0.6)(@itwin/presentation-common@4.0.6)
@@ -415,8 +415,8 @@ importers:
         specifier: ^4.0.6
         version: 4.0.6(@itwin/core-bentley@4.0.6)(@itwin/core-common@4.0.6)(@itwin/core-quantity@4.0.6)(@itwin/ecschema-metadata@4.0.6)
       '@itwin/presentation-components':
-        specifier: ^4.0.1
-        version: 4.0.1(@itwin/appui-abstract@4.0.6)(@itwin/components-react@4.3.0)(@itwin/core-bentley@4.0.6)(@itwin/core-common@4.0.6)(@itwin/core-frontend@4.0.6)(@itwin/core-react@4.3.0)(@itwin/imodel-components-react@4.3.0)(@itwin/presentation-common@4.0.6)(@itwin/presentation-frontend@4.0.6)(@types/react@17.0.62)(react-dom@17.0.2)(react@17.0.2)
+        specifier: ^4.1.0
+        version: 4.1.0(@itwin/appui-abstract@4.0.6)(@itwin/components-react@4.3.0)(@itwin/core-bentley@4.0.6)(@itwin/core-common@4.0.6)(@itwin/core-frontend@4.0.6)(@itwin/core-react@4.3.0)(@itwin/imodel-components-react@4.3.0)(@itwin/presentation-common@4.0.6)(@itwin/presentation-frontend@4.0.6)(@types/react@17.0.62)(react-dom@17.0.2)(react@17.0.2)
       '@itwin/presentation-frontend':
         specifier: ^4.0.6
         version: 4.0.6(@itwin/core-bentley@4.0.6)(@itwin/core-common@4.0.6)(@itwin/core-frontend@4.0.6)(@itwin/core-quantity@4.0.6)(@itwin/ecschema-metadata@4.0.6)(@itwin/presentation-common@4.0.6)
@@ -1797,7 +1797,7 @@ packages:
       '@itwin/itwinui-variables': 2.0.0
       '@tippyjs/react': 4.2.6(react-dom@17.0.2)(react@17.0.2)
       '@types/react-table': 7.7.14
-      classnames: 2.3.1
+      classnames: 2.3.2
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
       react-table: 7.8.0(react@17.0.2)
@@ -1821,6 +1821,7 @@ packages:
       react-table: 7.8.0(react@17.0.2)
       react-transition-group: 4.4.5(react-dom@17.0.2)(react@17.0.2)
       tippy.js: 6.3.7
+    dev: false
 
   /@itwin/itwinui-variables@1.0.0:
     resolution: {integrity: sha512-f78S401k1romzL6jgJuNZTe8P0/PCtrKUDVZwMsIJHLlgwyMKGR7nqDWQBV03tY2/TF/qMLt9S96Tej4f1Xrtg==}
@@ -1893,8 +1894,8 @@ packages:
       '@itwin/core-quantity': 4.0.6(@itwin/core-bentley@4.0.6)
       '@itwin/ecschema-metadata': 4.0.6(@itwin/core-bentley@4.0.6)(@itwin/core-quantity@4.0.6)
 
-  /@itwin/presentation-components@4.0.1(@itwin/appui-abstract@4.0.6)(@itwin/components-react@4.3.0)(@itwin/core-bentley@4.0.6)(@itwin/core-common@4.0.6)(@itwin/core-frontend@4.0.6)(@itwin/core-react@4.3.0)(@itwin/imodel-components-react@4.3.0)(@itwin/presentation-common@4.0.6)(@itwin/presentation-frontend@4.0.6)(@types/react@17.0.62)(react-dom@17.0.2)(react@17.0.2):
-    resolution: {integrity: sha512-P9S/RmNfYomEh/nzlFQzyAgJF0MtPqLpidYuwDwEiRTiRDBvdj2f+uXizESs4v+wG/I1iH6f2hyI/Z0SMRZAEg==}
+  /@itwin/presentation-components@4.1.0(@itwin/appui-abstract@4.0.6)(@itwin/components-react@4.3.0)(@itwin/core-bentley@4.0.6)(@itwin/core-common@4.0.6)(@itwin/core-frontend@4.0.6)(@itwin/core-react@4.3.0)(@itwin/imodel-components-react@4.3.0)(@itwin/presentation-common@4.0.6)(@itwin/presentation-frontend@4.0.6)(@types/react@17.0.62)(react-dom@17.0.2)(react@17.0.2):
+    resolution: {integrity: sha512-+uJswlduwHkOdzLb6dJYqKf1E0Muf1GV6hLI87OwsdrbTLihFYOMbuGYON274Co3MdtXoXP3PesmeOtBYlBvZw==}
     peerDependencies:
       '@itwin/appui-abstract': ^3.6.3 || ^4.0.0
       '@itwin/components-react': ^4.0.0
@@ -1917,7 +1918,7 @@ packages:
       '@itwin/imodel-components-react': 4.3.0(@itwin/appui-abstract@4.0.6)(@itwin/components-react@4.3.0)(@itwin/core-bentley@4.0.6)(@itwin/core-common@4.0.6)(@itwin/core-frontend@4.0.6)(@itwin/core-geometry@4.0.6)(@itwin/core-quantity@4.0.6)(@itwin/core-react@4.3.0)(react-dom@17.0.2)(react@17.0.2)
       '@itwin/itwinui-css': 1.11.5
       '@itwin/itwinui-icons-react': 2.4.0(react-dom@17.0.2)(react@17.0.2)
-      '@itwin/itwinui-react': 2.7.0(react-dom@17.0.2)(react@17.0.2)
+      '@itwin/itwinui-react': 2.11.11(react-dom@17.0.2)(react@17.0.2)
       '@itwin/itwinui-variables': 2.0.0
       '@itwin/presentation-common': 4.0.6(@itwin/core-bentley@4.0.6)(@itwin/core-common@4.0.6)(@itwin/core-quantity@4.0.6)(@itwin/ecschema-metadata@4.0.6)
       '@itwin/presentation-frontend': 4.0.6(@itwin/core-bentley@4.0.6)(@itwin/core-common@4.0.6)(@itwin/core-frontend@4.0.6)(@itwin/core-quantity@4.0.6)(@itwin/ecschema-metadata@4.0.6)(@itwin/presentation-common@4.0.6)
@@ -1929,7 +1930,7 @@ packages:
       react-dom: 17.0.2(react@17.0.2)
       react-select: 5.7.0(@types/react@17.0.62)(react-dom@17.0.2)(react@17.0.2)
       react-select-async-paginate: 0.7.2(react-select@5.7.0)(react@17.0.2)
-      rxjs: 6.6.7
+      rxjs: 7.8.1
     transitivePeerDependencies:
       - '@types/react'
 
@@ -3256,7 +3257,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.22.6
       cosmiconfig: 7.1.0
-      resolve: 1.22.2
+      resolve: 1.22.3
 
   /balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -6289,7 +6290,7 @@ packages:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
     dependencies:
       hosted-git-info: 2.8.9
-      resolve: 1.22.2
+      resolve: 1.22.3
       semver: 5.7.2
       validate-npm-package-license: 3.0.4
 
@@ -7107,7 +7108,7 @@ packages:
     resolution: {integrity: sha512-/njmZ8s1wVeR6pjTZ+0nCnv8SpZNRMT2D1RLOJQESlYFDBvwpTA4KWJpZ+sBJ4+vhjILRcK7JIFdGCdxEAAitg==}
     engines: {node: '>= 0.10'}
     dependencies:
-      resolve: 1.22.2
+      resolve: 1.22.3
     dev: false
 
   /redux@4.2.1:
@@ -7271,7 +7272,6 @@ packages:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
     dependencies:
       tslib: 2.6.1
-    dev: false
 
   /safe-array-concat@1.0.0:
     resolution: {integrity: sha512-9dVEFruWIsnie89yym+xWTAYASdpw3CJV7Li/6zBewGf9z2i1j31rP6jnY0pHEO4QZh6N0K11bFjWmdR8UGdPQ==}

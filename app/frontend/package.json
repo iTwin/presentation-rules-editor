@@ -43,7 +43,7 @@
     "@itwin/itwinui-layouts-react": "^0.2.0",
     "@itwin/itwinui-react": "~2.7.0",
     "@itwin/presentation-common": "^4.0.6",
-    "@itwin/presentation-components": "^4.0.1",
+    "@itwin/presentation-components": "^4.1.0",
     "@itwin/presentation-frontend": "^4.0.6",
     "@itwin/presentation-rules-editor-react": "workspace:*",
     "@itwin/webgl-compatibility": "^4.0.6",
