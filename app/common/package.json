@@ -11,14 +11,14 @@
     "lint": "eslint **/*.{ts,tsx}"
   },
   "dependencies": {
-    "@itwin/core-bentley": "^4.0.6",
-    "@itwin/core-common": "^4.0.6",
-    "@itwin/core-geometry": "^4.0.6",
-    "@itwin/core-quantity": "^4.0.6",
-    "@itwin/ecschema-metadata": "^4.0.6",
-    "@itwin/ecschema-rpcinterface-common": "^4.0.6",
+    "@itwin/core-bentley": "^4.1.5",
+    "@itwin/core-common": "^4.1.5",
+    "@itwin/core-geometry": "^4.1.5",
+    "@itwin/core-quantity": "^4.1.5",
+    "@itwin/ecschema-metadata": "^4.1.5",
+    "@itwin/ecschema-rpcinterface-common": "^4.1.5",
     "@itwin/eslint-plugin": "4.0.0-dev.47",
-    "@itwin/presentation-common": "^4.0.6",
+    "@itwin/presentation-common": "^4.1.5",
     "eslint": "^8.45.0",
     "typescript": "^4.9.5"
   }
