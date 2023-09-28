@@ -23,7 +23,7 @@
     "@types/jest-dev-server": "^5.0.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "^16.18.39",
-    "chai": "^4.3.7",
+    "chai": "^4.3.10",
     "cross-env": "^7.0.3",
     "eslint": "^8.45.0",
     "jest-dev-server": "^6.2.0",
