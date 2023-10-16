@@ -11,7 +11,7 @@ import { Id64String } from "@itwin/core-bentley";
 import { ECSqlReader, QueryBinder, QueryRowFormat } from "@itwin/core-common";
 import { IModelConnection } from "@itwin/core-frontend";
 import { Format, Formatter, FormatterSpec } from "@itwin/core-quantity";
-import { ECVersion, Format as SchemaFormat, SchemaContext, SchemaKey, SchemaUnitProvider } from "@itwin/ecschema-metadata";
+import { ECVersion, SchemaContext, Format as SchemaFormat, SchemaKey, SchemaUnitProvider } from "@itwin/ecschema-metadata";
 import { ECSchemaRpcLocater } from "@itwin/ecschema-rpcinterface-common";
 import { Text } from "@itwin/itwinui-react";
 import { KeySet } from "@itwin/presentation-common";
@@ -69,13 +69,13 @@ function StationPropertyValueRendererImpl(props: { type: StationValueType, conte
   );
 }
 
+const sampleValues = [
+  "0+0",
+  "1+1.23",
+  "3+616.55",
+  "13+416.59",
+];
 function StationValueSkeleton() {
-  const sampleValues = [
-    "0+0",
-    "1+1.23",
-    "3+616.55",
-    "13+416.59",
-  ];
   const sampleValue = React.useMemo(() => sampleValues[Math.round(Math.random() * (sampleValues.length - 1))], []);
   return (
     <Text isSkeleton={true} title="Loading...">{sampleValue}</Text>
@@ -89,6 +89,7 @@ function useIModelSelectedElementIds() {
   // The context changes on every selection, but we don't want to re-load property value on selection
   // change. Instead, we want to reload it only when the component is re-mounted (generally, when property
   // grid reloads due to selection change).
+  /* eslint-disable-next-line react-hooks/exhaustive-deps */
   const selectionContextOnce = React.useMemo(() => selectionContext, []);
   const elementIds = useDebouncedAsyncValue(React.useCallback(async () => {
     if (!selectionContextOnce) {
@@ -112,6 +113,7 @@ function useIModelSelectedElementIds() {
         }],
       },
     });
+    /* eslint-disable-next-line @typescript-eslint/no-shadow */
     const elementIds = new Array<Id64String>();
     for await (const key of res.items()) {
       elementIds.push(key.id);
@@ -165,7 +167,7 @@ function useComputedStationValue(props: { imodel?: IModelConnection, elementId?:
     return formatterSpec.value
       ? Formatter.formatQuantity(stationValue, formatterSpec.value)
       : `Distance along: ${distanceAlong}; \nStation value: ${stationValue}`;
-  }, [formatterSpec.inProgress, formatterSpec.value, props.imodel, props.elementId]));
+  }, [formatterSpec.inProgress, formatterSpec.value, props.imodel, props.elementId, props.type]));
 
   return {
     inProgress: formatterSpec.inProgress || displayValue.inProgress,
