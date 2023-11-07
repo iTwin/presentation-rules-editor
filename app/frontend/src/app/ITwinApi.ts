@@ -11,6 +11,7 @@ export interface ITwinRepresentation {
   class: string;
   subClass: string;
   type?: string;
+  // eslint-disable-next-line id-blacklist
   number: string;
   displayName: string;
   dataCenterLocation: string;
