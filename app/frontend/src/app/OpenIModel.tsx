@@ -204,7 +204,7 @@ function usePopulateHeaderBreadcrumbs(
               <HeaderButton
                 key="iTwin"
                 name={project.displayName}
-                description={project.projectNumber !== project.displayName ? project.projectNumber : undefined}
+                description={project.number !== project.displayName ? project.number : undefined}
                 onClick={() => navigation.openIModelBrowser(IModelBrowserTab.iTwins)}
               />,
               <HeaderButton key="iModel" name={iModel.name} description={iModel.description} />,

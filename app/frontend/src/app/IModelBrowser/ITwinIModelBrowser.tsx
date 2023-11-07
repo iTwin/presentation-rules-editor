@@ -14,13 +14,13 @@ import { appNavigationContext } from "../AppContext";
 import { AuthorizationState, useAuthorization } from "../Authorization";
 import { HorizontalStack, VerticalStack } from "../common/CenteredStack";
 import { OfflineModeExplainer } from "../common/OfflineModeExplainer";
-import { getProjectIModels, getUserProjects, IModelRepresentation, ProjectRepresentation } from "../ITwinApi";
+import { getITwinIModels, getUserProjects, IModelRepresentation, ITwinRepresentation } from "../ITwinApi";
 import { LoadingHint } from "../ITwinJsApp/common/LoadingHint";
 import { iModelBrowserContext, IModelTile } from "./IModelBrowser";
 
 export function ITwinBrowser(): React.ReactElement {
   const { userAuthorizationClient: authorizationClient, state, signIn } = useAuthorization();
-  const [iTwins, setITwins] = React.useState<ProjectRepresentation[]>();
+  const [iTwins, setITwins] = React.useState<ITwinRepresentation[]>();
   const { displayMode, searchQuery } = React.useContext(iModelBrowserContext);
 
   React.useEffect(() => setITwins(undefined), [authorizationClient, searchQuery]);
@@ -36,7 +36,7 @@ export function ITwinBrowser(): React.ReactElement {
         { authorizationClient },
       );
       if (!disposedRef.current && response) {
-        setITwins(response.sort((a, b) => Date.parse(b.registrationDateTime) - Date.parse(a.registrationDateTime)));
+        setITwins(response.sort((a, b) => Date.parse(b.createdDateTime) - Date.parse(a.createdDateTime)));
       }
     },
     [authorizationClient, searchQuery],
@@ -75,7 +75,7 @@ export function ITwinBrowser(): React.ReactElement {
 }
 
 interface ITwinBrowserGridViewProps {
-  iTwins: ProjectRepresentation[] | undefined;
+  iTwins: ITwinRepresentation[] | undefined;
 }
 
 function ITwinBrowserGridView(props: ITwinBrowserGridViewProps): React.ReactElement {
@@ -93,8 +93,8 @@ function ITwinBrowserGridView(props: ITwinBrowserGridViewProps): React.ReactElem
               name={iTwin.displayName}
               variant="folder"
               isActionable
-              thumbnail={<SvgProject />}
-              description={iTwin.projectNumber}
+              thumbnail={iTwin.image ?? <SvgProject />}
+              description={iTwin.number}
               onClick={() => navigate(iTwin.id)}
             />
           </div>
@@ -105,7 +105,7 @@ function ITwinBrowserGridView(props: ITwinBrowserGridViewProps): React.ReactElem
 }
 
 interface ITwinBrowserTableViewProps {
-  iTwins: ProjectRepresentation[] | undefined;
+  iTwins: ITwinRepresentation[] | undefined;
 }
 
 function ITwinBrowserTableView(props: ITwinBrowserTableViewProps): React.ReactElement {
@@ -121,7 +121,6 @@ function ITwinBrowserTableView(props: ITwinBrowserTableViewProps): React.ReactEl
             return <Anchor onClick={() => navigate(cellProps.row.original.id)}>{cellProps.value}</Anchor>;
           },
         },
-        { Header: "Location", accessor: "location" },
         { Header: "Date created", accessor: "dateCreated" },
       ],
     }],
@@ -130,8 +129,7 @@ function ITwinBrowserTableView(props: ITwinBrowserTableViewProps): React.ReactEl
   const tableData = props.iTwins?.map((iTwin) => ({
     id: iTwin.id,
     name: iTwin.displayName,
-    location: iTwin.geographicLocation,
-    dateCreated: new Date(iTwin.registrationDateTime).toLocaleDateString(),
+    dateCreated: new Date(iTwin.createdDateTime).toLocaleDateString(),
   }));
   return <Table columns={columns} data={tableData ?? []} isLoading={tableData === undefined} emptyTableContent="" />;
 }
@@ -154,8 +152,8 @@ export function ITwinIModelBrowser(): React.ReactElement {
         return;
       }
 
-      const response = await getProjectIModels(
-        { projectId: iTwin, detail: "representation", name: searchQuery },
+      const response = await getITwinIModels(
+        { iTwinId: iTwin, detail: "representation", name: searchQuery },
         { authorizationClient },
       );
       if (!disposedRef.current && response) {
@@ -198,7 +196,7 @@ function IModelBrowserGridView(props: IModelBrowserGridViewProps): React.ReactEl
       {iModels.map((iModel) => (
         <IModelTile
           key={iModel.id}
-          iTwinId={iModel.projectId}
+          iTwinId={iModel.iTwinId}
           iModelId={iModel.id}
           name={iModel.name}
           description={iModel.description ?? undefined}
@@ -237,7 +235,7 @@ function IModelBrowserTableView(props: IModelBrowserTableViewProps): React.React
   );
   const tableData = props.iModels?.map((iModel) => ({
     id: iModel.id,
-    iTwinId: iModel.projectId,
+    iTwinId: iModel.iTwinId,
     name: iModel.displayName,
     description: iModel.description,
     dateCreated: new Date(iModel.createdDateTime).toLocaleDateString(),
