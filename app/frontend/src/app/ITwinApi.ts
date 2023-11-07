@@ -6,50 +6,54 @@ import { AuthorizationClient } from "@itwin/core-common";
 import { demoIModels } from "./ITwinJsApp/IModelIdentifier";
 import { applyUrlPrefix } from "./utils/Environment";
 
-export interface ProjectRepresentation {
+export interface ITwinRepresentation {
   id: string;
+  class: string;
+  subClass: string;
+  type?: string;
+  // eslint-disable-next-line id-blacklist
+  number: string;
   displayName: string;
-  projectNumber: string;
-  registrationDateTime: string;
-  registeredBy: string;
-  geographicLocation: string;
-  latitude: string;
-  longitude: string;
-  timeZone: string;
   dataCenterLocation: string;
-  billingCountry: string;
-  status: string;
-  allowExternalTeamMembers: boolean;
-  _links: Links<"forms" | "imodels" | "issues" | "storage">;
+  status: "Active" | "Inactive" | "Trial";
+  parentId?: string;
+  iTwinAccountId?: string;
+  imageName?: string;
+  image?: string;
+  createdDateTime: string;
+  createdBy?: string;
 }
 
-export type ProjectMinimal = Pick<ProjectRepresentation, "id" | "displayName" | "projectNumber">;
+export type ITwinSummary = Pick<ITwinRepresentation, "id" | "class" | "subClass" | "type" | "number" | "displayName">;
 
-export interface GetUserProjectsArgs<Detail extends string> {
+export interface GetUserITwinsArgs<Detail extends string> {
   detail: Detail;
   search?: string;
 }
 
 export async function getUserProjects(
-  args: GetUserProjectsArgs<"minimal">,
+  args: GetUserITwinsArgs<"minimal">,
   requestArgs: RequestArgs,
-): Promise<ProjectMinimal[] | undefined>;
+): Promise<ITwinSummary[] | undefined>;
 export async function getUserProjects(
-  args: GetUserProjectsArgs<"representation">,
+  args: GetUserITwinsArgs<"representation">,
   requestArgs: RequestArgs,
-): Promise<ProjectRepresentation[] | undefined>;
+): Promise<ITwinRepresentation[] | undefined>;
 export async function getUserProjects(
-  args: GetUserProjectsArgs<string>,
+  args: GetUserITwinsArgs<string>,
   requestArgs: RequestArgs,
-): Promise<ProjectMinimal[] | ProjectRepresentation[] | undefined> {
+): Promise<ITwinSummary[] | ITwinRepresentation[] | undefined> {
   // Search query should contain non-whitespace characters and not exceed 255 characters.
   const search = args.search?.trim().slice(0, 256);
-  const searchQuery = search ? `?$search=${search}` : "";
+  const searchQuery = search ? `&$search=${search}` : "";
   return callITwinApi(
     {
-      endpoint: `projects${searchQuery}`,
-      additionalHeaders: { Prefer: `return=${args.detail}` },
-      postProcess: async (response) => (await response.json()).projects,
+      endpoint: `itwins/?subClass=Project${searchQuery}`,
+      additionalHeaders: {
+        Prefer: `return=${args.detail}`,
+        Accept: "application/vnd.bentley.itwin-platform.v1+json",
+      },
+      postProcess: async (response) => (await response.json()).iTwins,
     },
     requestArgs,
   );
@@ -58,11 +62,11 @@ export async function getUserProjects(
 export async function getProject(
   projectId: string,
   requestArgs: RequestArgs,
-): Promise<ProjectRepresentation | undefined> {
+): Promise<ITwinRepresentation | undefined> {
   return callITwinApi(
     {
-      endpoint: `projects/${projectId}`,
-      postProcess: async (response) => (await response.json()).project,
+      endpoint: `itwins/${projectId}`,
+      postProcess: async (response) => (await response.json()).iTwin,
     },
     requestArgs,
   );
@@ -75,7 +79,7 @@ export interface IModelRepresentation {
   description: string | null;
   state: string;
   createdDateTime: string;
-  projectId: string;
+  iTwinId: string;
   extent: {
     southWest: GeoCoordinates;
     northEast: GeoCoordinates;
@@ -90,22 +94,22 @@ interface GeoCoordinates {
   longitude: number;
 }
 
-export interface GetProjectIModelsArgs<Detail extends string> {
-  projectId: string;
+export interface GetITwinIModelsArgs<Detail extends string> {
+  iTwinId: string;
   detail: Detail;
   name?: string;
 }
 
-export async function getProjectIModels(
-  args: GetProjectIModelsArgs<"minimal">,
+export async function getITwinIModels(
+  args: GetITwinIModelsArgs<"minimal">,
   requestArgs: RequestArgs,
 ): Promise<IModelMinimal[] | undefined>;
-export async function getProjectIModels(
-  args: GetProjectIModelsArgs<"representation">,
+export async function getITwinIModels(
+  args: GetITwinIModelsArgs<"representation">,
   requestArgs: RequestArgs,
 ): Promise<IModelRepresentation[] | undefined>;
-export async function getProjectIModels(
-  args: GetProjectIModelsArgs<string>,
+export async function getITwinIModels(
+  args: GetITwinIModelsArgs<string>,
   requestArgs: RequestArgs,
 ): Promise<IModelMinimal[] | IModelRepresentation[] | undefined> {
   // Search query should contain non-whitespace characters and not exceed 255 characters.
@@ -113,8 +117,11 @@ export async function getProjectIModels(
   const nameQuery = name ? `&name=${name}` : "";
   return callITwinApi(
     {
-      endpoint: `imodels?projectId=${args.projectId}${nameQuery}`,
-      additionalHeaders: { Prefer: `return=${args.detail}` },
+      endpoint: `imodels/?iTwinId=${args.iTwinId}${nameQuery}`,
+      additionalHeaders: {
+        Prefer: `return=${args.detail}`,
+        Accept: "application/vnd.bentley.itwin-platform.v2+json",
+      },
       postProcess: async (response) => (await response.json()).iModels,
     },
     requestArgs,
@@ -166,9 +173,9 @@ async function callITwinApi<T>(
   const iTwinApiUrl = "https://api.bentley.com/";
   const url = (args.skipUrlPrefix ? iTwinApiUrl : applyUrlPrefix(iTwinApiUrl)) + args.endpoint;
   const headers = {
-    ...args.additionalHeaders,
     Authorization: await requestArgs.authorizationClient.getAccessToken(),
-    Accept: "application/vnd.bentley.itwin-platform.v1+json",
+    Accept: "application/json",
+    ...args.additionalHeaders,
   };
   const key = JSON.stringify({ url, headers });
   const fetcher = async () => {
