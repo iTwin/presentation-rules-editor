@@ -171,6 +171,16 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
         // Always serve /index.html instead of 404 status code
         historyApiFallback: true,
         hot: true,
+        client: {
+        overlay: {
+          runtimeErrors: (error: Error) => {
+            if (error.message.startsWith("ResizeObserver")) {
+              return false;
+            }
+            return true;
+          },
+        },
+      },
       },
       devtool: "cheap-module-source-map",
     }),
