@@ -48,6 +48,7 @@ export class BackendApi {
   }
 
   public async getViewDefinition(imodel: IModelConnection): Promise<Id64String> {
+    // eslint-disable-next-line deprecation/deprecation
     const viewId = await imodel.views.queryDefaultViewId();
     if (viewId !== Id64.invalid) {
       return viewId;
