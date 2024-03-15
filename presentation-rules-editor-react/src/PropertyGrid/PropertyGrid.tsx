@@ -5,10 +5,10 @@
 import * as React from "react";
 import {
   FlatGridItemType, IMutableFlatGridItem, IMutableGridCategoryItem, IMutablePropertyGridModel, PropertyCategory, PropertyData,
-  usePropertyGridEventHandler, usePropertyGridModel, usePropertyGridModelSource, VirtualizedPropertyGrid,
+  usePropertyGridEventHandler, usePropertyGridModel, useTrackedPropertyGridModelSource, VirtualizedPropertyGrid,
 } from "@itwin/components-react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { Orientation, useDisposable } from "@itwin/core-react";
+import { Orientation, useOptionalDisposable } from "@itwin/core-react";
 import { ProgressRadial } from "@itwin/itwinui-react";
 import {
   PresentationPropertyDataProvider, PresentationPropertyDataProviderProps, usePropertyDataProviderWithUnifiedSelection,
@@ -52,9 +52,23 @@ export interface PropertyGridAttributes {
  * changes.
  */
 export const PropertyGrid = React.forwardRef<PropertyGridAttributes, PropertyGridProps>(
-  function PropertyGrid(props, ref): React.ReactElement {
-    const dataProvider = useDataProvider(props.iModel, props.editableRuleset, !!props.keepCategoriesExpanded);
-    const modelSource = usePropertyGridModelSource({ dataProvider });
+  function PropertyGrid(props, ref): React.ReactElement | null {
+    const { iModel, editableRuleset, keepCategoriesExpanded, ...restProps } = props;
+    const dataProvider = useDataProvider(iModel, editableRuleset, !!keepCategoriesExpanded);
+    if (!dataProvider) {
+      return null;
+    }
+
+    return <PropertyGridWithProvider ref={ref} {...restProps} dataProvider={dataProvider}/>;
+  },
+);
+
+type PropertyGridWithProviderProps = Omit<PropertyGridProps, "iModel" | "editableRuleset" | "keepCategoriesExpanded"> & { dataProvider: AutoExpandingPropertyDataProvider };
+
+const PropertyGridWithProvider = React.forwardRef<PropertyGridAttributes, PropertyGridWithProviderProps>(
+  function PropertyGridWithProvider(props, ref): React.ReactElement {
+    const dataProvider = props.dataProvider;
+    const { modelSource, inProgress } = useTrackedPropertyGridModelSource({ dataProvider });
     const propertyGridModel = usePropertyGridModel({ modelSource });
     const eventHandler = usePropertyGridEventHandler({ modelSource });
 
@@ -90,7 +104,7 @@ export const PropertyGrid = React.forwardRef<PropertyGridAttributes, PropertyGri
       );
     }
 
-    if (propertyGridModel === undefined) {
+    if (propertyGridModel === undefined || inProgress) {
       return props.loadingPropertiesState?.() ?? (
         <CenteredContent width={props.width} height={props.height}>
           <ProgressRadial size="large" indeterminate={true} />
@@ -119,7 +133,7 @@ function useDataProvider(
   iModel: IModelConnection,
   editableRuleset: EditableRuleset,
   keepCategoriesExpanded: boolean,
-): AutoExpandingPropertyDataProvider {
+): AutoExpandingPropertyDataProvider | undefined {
   const [state, setState] = React.useState({});
 
   React.useEffect(
@@ -130,7 +144,7 @@ function useDataProvider(
   const keepExpandedRef = React.useRef(false);
   keepExpandedRef.current = keepCategoriesExpanded;
 
-  const dataProvider = useDisposable(React.useCallback(
+  const dataProvider = useOptionalDisposable(React.useCallback(
     () => new AutoExpandingPropertyDataProvider(
       {
         imodel: iModel,

@@ -21,7 +21,7 @@ describe("share button #local #web", () => {
     const editor = getEditor(page);
     await editor.locator("text={").first().click();
     await editor.press("Control+a");
-    await editor.type("test ruleset text");
+    await editor.fill("test ruleset text");
     await page.click('button:has-text("Share")');
   });
 

@@ -2,9 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ControlledTree, SelectionMode, TreeRendererProps, useTreeModel } from "@itwin/components-react";
+
+import { SelectionMode } from "@itwin/components-react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { PresentationTreeRenderer, usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@itwin/presentation-components";
+import { PresentationTree, PresentationTreeEventHandlerProps, PresentationTreeRenderer, UnifiedSelectionTreeEventHandler, usePresentationTreeState } from "@itwin/presentation-components";
 import { EditableRuleset } from "../EditableRuleset";
 
 export interface TreeProps {
@@ -26,33 +27,29 @@ export interface TreeProps {
  * {@linkcode EditableRuleset} changes.
  */
 export function Tree(props: TreeProps) {
-  const { nodeLoader, onItemsRendered } = usePresentationTreeNodeLoader({
+  const state = usePresentationTreeState({
     imodel: props.iModel,
     ruleset: props.editableRuleset.id,
     pagingSize: 20,
     enableHierarchyAutoUpdate: true,
+    eventHandlerFactory,
   });
-  const eventHandler = useUnifiedSelectionTreeEventHandler({ nodeLoader });
-  const treeModel = useTreeModel(nodeLoader.modelSource);
 
-  const treeRenderer = (treeRendererProps: TreeRendererProps) => (
-    <PresentationTreeRenderer
-      {...treeRendererProps}
-      imodel={props.iModel}
-      modelSource={nodeLoader.modelSource}
-    />
-  );
+  if (!state) {
+    return null;
+  }
 
   return (
-    <ControlledTree
+    <PresentationTree
       width={props.width}
       height={props.height}
-      model={treeModel}
-      eventsHandler={eventHandler}
-      nodeLoader={nodeLoader}
+      state={state}
       selectionMode={SelectionMode.Extended}
-      onItemsRendered={onItemsRendered}
-      treeRenderer={treeRenderer}
+      treeRenderer={(treeProps) => <PresentationTreeRenderer {...treeProps} imodel={props.iModel} modelSource={state.nodeLoader.modelSource} />}
     />
   );
+}
+
+function eventHandlerFactory(props: PresentationTreeEventHandlerProps) {
+  return new UnifiedSelectionTreeEventHandler(props);
 }

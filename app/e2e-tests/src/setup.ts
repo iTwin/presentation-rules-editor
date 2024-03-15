@@ -95,7 +95,7 @@ interface SetupServersArgs {
   debug: boolean;
 }
 
-let spawnedServers: Parameters<typeof teardownDevServers>[0] | undefined = undefined;
+let spawnedServers: Parameters<typeof teardownDevServers>[0] | undefined;
 
 async function setupServers({ backendPort, frontendPort, debug }: SetupServersArgs): Promise<void> {
   const servers: Config[] = [];

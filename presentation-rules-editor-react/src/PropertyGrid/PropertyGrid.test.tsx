@@ -23,7 +23,7 @@ describe("PropertyGrid", () => {
 
   const initialAutoExpandingPropertyDataProviderPrototype = Object.getPrototypeOf(AutoExpandingPropertyDataProvider);
 
-  let stubUsePropertyGridModelSource: SinonStub<typeof componentsReact.usePropertyGridModelSource>;
+  let stubUsePropertyGridModelSource: SinonStub<typeof componentsReact.useTrackedPropertyGridModelSource>;
   let stubUsePropertyDataProvider: SinonStub<typeof presentationComponents.usePropertyDataProviderWithUnifiedSelection>;
   let stubUsePropertyGridModel: SinonStub<typeof componentsReact.usePropertyGridModel>;
   let editableRuleset: EditableRuleset;
@@ -31,7 +31,7 @@ describe("PropertyGrid", () => {
   beforeEach(() => {
     stubPresentationManager();
 
-    stubUsePropertyGridModelSource = sinon.stub(componentsReact, "usePropertyGridModelSource");
+    stubUsePropertyGridModelSource = sinon.stub(componentsReact, "useTrackedPropertyGridModelSource");
     sinon.stub(componentsReact, "usePropertyGridEventHandler");
     sinon.stub(AutoExpandingPropertyDataProvider.prototype, "dispose");
 
@@ -60,7 +60,7 @@ describe("PropertyGrid", () => {
 
     it("renders with AutoExpandingPropertyDataProvider", () => {
       render(<PropertyGrid {...commonProps} editableRuleset={editableRuleset} />);
-      expect(componentsReact.usePropertyGridModelSource).to.have.been
+      expect(componentsReact.useTrackedPropertyGridModelSource).to.have.been
         .calledOnce
         .and.calledWithMatch(
           sinon.match(({ dataProvider }) => dataProvider instanceof AutoExpandingPropertyDataProvider),
@@ -153,7 +153,7 @@ describe("PropertyGrid", () => {
         modifyModel: sinon.fake((callback: any) => callback(propertyGridModel)),
       } as unknown as componentsReact.PropertyGridModelSource;
 
-      stubUsePropertyGridModelSource.callsFake(() => stubModelSource);
+      stubUsePropertyGridModelSource.callsFake(() => ({ modelSource: stubModelSource, inProgress: false }));
     });
 
     beforeEach(() => {
