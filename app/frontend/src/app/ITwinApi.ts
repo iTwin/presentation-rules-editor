@@ -76,7 +76,7 @@ function createITwinsAPIHeaders(additionalHeaders?: Record<string, string>) {
   return {
     Accept: "application/vnd.bentley.itwin-platform.v1+json",
     ...additionalHeaders,
-  }
+  };
 }
 
 export interface IModelRepresentation {
@@ -162,7 +162,7 @@ function createIModelsAPIHeaders(additionalHeaders?: Record<string, string>) {
   return {
     Accept: "application/vnd.bentley.itwin-platform.v2+json",
     ...additionalHeaders,
-  }
+  };
 }
 
 type Links<T extends string> = {
