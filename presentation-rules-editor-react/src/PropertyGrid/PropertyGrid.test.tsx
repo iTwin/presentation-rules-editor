@@ -207,7 +207,7 @@ describe("PropertyGrid", () => {
           </>;
         };
 
-        const {getByText} = render(<TestComponent />);
+        const { getByText } = render(<TestComponent />);
         const button = await waitFor(() => getByText("Collapse"));
         button.click();
         await waitFor(() => {

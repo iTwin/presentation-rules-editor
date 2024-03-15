@@ -152,7 +152,7 @@ function useDataProvider(
 
     return () => {
       newProvider.dispose();
-    }
+    };
   }, [iModel, editableRuleset.id]);
 
   return provider;
