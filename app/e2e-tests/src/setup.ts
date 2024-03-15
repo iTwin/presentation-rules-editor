@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { exec } from "child_process";
 import * as fs from "fs";
-import { JestDevServerOptions, setup as setupDevServers, teardown as teardownDevServers } from "jest-dev-server";
+import { Config, setup as setupDevServers, teardown as teardownDevServers } from "jest-dev-server";
 import { Socket } from "net";
 import { chromium, ChromiumBrowser, Page } from "playwright";
 import { getServiceUrl } from "./utils";
@@ -31,7 +31,7 @@ before(async function () {
 
 after(async () => {
   await browser.close();
-  await teardownDevServers();
+  await teardownServers();
 });
 
 beforeEach(async () => {
@@ -95,8 +95,10 @@ interface SetupServersArgs {
   debug: boolean;
 }
 
+let spawnedServers: Parameters<typeof teardownDevServers>[0] | undefined = undefined;
+
 async function setupServers({ backendPort, frontendPort, debug }: SetupServersArgs): Promise<void> {
-  const servers: JestDevServerOptions[] = [];
+  const servers: Config[] = [];
 
   if (await isPortAvailable(backendPort)) {
     // eslint-disable-next-line no-console
@@ -130,7 +132,13 @@ async function setupServers({ backendPort, frontendPort, debug }: SetupServersAr
     console.log(`Frontend server port (${frontendPort}) is already taken.`);
   }
 
-  await setupDevServers(servers);
+  spawnedServers = await setupDevServers(servers);
+}
+
+async function teardownServers() {
+  if (spawnedServers !== undefined) {
+    await teardownDevServers(spawnedServers);
+  }
 }
 
 async function isPortAvailable(port: number) {
