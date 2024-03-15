@@ -36,7 +36,7 @@ describe("properties widget #local", () => {
     await editor.press("PageDown");
     await editor.getByText(/^"SelectedNodeInstances"$/).click();
     await editor.press("End");
-    await editor.fill(`,
+    await page.keyboard.type(`,
 "propertyOverrides": [{ "name": "*", "categoryId": "custom" }],
 "propertyCategories": [{ "id": "custom", "label": "custom_category" }]`);
     await editor.press("Alt+Enter");

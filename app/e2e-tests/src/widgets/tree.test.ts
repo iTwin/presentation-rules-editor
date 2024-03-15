@@ -19,7 +19,7 @@ describe("tree widget #local", () => {
     const editor = getEditor(page);
     await editor.getByText(/^"rules"$/).click();
     await editor.press("Control+Enter");
-    await editor.fill('{ "ruleType": "CheckBox" },');
+    await page.keyboard.type('{ "ruleType": "CheckBox" },');
     await editor.press("Alt+Enter");
 
     const treeWidget = getWidget(page, "Tree");
