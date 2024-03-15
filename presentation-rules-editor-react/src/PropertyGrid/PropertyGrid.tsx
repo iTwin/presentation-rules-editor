@@ -8,7 +8,7 @@ import {
   usePropertyGridEventHandler, usePropertyGridModel, useTrackedPropertyGridModelSource, VirtualizedPropertyGrid,
 } from "@itwin/components-react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { Orientation, useOptionalDisposable } from "@itwin/core-react";
+import { Orientation } from "@itwin/core-react";
 import { ProgressRadial } from "@itwin/itwinui-react";
 import {
   PresentationPropertyDataProvider, PresentationPropertyDataProviderProps, usePropertyDataProviderWithUnifiedSelection,
@@ -134,30 +134,28 @@ function useDataProvider(
   editableRuleset: EditableRuleset,
   keepCategoriesExpanded: boolean,
 ): AutoExpandingPropertyDataProvider | undefined {
-  const [state, setState] = React.useState({});
-
-  React.useEffect(
-    () => editableRuleset.onAfterRulesetUpdated.addListener(() => setState({})),
-    [editableRuleset],
-  );
+  const [provider, setProvider] = React.useState<AutoExpandingPropertyDataProvider>();
 
   const keepExpandedRef = React.useRef(false);
   keepExpandedRef.current = keepCategoriesExpanded;
 
-  const dataProvider = useOptionalDisposable(React.useCallback(
-    () => new AutoExpandingPropertyDataProvider(
+  React.useEffect(() => {
+    const newProvider = new AutoExpandingPropertyDataProvider(
       {
         imodel: iModel,
         ruleset: editableRuleset.id,
+        enableContentAutoUpdate: true,
       },
       keepExpandedRef,
-    ),
-    // Also recreate dataProvider when editable ruleset content changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [editableRuleset.id, iModel, state],
-  ));
+    );
+    setProvider(newProvider);
 
-  return dataProvider;
+    return () => {
+      newProvider.dispose();
+    }
+  }, [iModel, editableRuleset.id]);
+
+  return provider;
 }
 
 /** @internal */

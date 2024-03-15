@@ -9,7 +9,7 @@ import { PropertyRecord, PropertyValueFormat, StandardTypeNames } from "@itwin/a
 import * as componentsReact from "@itwin/components-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import * as presentationComponents from "@itwin/presentation-components";
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, render, waitFor } from "@testing-library/react";
 import { EditableRuleset } from "../EditableRuleset";
 import { SinonStub, stubPresentationManager } from "../TestUtils";
 import { AutoExpandingPropertyDataProvider, PropertyGrid, PropertyGridAttributes, PropertyGridProps } from "./PropertyGrid";
@@ -32,6 +32,7 @@ describe("PropertyGrid", () => {
     stubPresentationManager();
 
     stubUsePropertyGridModelSource = sinon.stub(componentsReact, "useTrackedPropertyGridModelSource");
+    stubUsePropertyGridModelSource.callsFake(() => ({}) as ReturnType<typeof componentsReact.useTrackedPropertyGridModelSource>);
     sinon.stub(componentsReact, "usePropertyGridEventHandler");
     sinon.stub(AutoExpandingPropertyDataProvider.prototype, "dispose");
 
@@ -65,14 +66,6 @@ describe("PropertyGrid", () => {
         .and.calledWithMatch(
           sinon.match(({ dataProvider }) => dataProvider instanceof AutoExpandingPropertyDataProvider),
         );
-    });
-
-    it("uses new dataProvider when ruleset updates", async () => {
-      render(<PropertyGrid {...commonProps} editableRuleset={editableRuleset} />);
-      await editableRuleset.updateRuleset({ id: "", rules: [] });
-      expect(stubUsePropertyGridModelSource).to.have.been.calledTwice;
-      expect(stubUsePropertyGridModelSource.firstCall.args[0].dataProvider)
-        .not.to.be.equal(stubUsePropertyGridModelSource.secondCall.args[0].dataProvider);
     });
   });
 
@@ -153,6 +146,7 @@ describe("PropertyGrid", () => {
         modifyModel: sinon.fake((callback: any) => callback(propertyGridModel)),
       } as unknown as componentsReact.PropertyGridModelSource;
 
+      stubUsePropertyGridModelSource.reset();
       stubUsePropertyGridModelSource.callsFake(() => ({ modelSource: stubModelSource, inProgress: false }));
     });
 
@@ -182,34 +176,44 @@ describe("PropertyGrid", () => {
     });
 
     describe("expandAllCategories", () => {
-      it("expands all nested categories", () => {
+      it("expands all nested categories", async () => {
         const TestComponent = () => {
           const propertyGridRef = React.useRef<PropertyGridAttributes>(null);
 
-          React.useEffect(() => propertyGridRef.current!.expandAllCategories(), []);
-
-          return <PropertyGrid ref={propertyGridRef} {...commonProps} editableRuleset={editableRuleset} />;
+          return <>
+            <PropertyGrid ref={propertyGridRef} {...commonProps} editableRuleset={editableRuleset} />
+            <button onClick={() => propertyGridRef.current?.expandAllCategories()}>Expand</button>
+          </>;
         };
 
-        render(<TestComponent />);
-        expect(propertyGridModel.getItem("root").isExpanded).to.be.true;
-        expect(propertyGridModel.getItem("root_child").isExpanded).to.be.true;
+        const { getByText } = render(<TestComponent />);
+        const button = await waitFor(() => getByText("Expand"));
+        button.click();
+        await waitFor(() => {
+          expect(propertyGridModel.getItem("root").isExpanded).to.be.true;
+          expect(propertyGridModel.getItem("root_child").isExpanded).to.be.true;
+        });
       });
     });
 
     describe("collapseAllCategories", () => {
-      it("collapses all nested categories", () => {
+      it("collapses all nested categories", async () => {
         const TestComponent = () => {
           const propertyGridRef = React.useRef<PropertyGridAttributes>(null);
 
-          React.useEffect(() => propertyGridRef.current!.collapseAllCategories(), []);
-
-          return <PropertyGrid ref={propertyGridRef} {...commonProps} editableRuleset={editableRuleset} />;
+          return <>
+            <PropertyGrid ref={propertyGridRef} {...commonProps} editableRuleset={editableRuleset} />
+            <button onClick={() => propertyGridRef.current?.collapseAllCategories()}>Collapse</button>
+          </>;
         };
 
-        render(<TestComponent />);
-        expect(propertyGridModel.getItem("root").isExpanded).to.be.false;
-        expect(propertyGridModel.getItem("root_child").isExpanded).to.be.false;
+        const {getByText} = render(<TestComponent />);
+        const button = await waitFor(() => getByText("Collapse"));
+        button.click();
+        await waitFor(() => {
+          expect(propertyGridModel.getItem("root").isExpanded).to.be.false;
+          expect(propertyGridModel.getItem("root_child").isExpanded).to.be.false;
+        });
       });
     });
   });
