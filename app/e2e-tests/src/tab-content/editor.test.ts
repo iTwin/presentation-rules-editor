@@ -57,7 +57,7 @@ describe("editor #local", () => {
       await editor.press("Backspace");
 
       await editor.press("F1");
-      await editor.type("Submit ruleset");
+      await page.keyboard.type("Submit ruleset");
       await editor.press("Enter");
       await getWidget(page, "Tree")
         .locator("text=The data required for this tree layout is not available in this iModel.")

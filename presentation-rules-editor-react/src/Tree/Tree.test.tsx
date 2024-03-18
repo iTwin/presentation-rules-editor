@@ -16,8 +16,8 @@ describe("Tree", () => {
   before(() => {
     stubPresentationManager();
 
-    sinon.stub(presentationComponents, "usePresentationTreeNodeLoader")
-      .callsFake(() => ({ nodeLoader: { modelSource: undefined }, onItemsRendered: undefined }) as any);
+    sinon.stub(presentationComponents, "usePresentationTreeState")
+      .callsFake(() => ({ nodeLoader: { modelSource: undefined }, onItemsRendered: undefined, eventHandler: {} }) as any);
     sinon.stub(presentationComponents, "useUnifiedSelectionTreeEventHandler").callsFake(() => ({}) as any);
     sinon.stub(presentationComponents, "PresentationTreeRenderer").callsFake(() => <></>);
     sinon.stub(componentsReact, "useTreeModel").callsFake(() => ({}) as any);
@@ -35,7 +35,7 @@ describe("Tree", () => {
   it("enables hierarchy auto update", () => {
     const editableRuleset = new EditableRuleset({ initialRuleset: { id: "", rules: [] } });
     render(<Tree width={100} height={100} iModel={{} as any} editableRuleset={editableRuleset} />);
-    expect(presentationComponents.usePresentationTreeNodeLoader).to.have.been.calledOnce.and.calledWithMatch(
+    expect(presentationComponents.usePresentationTreeState).to.have.been.calledOnce.and.calledWithMatch(
       sinon.match({ ruleset: editableRuleset.id, enableHierarchyAutoUpdate: true }),
     );
   });
