@@ -49,10 +49,9 @@ export async function getUserProjects(
   return callITwinApi(
     {
       endpoint: `itwins/?subClass=Project${searchQuery}`,
-      additionalHeaders: {
+      additionalHeaders: createITwinsAPIHeaders({
         Prefer: `return=${args.detail}`,
-        Accept: "application/vnd.bentley.itwin-platform.v1+json",
-      },
+      }),
       postProcess: async (response) => (await response.json()).iTwins,
     },
     requestArgs,
@@ -66,10 +65,18 @@ export async function getProject(
   return callITwinApi(
     {
       endpoint: `itwins/${projectId}`,
+      additionalHeaders: createITwinsAPIHeaders(),
       postProcess: async (response) => (await response.json()).iTwin,
     },
     requestArgs,
   );
+}
+
+function createITwinsAPIHeaders(additionalHeaders?: Record<string, string>) {
+  return {
+    Accept: "application/vnd.bentley.itwin-platform.v1+json",
+    ...additionalHeaders,
+  };
 }
 
 export interface IModelRepresentation {
@@ -118,10 +125,9 @@ export async function getITwinIModels(
   return callITwinApi(
     {
       endpoint: `imodels/?iTwinId=${args.iTwinId}${nameQuery}`,
-      additionalHeaders: {
+      additionalHeaders: createIModelsAPIHeaders({
         Prefer: `return=${args.detail}`,
-        Accept: "application/vnd.bentley.itwin-platform.v2+json",
-      },
+      }),
       postProcess: async (response) => (await response.json()).iModels,
     },
     requestArgs,
@@ -131,6 +137,7 @@ export async function getIModel(iModelId: string, requestArgs: RequestArgs): Pro
   return callITwinApi(
     {
       endpoint: `imodels/${iModelId}`,
+      additionalHeaders: createIModelsAPIHeaders(),
       skipUrlPrefix: demoIModels.has(iModelId),
       postProcess: async (response) => (await response.json()).iModel,
     },
@@ -142,12 +149,20 @@ export async function getIModelThumbnail(iModelId: string, requestArgs: RequestA
   return callITwinApi(
     {
       endpoint: `imodels/${iModelId}/thumbnail?size=small`,
+      additionalHeaders: createIModelsAPIHeaders(),
       immutable: true,
       skipUrlPrefix: demoIModels.has(iModelId),
       postProcess: async (response) => response.blob(),
     },
     requestArgs,
   );
+}
+
+function createIModelsAPIHeaders(additionalHeaders?: Record<string, string>) {
+  return {
+    Accept: "application/vnd.bentley.itwin-platform.v2+json",
+    ...additionalHeaders,
+  };
 }
 
 type Links<T extends string> = {
