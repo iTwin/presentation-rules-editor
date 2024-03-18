@@ -171,6 +171,7 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
         // Always serve /index.html instead of 404 status code
         historyApiFallback: true,
         hot: true,
+        port: 3000,
         client: {
         overlay: {
           runtimeErrors: (error: Error) => {

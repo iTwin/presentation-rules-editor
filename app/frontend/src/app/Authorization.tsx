@@ -190,7 +190,7 @@ class DemoAuthClient implements AuthorizationClient {
   public async getAccessToken(): Promise<string> {
     this.accessToken ??= (async () => {
       const response = await fetch(
-        "https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser",
+        "https://connect-itwinjscodesandbox.bentley.com/api/usertoken",
       );
       const result = await response.json();
       setTimeout(
