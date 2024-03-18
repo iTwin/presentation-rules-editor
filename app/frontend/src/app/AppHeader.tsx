@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Profile } from "oidc-client";
+import { UserProfile } from "oidc-client-ts";
 import * as React from "react";
 import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
 import { Avatar, Button, DropdownMenu, getUserColor, Header, HeaderBreadcrumbs, HeaderLogo, IconButton, MenuItem } from "@itwin/itwinui-react";
@@ -60,7 +60,7 @@ export function AppHeader(): React.ReactElement {
 
 interface HeaderUserIconProps {
   /** User profile. Even though oidc-client types claim that User always has a profile, that is not always the case. */
-  profile: Profile | undefined;
+  profile: UserProfile | undefined;
   signOut: () => void;
 }
 
