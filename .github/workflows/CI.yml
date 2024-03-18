@@ -3,9 +3,9 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
@@ -18,39 +18,35 @@ jobs:
 
     name: Build and run tests
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Install pnpm
-      uses: pnpm/action-setup@v2.0.1
-      with:
-        version: 8.0.0
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 8.0.0
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: "pnpm"
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
 
-    - name: Install dependencies
-      run: pnpm install
+      - name: Install dependencies
+        run: pnpm install
 
-    - name: Install playwright browsers
-      run: npx playwright install
-      working-directory: ./app/e2e-tests
+      - name: ESLint
+        run: npm run lint
 
-    - name: ESLint
-      run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
 
-    - name: Typecheck
-      run: npm run typecheck
+      - name: Build presentation-rules-editor-react package
+        run: npm run build --prefix ./presentation-rules-editor-react
 
-    - name: Build presentation-rules-editor-react package
-      run: npm run build --prefix ./presentation-rules-editor-react
+      - name: Check unit test coverage
+        run: npm run test:cover --prefix ./presentation-rules-editor-react
 
-    - name: Check unit test coverage
-      run: npm run test:cover --prefix ./presentation-rules-editor-react
-
-    - name: Run end-to-end tests
-      run: npm test --prefix ./app/e2e-tests
-      timeout-minutes: 5
+      - name: Run end-to-end tests
+        run: npm test --prefix ./app/e2e-tests
+        timeout-minutes: 5
