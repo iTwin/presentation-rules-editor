@@ -25,7 +25,7 @@ before(async function () {
   await settleAllPromises([
     setupIModel(),
     setupBrowser({ debug }),
-    setupServers({ backendPort: 3001, frontendPort: 8080, debug }),
+    setupServers({ backendPort: 3001, frontendPort: 3000, debug }),
   ]);
 });
 
