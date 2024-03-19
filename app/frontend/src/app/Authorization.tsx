@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { User, UserManager, WebStorageStateStore } from "oidc-client";
+import { User, UserManager, WebStorageStateStore } from "oidc-client-ts";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { AccessToken } from "@itwin/core-bentley";
@@ -33,7 +33,7 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
     scope: config.scope,
     response_type: "code",
     automaticSilentRenew: true,
-    accessTokenExpiringNotificationTime: 120,
+    accessTokenExpiringNotificationTimeInSeconds: 120,
     userStore: new WebStorageStateStore({ store: localStorage }),
   });
   userManager.events.addSilentRenewError((error) => {
@@ -209,7 +209,7 @@ export function useAuthorization(): AuthorizationContext {
 }
 
 const authorizationContext = React.createContext<AuthorizationContext>({
-  userManager: new UserManager({}),
+  userManager: new UserManager({ authority: "", client_id: "", redirect_uri: "" }),
   demoAuthorizationClient: new DemoAuthClient(),
   state: AuthorizationState.Offline,
   user: undefined,
