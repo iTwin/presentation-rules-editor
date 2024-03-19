@@ -41,7 +41,8 @@ describe("opening shared link #local #web", () => {
     ? `${getServiceUrl()}/open-imodel?iTwinId=b27dc251-0e53-4a36-9a38-182fc309be07&iModelId=f30566da-8fdf-4cba-b09a-fd39f5397ae6`
     : `${getServiceUrl()}/open-imodel?snapshot=Baytown.bim`;
 
-  it("populates editor with ruleset and loads widget data when link is valid", async () => {
+  // TODO: enable this test when demo imodels work in all environments.
+  it.skip("populates editor with ruleset and loads widget data when link is valid", async () => {
     await page.goto(
       `${baseAddress}#editor/N4IgTgrgNgpgzjALiAXCYAdAdgAhxkASwBMCV8RF5EB9SWBRAgGmzwPvjJwG028cmXAPbhoMACoBPAA4xuBAEoB7ZYgByy4lxCthIgnDkBjQgDNCxgIaJCyrHG599Iwf1cDDJ6XIUgAwhBwiMoAtpraLO4eFIiy8qix1FEuHgRQVgBGMFB+VME0WFoJ0SIAvqU4ALrRFcI1WGUgZUA`,
     );
