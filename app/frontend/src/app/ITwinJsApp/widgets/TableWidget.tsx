@@ -113,7 +113,7 @@ function TableErrorState(props: { error: Error, resetErrorBoundary: () => void, 
   const { error, resetErrorBoundary, ruleset } = props;
 
   let svg = <SvgError />;
-  if (error instanceof PresentationError && error.errorNumber === PresentationStatus.BackendTimeout) {
+  if (error instanceof PresentationError && error.errorNumber === PresentationStatus.BackendTimeout.valueOf()) {
     svg = <SvgTimedOut />;
   }
 
