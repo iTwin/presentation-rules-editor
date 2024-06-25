@@ -203,7 +203,7 @@ function useSuppressControls(setSuppressControls: (value: boolean) => void): voi
 
 function PropertyGridErrorState(props: { error: Error, resetErrorBoundary: () => void }) {
   let svg = <SvgError />;
-  if (props.error instanceof PresentationError && props.error.errorNumber === PresentationStatus.BackendTimeout) {
+  if (props.error instanceof PresentationError && props.error.errorNumber === PresentationStatus.BackendTimeout.valueOf()) {
     svg = <SvgTimedOut />;
   }
   return (

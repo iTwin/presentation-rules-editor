@@ -19,7 +19,7 @@
     "prepare": "playwright install chromium"
   },
   "dependencies": {
-    "@itwin/eslint-plugin": "4.0.0-dev.48",
+    "@itwin/eslint-plugin": "^4.1.0",
     "@types/chai": "^4.3.12",
     "@types/mocha": "^10.0.6",
     "@types/node": "^16.18.89",
