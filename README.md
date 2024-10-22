@@ -2,7 +2,7 @@
 
 [![Build status](https://github.com/iTwin/presentation-rules-editor/actions/workflows/CI.yml/badge.svg?branch=master)](https://github.com/iTwin/presentation-rules-editor/actions/workflows/CI.yml?query=branch%3Amaster) [![CodeQL](https://github.com/iTwin/presentation-rules-editor/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/iTwin/presentation-rules-editor/actions/workflows/codeql-analysis.yml)
 
-A monorepo for [Presentation](https://www.itwinjs.org/learning/presentation/) ruleset editing application and its components.
+A monorepo for [Presentation](https://www.itwinjs.org/presentation/) ruleset editing application and its components.
 
 ## Using
 
