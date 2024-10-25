@@ -1,17 +1,18 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import { User, UserManager, WebStorageStateStore } from "oidc-client-ts";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { AccessToken } from "@itwin/core-bentley";
 import { AuthorizationClient } from "@itwin/core-common";
+import { PageLayout } from "@itwin/itwinui-layouts-react";
 import { Code } from "@itwin/itwinui-react";
 import { LoadingIndicator } from "./common/LoadingIndicator";
 import { ErrorPage } from "./errors/ErrorPage";
 import { applyUrlPrefix } from "./utils/Environment";
-import { PageLayout } from "@itwin/itwinui-layouts-react";
 
 export interface AuthorizationProviderConfig {
   authority: string;
@@ -45,20 +46,37 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
       await userManager.signinSilent();
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error(`Silent sign in failed: ${error}`);
+      console.error(`Silent sign in failed:`, error);
     }
   });
 
   const demoAuthorizationClient = new DemoAuthClient();
 
-  const signIn = async () => {
-    await userManager.signinRedirect({
-      state: window.location.pathname + window.location.search + window.location.hash,
-    });
-  };
-  const signOut = async () => userManager.signoutRedirect();
-
   return function AuthorizationProvider(props: React.PropsWithChildren<{}>): React.ReactElement {
+    const [sessionState, setSessionState] = React.useState<SessionState>(SessionState.Stale);
+    const signIn = async () => {
+      setSessionState(SessionState.SignInWaiting);
+      try {
+        await userManager.signinRedirect({
+          state: window.location.pathname + window.location.search + window.location.hash,
+        });
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.warn(error);
+        setSessionState(SessionState.Stale);
+      }
+    };
+    const signOut = async () => {
+      setSessionState(SessionState.SignOutWaiting);
+      try {
+        await userManager.signoutRedirect();
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.warn(error);
+        setSessionState(SessionState.Stale);
+      }
+    };
+
     const [authorizationContextValue, setAuthorizationContextValue] = React.useState<AuthorizationContext>({
       userManager,
       demoAuthorizationClient,
@@ -69,21 +87,59 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
       signOut,
     });
 
-    React.useEffect(
-      () => {
-        const handleUserLoaded = (user: User) => {
-          setAuthorizationContextValue({
-            userManager,
-            demoAuthorizationClient,
-            state: AuthorizationState.SignedIn,
-            user,
-            userAuthorizationClient: new AuthClient(userManager),
-            signIn,
-            signOut,
-          });
-        };
+    React.useEffect(() => {
+      const handleUserLoaded = (user: User) => {
+        setSessionState(SessionState.SignedIn);
+        setAuthorizationContextValue({
+          userManager,
+          demoAuthorizationClient,
+          state: AuthorizationState.SignedIn,
+          user,
+          userAuthorizationClient: new AuthClient(userManager),
+          signIn,
+          signOut,
+        });
+      };
 
-        const handleUserUnloaded = () => {
+      const handleUserUnloaded = () => {
+        setSessionState(SessionState.SignedOut);
+        setAuthorizationContextValue({
+          userManager,
+          demoAuthorizationClient,
+          state: AuthorizationState.SignedOut,
+          user: undefined,
+          userAuthorizationClient: undefined,
+          signIn,
+          signOut,
+        });
+      };
+
+      userManager.events.addUserLoaded(handleUserLoaded);
+      userManager.events.addUserUnloaded(handleUserUnloaded);
+
+      return () => {
+        userManager.events.removeUserLoaded(handleUserLoaded);
+        userManager.events.removeUserUnloaded(handleUserUnloaded);
+      };
+    }, []);
+
+    React.useEffect(() => {
+      if (sessionState !== SessionState.Stale || window.self !== window.top) {
+        // It could be that parent document has already initiated silent sign-in in an invisible iframe, and now the
+        // identity provider has redirected the iframe back to the app.
+        return;
+      }
+
+      let disposed = false;
+      void (async () => {
+        try {
+          await userManager.signinSilent();
+          await userManager.clearStaleState();
+        } catch (error) {
+          if (disposed) {
+            return;
+          }
+
           setAuthorizationContextValue({
             userManager,
             demoAuthorizationClient,
@@ -93,59 +149,15 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
             signIn,
             signOut,
           });
-        };
-
-        userManager.events.addUserLoaded(handleUserLoaded);
-        userManager.events.addUserUnloaded(handleUserUnloaded);
-
-        return () => {
-          userManager.events.removeUserLoaded(handleUserLoaded);
-          userManager.events.removeUserUnloaded(handleUserUnloaded);
-        };
-      },
-      [],
-    );
-
-    React.useEffect(
-      () => {
-        if (window.self !== window.top) {
-          // It could be that parent document has already initiated silent sign-in in an invisible iframe, and now the
-          // identity provider has redirected the iframe back to the app.
-          return;
         }
+      })();
 
-        let disposed = false;
-        void (async () => {
-          try {
-            await userManager.signinSilent();
-            await userManager.clearStaleState();
-          } catch (error) {
-            if (disposed) {
-              return;
-            }
+      return () => {
+        disposed = true;
+      };
+    }, [sessionState]);
 
-            setAuthorizationContextValue({
-              userManager,
-              demoAuthorizationClient,
-              state: AuthorizationState.SignedOut,
-              user: undefined,
-              userAuthorizationClient: undefined,
-              signIn,
-              signOut,
-            });
-          }
-        })();
-
-        return () => { disposed = true; };
-      },
-      [],
-    );
-
-    return(
-      <authorizationContext.Provider value={authorizationContextValue}>
-        {props.children}
-      </authorizationContext.Provider>
-    );
+    return <authorizationContext.Provider value={authorizationContextValue}>{props.children}</authorizationContext.Provider>;
   };
 }
 
@@ -175,6 +187,14 @@ export enum AuthorizationState {
   SignedIn,
 }
 
+export enum SessionState {
+  Stale,
+  SignInWaiting,
+  SignedIn,
+  SignOutWaiting,
+  SignedOut,
+}
+
 class AuthClient implements AuthorizationClient {
   constructor(private userManager: UserManager) {}
 
@@ -189,14 +209,9 @@ class DemoAuthClient implements AuthorizationClient {
 
   public async getAccessToken(): Promise<string> {
     this.accessToken ??= (async () => {
-      const response = await fetch(
-        "https://connect-itwinjscodesandbox.bentley.com/api/usertoken",
-      );
+      const response = await fetch("https://connect-itwinjscodesandbox.bentley.com/api/usertoken");
       const result = await response.json();
-      setTimeout(
-        () => this.accessToken = undefined,
-        new Date(result._expiresAt).getTime() - new Date().getTime() - 5000,
-      );
+      setTimeout(() => (this.accessToken = undefined), new Date(result._expiresAt).getTime() - new Date().getTime() - 5000);
       return `Bearer ${result._jwt}`;
     })();
     return this.accessToken;
@@ -209,13 +224,17 @@ export function useAuthorization(): AuthorizationContext {
 }
 
 const authorizationContext = React.createContext<AuthorizationContext>({
-  userManager: new UserManager({ authority: "", client_id: "", redirect_uri: "" }),
+  userManager: new UserManager({
+    authority: "",
+    client_id: "",
+    redirect_uri: "",
+  }),
   demoAuthorizationClient: new DemoAuthClient(),
   state: AuthorizationState.Offline,
   user: undefined,
   userAuthorizationClient: undefined,
-  signIn: async () => { },
-  signOut: async () => { },
+  signIn: async () => {},
+  signOut: async () => {},
 });
 
 /** Finalizes signin process when user is redirected back to the application. */
@@ -224,41 +243,43 @@ export function SignInCallback(): React.ReactElement {
   const navigate = useNavigate();
   const [authError, setAuthError] = React.useState<OAuthError>();
 
-  React.useEffect(
-    () => {
-      const params = new URLSearchParams(window.location.search);
-      const errorCode = params.get("error");
-      const errorDescription = params.get("error_description");
-      if (isOAuthErrorCode(errorCode)) {
-        // eslint-disable-next-line no-console
-        console.error(`Authorization error (${errorCode}): ${errorDescription}`);
-        setAuthError({ code: errorCode, description: errorDescription ?? undefined });
-        return;
-      }
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const errorCode = params.get("error");
+    const errorDescription = params.get("error_description");
+    if (isOAuthErrorCode(errorCode)) {
+      // eslint-disable-next-line no-console
+      console.error(`Authorization error (${errorCode}): ${errorDescription ?? ""}`);
+      setAuthError({
+        code: errorCode,
+        description: errorDescription ?? undefined,
+      });
+      return;
+    }
 
-      let disposed = false;
-      void (async () => {
-        try {
-          const user = await userManager.signinRedirectCallback();
-          if (disposed) {
-            return;
-          }
-
-          navigate(user.state || "/", { replace: true });
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error(error);
-
-          if (!disposed) {
-            setAuthError({ code: "unknown_error" });
-          }
+    let disposed = false;
+    void (async () => {
+      try {
+        const user = await userManager.signinRedirectCallback();
+        if (disposed) {
+          return;
         }
-      })();
 
-      return () => { disposed = true; };
-    },
-    [userManager, navigate],
-  );
+        navigate(user.state || "/", { replace: true });
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+
+        if (!disposed) {
+          setAuthError({ code: "unknown_error" });
+        }
+      }
+    })();
+
+    return () => {
+      disposed = true;
+    };
+  }, [userManager, navigate]);
 
   if (authError === undefined) {
     return (
@@ -307,11 +328,7 @@ function AuthenticationError(props: AuthenticationErrorProps): React.ReactElemen
     );
   }
 
-  return (
-    <ErrorPage title="Authorization Error">
-      {props.error.description ?? "Unknown error has occured"}
-    </ErrorPage>
-  );
+  return <ErrorPage title="Authorization Error">{props.error.description ?? "Unknown error has occurred"}</ErrorPage>;
 }
 
 function getTroubleshootingText(userManager: UserManager): React.ReactNode {
@@ -324,17 +341,23 @@ function getTroubleshootingText(userManager: UserManager): React.ReactNode {
   const scopeList: React.ReactElement[] = [];
   scopes.forEach((scope, index) => {
     scopeList.push(
-      scopeList.length === 0
-        ? <Code key={index}>{scope}</Code>
-        : <React.Fragment key={index}>, <Code>{scope}</Code></React.Fragment>,
+      scopeList.length === 0 ? (
+        <Code key={index}>{scope}</Code>
+      ) : (
+        <React.Fragment key={index}>
+          , <Code>{scope}</Code>
+        </React.Fragment>
+      ),
     );
   });
 
   return (
     <>
-      Visit the application&apos;s registration page
-      on <a title="iTwin Platform" href={applyUrlPrefix("https://developer.bentley.com/")}>iTwin Platform</a> to
-      check if it has access to the following scopes: {scopeList}.
+      Visit the application&apos;s registration page on{" "}
+      <a title="iTwin Platform" href={applyUrlPrefix("https://developer.bentley.com/")}>
+        iTwin Platform
+      </a>{" "}
+      to check if it has access to the following scopes: {scopeList}.
     </>
   );
 }
@@ -342,19 +365,16 @@ function getTroubleshootingText(userManager: UserManager): React.ReactNode {
 /** Finalizes signin process for silent authorization when iframe is redirected back to the application. */
 export function SignInSilent(): React.ReactElement {
   const { userManager } = useAuthorization();
-  React.useEffect(
-    () => {
-      void (async () => {
-        try {
-          await userManager.signinSilentCallback();
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.warn(error);
-        }
-      })();
-    },
-    [userManager],
-  );
+  React.useEffect(() => {
+    void (async () => {
+      try {
+        await userManager.signinSilentCallback();
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.warn(error);
+      }
+    })();
+  }, [userManager]);
 
   return <></>;
 }

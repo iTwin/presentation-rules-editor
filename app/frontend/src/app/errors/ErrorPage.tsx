@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import "./ErrorPage.scss";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +13,7 @@ import { Button, ExpandableBlock, Text } from "@itwin/itwinui-react";
 export interface ErrorPageProps {
   /** Illustration component. Default: {@link SvgError}. */
   illustration?: React.ComponentType<{ className: string }>;
-  /** Main error title, describing the kind of error that occured. */
+  /** Main error title, describing the kind of error that occurred. */
   title: string;
   /** Troubleshooting steps, if any. */
   troubleshooting?: React.ReactNode;
@@ -23,30 +24,30 @@ export interface ErrorPageProps {
 /** An error page with illustration */
 export function ErrorPage(props: ErrorPageProps): React.ReactElement {
   const navigate = useNavigate();
-  React.useEffect(
-    () => {
-      document.title = `${props.title} - Presentation Rules Editor`;
-      return () => {
-        document.title = "Presentation Rules Editor";
-      };
-    },
-    [props.title],
-  );
+  React.useEffect(() => {
+    document.title = `${props.title} - Presentation Rules Editor`;
+    return () => {
+      document.title = "Presentation Rules Editor";
+    };
+  }, [props.title]);
 
   return (
     <PageLayout.Content className="error-page">
       {React.createElement(props.illustration ?? SvgError, { className: "error-illustration" })}
       <div className="error-details">
-        <Text variant="title" as="h2">{props.title}</Text>
+        <Text variant="title" as="h2">
+          {props.title}
+        </Text>
         <span>{props.children}</span>
       </div>
-      {
-        props.troubleshooting &&
+      {props.troubleshooting && (
         <ExpandableBlock className="error-troubleshooting" title="Troubleshooting">
           {props.troubleshooting}
         </ExpandableBlock>
-      }
-      <Button styleType="high-visibility" onClick={() => navigate("/")}>Go to homepage</Button>
+      )}
+      <Button styleType="high-visibility" onClick={() => navigate("/")}>
+        Go to homepage
+      </Button>
     </PageLayout.Content>
   );
 }

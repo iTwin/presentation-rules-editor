@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import "./AsyncActionButton.scss";
 import * as React from "react";
 import { Button, ProgressRadial } from "@itwin/itwinui-react";
@@ -26,7 +27,9 @@ export function AsyncActionButton(props: AsyncActionButtonProps): React.ReactEle
 
   return (
     <div className="async-action-button">
-      <Button disabled={actionInProgress} onClick={handleButtonClick}>{props.children}</Button>
+      <Button disabled={actionInProgress} onClick={handleButtonClick}>
+        {props.children}
+      </Button>
       {actionInProgress && <ProgressRadial indeterminate={true} size="small" />}
     </div>
   );

@@ -2,6 +2,7 @@
  * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
+
 import { expect } from "chai";
 import { page } from "./setup";
 import { getEditor, getServiceUrl, getWidget, openDemoIModel, openTestIModel } from "./utils";
@@ -9,12 +10,15 @@ import { getEditor, getServiceUrl, getWidget, openDemoIModel, openTestIModel } f
 describe("share button #local #web", () => {
   const testConfiguration = process.env.WEB_TEST
     ? {
-      openIModel: openDemoIModel,
-      expectedLink: `${getServiceUrl()}/open-imodel?iTwinId=b27dc251-0e53-4a36-9a38-182fc309be07&iModelId=f30566da-8fdf-4cba-b09a-fd39f5397ae6#editor/N4IgTgrgNgpgzjALiAXCR9EAJKwdjAD2QF8g`,
-    } : {
-      openIModel: openTestIModel,
-      expectedLink: `${getServiceUrl()}/open-imodel?snapshot=Baytown.bim#editor/N4IgTgrgNgpgzjALiAXCR9EAJKwdjAD2QF8g`,
-    };
+        openIModel: openDemoIModel,
+        /* cspell: disable-next-line */
+        expectedLink: `${getServiceUrl()}/open-imodel?iTwinId=b27dc251-0e53-4a36-9a38-182fc309be07&iModelId=f30566da-8fdf-4cba-b09a-fd39f5397ae6#editor/N4IgTgrgNgpgzjALiAXCR9EAJKwdjAD2QF8g`,
+      }
+    : {
+        openIModel: openTestIModel,
+        /* cspell: disable-next-line */
+        expectedLink: `${getServiceUrl()}/open-imodel?snapshot=Baytown.bim#editor/N4IgTgrgNgpgzjALiAXCR9EAJKwdjAD2QF8g`,
+      };
 
   beforeEach(async () => {
     await testConfiguration.openIModel(page);
@@ -44,6 +48,7 @@ describe("opening shared link #local #web", () => {
   // TODO: enable this test when demo imodels work in all environments.
   it.skip("populates editor with ruleset and loads widget data when link is valid", async () => {
     await page.goto(
+      /* cspell: disable-next-line */
       `${baseAddress}#editor/N4IgTgrgNgpgzjALiAXCYAdAdgAhxkASwBMCV8RF5EB9SWBRAgGmzwPvjJwG028cmXAPbhoMACoBPAA4xuBAEoB7ZYgByy4lxCthIgnDkBjQgDNCxgIaJCyrHG599Iwf1cDDJ6XIUgAwhBwiMoAtpraLO4eFIiy8qix1FEuHgRQVgBGMFB+VME0WFoJ0SIAvqU4ALrRFcI1WGUgZUA`,
     );
     // When only hash part of the URL changes, the reload will not happen, so we trigger it manually
@@ -57,6 +62,7 @@ describe("opening shared link #local #web", () => {
   });
 
   it("populates editor with ruleset when shared ruleset is invalid", async () => {
+    /* cspell: disable-next-line */
     await page.goto(`${baseAddress}#editor/N4IgTgrgNgpgzjALiAXCAlgOwG4EMroAmA+ovIsZLAsgL5A`);
     // When only hash part of the URL changes, the reload will not happen, so we trigger it manually
     await page.reload();

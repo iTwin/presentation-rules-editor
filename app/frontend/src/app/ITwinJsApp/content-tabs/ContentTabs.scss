@@ -1,11 +1,11 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
 
 .content-tabs-wrapper {
   height: 100%;
-  grid-template-rows: calc(var(--iui-size-s)*3 + var(--iui-size-xs)) auto;
+  grid-template-rows: calc(var(--iui-size-s) * 3 + var(--iui-size-xs)) auto;
   background-color: var(--iui-color-background-1);
 }
 

@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import { expect } from "chai";
 import * as sinon from "sinon";
 import { PropertyRecord } from "@itwin/appui-abstract";
@@ -53,12 +54,16 @@ describe("Table", () => {
     beforeEach(() => {
       stubUsePresentationTable.callsFake(() => ({
         isLoading: false,
-        columns: [{
-          id: "test-column",
-        }],
-        rows: [{
-          "test-column": "test value",
-        }],
+        columns: [
+          {
+            id: "test-column",
+          },
+        ],
+        rows: [
+          {
+            "test-column": "test value",
+          },
+        ],
         selectedRows: [],
         onSelect: sinon.stub(),
         loadMoreRows: sinon.stub(),
@@ -72,20 +77,23 @@ describe("Table", () => {
       expect(stubITwinUiTable).to.have.been.calledOnce;
       const args = stubITwinUiTable.args[0][0];
       expect(args.isLoading).to.be.false;
-      expect(args.columns).to.deep.eq([{
-        id: "test-column",
-      }]);
-      expect(args.data).to.deep.eq([{
-        "test-column": "test value",
-      }]);
+      expect(args.columns).to.deep.eq([
+        {
+          id: "test-column",
+        },
+      ]);
+      expect(args.data).to.deep.eq([
+        {
+          "test-column": "test value",
+        },
+      ]);
     });
 
     it("uses new ruleset when editable ruleset is updated", async () => {
       render(<Table {...commonProps} editableRuleset={editableRuleset} />);
       await editableRuleset.updateRuleset({ id: "", rules: [] });
       expect(stubUsePresentationTable).to.have.been.calledTwice;
-      expect(stubUsePresentationTable.firstCall.args[0].ruleset)
-        .not.to.equal(stubUsePresentationTable.secondCall.args[0].ruleset);
+      expect(stubUsePresentationTable.firstCall.args[0].ruleset).not.to.equal(stubUsePresentationTable.secondCall.args[0].ruleset);
     });
 
     it("maps Presentation defs to iTwinUi Table defs", () => {
@@ -109,10 +117,12 @@ describe("Table", () => {
       const record = PropertyRecord.fromString("test value");
       const rowsMapperResult = args.rowMapper({
         key: "test-row-id",
-        cells: [{
-          key: "test-column",
-          record,
-        }],
+        cells: [
+          {
+            key: "test-column",
+            record,
+          },
+        ],
       });
       expect(rowsMapperResult).to.deep.eq({
         "test-column": record,
@@ -142,13 +152,7 @@ describe("Table", () => {
     });
 
     it("renders supplied component", () => {
-      const { getByText } = render(
-        <Table
-          {...commonProps}
-          editableRuleset={editableRuleset}
-          loadingContentState={() => <>Test Component</>}
-        />,
-      );
+      const { getByText } = render(<Table {...commonProps} editableRuleset={editableRuleset} loadingContentState={() => <>Test Component</>} />);
       getByText("Test Component");
     });
 
@@ -173,13 +177,7 @@ describe("Table", () => {
     });
 
     it("renders supplied component", () => {
-      const { getByText } = render(
-        <Table
-          {...commonProps}
-          editableRuleset={editableRuleset}
-          noContentState={() => <>Test Component</>}
-        />,
-      );
+      const { getByText } = render(<Table {...commonProps} editableRuleset={editableRuleset} noContentState={() => <>Test Component</>} />);
       getByText("Test Component");
     });
 
@@ -193,9 +191,11 @@ describe("Table", () => {
     beforeEach(() => {
       stubUsePresentationTable.callsFake(() => ({
         isLoading: false,
-        columns: [{
-          id: "test-column",
-        }],
+        columns: [
+          {
+            id: "test-column",
+          },
+        ],
         rows: [],
         selectedRows: [],
         onSelect: sinon.stub(),
@@ -206,25 +206,23 @@ describe("Table", () => {
     });
 
     it("passes supplied component to iTwinUi Table", () => {
-      render(
-        <Table
-          {...commonProps}
-          editableRuleset={editableRuleset}
-          noRowsState={() => <>Test Component</>}
-        />,
+      render(<Table {...commonProps} editableRuleset={editableRuleset} noRowsState={() => <>Test Component</>} />);
+      expect(stubITwinUiTable).to.have.been.calledOnceWith(
+        sinon.match(({ emptyTableContent }) => {
+          const { getByText } = render(emptyTableContent);
+          return !!getByText("Test Component");
+        }),
       );
-      expect(stubITwinUiTable).to.have.been.calledOnceWith(sinon.match(({ emptyTableContent }) => {
-        const { getByText } = render(emptyTableContent);
-        return !!getByText("Test Component");
-      }));
     });
 
     it("passes default message to iTwinUi Table when component is not supplied", () => {
       render(<Table {...commonProps} editableRuleset={editableRuleset} />);
-      expect(stubITwinUiTable).to.have.been.calledOnceWith(sinon.match(({ emptyTableContent }) => {
-        const { getByText } = render(emptyTableContent);
-        return !!getByText("No rows.");
-      }));
+      expect(stubITwinUiTable).to.have.been.calledOnceWith(
+        sinon.match(({ emptyTableContent }) => {
+          const { getByText } = render(emptyTableContent);
+          return !!getByText("No rows.");
+        }),
+      );
     });
   });
 });

@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import { RpcInterface, RpcManager, RpcOperation, RpcRequestTokenSupplier_T } from "@itwin/core-common";
 
 const localDeploymentOnly: RpcRequestTokenSupplier_T = () => ({ iModelId: "none", key: "" });
@@ -28,7 +29,9 @@ export abstract class PresentationRulesEditorRpcInterface extends RpcInterface {
   }
 
   @RpcOperation.setRoutingProps(localDeploymentOnly)
-  public async openIModelsDirectory(): Promise<void> { return this.forward(arguments); }
+  public async openIModelsDirectory(): Promise<void> {
+    return this.forward(arguments);
+  }
 }
 
 export interface IModelMetadata {

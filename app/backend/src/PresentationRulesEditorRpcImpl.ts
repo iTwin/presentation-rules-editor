@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import { execFileSync } from "child_process";
 import * as fs from "fs";
 import * as os from "os";
@@ -19,7 +20,8 @@ export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcIn
 
   public override async getAvailableIModels(): Promise<IModelMetadata[]> {
     const dir = SnapshotFileNameResolver.getIModelsDirectory();
-    return fs.readdirSync(dir, { withFileTypes: true })
+    return fs
+      .readdirSync(dir, { withFileTypes: true })
       .filter((entry) => entry.isFile() && (entry.name.endsWith(".ibim") || entry.name.endsWith(".bim")))
       .map((file) => {
         const entry = fs.statSync(path.join(dir, file.name));

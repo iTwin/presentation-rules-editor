@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import * as fs from "fs";
 import * as path from "path";
 import * as rimraf from "rimraf";
@@ -20,47 +21,30 @@ const repositoryRootLocation = getRepositoryRootLocation();
 
 const args: any = yargs(process.argv.slice(2))
   .scriptName(path.basename(__filename))
-  .command(
-    "link [imodeljs_repo]",
-    "Links packages from a local imodeljs repository into this repository",
-    (builder) => {
-      builder.positional(
-        "imodeljs_repo",
-        { description: "Path to a local imodeljs repository", default: "../imodeljs" },
-      );
-    },
-  )
-  .command(
-    "unlink [imodeljs_repo]",
-    "Undoes link command",
-    (builder) => {
-      builder.positional(
-        "imodeljs_repo",
-        { description: "Path to a local imodeljs repository", default: "../imodeljs" },
-      );
-    },
-  )
-  .strict()
-  .argv;
+  .command("link [imodeljs_repo]", "Links packages from a local imodeljs repository into this repository", (builder) => {
+    builder.positional("imodeljs_repo", { description: "Path to a local imodeljs repository", default: "../imodeljs" });
+  })
+  .command("unlink [imodeljs_repo]", "Undoes link command", (builder) => {
+    builder.positional("imodeljs_repo", { description: "Path to a local imodeljs repository", default: "../imodeljs" });
+  })
+  .strict().argv;
 
 if (typeof args.imodeljs_repo !== "string") {
   process.exit(1);
 }
 
-const iModeljsRepoLocation = path.isAbsolute(args.imodeljs_repo)
-  ? args.imodeljs_repo
-  : path.resolve(repositoryRootLocation, args.imodeljs_repo);
+const iModeljsRepoLocation = path.isAbsolute(args.imodeljs_repo) ? args.imodeljs_repo : path.resolve(repositoryRootLocation, args.imodeljs_repo);
 if (!isIModeljsRepository(iModeljsRepoLocation)) {
   console.error(`'${iModeljsRepoLocation}' is not an imodeljs repository.`);
   process.exit(1);
 }
 
 const packageSourceLocations = findPackageSourceLocations(iModeljsRepoLocation, packagesToLink);
-const packageDesitinationLocations = findPackageDestinationLocations(packagesToLink);
+const packageDestinationLocations = findPackageDestinationLocations(packagesToLink);
 
 for (const packageName of packagesToLink) {
   const sourceLocation = packageSourceLocations.get(packageName);
-  const destinationLocation = packageDesitinationLocations.get(packageName);
+  const destinationLocation = packageDestinationLocations.get(packageName);
 
   if (sourceLocation === undefined || destinationLocation === undefined) {
     console.error(`Could not determine locations for '${packageName}'`);
@@ -103,9 +87,10 @@ interface RushJson {
 function findPackageSourceLocations(pathToRepository: string, packageNames: Set<string>): Map<string, string> {
   const rushJsonPath = path.join(pathToRepository, "rush.json");
   const rushJson: RushJson = JSON.parse(fs.readFileSync(rushJsonPath, { encoding: "utf-8" }));
-  const sourceLocations = new Map<string, string>(rushJson.projects
-    .filter((project: any) => packageNames.has(project.packageName))
-    .map((project: any) => [project.packageName, path.resolve(pathToRepository, project.projectFolder)]),
+  const sourceLocations = new Map<string, string>(
+    rushJson.projects
+      .filter((project: any) => packageNames.has(project.packageName))
+      .map((project: any) => [project.packageName, path.resolve(pathToRepository, project.projectFolder)]),
   );
 
   // @bentley/imodeljs-native does not have a project in imodeljs monorepo
@@ -116,10 +101,7 @@ function findPackageSourceLocations(pathToRepository: string, packageNames: Set<
       process.exit(1);
     }
 
-    sourceLocations.set(
-      "@bentley/imodeljs-native",
-      path.join(pathToRepository, backendProject.projectFolder, "node_modules/@bentley/imodeljs-native"),
-    );
+    sourceLocations.set("@bentley/imodeljs-native", path.join(pathToRepository, backendProject.projectFolder, "node_modules/@bentley/imodeljs-native"));
   }
 
   return sourceLocations;
@@ -151,10 +133,7 @@ function findPackageDestinationLocations(packageNames: Iterable<string>): Map<st
         process.exit(1);
       }
 
-      packageDestinationMap.set(
-        originalPackageName,
-        path.resolve(packageStoreFolder, folderName, "node_modules", packageScope, packageName),
-      );
+      packageDestinationMap.set(originalPackageName, path.resolve(packageStoreFolder, folderName, "node_modules", packageScope, packageName));
     }
   }
 

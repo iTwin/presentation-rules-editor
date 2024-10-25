@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import "./IModelBrowser.scss";
 import * as React from "react";
 import { Outlet, useMatch, useNavigate } from "react-router-dom";
@@ -16,86 +17,87 @@ import { VerticalStack } from "../common/CenteredStack";
 import { useLocalStorage } from "../common/LocalStorage";
 import { getIModel, getIModelThumbnail } from "../ITwinApi";
 import { BackendApi } from "../ITwinJsApp/api/BackendApi";
-import {
-  demoIModels, IModelIdentifier, isDemoIModel, isIModelIdentifier, isSnapshotIModel, ITwinIModelIdentifier,
-} from "../ITwinJsApp/IModelIdentifier";
+import { demoIModels, IModelIdentifier, isDemoIModel, isIModelIdentifier, isSnapshotIModel, ITwinIModelIdentifier } from "../ITwinJsApp/IModelIdentifier";
 
 export interface IModelBrowserProps {
   backendApiPromise: Promise<BackendApi> | undefined;
 }
 
-export const IModelBrowser = React.memo(
-  function IModelBrowser(props: IModelBrowserProps): React.ReactElement {
-    const [settings, setSettings] = useIModelBrowserSettings();
-    const [intersectionObserver] = React.useState(() => new ViewportIntersectionObserver());
-    React.useEffect(() => () => intersectionObserver.dispose(), [intersectionObserver]);
-    const match = useMatch("/browse-imodels/:tab");
-    const [searchQuery, setSearchQuery] = React.useState("");
-    const clearSearchQuery = React.useRef(() => setSearchQuery("")).current;
-    return (
-      <iModelBrowserContext.Provider
-        value={{
-          displayMode: settings.displayMode,
-          intersectionObserver,
-          searchQuery,
-          clearSearchQuery,
-        }}
-      >
-        <AppSideNavigation activePage={AppPage.iModelBrowser} />
-        <PageLayout.Content padded>
-          <Text variant="headline" as="h1">Browse iModels</Text>
-          <Grid>
-            <Grid.Item columnSpan={12}>
-              <PaddedSurface>
-                <Text variant="title" as="h2">Recent</Text>
-                <MinimalTileAreaHeight>
-                  <RecentIModels backendApiPromise={props.backendApiPromise} recentIModels={settings.recentIModels} />
-                </MinimalTileAreaHeight>
-              </PaddedSurface>
-            </Grid.Item>
-            <Grid.Item columnSpan={12}>
-              <PaddedSurface>
-                <Text variant="title" as="h2">All</Text>
-                <Grid>
-                  <Grid.Item className="imodel-browser-controls" columnSpan={12}>
-                    <LabeledInput
-                      placeholder="Search"
-                      svgIcon={<SvgSearch />}
-                      iconDisplayStyle="inline"
-                      value={searchQuery}
-                      maxLength={255}
-                      onChange={(event) => setSearchQuery(event.target.value)}
-                    />
-                    {
-                      match?.params.tab !== "demo" &&
-                      <ButtonGroup>
-                        <IconButton
-                          isActive={settings.displayMode === "grid"}
-                          onClick={() => setSettings((prevState) => ({ ...prevState, displayMode: "grid" }))}
-                        >
-                          <SvgThumbnails />
-                        </IconButton>
-                        <IconButton
-                          isActive={settings.displayMode === "list"}
-                          onClick={() => setSettings((prevState) => ({ ...prevState, displayMode: "list" }))}
-                        >
-                          <SvgList />
-                        </IconButton>
-                      </ButtonGroup>
-                    }
-                  </Grid.Item>
-                  <Grid.Item columnSpan={12}>
-                    <Outlet />
-                  </Grid.Item>
-                </Grid>
-              </PaddedSurface>
-            </Grid.Item>
-          </Grid>
-        </PageLayout.Content>
-      </iModelBrowserContext.Provider>
-    );
-  },
-);
+export const IModelBrowser = React.memo(function IModelBrowser(props: IModelBrowserProps): React.ReactElement {
+  const [settings, setSettings] = useIModelBrowserSettings();
+  const [intersectionObserver] = React.useState(() => new ViewportIntersectionObserver());
+  React.useEffect(() => () => intersectionObserver.dispose(), [intersectionObserver]);
+  const match = useMatch("/browse-imodels/:tab");
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const clearSearchQuery = React.useRef(() => setSearchQuery("")).current;
+  return (
+    <iModelBrowserContext.Provider
+      value={{
+        displayMode: settings.displayMode,
+        intersectionObserver,
+        searchQuery,
+        clearSearchQuery,
+      }}
+    >
+      <AppSideNavigation activePage={AppPage.iModelBrowser} />
+      <PageLayout.Content padded>
+        <Text variant="headline" as="h1">
+          Browse iModels
+        </Text>
+        <Grid>
+          <Grid.Item columnSpan={12}>
+            <PaddedSurface>
+              <Text variant="title" as="h2">
+                Recent
+              </Text>
+              <MinimalTileAreaHeight>
+                <RecentIModels backendApiPromise={props.backendApiPromise} recentIModels={settings.recentIModels} />
+              </MinimalTileAreaHeight>
+            </PaddedSurface>
+          </Grid.Item>
+          <Grid.Item columnSpan={12}>
+            <PaddedSurface>
+              <Text variant="title" as="h2">
+                All
+              </Text>
+              <Grid>
+                <Grid.Item className="imodel-browser-controls" columnSpan={12}>
+                  <LabeledInput
+                    placeholder="Search"
+                    svgIcon={<SvgSearch />}
+                    iconDisplayStyle="inline"
+                    value={searchQuery}
+                    maxLength={255}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                  />
+                  {match?.params.tab !== "demo" && (
+                    <ButtonGroup>
+                      <IconButton
+                        isActive={settings.displayMode === "grid"}
+                        onClick={() => setSettings((prevState) => ({ ...prevState, displayMode: "grid" }))}
+                      >
+                        <SvgThumbnails />
+                      </IconButton>
+                      <IconButton
+                        isActive={settings.displayMode === "list"}
+                        onClick={() => setSettings((prevState) => ({ ...prevState, displayMode: "list" }))}
+                      >
+                        <SvgList />
+                      </IconButton>
+                    </ButtonGroup>
+                  )}
+                </Grid.Item>
+                <Grid.Item columnSpan={12}>
+                  <Outlet />
+                </Grid.Item>
+              </Grid>
+            </PaddedSurface>
+          </Grid.Item>
+        </Grid>
+      </PageLayout.Content>
+    </iModelBrowserContext.Provider>
+  );
+});
 
 class ViewportIntersectionObserver {
   private observer: IntersectionObserver;
@@ -130,7 +132,11 @@ interface PaddedSurfaceProps {
 }
 
 function PaddedSurface(props: PaddedSurfaceProps): React.ReactElement {
-  return <Surface className="padded-surface" elevation={1}>{props.children}</Surface>;
+  return (
+    <Surface className="padded-surface" elevation={1}>
+      {props.children}
+    </Surface>
+  );
 }
 
 export interface IModelBrowserContext {
@@ -160,11 +166,7 @@ export enum IModelBrowserTab {
 export function IModelBrowserTabs(props: IModelBrowserTabsProps): React.ReactElement {
   const navigate = useNavigate();
   const indexToTab = ["local", "iTwins", "demo"];
-  const labels = [
-    <Tab key="snapshots" label="Local snapshots" />,
-    <Tab key="itwins" label="My iTwins" />,
-    <Tab key="demo" label="Demo iModels" />,
-  ];
+  const labels = [<Tab key="snapshots" label="Local snapshots" />, <Tab key="itwins" label="My iTwins" />, <Tab key="demo" label="Demo iModels" />];
 
   if (process.env.DEPLOYMENT_TYPE === "web") {
     indexToTab.shift();
@@ -216,22 +218,25 @@ function RecentIModels(props: RecentIModelsProps): React.ReactElement {
     return (
       <VerticalStack className="imodel-browser-no-data">
         <SvgHistory />
-        <Text variant="title" as="h2" isMuted>No recent iModels</Text>
+        <Text variant="title" as="h2" isMuted>
+          No recent iModels
+        </Text>
       </VerticalStack>
     );
   }
 
   return (
     <FluidGrid>
-      {availableIModels.slice(-5).reverse().map(
-        (iModelIdentifier) => isSnapshotIModel(iModelIdentifier)
-          ? <IModelSnapshotTile
-            key={iModelIdentifier}
-            name={iModelIdentifier}
-            openSnapshotsFolder={async () => backendApi?.openIModelsDirectory()}
-          />
-          : <RecentIModelTile key={iModelIdentifier.iModelId} iModelIdentifier={iModelIdentifier} />,
-      )}
+      {availableIModels
+        .slice(-5)
+        .reverse()
+        .map((iModelIdentifier) =>
+          isSnapshotIModel(iModelIdentifier) ? (
+            <IModelSnapshotTile key={iModelIdentifier} name={iModelIdentifier} openSnapshotsFolder={async () => backendApi?.openIModelsDirectory()} />
+          ) : (
+            <RecentIModelTile key={iModelIdentifier.iModelId} iModelIdentifier={iModelIdentifier} />
+          ),
+        )}
     </FluidGrid>
   );
 }
@@ -251,49 +256,42 @@ export function IModelTile(props: IModelTileProps): React.ReactElement {
   const divRef = React.useRef<HTMLDivElement>(null);
   const { intersectionObserver } = React.useContext(iModelBrowserContext);
 
-  React.useEffect(
-    () => {
-      let disposed = false;
-      const onVisible = props.onVisible;
-      const element = divRef.current;
-      const authorizationClient = props.authorizationClient;
-      if (!element || !authorizationClient) {
-        return;
-      }
+  React.useEffect(() => {
+    let disposed = false;
+    const onVisible = props.onVisible;
+    const element = divRef.current;
+    const authorizationClient = props.authorizationClient;
+    if (!element || !authorizationClient) {
+      return;
+    }
 
-      const handleObservation = async (isIntersecting: boolean) => {
-        if (isIntersecting) {
-          onVisible?.(props.iModelId);
-          if (thumbnail !== undefined) {
-            return;
-          }
-
-          const response = await getIModelThumbnail(props.iModelId, { authorizationClient });
-          if (!disposed && response) {
-            setThumbnail(URL.createObjectURL(response));
-          }
+    const handleObservation = async (isIntersecting: boolean) => {
+      if (isIntersecting) {
+        onVisible?.(props.iModelId);
+        if (thumbnail !== undefined) {
+          return;
         }
-      };
 
-      intersectionObserver?.observe(element, handleObservation);
-      return () => {
-        disposed = true;
-        intersectionObserver?.unobserve(element);
-        thumbnail && URL.revokeObjectURL(thumbnail);
-      };
-    },
-    [intersectionObserver, props.onVisible, props.iModelId, thumbnail, props.authorizationClient],
-  );
+        const response = await getIModelThumbnail(props.iModelId, { authorizationClient });
+        if (!disposed && response) {
+          setThumbnail(URL.createObjectURL(response));
+        }
+      }
+    };
+
+    intersectionObserver?.observe(element, handleObservation);
+    return () => {
+      disposed = true;
+      intersectionObserver?.unobserve(element);
+      thumbnail && URL.revokeObjectURL(thumbnail);
+    };
+  }, [intersectionObserver, props.onVisible, props.iModelId, thumbnail, props.authorizationClient]);
 
   return (
     <Tile
       name={props.name}
       description={props.description ?? <Text isSkeleton />}
-      thumbnail={
-        thumbnail
-          ? <img style={{ objectFit: "cover" }} src={thumbnail} alt="" />
-          : <div ref={divRef} id="imodel-thumbnail-placeholder" />
-      }
+      thumbnail={thumbnail ? <img style={{ objectFit: "cover" }} src={thumbnail} alt="" /> : <div ref={divRef} id="imodel-thumbnail-placeholder" />}
       isActionable
       onClick={() => navigation.openRulesetEditor({ iTwinId: props.iTwinId, iModelId: props.iModelId })}
     />
@@ -324,7 +322,9 @@ export function IModelSnapshotTile(props: IModelSnapshotTileProps): React.ReactE
       isActionable
       onClick={handleTileClick(props.name)}
       moreOptions={[
-        <MenuItem key="open-folder" onClick={props.openSnapshotsFolder}>Open containing folder</MenuItem>,
+        <MenuItem key="open-folder" onClick={props.openSnapshotsFolder}>
+          Open containing folder
+        </MenuItem>,
       ]}
     />
   );
@@ -336,32 +336,31 @@ interface RecentIModelTileProps {
 
 function RecentIModelTile(props: RecentIModelTileProps): React.ReactElement {
   const { demoAuthorizationClient, userAuthorizationClient } = useAuthorization();
-  const [iModel, setIModel] = React.useState<{ name: string, description: string } | "unknown">();
+  const [iModel, setIModel] = React.useState<{ name: string; description: string } | "unknown">();
   const authorizationClient = isDemoIModel(props.iModelIdentifier) ? demoAuthorizationClient : userAuthorizationClient;
 
-  React.useEffect(
-    () => {
-      if (isDemoIModel(props.iModelIdentifier)) {
-        setIModel({ name: demoIModels.get(props.iModelIdentifier.iModelId)?.name ?? "", description: "Demo iModel" });
-        return;
+  React.useEffect(() => {
+    if (isDemoIModel(props.iModelIdentifier)) {
+      setIModel({ name: demoIModels.get(props.iModelIdentifier.iModelId)?.name ?? "", description: "Demo iModel" });
+      return;
+    }
+
+    if (!authorizationClient) {
+      return;
+    }
+
+    let disposed = false;
+    void (async () => {
+      const response = await getIModel(props.iModelIdentifier.iModelId, { authorizationClient });
+      if (!disposed) {
+        setIModel(response ? { name: response.displayName, description: response.description ?? "" } : "unknown");
       }
+    })();
 
-      if (!authorizationClient) {
-        return;
-      }
-
-      let disposed = false;
-      void (async () => {
-        const response = await getIModel(props.iModelIdentifier.iModelId, { authorizationClient });
-        if (!disposed) {
-          setIModel(response ? { name: response.displayName, description: response.description ?? "" } : "unknown");
-        }
-      })();
-
-      return () => { disposed = true; };
-    },
-    [authorizationClient, props.iModelIdentifier],
-  );
+    return () => {
+      disposed = true;
+    };
+  }, [authorizationClient, props.iModelIdentifier]);
 
   if (iModel === "unknown") {
     return <Tile name="(unknown iModel)" thumbnail={<></>} />;
@@ -383,45 +382,36 @@ export interface IModelBrowserSettings {
   recentIModels: IModelIdentifier[];
 }
 
-export function useIModelBrowserSettings(): [
-  IModelBrowserSettings,
-  (action: React.SetStateAction<IModelBrowserSettings>) => void,
-] {
-  return useLocalStorage(
-    "imodel-browser",
-    (initialValue: any) => {
-      if (typeof initialValue !== "object") {
-        return {
-          displayMode: "grid",
-          recentIModels: [],
-        };
-      }
+export function useIModelBrowserSettings(): [IModelBrowserSettings, (action: React.SetStateAction<IModelBrowserSettings>) => void] {
+  return useLocalStorage("imodel-browser", (initialValue: any) => {
+    if (typeof initialValue !== "object") {
+      return {
+        displayMode: "grid",
+        recentIModels: [],
+      };
+    }
 
-      const displayMode = initialValue.displayMode !== "list" ? "grid" : "list";
-      const recentIModels = Array.isArray(initialValue.recentIModels)
-        ? initialValue.recentIModels.filter(isIModelIdentifier)
-        : [];
-      return { displayMode, recentIModels };
-    },
-  );
+    const displayMode = initialValue.displayMode !== "list" ? "grid" : "list";
+    const recentIModels = Array.isArray(initialValue.recentIModels) ? initialValue.recentIModels.filter(isIModelIdentifier) : [];
+    return { displayMode, recentIModels };
+  });
 }
 
 export function useBackendApi(backendApiPromise: Promise<BackendApi> | undefined): BackendApi | undefined {
   const [backendApi, setBackendApi] = React.useState<BackendApi>();
-  React.useEffect(
-    () => {
-      let disposed = false;
-      void (async () => {
-        const backendApiResult = await backendApiPromise;
-        if (!disposed) {
-          setBackendApi(backendApiResult);
-        }
-      })();
+  React.useEffect(() => {
+    let disposed = false;
+    void (async () => {
+      const backendApiResult = await backendApiPromise;
+      if (!disposed) {
+        setBackendApi(backendApiResult);
+      }
+    })();
 
-      return () => { disposed = true; };
-    },
-    [backendApiPromise],
-  );
+    return () => {
+      disposed = true;
+    };
+  }, [backendApiPromise]);
 
   return backendApi;
 }

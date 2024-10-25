@@ -1,15 +1,14 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import * as React from "react";
 import { PropertyRecord } from "@itwin/appui-abstract";
 import { IModelConnection } from "@itwin/core-frontend";
 import { ProgressRadial, Table as UiTable } from "@itwin/itwinui-react";
 import { Ruleset } from "@itwin/presentation-common";
-import {
-  TableCellRenderer, TableColumnDefinition, TableRowDefinition, usePresentationTableWithUnifiedSelection,
-} from "@itwin/presentation-components";
+import { TableCellRenderer, TableColumnDefinition, TableRowDefinition, usePresentationTableWithUnifiedSelection } from "@itwin/presentation-components";
 import { CenteredContent } from "../CenteredContent";
 import { EditableRuleset } from "../EditableRuleset";
 
@@ -56,19 +55,23 @@ export function Table(props: TableProps) {
   });
 
   if (columns === undefined) {
-    return props.loadingContentState?.() ?? (
-      <CenteredContent width={props.width} height={props.height}>
-        <ProgressRadial size="large" indeterminate={true} />
-        Loading table content...
-      </CenteredContent>
+    return (
+      props.loadingContentState?.() ?? (
+        <CenteredContent width={props.width} height={props.height}>
+          <ProgressRadial size="large" indeterminate={true} />
+          Loading table content...
+        </CenteredContent>
+      )
     );
   }
 
   if (columns.length === 0) {
-    return props.noContentState?.() ?? (
-      <CenteredContent width={props.width} height={props.height}>
-        There is no content for current selection.
-      </CenteredContent>
+    return (
+      props.noContentState?.() ?? (
+        <CenteredContent width={props.width} height={props.height}>
+          There is no content for current selection.
+        </CenteredContent>
+      )
     );
   }
 
@@ -78,9 +81,7 @@ export function Table(props: TableProps) {
       data={rows}
       enableVirtualization={true}
       style={{ height: `${props.height}px` }}
-      emptyTableContent={props.noRowsState?.() ?? (
-        <>No rows.</>
-      )}
+      emptyTableContent={props.noRowsState?.() ?? <>No rows.</>}
       onBottomReached={loadMoreRows}
       isLoading={isLoading}
       density="extra-condensed"
@@ -100,13 +101,16 @@ function mapColumns(columnDefinitions: TableColumnDefinition) {
 
 function mapRows(rowDefinition: TableRowDefinition) {
   const newRow: { [key: string]: PropertyRecord } = {};
-  rowDefinition.cells.forEach((cell) => { newRow[cell.key] = cell.record; });
+  rowDefinition.cells.forEach((cell) => {
+    newRow[cell.key] = cell.record;
+  });
   return newRow;
 }
 
 function cellRenderer(cellProps: { value?: PropertyRecord }) {
-  if (!cellProps.value)
+  if (!cellProps.value) {
     return null;
+  }
 
   return <TableCellRenderer record={cellProps.value} />;
 }

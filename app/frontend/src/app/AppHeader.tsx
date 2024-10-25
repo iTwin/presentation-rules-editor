@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import { UserProfile } from "oidc-client-ts";
 import * as React from "react";
 import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
@@ -17,33 +18,29 @@ export function AppHeader(): React.ReactElement {
   const navigation = React.useContext(appNavigationContext);
 
   const actions = [
-    <IconButton
-      key="Repository"
-      as="a"
-      href="https://github.com/iTwin/presentation-rules-editor"
-      title="Source code"
-      styleType="borderless"
-    >
+    <IconButton key="Repository" as="a" href="https://github.com/iTwin/presentation-rules-editor" title="Source code" styleType="borderless">
       <GitHubLogoSmall />
     </IconButton>,
   ];
   switch (state) {
     case AuthorizationState.Offline:
       actions.push(
-        <HorizontalStack key="offlinemode">
+        <HorizontalStack key="offlineMode">
           Offline mode <OfflineModeExplainer />
         </HorizontalStack>,
       );
       break;
 
     case AuthorizationState.SignedOut:
-      actions.push(<Button key="signin" styleType="borderless" onClick={signIn}>Sign In</Button>);
+      actions.push(
+        <Button key="signin" styleType="borderless" onClick={signIn}>
+          Sign In
+        </Button>,
+      );
       break;
   }
 
-  const userIcon = (state === AuthorizationState.SignedIn && user !== undefined)
-    ? <HeaderUserIcon profile={user.profile} signOut={signOut} />
-    : null;
+  const userIcon = state === AuthorizationState.SignedIn && user !== undefined ? <HeaderUserIcon profile={user.profile} signOut={signOut} /> : null;
 
   return (
     <Header
@@ -54,7 +51,8 @@ export function AppHeader(): React.ReactElement {
       }
       breadcrumbs={<Breadcrumbs />}
       actions={actions}
-      userIcon={userIcon} />
+      userIcon={userIcon}
+    />
   );
 }
 
@@ -67,13 +65,17 @@ interface HeaderUserIconProps {
 function HeaderUserIcon(props: HeaderUserIconProps): React.ReactElement | null {
   const { profile, signOut } = props;
   const preferredName = profile?.preferred_username || profile?.name || profile?.nickname;
-  const initials = (profile?.given_name && profile?.family_name)
-    ? profile.given_name[0] + profile.family_name[0]
-    : (preferredName ?? "?").substring(0, 2);
+  const initials = profile?.given_name && profile?.family_name ? profile.given_name[0] + profile.family_name[0] : (preferredName ?? "?").substring(0, 2);
   const displayName = preferredName ?? "Unknown Account";
 
   return (
-    <DropdownMenu menuItems={() => [<MenuItem key="signout" onClick={signOut}>Sign Out</MenuItem>]}>
+    <DropdownMenu
+      menuItems={() => [
+        <MenuItem key="signout" onClick={signOut}>
+          Sign Out
+        </MenuItem>,
+      ]}
+    >
       <IconButton styleType="borderless" title="Account Actions">
         <Avatar title={displayName} abbreviation={initials} backgroundColor={getUserColor(displayName)} />
       </IconButton>

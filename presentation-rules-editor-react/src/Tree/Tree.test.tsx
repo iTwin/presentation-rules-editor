@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import { expect } from "chai";
 import * as sinon from "sinon";
 import * as componentsReact from "@itwin/components-react";
@@ -16,7 +17,8 @@ describe("Tree", () => {
   before(() => {
     stubPresentationManager();
 
-    sinon.stub(presentationComponents, "usePresentationTreeState")
+    sinon
+      .stub(presentationComponents, "usePresentationTreeState")
       .callsFake(() => ({ nodeLoader: { modelSource: undefined }, onItemsRendered: undefined, eventHandler: {} }) as any);
     sinon.stub(presentationComponents, "useUnifiedSelectionTreeEventHandler").callsFake(() => ({}) as any);
     sinon.stub(presentationComponents, "PresentationTreeRenderer").callsFake(() => <></>);
@@ -43,13 +45,14 @@ describe("Tree", () => {
   it("renders with `PresentationTreeRenderer`", () => {
     const editableRuleset = new EditableRuleset({ initialRuleset: { id: "", rules: [] } });
     render(<Tree width={100} height={100} iModel={{} as any} editableRuleset={editableRuleset} />);
-    expect(componentsReact.ControlledTree).to.have.been.calledOnce
-      .and.calledWith(sinon.match((props: ControlledTreeProps) => {
+    expect(componentsReact.ControlledTree).to.have.been.calledOnce.and.calledWith(
+      sinon.match((props: ControlledTreeProps) => {
         expect(props.treeRenderer).to.not.be.undefined;
         expect(presentationComponents.PresentationTreeRenderer).to.not.be.called;
         render(props.treeRenderer!({} as any));
         expect(presentationComponents.PresentationTreeRenderer).to.be.calledOnce;
         return true;
-      }));
+      }),
+    );
   });
 });

@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import * as React from "react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { UnifiedSelectionContextProvider } from "@itwin/presentation-components";
@@ -28,9 +29,7 @@ export function TreeWidget(props: TreeWidgetProps): React.ReactElement {
 
   return (
     <UnifiedSelectionContextProvider imodel={imodel} selectionLevel={0}>
-      <AutoSizer>
-        {({ width, height }) => <Tree width={width} height={height} iModel={imodel} editableRuleset={ruleset} />}
-      </AutoSizer>
+      <AutoSizer>{({ width, height }) => <Tree width={width} height={height} iModel={imodel} editableRuleset={ruleset} />}</AutoSizer>
     </UnifiedSelectionContextProvider>
   );
 }

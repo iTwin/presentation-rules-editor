@@ -1,10 +1,11 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import * as chai from "chai";
-import sinonChai from "sinon-chai";
 import m from "module";
+import sinonChai from "sinon-chai";
 
 chai.use(sinonChai);
 
@@ -27,11 +28,7 @@ const originalCompile = (m as any).prototype._compile;
     // Object.entries does not list non-enumerable properties
     for (const key of Object.getOwnPropertyNames(this.exports)) {
       if (!(key in relaxedExports)) {
-        Object.defineProperty(
-          relaxedExports,
-          key,
-          { configurable: true, enumerable: false, writable: true, value: this.exports[key] },
-        );
+        Object.defineProperty(relaxedExports, key, { configurable: true, enumerable: false, writable: true, value: this.exports[key] });
       }
     }
 

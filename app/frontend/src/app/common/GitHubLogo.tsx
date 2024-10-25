@@ -1,18 +1,19 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import "./GitHubLogo.scss";
 import * as React from "react";
 
 export interface GitHubLogoSmallProps {
-  className?: string | undefined;
+  className?: string;
 }
 
 /** GitHub logo (for 16–120px). */
 export function GitHubLogoSmall(props: GitHubLogoSmallProps): React.ReactElement {
   return (
-    <svg className={`github-logo ${props.className}`} viewBox="0 0 44 44">
+    <svg className={`github-logo ${props.className ?? ""}`} viewBox="0 0 44 44">
       <path
         d="M21.998.009C9.85.009 0 9.859 0 22.009c0 9.72 6.303 17.966 15.045 20.876 1.101.202 1.502-.478 1.502-1.061 0
 -.522-.019-1.906-.03-3.741-6.119 1.329-7.41-2.95-7.41-2.95-1-2.54-2.443-3.217-2.443-3.217-1.998-1.365.15-1.338.15-1.338

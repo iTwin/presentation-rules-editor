@@ -60,8 +60,8 @@ stages:
           - task: CmdLine@2
             displayName: Pack package files
             inputs:
-             script: pnpm pack
-             workingDirectory: presentation-rules-editor-react/
+              script: pnpm pack
+              workingDirectory: presentation-rules-editor-react/
 
           - publish: presentation-rules-editor-react/$(tarballName)
             displayName: Publish package artifact

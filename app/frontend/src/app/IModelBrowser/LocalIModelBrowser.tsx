@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import * as React from "react";
 import { CellProps } from "react-table";
 import { IModelMetadata } from "@app/common";
@@ -30,36 +31,35 @@ export function LocalIModelBrowser(props: LocalIModelBrowserProps): React.ReactE
         <Text variant="title" as="h2" isMuted>
           {searchQuery ? "No local iModels match search query" : "No local iModel snapshots found"}
         </Text>
-        <AsyncActionButton onClick={async () => backendApi?.openIModelsDirectory()}>
-          Open snapshots folder
-        </AsyncActionButton>
+        <AsyncActionButton onClick={async () => backendApi?.openIModelsDirectory()}>Open snapshots folder</AsyncActionButton>
       </VerticalStack>
     );
   }
 
   const openSnapshotsFolder = async () => backendApi?.openIModelsDirectory();
 
-  return displayMode === "grid"
-    ? <GridView availableIModels={availableIModels} openSnapshotsFolder={openSnapshotsFolder} />
-    : <TableView availableIModels={availableIModels} openSnapshotsFolder={openSnapshotsFolder} />;
+  return displayMode === "grid" ? (
+    <GridView availableIModels={availableIModels} openSnapshotsFolder={openSnapshotsFolder} />
+  ) : (
+    <TableView availableIModels={availableIModels} openSnapshotsFolder={openSnapshotsFolder} />
+  );
 }
 
 function useAvailableIModels(backendApi: BackendApi | undefined, searchQuery: string): IModelMetadata[] | undefined {
   const [availableIModels, setAvailableIModels] = React.useState<IModelMetadata[]>();
-  React.useEffect(
-    () => {
-      let disposed = false;
-      void (async () => {
-        const imodels = await backendApi?.getAvailableIModels();
-        if (!disposed) {
-          setAvailableIModels(imodels?.sort((a, b) => a.name.localeCompare(b.name)));
-        }
-      })();
+  React.useEffect(() => {
+    let disposed = false;
+    void (async () => {
+      const imodels = await backendApi?.getAvailableIModels();
+      if (!disposed) {
+        setAvailableIModels(imodels?.sort((a, b) => a.name.localeCompare(b.name)));
+      }
+    })();
 
-      return () => { disposed = true; };
-    },
-    [backendApi],
-  );
+    return () => {
+      disposed = true;
+    };
+  }, [backendApi]);
 
   searchQuery = searchQuery.trim().toLowerCase();
   return availableIModels?.filter(({ name }) => searchQuery === "" || name.toLowerCase().includes(searchQuery));
@@ -77,11 +77,9 @@ function GridView(props: GridViewProps): React.ReactElement {
 
   return (
     <FluidGrid>
-      {
-        props.availableIModels.map((iModel) => (
-          <IModelSnapshotTile key={iModel.name} name={iModel.name} openSnapshotsFolder={props.openSnapshotsFolder} />
-        ))
-      }
+      {props.availableIModels.map((iModel) => (
+        <IModelSnapshotTile key={iModel.name} name={iModel.name} openSnapshotsFolder={props.openSnapshotsFolder} />
+      ))}
     </FluidGrid>
   );
 }
@@ -94,25 +92,27 @@ interface TableViewProps {
 function TableView(props: TableViewProps): React.ReactElement {
   const navigation = React.useContext(appNavigationContext);
   const { openSnapshotsFolder } = props;
-  const columns = React.useMemo<TableProps["columns"]>(
-    () => {
-      const menuItems = (close: () => void) => [
-        <MenuItem key="open-folder" onClick={() => { openSnapshotsFolder(); close(); }}>
-          Open containing folder
-        </MenuItem>,
-      ];
-      return [{
+  const columns = React.useMemo<TableProps["columns"]>(() => {
+    const menuItems = (close: () => void) => [
+      <MenuItem
+        key="open-folder"
+        onClick={() => {
+          openSnapshotsFolder();
+          close();
+        }}
+      >
+        Open containing folder
+      </MenuItem>,
+    ];
+    return [
+      {
         Header: "Table",
         columns: [
           {
             Header: "Name",
             accessor: "name",
             Cell(cellProps: CellProps<{}, string>) {
-              return (
-                <Anchor onClick={() => navigation.openRulesetEditor(cellProps.value)}>
-                  {cellProps.value}
-                </Anchor>
-              );
+              return <Anchor onClick={() => navigation.openRulesetEditor(cellProps.value)}>{cellProps.value}</Anchor>;
             },
           },
           { Header: "File size", accessor: "size" },
@@ -126,16 +126,17 @@ function TableView(props: TableViewProps): React.ReactElement {
             Cell() {
               return (
                 <DropdownMenu menuItems={menuItems}>
-                  <IconButton styleType="borderless"><SvgMore /></IconButton>
+                  <IconButton styleType="borderless">
+                    <SvgMore />
+                  </IconButton>
                 </DropdownMenu>
               );
             },
           },
         ],
-      }];
-    },
-    [navigation, openSnapshotsFolder],
-  );
+      },
+    ];
+  }, [navigation, openSnapshotsFolder]);
 
   const tableData = props.availableIModels?.map((iModel) => ({
     name: iModel.name,

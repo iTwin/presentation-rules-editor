@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import { expect } from "chai";
 import * as monaco from "monaco-editor";
 import * as sinon from "sinon";
@@ -22,13 +23,11 @@ describe("SoloRulesetEditor", () => {
     sinon.restore();
   });
 
-  let stubGetModel: SinonStub<typeof monaco.editor["getModel"]>;
-  let stubCreateModel: SinonStub<typeof monaco.editor["createModel"]>;
+  let stubGetModel: SinonStub<(typeof monaco.editor)["getModel"]>;
+  let stubCreateModel: SinonStub<(typeof monaco.editor)["createModel"]>;
   let monacoModule: DeepPartial<typeof monaco>;
 
-  type DeepPartial<T> = T extends object
-    ? { [P in keyof T]?: DeepPartial<T[P]>; }
-    : T;
+  type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
 
   beforeEach(() => {
     stubGetModel = sinon.stub();
@@ -36,7 +35,9 @@ describe("SoloRulesetEditor", () => {
 
     monacoModule = {
       Uri: {
-        parse(uri: string) { return uri; },
+        parse(uri: string) {
+          return uri;
+        },
       },
       editor: {
         getModel: stubGetModel,
@@ -51,18 +52,14 @@ describe("SoloRulesetEditor", () => {
 
       new SoloRulesetEditor({ editableRuleset, monaco: monacoModule as typeof monaco });
 
-      expect(monacoModule.editor!.getModel).to.have.been.calledOnceWithExactly(
-        `presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`,
-      );
+      expect(monacoModule.editor!.getModel).to.have.been.calledOnceWithExactly(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
       expect(monacoModule.editor!.createModel).not.to.have.been.called;
     });
 
     it("creates new model of one doesn't exist", () => {
       new SoloRulesetEditor({ editableRuleset, monaco: monacoModule as typeof monaco });
 
-      expect(monacoModule.editor!.getModel).to.have.been.calledOnceWithExactly(
-        `presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`,
-      );
+      expect(monacoModule.editor!.getModel).to.have.been.calledOnceWithExactly(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
       expect(monacoModule.editor!.createModel).to.have.been.calledOnce;
     });
   });
@@ -71,8 +68,12 @@ describe("SoloRulesetEditor", () => {
     it("disposes underlying model", () => {
       const stubModel = sinon.spy({
         disposed: false,
-        dispose() { this.disposed = true; },
-        isDisposed() { return this.disposed;},
+        dispose() {
+          this.disposed = true;
+        },
+        isDisposed() {
+          return this.disposed;
+        },
       });
       stubGetModel.callsFake(() => stubModel as any);
 
