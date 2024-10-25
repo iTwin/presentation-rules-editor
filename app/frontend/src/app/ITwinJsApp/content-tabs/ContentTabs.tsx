@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import "./ContentTabs.scss";
 import * as React from "react";
 import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-frontend";
@@ -23,10 +24,7 @@ export interface ContentTabsProps {
 export function ContentTabs(props: ContentTabsProps): React.ReactElement {
   const { activeTab, setActiveTab } = React.useContext(rulesetEditorContext);
   const tabLabels = React.useMemo(
-    () => [
-      IModelApp.localization.getLocalizedString("App:label:editor"),
-      IModelApp.localization.getLocalizedString("App:label:viewport"),
-    ],
+    () => [IModelApp.localization.getLocalizedString("App:label:editor"), IModelApp.localization.getLocalizedString("App:label:viewport")],
     [],
   );
 
@@ -41,11 +39,13 @@ export function ContentTabs(props: ContentTabsProps): React.ReactElement {
         activeIndex={activeTab}
         onTabSelected={setActiveTab}
       >
-        {
-          activeTab === RulesetEditorTab.Editor
-            ? <EditorTab editor={props.editor} />
-            : props.imodel !== undefined ? <ViewportTab imodel={props.imodel} /> : <OpeningIModelHint />
-        }
+        {activeTab === RulesetEditorTab.Editor ? (
+          <EditorTab editor={props.editor} />
+        ) : props.imodel !== undefined ? (
+          <ViewportTab imodel={props.imodel} />
+        ) : (
+          <OpeningIModelHint />
+        )}
       </Tabs>
       <ShareButton editor={props.editor} />
     </>

@@ -1,17 +1,20 @@
 {
   "compilerOptions": {
-    "target": "ES2021",
     "module": "CommonJS",
-    "lib": ["ES2020"],
-    "skipLibCheck": true,
+    "target": "ES2022",
+    "lib": ["ES2022"],
     "strict": true,
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-  },
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true
+  }
 }

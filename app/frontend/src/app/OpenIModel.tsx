@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import * as React from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { AuthorizationClient } from "@itwin/core-common";
@@ -17,9 +18,7 @@ import { PageNotFound } from "./errors/PageNotFound";
 import { IModelBrowserTab } from "./IModelBrowser/IModelBrowser";
 import { getIModel, getProject } from "./ITwinApi";
 import { BackendApi } from "./ITwinJsApp/api/BackendApi";
-import {
-  demoIModels, IModelIdentifier, isDemoIModel, isSnapshotIModel, ITwinIModelIdentifier, SnapshotIModelIdentifier,
-} from "./ITwinJsApp/IModelIdentifier";
+import { demoIModels, IModelIdentifier, isDemoIModel, isSnapshotIModel, ITwinIModelIdentifier, SnapshotIModelIdentifier } from "./ITwinJsApp/IModelIdentifier";
 
 import type { ITwinJsApp } from "./ITwinJsApp/ITwinJsApp";
 
@@ -48,7 +47,7 @@ export function OpenIModel(props: OpenIModelProps): React.ReactElement {
 
   let iModelIdentifier: IModelIdentifier | null = params.get("snapshot");
   if (!iModelIdentifier) {
-    // Attempt to get properly capitalized parameters and fallback to legacy capitalisation
+    // Attempt to get properly capitalized parameters and fallback to legacy capitalization
     const iTwinId = params.get("iTwinId") ?? params.get("itwinId");
     const iModelId = params.get("iModelId") ?? params.get("imodelId");
     if (iTwinId && iModelId) {
@@ -95,34 +94,24 @@ function OpenSnapshotIModel(props: OpenSnapshotIModelProps): React.ReactElement 
   const navigation = React.useContext(appNavigationContext);
   const { setBreadcrumbs } = React.useContext(breadcrumbsContext);
 
-  React.useEffect(
-    () => {
-      setBreadcrumbs([
-        <HeaderButton
-          key="iTwin"
-          name="Local snapshots"
-          onClick={() => navigation.openIModelBrowser(IModelBrowserTab.Local)}
-        />,
-        <HeaderButton key="iModel" name={props.iModelIdentifier} />,
-      ]);
+  React.useEffect(() => {
+    setBreadcrumbs([
+      <HeaderButton key="iTwin" name="Local snapshots" onClick={() => navigation.openIModelBrowser(IModelBrowserTab.Local)} />,
+      <HeaderButton key="iModel" name={props.iModelIdentifier} />,
+    ]);
 
-      return () => setBreadcrumbs([]);
-    },
-    [navigation, props.iModelIdentifier, setBreadcrumbs],
-  );
+    return () => setBreadcrumbs([]);
+  }, [navigation, props.iModelIdentifier, setBreadcrumbs]);
 
   if (props.iTwinJsApp === undefined) {
     return <LoadingIndicator id="app-loader">Loading...</LoadingIndicator>;
   }
 
-  return React.createElement(
-    props.iTwinJsApp.component,
-    {
-      backendApiPromise: props.iTwinJsApp.backendApiPromise,
-      iModelIdentifier: props.iModelIdentifier,
-      authorizationClient: undefined,
-    },
-  );
+  return React.createElement(props.iTwinJsApp.component, {
+    backendApiPromise: props.iTwinJsApp.backendApiPromise,
+    iModelIdentifier: props.iModelIdentifier,
+    authorizationClient: undefined,
+  });
 }
 
 interface OpenITwinIModelProps {
@@ -164,60 +153,47 @@ function OpenITwinIModel(props: OpenITwinIModelProps): React.ReactElement {
     return <LoadingIndicator id="app-loader">Loading...</LoadingIndicator>;
   }
 
-  return React.createElement(
-    props.iTwinJsApp.component,
-    {
-      backendApiPromise: props.iTwinJsApp.backendApiPromise,
-      iModelIdentifier,
-      authorizationClient: authClient,
-    },
-  );
+  return React.createElement(props.iTwinJsApp.component, {
+    backendApiPromise: props.iTwinJsApp.backendApiPromise,
+    iModelIdentifier,
+    authorizationClient: authClient,
+  });
 }
 
-function usePopulateHeaderBreadcrumbs(
-  iModelIdentifier: ITwinIModelIdentifier,
-  authorizationClient: AuthorizationClient | undefined,
-): void {
+function usePopulateHeaderBreadcrumbs(iModelIdentifier: ITwinIModelIdentifier, authorizationClient: AuthorizationClient | undefined): void {
   const navigation = React.useContext(appNavigationContext);
   const { setBreadcrumbs } = React.useContext(breadcrumbsContext);
-  React.useEffect(
-    () => {
-      let disposed = false;
-      const demoIModel = demoIModels.get(iModelIdentifier.iModelId);
-      if (demoIModel) {
-        setBreadcrumbs([
-          <HeaderButton
-            key="iTwin"
-            name="Demo iModels"
-            onClick={() => navigation.openIModelBrowser(IModelBrowserTab.Demo)}
-          />,
-          <HeaderButton key="iModel" name={demoIModel.name} />,
+  React.useEffect(() => {
+    let disposed = false;
+    const demoIModel = demoIModels.get(iModelIdentifier.iModelId);
+    if (demoIModel) {
+      setBreadcrumbs([
+        <HeaderButton key="iTwin" name="Demo iModels" onClick={() => navigation.openIModelBrowser(IModelBrowserTab.Demo)} />,
+        <HeaderButton key="iModel" name={demoIModel.name} />,
+      ]);
+    } else if (authorizationClient) {
+      void (async () => {
+        const [project, iModel] = await Promise.all([
+          getProject(iModelIdentifier.iTwinId, { authorizationClient }),
+          getIModel(iModelIdentifier.iModelId, { authorizationClient }),
         ]);
-      } else if (authorizationClient) {
-        void (async () => {
-          const [project, iModel] = await Promise.all([
-            getProject(iModelIdentifier.iTwinId, { authorizationClient }),
-            getIModel(iModelIdentifier.iModelId, { authorizationClient }),
+        if (!disposed && project && iModel) {
+          setBreadcrumbs([
+            <HeaderButton
+              key="iTwin"
+              name={project.displayName}
+              description={project.number !== project.displayName ? project.number : undefined}
+              onClick={() => navigation.openIModelBrowser(IModelBrowserTab.iTwins)}
+            />,
+            <HeaderButton key="iModel" name={iModel.name} description={iModel.description} />,
           ]);
-          if (!disposed && project && iModel) {
-            setBreadcrumbs([
-              <HeaderButton
-                key="iTwin"
-                name={project.displayName}
-                description={project.number !== project.displayName ? project.number : undefined}
-                onClick={() => navigation.openIModelBrowser(IModelBrowserTab.iTwins)}
-              />,
-              <HeaderButton key="iModel" name={iModel.name} description={iModel.description} />,
-            ]);
-          }
-        })();
-      }
+        }
+      })();
+    }
 
-      return () => {
-        disposed = true;
-        setBreadcrumbs([]);
-      };
-    },
-    [iModelIdentifier, setBreadcrumbs, authorizationClient, navigation],
-  );
+    return () => {
+      disposed = true;
+      setBreadcrumbs([]);
+    };
+  }, [iModelIdentifier, setBreadcrumbs, authorizationClient, navigation]);
 }

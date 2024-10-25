@@ -1,11 +1,17 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
 
 import { SelectionMode } from "@itwin/components-react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { PresentationTree, PresentationTreeEventHandlerProps, PresentationTreeRenderer, UnifiedSelectionTreeEventHandler, usePresentationTreeState } from "@itwin/presentation-components";
+import {
+  PresentationTree,
+  PresentationTreeEventHandlerProps,
+  PresentationTreeRenderer,
+  UnifiedSelectionTreeEventHandler,
+  usePresentationTreeState,
+} from "@itwin/presentation-components";
 import { EditableRuleset } from "../EditableRuleset";
 
 export interface TreeProps {

@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import { AuthorizationClient } from "@itwin/core-common";
 import { demoIModels } from "./ITwinJsApp/IModelIdentifier";
 import { applyUrlPrefix } from "./utils/Environment";
@@ -31,18 +32,9 @@ export interface GetUserITwinsArgs<Detail extends string> {
   search?: string;
 }
 
-export async function getUserProjects(
-  args: GetUserITwinsArgs<"minimal">,
-  requestArgs: RequestArgs,
-): Promise<ITwinSummary[] | undefined>;
-export async function getUserProjects(
-  args: GetUserITwinsArgs<"representation">,
-  requestArgs: RequestArgs,
-): Promise<ITwinRepresentation[] | undefined>;
-export async function getUserProjects(
-  args: GetUserITwinsArgs<string>,
-  requestArgs: RequestArgs,
-): Promise<ITwinSummary[] | ITwinRepresentation[] | undefined> {
+export async function getUserProjects(args: GetUserITwinsArgs<"minimal">, requestArgs: RequestArgs): Promise<ITwinSummary[] | undefined>;
+export async function getUserProjects(args: GetUserITwinsArgs<"representation">, requestArgs: RequestArgs): Promise<ITwinRepresentation[] | undefined>;
+export async function getUserProjects(args: GetUserITwinsArgs<string>, requestArgs: RequestArgs): Promise<ITwinSummary[] | ITwinRepresentation[] | undefined> {
   // Search query should contain non-whitespace characters and not exceed 255 characters.
   const search = args.search?.trim().slice(0, 256);
   const searchQuery = search ? `&$search=${search}` : "";
@@ -58,10 +50,7 @@ export async function getUserProjects(
   );
 }
 
-export async function getProject(
-  projectId: string,
-  requestArgs: RequestArgs,
-): Promise<ITwinRepresentation | undefined> {
+export async function getProject(projectId: string, requestArgs: RequestArgs): Promise<ITwinRepresentation | undefined> {
   return callITwinApi(
     {
       endpoint: `itwins/${projectId}`,
@@ -107,14 +96,8 @@ export interface GetITwinIModelsArgs<Detail extends string> {
   name?: string;
 }
 
-export async function getITwinIModels(
-  args: GetITwinIModelsArgs<"minimal">,
-  requestArgs: RequestArgs,
-): Promise<IModelMinimal[] | undefined>;
-export async function getITwinIModels(
-  args: GetITwinIModelsArgs<"representation">,
-  requestArgs: RequestArgs,
-): Promise<IModelRepresentation[] | undefined>;
+export async function getITwinIModels(args: GetITwinIModelsArgs<"minimal">, requestArgs: RequestArgs): Promise<IModelMinimal[] | undefined>;
+export async function getITwinIModels(args: GetITwinIModelsArgs<"representation">, requestArgs: RequestArgs): Promise<IModelRepresentation[] | undefined>;
 export async function getITwinIModels(
   args: GetITwinIModelsArgs<string>,
   requestArgs: RequestArgs,
@@ -181,10 +164,7 @@ export interface RequestArgs {
   authorizationClient: AuthorizationClient;
 }
 
-async function callITwinApi<T>(
-  args: CallITwinApiArgs<T>,
-  requestArgs: RequestArgs,
-): Promise<T | undefined> {
+async function callITwinApi<T>(args: CallITwinApiArgs<T>, requestArgs: RequestArgs): Promise<T | undefined> {
   const iTwinApiUrl = "https://api.bentley.com/";
   const url = (args.skipUrlPrefix ? iTwinApiUrl : applyUrlPrefix(iTwinApiUrl)) + args.endpoint;
   const headers = {

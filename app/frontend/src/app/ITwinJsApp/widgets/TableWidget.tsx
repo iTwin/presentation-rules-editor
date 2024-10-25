@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-*   See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ *   See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
 import "./TableWidget.scss";
 import * as React from "react";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
@@ -45,9 +45,12 @@ interface LoadedTableProps {
 }
 
 function LoadedTable(props: LoadedTableProps): React.ReactElement {
-  const fallbackRender = React.useCallback((fallbackProps: FallbackProps) => {
-    return <TableErrorState {...fallbackProps} ruleset={props.ruleset} />;
-  }, [props.ruleset]);
+  const fallbackRender = React.useCallback(
+    (fallbackProps: FallbackProps) => {
+      return <TableErrorState {...fallbackProps} ruleset={props.ruleset} />;
+    },
+    [props.ruleset],
+  );
 
   return (
     <ErrorBoundary fallbackRender={fallbackRender}>
@@ -60,15 +63,9 @@ function LoadedTable(props: LoadedTableProps): React.ReactElement {
                 height={height}
                 iModel={props.iModel}
                 editableRuleset={props.ruleset}
-                noContentState={() => (
-                  <NoElementsSelectedState height={height} />
-                )}
-                noRowsState={() => (
-                  <NoElementsSelectedState height={height} />
-                )}
-                loadingContentState={() => (
-                  <LoadingPropertiesState height={height} />
-                )}
+                noContentState={() => <NoElementsSelectedState height={height} />}
+                noRowsState={() => <NoElementsSelectedState height={height} />}
+                loadingContentState={() => <LoadingPropertiesState height={height} />}
               />
             </>
           )}
@@ -87,12 +84,9 @@ function NoElementsSelectedState(props: NoElementsSelectedStateProps): React.Rea
   return (
     <VerticalStack style={{ height: props.height }}>
       <span>{IModelApp.localization.getLocalizedString("App:table.no-elements-selected")}</span>
-      {
-        activeTab !== RulesetEditorTab.Viewport &&
-        <Button onClick={() => setActiveTab(RulesetEditorTab.Viewport)}>
-          {IModelApp.localization. getLocalizedString("App:table.show-viewport")}
-        </Button>
-      }
+      {activeTab !== RulesetEditorTab.Viewport && (
+        <Button onClick={() => setActiveTab(RulesetEditorTab.Viewport)}>{IModelApp.localization.getLocalizedString("App:table.show-viewport")}</Button>
+      )}
     </VerticalStack>
   );
 }
@@ -102,14 +96,10 @@ interface LoadingPropertiesStateProps {
 }
 
 function LoadingPropertiesState(props: LoadingPropertiesStateProps): React.ReactElement {
-  return (
-    <LoadingIndicator style={{ height: props.height }}>
-      {IModelApp.localization.getLocalizedString("App:table.loading-properties")}
-    </LoadingIndicator>
-  );
+  return <LoadingIndicator style={{ height: props.height }}>{IModelApp.localization.getLocalizedString("App:table.loading-properties")}</LoadingIndicator>;
 }
 
-function TableErrorState(props: { error: Error, resetErrorBoundary: () => void, ruleset: EditableRuleset }) {
+function TableErrorState(props: { error: Error; resetErrorBoundary: () => void; ruleset: EditableRuleset }) {
   const { error, resetErrorBoundary, ruleset } = props;
 
   let svg = <SvgError />;
@@ -117,10 +107,7 @@ function TableErrorState(props: { error: Error, resetErrorBoundary: () => void, 
     svg = <SvgTimedOut />;
   }
 
-  React.useEffect(
-    () => ruleset.onAfterRulesetUpdated.addListener(() => resetErrorBoundary()),
-    [ruleset, resetErrorBoundary],
-  );
+  React.useEffect(() => ruleset.onAfterRulesetUpdated.addListener(() => resetErrorBoundary()), [ruleset, resetErrorBoundary]);
 
   return (
     <div style={{ position: "relative" }}>
@@ -130,7 +117,9 @@ function TableErrorState(props: { error: Error, resetErrorBoundary: () => void, 
         description={IModelApp.localization.getLocalizedString("App:table.generic-error-description")}
         actions={
           <>
-            <Button styleType={"high-visibility"} onClick={resetErrorBoundary}>{IModelApp.localization.getLocalizedString("App:label.retry")}</Button>
+            <Button styleType={"high-visibility"} onClick={resetErrorBoundary}>
+              {IModelApp.localization.getLocalizedString("App:label.retry")}
+            </Button>
           </>
         }
       />

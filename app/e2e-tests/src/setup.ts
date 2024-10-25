@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import { exec } from "child_process";
 import * as fs from "fs";
 import { Config, setup as setupDevServers, teardown as teardownDevServers } from "jest-dev-server";
@@ -21,12 +22,8 @@ before(async function () {
     return;
   }
 
-  // mocha will hang if teardownDevServers is called before dev server finishes initialising
-  await settleAllPromises([
-    setupIModel(),
-    setupBrowser({ debug }),
-    setupServers({ backendPort: 3001, frontendPort: 3000, debug }),
-  ]);
+  // mocha will hang if teardownDevServers is called before dev server finishes initializing
+  await settleAllPromises([setupIModel(), setupBrowser({ debug }), setupServers({ backendPort: 3001, frontendPort: 3000, debug })]);
 });
 
 after(async () => {
@@ -46,14 +43,12 @@ afterEach(async function () {
   await page.close();
 });
 
-/** Implements Promise.allSettled behaviour */
+/** Implements Promise.allSettled behavior */
 async function settleAllPromises(args: Array<Promise<unknown>>): Promise<void> {
-  type WrappedPromise<T> = Promise<{ status: "fulfilled", value: T } | { status: "rejected", error: unknown }>;
+  type WrappedPromise<T> = Promise<{ status: "fulfilled"; value: T } | { status: "rejected"; error: unknown }>;
 
   async function wrapPromise<T>(promise: Promise<T>): WrappedPromise<T> {
-    return promise
-      .then((value) => ({ status: "fulfilled" as const, value }))
-      .catch((error) => ({ status: "rejected" as const, error }));
+    return promise.then((value) => ({ status: "fulfilled" as const, value })).catch((error) => ({ status: "rejected" as const, error }));
   }
 
   const results = await Promise.all(args.map(async (promise) => wrapPromise(promise)));
@@ -68,7 +63,7 @@ async function setupIModel(): Promise<void> {
   const testIModelPath = "../backend/assets/imodels/Baytown.bim";
   const testIModelUrl = "https://github.com/imodeljs/desktop-starter/raw/master/assets/Baytown.bim";
 
-  if (!await isFileOnDisk(testIModelPath)) {
+  if (!(await isFileOnDisk(testIModelPath))) {
     // eslint-disable-next-line no-console
     console.log("Downloading test imodel...");
     await execute(`curl --location --fail --silent --output ${testIModelPath} ${testIModelUrl}`);
@@ -82,7 +77,7 @@ async function isFileOnDisk(filepath: string): Promise<boolean> {
 }
 
 async function execute(command: string): Promise<void> {
-  await new Promise((resolve, reject) => exec(command, (error) => error ? reject(error) : resolve(undefined)));
+  await new Promise((resolve, reject) => exec(command, (error) => (error ? reject(error) : resolve(undefined))));
 }
 
 async function setupBrowser({ debug }: { debug: boolean }): Promise<void> {

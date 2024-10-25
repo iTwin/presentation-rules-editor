@@ -1,13 +1,24 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
-/* eslint-disable sort-imports */
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import React, { ReactElement } from "react";
 import {
-  ConfigurableCreateInfo, ConfigurableUiContent, ContentControl as FrameworkContentControl, ContentGroup, ContentLayoutDef,
-  FrontstageConfig as FrameworkFrontstageConfig, FrontstageProvider, StagePanelConfig, StagePanelLocation, StagePanelSection, UiFramework,
-  UiItemsManager, UiItemsProvider, Widget,
+  ConfigurableCreateInfo,
+  ConfigurableUiContent,
+  ContentGroup,
+  ContentLayoutDef,
+  ContentControl as FrameworkContentControl,
+  FrontstageConfig as FrameworkFrontstageConfig,
+  FrontstageProvider,
+  StagePanelConfig,
+  StagePanelLocation,
+  StagePanelSection,
+  UiFramework,
+  UiItemsManager,
+  UiItemsProvider,
+  Widget,
 } from "@itwin/appui-react";
 import { StagePanelProps, StagePanelZoneProps } from "./StagePanel";
 
@@ -55,15 +66,18 @@ function gatherWidgetContents(props: FrontstageProps): Map<string, ReactElement 
   function collectWidgetContentsFromStagePanels(panel: React.ReactElement<StagePanelProps>) {
     React.Children.forEach(panel.props.children, (stagePanelZone) => {
       React.Children.forEach(stagePanelZone?.props.children, (widget) => {
-        if (widget !== undefined)
+        if (widget !== undefined) {
           widgetContents.set(widget.props.id, widget.props.children ?? null);
+        }
       });
     });
   }
-  if (props.rightPanel)
+  if (props.rightPanel) {
     collectWidgetContentsFromStagePanels(props.rightPanel);
-  if (props.bottomPanel)
+  }
+  if (props.bottomPanel) {
     collectWidgetContentsFromStagePanels(props.bottomPanel);
+  }
   return widgetContents;
 }
 
@@ -110,8 +124,9 @@ class CustomFrontstageProvider extends FrontstageProvider {
 }
 
 function getStagePanelConfig(props: StagePanelProps | undefined): StagePanelConfig | undefined {
-  if (!props)
+  if (!props) {
     return undefined;
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { children, ...config } = props;
@@ -119,16 +134,11 @@ function getStagePanelConfig(props: StagePanelProps | undefined): StagePanelConf
 }
 
 class WidgetsProvider implements UiItemsProvider {
-  constructor(private stagePanels: StagePanels) { }
+  constructor(private stagePanels: StagePanels) {}
 
   public id = WidgetsProvider.name;
 
-  public provideWidgets(
-    _stageId: string,
-    _stageUsage: string,
-    location: StagePanelLocation,
-    section?: StagePanelSection,
-  ): readonly Widget[] {
+  public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, section?: StagePanelSection): readonly Widget[] {
     if (section === undefined) {
       return [];
     }
@@ -156,13 +166,10 @@ function createStagePanel(panelChildren: StagePanelProps["children"]): Map<Stage
   return stagePanelSections;
 
   function makeZone(stagePanelZone?: React.ReactElement<StagePanelZoneProps>): Widget[] {
-    return React.Children.map(
-      stagePanelZone?.props.children ?? [],
-      (widget) => ({
-        ...widget.props,
-        content: <WidgetFromContext id={widget.props.id} />,
-      }),
-    );
+    return React.Children.map(stagePanelZone?.props.children ?? [], (widget) => ({
+      ...widget.props,
+      content: <WidgetFromContext id={widget.props.id} />,
+    }));
   }
 }
 

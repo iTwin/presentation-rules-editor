@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
 import { IModelMetadata, PresentationRulesEditorRpcInterface } from "@app/common";
 import { Guid, Id64, Id64String, Logger } from "@itwin/core-bentley";
 import { BentleyCloudRpcProtocol, IModelVersion } from "@itwin/core-common";
@@ -9,7 +9,7 @@ import { CheckpointConnection, IModelConnection, SnapshotConnection } from "@itw
 import { IModelIdentifier, isDemoIModel, isSnapshotIModel } from "../IModelIdentifier";
 
 export class BackendApi {
-  constructor(public protocol: BentleyCloudRpcProtocol) { }
+  constructor(public protocol: BentleyCloudRpcProtocol) {}
 
   public async getAvailableIModels(): Promise<IModelMetadata[]> {
     return PresentationRulesEditorRpcInterface.getClient().getAvailableIModels();
@@ -26,11 +26,7 @@ export class BackendApi {
     }
 
     if (isDemoIModel(iModelIdentifier)) {
-      return CheckpointConnection.openRemote(
-        iModelIdentifier.iTwinId,
-        iModelIdentifier.iModelId,
-        IModelVersion.latest(),
-      );
+      return CheckpointConnection.openRemote(iModelIdentifier.iTwinId, iModelIdentifier.iModelId, IModelVersion.latest());
     }
 
     return CheckpointConnection.openRemote(iModelIdentifier.iTwinId, iModelIdentifier.iModelId);

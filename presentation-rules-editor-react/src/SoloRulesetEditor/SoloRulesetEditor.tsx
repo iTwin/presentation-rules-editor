@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import "./SoloRulesetEditor.scss";
 import * as React from "react";
 import { assert, IDisposable } from "@itwin/core-bentley";
@@ -49,18 +50,10 @@ export class SoloRulesetEditor implements IDisposable {
   constructor(params: SoloRulesetEditorParams) {
     const editableRuleset = params.editableRuleset;
     const uri = params.monaco.Uri.parse(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
-    this.model = params.monaco.editor.getModel(uri) ?? params.monaco.editor.createModel(
-      params.initialContent ?? JSON.stringify(editableRuleset.rulesetContent, undefined, 2),
-      "json",
-      uri,
-    );
-    this.Component = createEditor(
-      params.monaco,
-      this.model,
-      editableRuleset,
-      params.contributions ?? {},
-      this.sharedData,
-    );
+    this.model =
+      params.monaco.editor.getModel(uri) ??
+      params.monaco.editor.createModel(params.initialContent ?? JSON.stringify(editableRuleset.rulesetContent, undefined, 2), "json", uri);
+    this.Component = createEditor(params.monaco, this.model, editableRuleset, params.contributions ?? {}, this.sharedData);
   }
 
   /** React component that renders a monaco editor for the associated {@linkcode EditableRuleset}. */
@@ -107,14 +100,11 @@ function createEditor(
       () => {
         assert(divRef.current !== null);
 
-        editorRef.current = monacoModule.editor.create(
-          divRef.current,
-          {
-            model,
-            language: "json",
-            dimension: { width: props.width, height: props.height },
-          },
-        );
+        editorRef.current = monacoModule.editor.create(divRef.current, {
+          model,
+          language: "json",
+          dimension: { width: props.width, height: props.height },
+        });
         editorRef.current.layout({ width: props.width, height: props.height });
 
         if (sharedData.savedViewState !== undefined) {
@@ -134,11 +124,7 @@ function createEditor(
           });
         }
 
-        contributeToMonacoEditor(
-          monacoModule,
-          editorRef.current,
-          (newRuleset) => void ruleset.updateRuleset(newRuleset),
-        );
+        contributeToMonacoEditor(monacoModule, editorRef.current, (newRuleset) => void ruleset.updateRuleset(newRuleset));
 
         return () => {
           assert(editorRef.current !== undefined);
@@ -154,10 +140,7 @@ function createEditor(
 
     return (
       <>
-        {
-          contributions.submitButton &&
-          <SubmitRulesetWidget ref={buttonWidgetRef} editor={editorRef.current} visible={buttonIsVisible} />
-        }
+        {contributions.submitButton && <SubmitRulesetWidget ref={buttonWidgetRef} editor={editorRef.current} visible={buttonIsVisible} />}
         <div ref={divRef} />
       </>
     );
@@ -170,41 +153,36 @@ interface SubmitRulesetWidgetProps {
 }
 
 /* istanbul ignore next */
-const SubmitRulesetWidget = React.forwardRef<HTMLDivElement, SubmitRulesetWidgetProps>(
-  function SubmitRulesetWidget(props, ref) {
-    const handleSubmitButtonClick = () => {
-      assert(props.editor !== undefined);
-      props.editor.trigger(undefined, "presentation-rules-editor:submit-ruleset", {});
-    };
+const SubmitRulesetWidget = React.forwardRef<HTMLDivElement, SubmitRulesetWidgetProps>(function SubmitRulesetWidget(props, ref) {
+  const handleSubmitButtonClick = () => {
+    assert(props.editor !== undefined);
+    props.editor.trigger(undefined, "presentation-rules-editor:submit-ruleset", {});
+  };
 
-    return (
-      <div ref={ref}>
-        {
-          props.visible &&
-          <Button styleType={"cta"} title={"Submit ruleset (Alt + Enter)"} onClick={handleSubmitButtonClick}>
-            Submit ruleset
-          </Button>
-        }
-      </div>
-    );
-  },
-);
+  return (
+    <div ref={ref}>
+      {props.visible && (
+        <Button styleType={"cta"} title={"Submit ruleset (Alt + Enter)"} onClick={handleSubmitButtonClick}>
+          Submit ruleset
+        </Button>
+      )}
+    </div>
+  );
+});
 
 /* istanbul ignore next */
-function contributeToMonacoEditor(
-  monacoModule: typeof monaco,
-  editor: monaco.editor.IStandaloneCodeEditor,
-  submitRuleset: (ruleset: Ruleset) => void,
-): void {
+function contributeToMonacoEditor(monacoModule: typeof monaco, editor: monaco.editor.IStandaloneCodeEditor, submitRuleset: (ruleset: Ruleset) => void): void {
   if (!initialized) {
     monacoModule.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
-      schemas: [{
-        // Has to be a URI string, but not necessarily pointing to an existing resource
-        uri: monacoModule.Uri.file("presentation-rules-editor://schemas/Ruleset.schema.json").toString(),
-        fileMatch: ["*.ruleset.json"],
-        schema: presentationRulesetSchema,
-      }],
+      schemas: [
+        {
+          // Has to be a URI string, but not necessarily pointing to an existing resource
+          uri: monacoModule.Uri.file("presentation-rules-editor://schemas/Ruleset.schema.json").toString(),
+          fileMatch: ["*.ruleset.json"],
+          schema: presentationRulesetSchema,
+        },
+      ],
       enableSchemaRequest: false,
       comments: "error",
       trailingCommas: "error",

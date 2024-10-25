@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import * as React from "react";
 import { Id64String } from "@itwin/core-bentley";
 import { IModelConnection } from "@itwin/core-frontend";
@@ -40,23 +41,20 @@ function useViewDefinitionId(imodel: IModelConnection): Id64String | undefined {
   const [viewDefinitionId, setViewDefinitionId] = React.useState<Id64String>();
   const backendApi = React.useContext(backendApiContext);
 
-  React.useEffect(
-    () => {
-      let disposed = false;
+  React.useEffect(() => {
+    let disposed = false;
 
-      void (async () => {
-        const viewId = await backendApi.getViewDefinition(imodel);
-        if (!disposed) {
-          setViewDefinitionId(viewId);
-        }
-      })();
+    void (async () => {
+      const viewId = await backendApi.getViewDefinition(imodel);
+      if (!disposed) {
+        setViewDefinitionId(viewId);
+      }
+    })();
 
-      return () => {
-        disposed = true;
-      };
-    },
-    [backendApi, imodel],
-  );
+    return () => {
+      disposed = true;
+    };
+  }, [backendApi, imodel]);
 
   return viewDefinitionId;
 }

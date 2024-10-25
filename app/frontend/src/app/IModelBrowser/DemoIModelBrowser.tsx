@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import * as React from "react";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
@@ -16,38 +17,35 @@ import { iModelBrowserContext, IModelTile } from "./IModelBrowser";
 export function DemoIModelBrowser(): React.ReactElement {
   const { demoAuthorizationClient } = useAuthorization();
   const { demoIModelData, loadIModelData } = useDemoIModelData(demoAuthorizationClient);
-  const handleVisible = useEvent(
-    (iModelId: string) => demoIModelData.get(iModelId) === undefined && loadIModelData(iModelId),
-  );
+  const handleVisible = useEvent((iModelId: string) => demoIModelData.get(iModelId) === undefined && loadIModelData(iModelId));
 
   let { searchQuery } = React.useContext(iModelBrowserContext);
   searchQuery = searchQuery.trim().toLowerCase();
-  const iModels = [...demoIModels.entries()]
-    .filter(([_, { name }]) => searchQuery === "" || name.toLowerCase().includes(searchQuery));
+  const iModels = [...demoIModels.entries()].filter(([_, { name }]) => searchQuery === "" || name.toLowerCase().includes(searchQuery));
   if (iModels.length === 0) {
     return (
       <VerticalStack className="imodel-browser-no-data">
         <SvgImodelHollow />
-        <Text variant="title" as="h2" isMuted>No iModels match given search query</Text>
+        <Text variant="title" as="h2" isMuted>
+          No iModels match given search query
+        </Text>
       </VerticalStack>
     );
   }
 
   return (
     <FluidGrid>
-      {
-        iModels.map(([iModelId, { name, iTwinId }]) => (
-          <IModelTile
-            key={iModelId}
-            iModelId={iModelId}
-            iTwinId={iTwinId}
-            name={name}
-            description={demoIModelData.get(iModelId)?.description}
-            authorizationClient={demoAuthorizationClient}
-            onVisible={handleVisible}
-          />
-        ))
-      }
+      {iModels.map(([iModelId, { name, iTwinId }]) => (
+        <IModelTile
+          key={iModelId}
+          iModelId={iModelId}
+          iTwinId={iTwinId}
+          name={name}
+          description={demoIModelData.get(iModelId)?.description}
+          authorizationClient={demoAuthorizationClient}
+          onVisible={handleVisible}
+        />
+      ))}
     </FluidGrid>
   );
 }
@@ -78,7 +76,12 @@ function useDemoIModelData(authorizationClient: AuthorizationClient): {
     },
   });
 
-  React.useEffect(() => () => { ref.current.disposed = true; }, []);
+  React.useEffect(
+    () => () => {
+      ref.current.disposed = true;
+    },
+    [],
+  );
 
   return {
     demoIModelData,

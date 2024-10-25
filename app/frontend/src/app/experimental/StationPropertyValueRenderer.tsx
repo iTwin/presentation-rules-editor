@@ -1,8 +1,7 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
-/* eslint-disable no-console */
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
 import { PropertyRecord } from "@itwin/appui-abstract";
@@ -21,7 +20,7 @@ import { Presentation } from "@itwin/presentation-frontend";
 type StationValueType = "from" | "to" | "at";
 
 Presentation.registerInitializationHandler(async (): Promise<() => void> => {
-  const customRenderers: Array<{ name: string, renderer: IPropertyValueRenderer }> = [
+  const customRenderers: Array<{ name: string; renderer: IPropertyValueRenderer }> = [
     { name: "AtStation", renderer: new StationPropertyValueRenderer("at") },
     { name: "FromStation", renderer: new StationPropertyValueRenderer("from") },
     { name: "ToStation", renderer: new StationPropertyValueRenderer("to") },
@@ -54,31 +53,28 @@ export class StationPropertyValueRenderer implements IPropertyValueRenderer {
   }
 }
 
-function StationPropertyValueRendererImpl(props: { type: StationValueType, context?: PropertyValueRendererContext }) {
+function StationPropertyValueRendererImpl(props: { type: StationValueType; context?: PropertyValueRendererContext }) {
   const { imodel, elementIds, inProgress: elementIdsInProgress } = useIModelSelectedElementIds();
   const { value, inProgress: valueInProgress } = useComputedStationValue({ imodel, elementId: elementIds ? elementIds[0] : undefined, type: props.type });
 
   if (elementIdsInProgress || valueInProgress) {
-    return (
-      <StationValueSkeleton />
-    );
+    return <StationValueSkeleton />;
   }
 
   return (
-    <Text style={props.context?.style} title={value ?? ""}>{value}</Text>
+    <Text style={props.context?.style} title={value ?? ""}>
+      {value}
+    </Text>
   );
 }
 
-const sampleValues = [
-  "0+0",
-  "1+1.23",
-  "3+616.55",
-  "13+416.59",
-];
+const sampleValues = ["0+0", "1+1.23", "3+616.55", "13+416.59"];
 function StationValueSkeleton() {
   const sampleValue = React.useMemo(() => sampleValues[Math.round(Math.random() * (sampleValues.length - 1))], []);
   return (
-    <Text isSkeleton={true} title="Loading...">{sampleValue}</Text>
+    <Text isSkeleton={true} title="Loading...">
+      {sampleValue}
+    </Text>
   );
 }
 
@@ -91,35 +87,42 @@ function useIModelSelectedElementIds() {
   // grid reloads due to selection change).
   /* eslint-disable-next-line react-hooks/exhaustive-deps */
   const selectionContextOnce = React.useMemo(() => selectionContext, []);
-  const elementIds = useDebouncedAsyncValue(React.useCallback(async () => {
-    if (!selectionContextOnce) {
-      console.error("UnifiedSelectionContext is not available.");
-      return undefined;
-    }
+  const elementIds = useDebouncedAsyncValue(
+    React.useCallback(async () => {
+      if (!selectionContextOnce) {
+        // eslint-disable-next-line no-console
+        console.error("UnifiedSelectionContext is not available.");
+        return undefined;
+      }
 
-    const res = await Presentation.presentation.getContentInstanceKeys({
-      imodel: selectionContextOnce.imodel,
-      keys: new KeySet(selectionContextOnce.getSelection()),
-      rulesetOrId: {
-        id: "selected-elements",
-        rules: [{
-          ruleType: "Content",
-          specifications: [{
-            specType: "SelectedNodeInstances",
-            acceptableSchemaName: "BisCore",
-            acceptableClassNames: ["Element"],
-            acceptablePolymorphically: true,
-          }],
-        }],
-      },
-    });
-    /* eslint-disable-next-line @typescript-eslint/no-shadow */
-    const elementIds = new Array<Id64String>();
-    for await (const key of res.items()) {
-      elementIds.push(key.id);
-    }
-    return elementIds;
-  }, [selectionContextOnce]));
+      const res = await Presentation.presentation.getContentInstanceKeys({
+        imodel: selectionContextOnce.imodel,
+        keys: new KeySet(selectionContextOnce.getSelection()),
+        rulesetOrId: {
+          id: "selected-elements",
+          rules: [
+            {
+              ruleType: "Content",
+              specifications: [
+                {
+                  specType: "SelectedNodeInstances",
+                  acceptableSchemaName: "BisCore",
+                  acceptableClassNames: ["Element"],
+                  acceptablePolymorphically: true,
+                },
+              ],
+            },
+          ],
+        },
+      });
+
+      const ids = new Array<Id64String>();
+      for await (const key of res.items()) {
+        ids.push(key.id);
+      }
+      return ids;
+    }, [selectionContextOnce]),
+  );
   return {
     imodel: selectionContext?.imodel,
     inProgress: elementIds.inProgress,
@@ -127,7 +130,7 @@ function useIModelSelectedElementIds() {
   };
 }
 
-function useComputedStationValue(props: { imodel?: IModelConnection, elementId?: Id64String, type: StationValueType }) {
+function useComputedStationValue(props: { imodel?: IModelConnection; elementId?: Id64String; type: StationValueType }) {
   const { schemas, units } = React.useMemo(() => {
     // note: the schema context should be stored way above in the components hierarchy to avoid re-creating it on
     // each property load
@@ -139,35 +142,43 @@ function useComputedStationValue(props: { imodel?: IModelConnection, elementId?:
     return { schemas: ctx, units: unitsProvider };
   }, [props.imodel]);
 
-  const formatterSpec = useDebouncedAsyncValue(React.useCallback(async () => {
-    const persistenceUnit = await units.findUnitByName("Units:M");
-    const formatsSchema = await schemas.getSchema(new SchemaKey("Formats", new ECVersion(1)));
-    if (!formatsSchema) {
-      console.error(`Failed to find "Formats" schema.`);
-      return undefined;
-    }
-    const schemaFormat = await formatsSchema.getItem<SchemaFormat>("StationZ_1000_3");
-    if (!schemaFormat) {
-      console.error(`Failed to find the "StationZ_1000_3" format in "Formats" schema.`);
-      return undefined;
-    }
-    return FormatterSpec.create("", await Format.createFromJSON("", units, schemaFormat.toJSON()), units, persistenceUnit);
-  }, [schemas, units]));
+  const formatterSpec = useDebouncedAsyncValue(
+    React.useCallback(async () => {
+      const persistenceUnit = await units.findUnitByName("Units:M");
+      const formatsSchema = await schemas.getSchema(new SchemaKey("Formats", new ECVersion(1)));
+      if (!formatsSchema) {
+        // eslint-disable-next-line no-console
+        console.error(`Failed to find "Formats" schema.`);
+        return undefined;
+      }
+      const schemaFormat = await formatsSchema.getItem<SchemaFormat>("StationZ_1000_3");
+      if (!schemaFormat) {
+        // eslint-disable-next-line no-console
+        console.error(`Failed to find the "StationZ_1000_3" format in "Formats" schema.`);
+        return undefined;
+      }
+      return FormatterSpec.create("", await Format.createFromJSON("", units, schemaFormat.toJSON()), units, persistenceUnit);
+    }, [schemas, units]),
+  );
 
-  const displayValue = useDebouncedAsyncValue(React.useCallback(async () => {
-    if (!props.imodel || !props.elementId || formatterSpec.inProgress)
-      return undefined;
+  const displayValue = useDebouncedAsyncValue(
+    React.useCallback(async () => {
+      if (!props.imodel || !props.elementId || formatterSpec.inProgress) {
+        return undefined;
+      }
 
-    const queryReader = createStationValueReader(props.imodel, props.elementId, props.type);
-    if (!await queryReader.step())
-      return "";
+      const queryReader = createStationValueReader(props.imodel, props.elementId, props.type);
+      if (!(await queryReader.step())) {
+        return "";
+      }
 
-    const distanceAlong = queryReader.current[0];
-    const stationValue = queryReader.current[1];
-    return formatterSpec.value
-      ? Formatter.formatQuantity(stationValue, formatterSpec.value)
-      : `Distance along: ${distanceAlong}; \nStation value: ${stationValue}`;
-  }, [formatterSpec.inProgress, formatterSpec.value, props.imodel, props.elementId, props.type]));
+      const distanceAlong = queryReader.current[0];
+      const stationValue = queryReader.current[1];
+      return formatterSpec.value
+        ? Formatter.formatQuantity(stationValue, formatterSpec.value)
+        : `Distance along: ${distanceAlong}; \nStation value: ${stationValue}`;
+    }, [formatterSpec.inProgress, formatterSpec.value, props.imodel, props.elementId, props.type]),
+  );
 
   return {
     inProgress: formatterSpec.inProgress || displayValue.inProgress,
@@ -252,6 +263,7 @@ function createStationValueReader(imodel: IModelConnection, elementId: Id64Strin
         `;
     }
   }
+
   const ecsql = `
     SELECT
       linearlyLocated.DistanceAlongFromStart DistanceAlong,
@@ -268,6 +280,6 @@ function createStationValueReader(imodel: IModelConnection, elementId: Id64Strin
     LIMIT
       1
   `;
-  const bindings = (new QueryBinder()).bindId("elementId", elementId);
+  const bindings = new QueryBinder().bindId("elementId", elementId);
   return imodel.createQueryReader(ecsql, bindings, { rowFormat: QueryRowFormat.UseECSqlPropertyIndexes });
 }

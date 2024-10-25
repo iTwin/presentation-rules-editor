@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import { expect } from "chai";
 import * as sinon from "sinon";
 import { Ruleset } from "@itwin/presentation-common";
@@ -47,8 +48,7 @@ describe("EditableRuleset", () => {
 
     it("registers Presentation ruleset", () => {
       const editableRuleset = new EditableRuleset({ initialRuleset });
-      expect(Presentation.presentation.rulesets().add)
-        .to.have.been.calledOnce.and.calledWithMatch(sinon.match({ id: editableRuleset.id }));
+      expect(Presentation.presentation.rulesets().add).to.have.been.calledOnce.and.calledWithMatch(sinon.match({ id: editableRuleset.id }));
 
       editableRuleset.dispose();
     });

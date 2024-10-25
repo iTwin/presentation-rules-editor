@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import { expect } from "chai";
 import * as React from "react";
 import * as sinon from "sinon";
@@ -56,16 +57,14 @@ describe("PropertyGrid", () => {
     beforeEach(() => {
       sinon.stub(componentsReact, "VirtualizedPropertyGrid").callsFake(() => null);
       stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: false, numSelectedElements: 1 }));
-      stubUsePropertyGridModel.callsFake(() => ({} as componentsReact.IPropertyGridModel));
+      stubUsePropertyGridModel.callsFake(() => ({}) as componentsReact.IPropertyGridModel);
     });
 
     it("renders with AutoExpandingPropertyDataProvider", () => {
       render(<PropertyGrid {...commonProps} editableRuleset={editableRuleset} />);
-      expect(componentsReact.useTrackedPropertyGridModelSource).to.have.been
-        .calledOnce
-        .and.calledWithMatch(
-          sinon.match(({ dataProvider }) => dataProvider instanceof AutoExpandingPropertyDataProvider),
-        );
+      expect(componentsReact.useTrackedPropertyGridModelSource).to.have.been.calledOnce.and.calledWithMatch(
+        sinon.match(({ dataProvider }) => dataProvider instanceof AutoExpandingPropertyDataProvider),
+      );
     });
   });
 
@@ -75,13 +74,7 @@ describe("PropertyGrid", () => {
     });
 
     it("renders supplied component", () => {
-      const { getByText } = render(
-        <PropertyGrid
-          {...commonProps}
-          editableRuleset={editableRuleset}
-          noElementsSelectedState={() => <>Test Component</>}
-        />,
-      );
+      const { getByText } = render(<PropertyGrid {...commonProps} editableRuleset={editableRuleset} noElementsSelectedState={() => <>Test Component</>} />);
       expect(getByText("Test Component")).not.to.be.null;
     });
 
@@ -98,11 +91,7 @@ describe("PropertyGrid", () => {
 
     it("renders supplied component", () => {
       const { getByText } = render(
-        <PropertyGrid
-          {...commonProps}
-          editableRuleset={editableRuleset}
-          tooManyElementsSelectedState={() => <>Test Component</>}
-        />,
+        <PropertyGrid {...commonProps} editableRuleset={editableRuleset} tooManyElementsSelectedState={() => <>Test Component</>} />,
       );
       expect(getByText("Test Component")).not.to.be.null;
     });
@@ -120,13 +109,7 @@ describe("PropertyGrid", () => {
     });
 
     it("renders supplied component", () => {
-      const { getByText } = render(
-        <PropertyGrid
-          {...commonProps}
-          editableRuleset={editableRuleset}
-          loadingPropertiesState={() => <>Test Component</>}
-        />,
-      );
+      const { getByText } = render(<PropertyGrid {...commonProps} editableRuleset={editableRuleset} loadingPropertiesState={() => <>Test Component</>} />);
       expect(getByText("Test Component")).not.to.be.null;
     });
 
@@ -152,27 +135,19 @@ describe("PropertyGrid", () => {
 
     beforeEach(() => {
       const propertyData: componentsReact.PropertyData = {
-        label: new PropertyRecord(
-          { valueFormat: PropertyValueFormat.Primitive },
-          { name: "test", displayLabel: "test", typename: StandardTypeNames.String },
-        ),
+        label: new PropertyRecord({ valueFormat: PropertyValueFormat.Primitive }, { name: "test", displayLabel: "test", typename: StandardTypeNames.String }),
         categories: [
           {
             name: "root",
             label: "root",
             expand: undefined as unknown as boolean,
-            childCategories: [
-              { name: "child", label: "child", expand: undefined as unknown as boolean },
-            ],
+            childCategories: [{ name: "child", label: "child", expand: undefined as unknown as boolean }],
           },
         ],
         records: {},
       };
 
-      propertyGridModel = new componentsReact.MutablePropertyGridModel(
-        propertyData,
-        new componentsReact.MutableGridItemFactory(),
-      );
+      propertyGridModel = new componentsReact.MutablePropertyGridModel(propertyData, new componentsReact.MutableGridItemFactory());
     });
 
     describe("expandAllCategories", () => {
@@ -180,10 +155,12 @@ describe("PropertyGrid", () => {
         const TestComponent = () => {
           const propertyGridRef = React.useRef<PropertyGridAttributes>(null);
 
-          return <>
-            <PropertyGrid ref={propertyGridRef} {...commonProps} editableRuleset={editableRuleset} />
-            <button onClick={() => propertyGridRef.current?.expandAllCategories()}>Expand</button>
-          </>;
+          return (
+            <>
+              <PropertyGrid ref={propertyGridRef} {...commonProps} editableRuleset={editableRuleset} />
+              <button onClick={() => propertyGridRef.current?.expandAllCategories()}>Expand</button>
+            </>
+          );
         };
 
         const { getByText } = render(<TestComponent />);
@@ -201,10 +178,12 @@ describe("PropertyGrid", () => {
         const TestComponent = () => {
           const propertyGridRef = React.useRef<PropertyGridAttributes>(null);
 
-          return <>
-            <PropertyGrid ref={propertyGridRef} {...commonProps} editableRuleset={editableRuleset} />
-            <button onClick={() => propertyGridRef.current?.collapseAllCategories()}>Collapse</button>
-          </>;
+          return (
+            <>
+              <PropertyGrid ref={propertyGridRef} {...commonProps} editableRuleset={editableRuleset} />
+              <button onClick={() => propertyGridRef.current?.collapseAllCategories()}>Collapse</button>
+            </>
+          );
         };
 
         const { getByText } = render(<TestComponent />);
@@ -225,18 +204,13 @@ describe("PropertyGrid", () => {
       stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: false, numSelectedElements: 1 }));
 
       propertyData = {
-        label: new PropertyRecord(
-          { valueFormat: PropertyValueFormat.Primitive },
-          { name: "test", displayLabel: "test", typename: StandardTypeNames.String },
-        ),
+        label: new PropertyRecord({ valueFormat: PropertyValueFormat.Primitive }, { name: "test", displayLabel: "test", typename: StandardTypeNames.String }),
         categories: [
           {
             name: "root",
             label: "root",
             expand: true,
-            childCategories: [
-              { name: "child", label: "child", expand: false },
-            ],
+            childCategories: [{ name: "child", label: "child", expand: false }],
           },
         ],
         records: {},

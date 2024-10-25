@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import "./InitializedApp.scss";
 import * as monaco from "monaco-editor";
 import * as React from "react";
@@ -49,11 +50,7 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement |
               rightPanel={
                 <StagePanel size={450}>
                   <StagePanelZone>
-                    <Widget
-                      id="TreeWidget"
-                      label={IModelApp.localization.getLocalizedString("App:label:tree-widget")}
-                      defaultState={WidgetState.Open}
-                    >
+                    <Widget id="TreeWidget" label={IModelApp.localization.getLocalizedString("App:label:tree-widget")} defaultState={WidgetState.Open}>
                       <TreeWidget imodel={imodel} ruleset={editableRuleset} />
                     </Widget>
                   </StagePanelZone>
@@ -71,11 +68,7 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement |
               bottomPanel={
                 <StagePanel size={300} defaultState={StagePanelState.Minimized}>
                   <StagePanelZone>
-                    <Widget
-                      id="TableWidget"
-                      label={IModelApp.localization.getLocalizedString("App:label:table-widget")}
-                      defaultState={WidgetState.Open}
-                    >
+                    <Widget id="TableWidget" label={IModelApp.localization.getLocalizedString("App:label:table-widget")} defaultState={WidgetState.Open}>
                       <TableWidget imodel={imodel} ruleset={editableRuleset} />
                     </Widget>
                   </StagePanelZone>
@@ -96,15 +89,17 @@ const defaultRuleset: Ruleset = {
   rules: [
     {
       ruleType: RuleTypes.RootNodes,
-      specifications: [{
-        specType: ChildNodeSpecificationTypes.InstanceNodesOfSpecificClasses,
-        classes: {
-          schemaName: "BisCore",
-          classNames: ["Element"],
+      specifications: [
+        {
+          specType: ChildNodeSpecificationTypes.InstanceNodesOfSpecificClasses,
+          classes: {
+            schemaName: "BisCore",
+            classNames: ["Element"],
+          },
+          arePolymorphic: true,
+          groupByClass: true,
         },
-        arePolymorphic: true,
-        groupByClass: true,
-      }],
+      ],
     },
     {
       ruleType: RuleTypes.Content,
@@ -121,70 +116,59 @@ function useIModel(
   const [iModel, setIModel] = React.useState<IModelConnection>();
   const setMostRecentIModel = useRecentIModels();
 
-  React.useEffect(
-    () => {
-      setIModel(undefined);
+  React.useEffect(() => {
+    setIModel(undefined);
 
-      IModelApp.authorizationClient = authorizationClient;
-      if (process.env.DEPLOYMENT_TYPE === "web") {
-        const backendUrl = "https://api.bentley.com/imodeljs";
-        // eslint-disable-next-line @itwin/no-internal
-        backendApi.protocol.pathPrefix = isDemoIModel(iModelIdentifier) ? backendUrl : applyUrlPrefix(backendUrl);
+    IModelApp.authorizationClient = authorizationClient;
+    if (process.env.DEPLOYMENT_TYPE === "web") {
+      const backendUrl = "https://api.bentley.com/imodeljs";
+      // eslint-disable-next-line @itwin/no-internal
+      backendApi.protocol.pathPrefix = isDemoIModel(iModelIdentifier) ? backendUrl : applyUrlPrefix(backendUrl);
+    }
+
+    let disposed = false;
+    const iModelPromise = backendApi.openIModel(iModelIdentifier);
+    void (async () => {
+      try {
+        const openedIModel = await iModelPromise;
+        if (!disposed) {
+          setIModel(openedIModel);
+          setMostRecentIModel(iModelIdentifier);
+        }
+      } catch (error) {
+        if (isSnapshotIModel(iModelIdentifier)) {
+          displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-open-local", { imodel: iModelIdentifier }), error);
+        } else {
+          displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-open-remote"), error);
+        }
       }
+    })();
 
-      let disposed = false;
-      const iModelPromise = backendApi.openIModel(iModelIdentifier);
+    return () => {
+      disposed = true;
       void (async () => {
+        const openedIModel = await iModelPromise;
         try {
-          const openedIModel = await iModelPromise;
-          if (!disposed) {
-            setIModel(openedIModel);
-            setMostRecentIModel(iModelIdentifier);
-          }
+          await openedIModel.close();
         } catch (error) {
           if (isSnapshotIModel(iModelIdentifier)) {
-            displayIModelError(
-              IModelApp.localization.getLocalizedString("App:error:imodel-open-local", { imodel: iModelIdentifier }),
-              error,
-            );
+            displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-close-local", { imodel: iModelIdentifier }), error);
           } else {
-            displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-open-remote"), error);
+            displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-close-remote"), error);
           }
         }
       })();
-
-      return () => {
-        disposed = true;
-        void (async () => {
-          const openedIModel = await iModelPromise;
-          try {
-            await openedIModel.close();
-          } catch (error) {
-            if (isSnapshotIModel(iModelIdentifier)) {
-              displayIModelError(
-                IModelApp.localization.getLocalizedString("App:error:imodel-close-local", { imodel: iModelIdentifier }),
-                error,
-              );
-            } else {
-              displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-close-remote"), error);
-            }
-          }
-        })();
-      };
-    },
-    [authorizationClient, backendApi, iModelIdentifier, setMostRecentIModel],
-  );
+    };
+  }, [authorizationClient, backendApi, iModelIdentifier, setMostRecentIModel]);
 
   return iModel;
 }
 
-function useRecentIModels(): (iModelIdentifer: IModelIdentifier) => void {
+function useRecentIModels(): (iModelIdentifier: IModelIdentifier) => void {
   const [_, setRecentIModels] = useIModelBrowserSettings();
   return React.useRef((iModelIdentifier: IModelIdentifier) => {
     setRecentIModels((prevState) => {
-      const newRecentIModels = prevState.recentIModels.filter(
-        (value) => !areIModelIdentifiersEqual(value, iModelIdentifier),
-      );
+      const newRecentIModels = prevState.recentIModels.filter((value) => !areIModelIdentifiersEqual(value, iModelIdentifier));
       newRecentIModels.push(iModelIdentifier);
       return { ...prevState, recentIModels: newRecentIModels.slice(-10) };
     });
@@ -192,7 +176,7 @@ function useRecentIModels(): (iModelIdentifer: IModelIdentifier) => void {
 }
 
 function displayIModelError(message: string, error: unknown): void {
-  const errorMessage = (error && typeof error === "object") ? (error as { message: unknown }).message : error;
+  const errorMessage = error && typeof error === "object" ? (error as { message: unknown }).message : error;
   displayToast(OutputMessagePriority.Error, message, typeof errorMessage === "string" ? errorMessage : undefined);
 }
 
@@ -218,15 +202,12 @@ function useSoloRulesetEditor(initialRuleset: Ruleset): UseSoloRulesetEditorRetu
     result.current = { editableRuleset, rulesetEditor };
   }
 
-  React.useEffect(
-    () => {
-      return () => {
-        result.current.rulesetEditor.dispose();
-        result.current.editableRuleset.dispose();
-      };
-    },
-    [],
-  );
+  React.useEffect(() => {
+    return () => {
+      result.current.rulesetEditor.dispose();
+      result.current.editableRuleset.dispose();
+    };
+  }, []);
 
   return result.current;
 }

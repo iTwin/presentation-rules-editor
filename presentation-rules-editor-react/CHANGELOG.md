@@ -30,4 +30,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `EditableRuleset`: Represents a ruleset with dynamic content. It acts as the main communication channel between different components in this package.
 - `SoloRulesetEditor`: Represents a single monaco editor instance that is used to edit an associated ruleset.
 - `PropertyGrid`: React component that displays properties of selected elements and reacts to the ruleset changes.
-- `Tree`: React component that displays a tree hierachy defined by a Presentation ruleset and reacts to the ruleset changes.
+- `Tree`: React component that displays a tree hierarchy defined by a Presentation ruleset and reacts to the ruleset changes.

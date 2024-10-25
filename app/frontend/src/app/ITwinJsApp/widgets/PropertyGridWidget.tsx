@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import "./PropertyGridWidget.scss";
 import * as React from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -76,12 +77,7 @@ function LoadedPropertyGrid(props: LoadedPropertyGridProps): React.ReactElement 
         {({ width, height }) => (
           <>
             <div className="presentation-rules-editor-property-grid-controls" data-hovered={!suppressControls && hovered}>
-              <IconButton
-                styleType="borderless"
-                isActive={keepExpanded}
-                title={keepExpanded ? "Turn off auto-expand" : "Expand"}
-                onClick={handleExpandClick}
-              >
+              <IconButton styleType="borderless" isActive={keepExpanded} title={keepExpanded ? "Turn off auto-expand" : "Expand"} onClick={handleExpandClick}>
                 <SvgExpandAll />
               </IconButton>
               <IconButton styleType="borderless" title="Collapse" onClick={handleCollapseClick}>
@@ -95,15 +91,9 @@ function LoadedPropertyGrid(props: LoadedPropertyGridProps): React.ReactElement 
               iModel={props.iModel}
               editableRuleset={props.ruleset}
               keepCategoriesExpanded={keepExpanded}
-              noElementsSelectedState={() => (
-                <NoElementsSelectedState height={height} setSuppressControls={setSuppressControls} />
-              )}
-              tooManyElementsSelectedState={() => (
-                <TooManyElementsSelectedState height={height} setSuppressControls={setSuppressControls} />
-              )}
-              loadingPropertiesState={() => (
-                <LoadingPropertiesState height={height} setSuppressControls={setSuppressControls} />
-              )}
+              noElementsSelectedState={() => <NoElementsSelectedState height={height} setSuppressControls={setSuppressControls} />}
+              tooManyElementsSelectedState={() => <TooManyElementsSelectedState height={height} setSuppressControls={setSuppressControls} />}
+              loadingPropertiesState={() => <LoadingPropertiesState height={height} setSuppressControls={setSuppressControls} />}
             />
           </>
         )}
@@ -115,26 +105,23 @@ function LoadedPropertyGrid(props: LoadedPropertyGridProps): React.ReactElement 
 function useHover<T extends HTMLElement | null>(elementRef: React.MutableRefObject<T>): boolean {
   const [hovered, setHovered] = React.useState(false);
 
-  React.useEffect(
-    () => {
-      const element = elementRef.current;
-      if (element === null) {
-        return;
-      }
+  React.useEffect(() => {
+    const element = elementRef.current;
+    if (element === null) {
+      return;
+    }
 
-      const handleMouseEnter = () => setHovered(true);
-      const handleMouseLeave = () => setHovered(false);
+    const handleMouseEnter = () => setHovered(true);
+    const handleMouseLeave = () => setHovered(false);
 
-      element.addEventListener("mouseenter", handleMouseEnter);
-      element.addEventListener("mouseleave", handleMouseLeave);
+    element.addEventListener("mouseenter", handleMouseEnter);
+    element.addEventListener("mouseleave", handleMouseLeave);
 
-      return () => {
-        element.removeEventListener("mouseenter", handleMouseEnter);
-        element.removeEventListener("mouseleave", handleMouseLeave);
-      };
-    },
-    [elementRef],
-  );
+    return () => {
+      element.removeEventListener("mouseenter", handleMouseEnter);
+      element.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, [elementRef]);
 
   return hovered;
 }
@@ -151,12 +138,9 @@ function NoElementsSelectedState(props: NoElementsSelectedStateProps): React.Rea
   return (
     <VerticalStack style={{ height: props.height }}>
       <span>{IModelApp.localization.getLocalizedString("App:property-grid.no-elements-selected")}</span>
-      {
-        activeTab !== RulesetEditorTab.Viewport &&
-        <Button onClick={() => setActiveTab(RulesetEditorTab.Viewport)}>
-          {IModelApp.localization. getLocalizedString("App:property-grid.show-viewport")}
-        </Button>
-      }
+      {activeTab !== RulesetEditorTab.Viewport && (
+        <Button onClick={() => setActiveTab(RulesetEditorTab.Viewport)}>{IModelApp.localization.getLocalizedString("App:property-grid.show-viewport")}</Button>
+      )}
     </VerticalStack>
   );
 }
@@ -169,11 +153,7 @@ interface TooManyElementsSelectedStateProps {
 function TooManyElementsSelectedState(props: TooManyElementsSelectedStateProps): React.ReactElement {
   useSuppressControls(props.setSuppressControls);
 
-  return (
-    <VerticalStack style={{ height: props.height }}>
-      {IModelApp.localization.getLocalizedString("App:property-grid.over-limit")}
-    </VerticalStack>
-  );
+  return <VerticalStack style={{ height: props.height }}>{IModelApp.localization.getLocalizedString("App:property-grid.over-limit")}</VerticalStack>;
 }
 
 interface LoadingPropertiesStateProps {
@@ -185,23 +165,18 @@ function LoadingPropertiesState(props: LoadingPropertiesStateProps): React.React
   useSuppressControls(props.setSuppressControls);
 
   return (
-    <LoadingIndicator style={{ height: props.height }}>
-      {IModelApp.localization.getLocalizedString("App:property-grid.loading-properties")}
-    </LoadingIndicator>
+    <LoadingIndicator style={{ height: props.height }}>{IModelApp.localization.getLocalizedString("App:property-grid.loading-properties")}</LoadingIndicator>
   );
 }
 
 function useSuppressControls(setSuppressControls: (value: boolean) => void): void {
-  React.useEffect(
-    () => {
-      setSuppressControls(true);
-      return () => setSuppressControls(false);
-    },
-    [setSuppressControls],
-  );
+  React.useEffect(() => {
+    setSuppressControls(true);
+    return () => setSuppressControls(false);
+  }, [setSuppressControls]);
 }
 
-function PropertyGridErrorState(props: { error: Error, resetErrorBoundary: () => void }) {
+function PropertyGridErrorState(props: { error: Error; resetErrorBoundary: () => void }) {
   let svg = <SvgError />;
   if (props.error instanceof PresentationError && props.error.errorNumber === PresentationStatus.BackendTimeout.valueOf()) {
     svg = <SvgTimedOut />;
@@ -214,7 +189,9 @@ function PropertyGridErrorState(props: { error: Error, resetErrorBoundary: () =>
         description={IModelApp.localization.getLocalizedString("App:property-grid.generic-error-description")}
         actions={
           <>
-            <Button styleType={"high-visibility"} onClick={props.resetErrorBoundary}>{IModelApp.localization.getLocalizedString("App:label.retry")}</Button>
+            <Button styleType={"high-visibility"} onClick={props.resetErrorBoundary}>
+              {IModelApp.localization.getLocalizedString("App:label.retry")}
+            </Button>
           </>
         }
       />

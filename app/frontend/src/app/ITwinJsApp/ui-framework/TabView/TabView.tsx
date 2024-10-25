@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import "./TabView.scss";
 import * as React from "react";
 import { Tabs } from "@itwin/itwinui-react";
@@ -20,13 +21,7 @@ export const TabView: React.FC<TabViewProps> = (props: TabViewProps) => {
   const tabLabels = React.Children.map(props.children, (item) => item.props.label);
   return (
     <div className="tab-view">
-      <Tabs
-        orientation="horizontal"
-        type={"borderless"}
-        labels={tabLabels}
-        activeIndex={props.activeTab}
-        onTabSelected={props.setActiveTab}
-      />
+      <Tabs orientation="horizontal" type={"borderless"} labels={tabLabels} activeIndex={props.activeTab} onTabSelected={props.setActiveTab} />
       {React.Children.toArray(props.children)[props.activeTab]}
     </div>
   );

@@ -1,7 +1,9 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
+import "dotenv/config";
 import CopyPlugin from "copy-webpack-plugin";
 import dotenv from "dotenv";
 import fs from "fs";
@@ -43,10 +45,7 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
               options: {
                 // TODO: Remove this filter when these packages get updated
                 filterSourceMappingUrl: (_url: string, resourcePath: string) => {
-                  return !(
-                    resourcePath.search(/@itwin[\\\/]imodels-client-management/)
-                    || resourcePath.search(/@itwin[\\\/]imodels-access-frontend/)
-                  );
+                  return !(resourcePath.search(/@itwin[\\\/]imodels-client-management/) || resourcePath.search(/@itwin[\\\/]imodels-access-frontend/));
                 },
               },
             },
@@ -54,18 +53,11 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
         },
         {
           test: /\.(css)$/,
-          use: [
-            "style-loader",
-            "css-loader",
-          ],
+          use: ["style-loader", "css-loader"],
         },
         {
           test: /\.(s[ac]ss)$/,
-          use: [
-            "style-loader",
-            "css-loader",
-            "sass-loader",
-          ],
+          use: ["style-loader", "css-loader", "sass-loader"],
         },
         {
           test: /\.(eot|ttf|woff|woff2)$/,
@@ -157,8 +149,7 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
     ],
     resolve: {
       extensions: [".ts", ".tsx", ".js"],
-      fallback: {
-      },
+      fallback: {},
     },
     ...(!isProductionEnvironment && {
       cache: {
@@ -173,15 +164,15 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
         hot: true,
         port: 3000,
         client: {
-        overlay: {
-          runtimeErrors: (error: Error) => {
-            if (error.message.startsWith("ResizeObserver")) {
-              return false;
-            }
-            return true;
+          overlay: {
+            runtimeErrors: (error: Error) => {
+              if (error.message.startsWith("ResizeObserver")) {
+                return false;
+              }
+              return true;
+            },
           },
         },
-      },
       },
       devtool: "cheap-module-source-map",
     }),
@@ -201,8 +192,10 @@ function verifyEnvironmentVariables(isProductionEnvironment: boolean): void {
   const OAUTH_CLIENT_ID = process.env.OAUTH_CLIENT_ID;
   if ((!isDevDeployment && !OAUTH_CLIENT_ID) || OAUTH_CLIENT_ID === "spa-xxxxxxxxxxxxxxxxxxxxxxxxx") {
     // eslint-disable-next-line no-console
-    console.error("Error: Environment variable OAUTH_CLIENT_ID has not been set. Instructions in .env.example file \
-will guide you through the setup process.");
+    console.error(
+      "Error: Environment variable OAUTH_CLIENT_ID has not been set. Instructions in .env.example file \
+will guide you through the setup process.",
+    );
     process.exit(1);
   }
 }
@@ -218,9 +211,8 @@ class FontPreloadPlugin implements WebpackPluginInstance {
 
   public apply(compiler: Compiler): void {
     compiler.hooks.compilation.tap(FontPreloadPlugin.name, (compilation) => {
-      const publicPath = typeof compilation.outputOptions.publicPath === "function"
-        ? compilation.outputOptions.publicPath({})
-        : compilation.outputOptions.publicPath || "";
+      const publicPath =
+        typeof compilation.outputOptions.publicPath === "function" ? compilation.outputOptions.publicPath({}) : compilation.outputOptions.publicPath || "";
 
       HtmlWebpackPlugin.getHooks(compilation).beforeAssetTagGeneration.tap(FontPreloadPlugin.name, (htmlPluginData) => {
         // Sort assets to ensure consistent ordering
@@ -229,20 +221,18 @@ class FontPreloadPlugin implements WebpackPluginInstance {
       });
 
       HtmlWebpackPlugin.getHooks(compilation).alterAssetTags.tap(FontPreloadPlugin.name, (htmlPluginData) => {
-        const linkElements: HtmlTagObject[] = this.assetsToPreload.map(
-          (assetFile) => ({
-            tagName: "link",
-            voidTag: true,
-            attributes: {
-              href: `${publicPath}${assetFile}`,
-              rel: "preload",
-              as: "font",
-              // Because we are preloading a font, we need to set crossorigin attribute. Its value should be empty.
-              crossorigin: "",
-            },
-            meta: {},
-          }),
-        );
+        const linkElements: HtmlTagObject[] = this.assetsToPreload.map((assetFile) => ({
+          tagName: "link",
+          voidTag: true,
+          attributes: {
+            href: `${publicPath}${assetFile}`,
+            rel: "preload",
+            as: "font",
+            // Because we are preloading a font, we need to set crossorigin attribute. Its value should be empty.
+            crossorigin: "",
+          },
+          meta: {},
+        }));
         htmlPluginData.assetTags.styles = [...linkElements, ...htmlPluginData.assetTags.styles];
         return htmlPluginData;
       });

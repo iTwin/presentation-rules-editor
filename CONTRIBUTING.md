@@ -17,7 +17,7 @@ Localization provides very limited value to Presentation Rules Editor because th
 
 We are using built-in iTwin.js localization API in the parts of application that already depend on iTwin.js. This is because, to maintain reasonable application startup performance, all iTwin.js libraries have to be loaded in the background, which makes localization unavailable in the initial app bundle.
 
-To summarise, we only do string localization inside `ITwinJsApp/` subdirectory.
+To summarize, we only do string localization inside `ITwinJsApp/` subdirectory.
 
 ## Testing
 
@@ -65,7 +65,7 @@ When using Visual Studio Code, you will need to add iTwin.js repository to the w
 
 ## Optimizing fonts
 
-Presentation Rules Editor application is configured to request only a subset of `Open Sans` font for the initial page load. The rest of the font is downloaded seperately when there is a demand for it.
+Presentation Rules Editor application is configured to request only a subset of `Open Sans` font for the initial page load. The rest of the font is downloaded separately when there is a demand for it.
 
 The procedure used for generating optimized font subsets is laid out below. It assumes that the system has Python 3.7 or later.
 

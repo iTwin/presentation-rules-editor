@@ -1,14 +1,12 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import * as React from "react";
 
 /** Retrieves the value in local storage under the specified key. The key value change is not tracked by this hook. */
-export function useLocalStorage<T>(
-  key: string,
-  init: (initialValue: {} | string | undefined) => T,
-): [T, (action: React.SetStateAction<T>) => void] {
+export function useLocalStorage<T>(key: string, init: (initialValue: {} | string | undefined) => T): [T, (action: React.SetStateAction<T>) => void] {
   const [state, setState] = React.useState<T>(() => {
     const initialValue = init(getLocalStorageValue(key));
     localStorage.setItem(normalizeKey(key), JSON.stringify(initialValue));

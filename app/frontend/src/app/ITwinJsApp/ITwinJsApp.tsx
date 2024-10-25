@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import * as React from "react";
 import { rpcInterfaces } from "@app/common";
 import { AppNotificationManager, FrameworkReducer, StateManager, UiFramework } from "@itwin/appui-react";
@@ -31,32 +32,25 @@ export interface ITwinJsAppProps {
 export function ITwinJsApp(props: ITwinJsAppProps): React.ReactElement {
   const [backendApi, setBackendApi] = React.useState<BackendApi>();
 
-  React.useEffect(
-    () => {
-      let disposed = false;
-      void (async () => {
-        const loadedBackendApi = await props.backendApiPromise;
-        if (!disposed) {
-          setBackendApi(loadedBackendApi);
-        }
-      })();
+  React.useEffect(() => {
+    let disposed = false;
+    void (async () => {
+      const loadedBackendApi = await props.backendApiPromise;
+      if (!disposed) {
+        setBackendApi(loadedBackendApi);
+      }
+    })();
 
-      return () => { disposed = true; };
-    },
-    [props.backendApiPromise],
-  );
+    return () => {
+      disposed = true;
+    };
+  }, [props.backendApiPromise]);
 
   if (backendApi === undefined) {
     return <LoadingIndicator>Initializing...</LoadingIndicator>;
   }
 
-  return (
-    <InitializedApp
-      backendApi={backendApi}
-      iModelIdentifier={props.iModelIdentifier}
-      authorizationClient={props.authorizationClient}
-    />
-  );
+  return <InitializedApp backendApi={backendApi} iModelIdentifier={props.iModelIdentifier} authorizationClient={props.authorizationClient} />;
 }
 
 export async function initializeApp(): Promise<BackendApi> {
@@ -65,12 +59,13 @@ export async function initializeApp(): Promise<BackendApi> {
 
   RpcConfiguration.developmentMode = process.env.DEPLOYMENT_TYPE === "dev";
   RpcConfiguration.disableRoutingValidation = process.env.DEPLOYMENT_TYPE !== "web";
-  const rpcParams = process.env.DEPLOYMENT_TYPE === "web"
-    ? { info: { title: "visualization", version: "v4.0" } }
-    : {
-      info: { title: "presentation-rules-editor", version: "v1.0" },
-      uriPrefix: "http://localhost:3001",
-    };
+  const rpcParams =
+    process.env.DEPLOYMENT_TYPE === "web"
+      ? { info: { title: "visualization", version: "v4.0" } }
+      : {
+          info: { title: "presentation-rules-editor", version: "v1.0" },
+          uriPrefix: "http://localhost:3001",
+        };
 
   await IModelApp.startup({
     rpcInterfaces,
@@ -85,11 +80,7 @@ export async function initializeApp(): Promise<BackendApi> {
   const configuration = BentleyCloudRpcManager.initializeClient(rpcParams, rpcInterfaces);
   // eslint-disable-next-line @itwin/no-internal
   const backendApi = new BackendApi(configuration.protocol);
-  await Promise.all([
-    IModelApp.localization.registerNamespace("App"),
-    initializePresentation(backendApi),
-    initializeUIFramework(),
-  ]);
+  await Promise.all([IModelApp.localization.registerNamespace("App"), initializePresentation(backendApi), initializeUIFramework()]);
 
   return backendApi;
 }
@@ -112,12 +103,8 @@ async function initializeUIFramework(): Promise<void> {
 }
 
 class HubAccess implements FrontendHubAccess {
-  private demoAccess = new FrontendIModelsAccess(
-    new IModelsClient({ api: { baseUrl: "https://api.bentley.com/imodels" } }),
-  );
-  private privateAccess = new FrontendIModelsAccess(
-    new IModelsClient({ api: { baseUrl: applyUrlPrefix("https://api.bentley.com/imodels") } }),
-  );
+  private demoAccess = new FrontendIModelsAccess(new IModelsClient({ api: { baseUrl: "https://api.bentley.com/imodels" } }));
+  private privateAccess = new FrontendIModelsAccess(new IModelsClient({ api: { baseUrl: applyUrlPrefix("https://api.bentley.com/imodels") } }));
 
   private getHubAccess(arg: IModelIdArg): FrontendIModelsAccess {
     return demoIModels.has(arg.iModelId) ? this.demoAccess : this.privateAccess;

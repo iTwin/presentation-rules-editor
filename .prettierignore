@@ -1,0 +1,14 @@
+# Ignore artifacts
+build
+lib
+.changeset
+
+# Ignore vs code settings
+.vscode
+
+# Ignore pnpm file
+pnpm-lock.yaml
+pnpm-workspace.yaml
+
+# Ignore configs
+.github

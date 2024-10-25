@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import * as React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { CellProps } from "react-table";
@@ -31,10 +32,7 @@ export function ITwinBrowser(): React.ReactElement {
         return;
       }
 
-      const response = await getUserProjects(
-        { detail: "representation", search: searchQuery },
-        { authorizationClient },
-      );
+      const response = await getUserProjects({ detail: "representation", search: searchQuery }, { authorizationClient });
       if (!disposedRef.current && response) {
         setITwins(response.sort((a, b) => Date.parse(b.createdDateTime) - Date.parse(a.createdDateTime)));
       }
@@ -55,7 +53,9 @@ export function ITwinBrowser(): React.ReactElement {
   if (state === AuthorizationState.Offline) {
     return (
       <VerticalStack>
-        <HorizontalStack>Projects are unavailable in offline mode. <OfflineModeExplainer /></HorizontalStack>
+        <HorizontalStack>
+          Projects are unavailable in offline mode. <OfflineModeExplainer />
+        </HorizontalStack>
       </VerticalStack>
     );
   }
@@ -64,14 +64,14 @@ export function ITwinBrowser(): React.ReactElement {
     return (
       <VerticalStack className="imodel-browser-no-data">
         <SvgProject />
-        <Text variant="title" as="h2" isMuted>{searchQuery ? "No projects match given search query" : "No projects found"}</Text>
+        <Text variant="title" as="h2" isMuted>
+          {searchQuery ? "No projects match given search query" : "No projects found"}
+        </Text>
       </VerticalStack>
     );
   }
 
-  return displayMode === "grid"
-    ? <ITwinBrowserGridView iTwins={iTwins} />
-    : <ITwinBrowserTableView iTwins={iTwins} />;
+  return displayMode === "grid" ? <ITwinBrowserGridView iTwins={iTwins} /> : <ITwinBrowserTableView iTwins={iTwins} />;
 }
 
 interface ITwinBrowserGridViewProps {
@@ -86,20 +86,18 @@ function ITwinBrowserGridView(props: ITwinBrowserGridViewProps): React.ReactElem
 
   return (
     <FluidGrid>
-      {
-        props.iTwins.map((iTwin) => (
-          <div key={iTwin.id}>
-            <Tile
-              name={iTwin.displayName}
-              variant="folder"
-              isActionable
-              thumbnail={iTwin.image ?? <SvgProject />}
-              description={iTwin.number}
-              onClick={() => navigate(iTwin.id)}
-            />
-          </div>
-        ))
-      }
+      {props.iTwins.map((iTwin) => (
+        <div key={iTwin.id}>
+          <Tile
+            name={iTwin.displayName}
+            variant="folder"
+            isActionable
+            thumbnail={iTwin.image ?? <SvgProject />}
+            description={iTwin.number}
+            onClick={() => navigate(iTwin.id)}
+          />
+        </div>
+      ))}
     </FluidGrid>
   );
 }
@@ -111,19 +109,21 @@ interface ITwinBrowserTableViewProps {
 function ITwinBrowserTableView(props: ITwinBrowserTableViewProps): React.ReactElement {
   const navigate = useNavigate();
   const columns = React.useMemo<TableProps["columns"]>(
-    () => [{
-      Header: "Table",
-      columns: [
-        {
-          Header: "Name",
-          accessor: "name",
-          Cell(cellProps: CellProps<{ id: string }>) {
-            return <Anchor onClick={() => navigate(cellProps.row.original.id)}>{cellProps.value}</Anchor>;
+    () => [
+      {
+        Header: "Table",
+        columns: [
+          {
+            Header: "Name",
+            accessor: "name",
+            Cell(cellProps: CellProps<{ id: string }>) {
+              return <Anchor onClick={() => navigate(cellProps.row.original.id)}>{cellProps.value}</Anchor>;
+            },
           },
-        },
-        { Header: "Date created", accessor: "dateCreated" },
-      ],
-    }],
+          { Header: "Date created", accessor: "dateCreated" },
+        ],
+      },
+    ],
     [navigate],
   );
   const tableData = props.iTwins?.map((iTwin) => ({
@@ -152,10 +152,7 @@ export function ITwinIModelBrowser(): React.ReactElement {
         return;
       }
 
-      const response = await getITwinIModels(
-        { iTwinId: iTwin, detail: "representation", name: searchQuery },
-        { authorizationClient },
-      );
+      const response = await getITwinIModels({ iTwinId: iTwin, detail: "representation", name: searchQuery }, { authorizationClient });
       if (!disposedRef.current && response) {
         setIModels(response.sort((a, b) => Date.parse(b.createdDateTime) - Date.parse(a.createdDateTime)));
       }
@@ -175,9 +172,11 @@ export function ITwinIModelBrowser(): React.ReactElement {
     );
   }
 
-  return displayMode === "grid"
-    ? <IModelBrowserGridView iModels={iModels} authorizationClient={authorizationClient} />
-    : <IModelBrowserTableView iModels={iModels} />;
+  return displayMode === "grid" ? (
+    <IModelBrowserGridView iModels={iModels} authorizationClient={authorizationClient} />
+  ) : (
+    <IModelBrowserTableView iModels={iModels} />
+  );
 }
 
 interface IModelBrowserGridViewProps {
@@ -214,23 +213,25 @@ interface IModelBrowserTableViewProps {
 function IModelBrowserTableView(props: IModelBrowserTableViewProps): React.ReactElement {
   const navigation = React.useContext(appNavigationContext);
   const columns = React.useMemo<TableProps["columns"]>(
-    () => [{
-      Header: "Table",
-      columns: [
-        {
-          Header: "Name",
-          accessor: "name",
-          Cell(cellProps: CellProps<{ id: string, iTwinId: string }>) {
-            const iTwinId = cellProps.row.original.iTwinId;
-            const iModelId = cellProps.row.original.id;
-            const handleClick = () => navigation.openRulesetEditor({ iTwinId, iModelId });
-            return <Anchor onClick={handleClick}>{cellProps.value}</Anchor>;
+    () => [
+      {
+        Header: "Table",
+        columns: [
+          {
+            Header: "Name",
+            accessor: "name",
+            Cell(cellProps: CellProps<{ id: string; iTwinId: string }>) {
+              const iTwinId = cellProps.row.original.iTwinId;
+              const iModelId = cellProps.row.original.id;
+              const handleClick = () => navigation.openRulesetEditor({ iTwinId, iModelId });
+              return <Anchor onClick={handleClick}>{cellProps.value}</Anchor>;
+            },
           },
-        },
-        { Header: "Description", accessor: "description" },
-        { Header: "Date created", accessor: "dateCreated" },
-      ],
-    }],
+          { Header: "Description", accessor: "description" },
+          { Header: "Date created", accessor: "dateCreated" },
+        ],
+      },
+    ],
     [navigation],
   );
   const tableData = props.iModels?.map((iModel) => ({
@@ -243,11 +244,7 @@ function IModelBrowserTableView(props: IModelBrowserTableViewProps): React.React
   return <Table columns={columns} data={tableData ?? []} isLoading={tableData === undefined} emptyTableContent="" />;
 }
 
-function useDebouncedAsyncEffect(
-  effect: (disposedRef: { current: boolean }) => Promise<void>,
-  dependencies: unknown[],
-  cooldownMilliseconds: number,
-): void {
+function useDebouncedAsyncEffect(effect: (disposedRef: { current: boolean }) => Promise<void>, dependencies: unknown[], cooldownMilliseconds: number): void {
   const activeEffectRef = React.useRef(Promise.resolve());
 
   React.useEffect(
@@ -260,14 +257,11 @@ function useDebouncedAsyncEffect(
           return;
         }
 
-        timeout = setTimeout(
-          () => {
-            if (!disposedRef.current) {
-              activeEffectRef.current = effect(disposedRef);
-            }
-          },
-          cooldownMilliseconds,
-        );
+        timeout = setTimeout(() => {
+          if (!disposedRef.current) {
+            activeEffectRef.current = effect(disposedRef);
+          }
+        }, cooldownMilliseconds);
       })();
       return () => {
         disposedRef.current = true;

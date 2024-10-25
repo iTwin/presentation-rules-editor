@@ -1,37 +1,100 @@
 {
+  "cSpell.words": [
+    "appui",
+    "autosizer",
+    "baytown",
+    "cooldown",
+    "crossorigin",
+    "ecsql",
+    "exton",
+    "fonttools",
+    "frontstage",
+    "frontstages",
+    "ibim",
+    "imodel",
+    "imodelaccess",
+    "imodeljs",
+    "imodels",
+    "itemprop",
+    "itwin",
+    "itwinjs",
+    "itwins",
+    "itwinui",
+    "linkcode",
+    "metrostation",
+    "oidc",
+    "rpcs",
+    "ruleset",
+    "rulesets",
+    "sidenav",
+    "signin",
+    "signout",
+    "testid",
+    "twinjs",
+    "unicodes",
+    "unmangled",
+    "unregisters",
+    "unroute",
+    "unstringified",
+    "unsymlinking",
+    "viewports",
+    "widgetid"
+  ],
+  "cSpell.ignoreWords": [
+    "brotli",
+    "fnames",
+    "imjs",
+    "lcov",
+    "mmap",
+    "pyftsubset",
+    "pwdebug",
+    "rralign",
+    "wdth",
+    "wght"
+  ],
+  "cSpell.ignorePaths": ["package.json", ".vscode", "*.yaml"],
+  "cSpell.ignoreRegExpList": ["from\\s\".*\";"],
+
   "editor.insertSpaces": true,
   "editor.tabSize": 2,
   "editor.trimAutoWhitespace": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+
+  "eslint.useFlatConfig": true,
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
 
   "files.associations": {
-    ".nycrc": "json",
+    ".nycrc": "json"
   },
   "files.exclude": {
     "**/coverage": true,
-    "**/node_modules": true,
+    "**/node_modules": true
   },
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
 
-  "typescript.format.semicolons": "insert",
-
-  "[javascript][typescript][typescriptreact]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-  },
-
   "[markdown]": {
-    "editor.tabSize": 4,
+    "editor.tabSize": 4
   },
 
-  "eslint.format.enable": true,
-  "eslint.workingDirectories": [{ "mode": "auto" }],
-
-  "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.count": 120,
+  "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.count": 160,
+  "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.type": "newLineEachExpressionAfterCountLimitExceptIfOnlyOne",
   "importSorter.importStringConfiguration.quoteMark": "double",
   "importSorter.importStringConfiguration.tabSize": 2,
   "importSorter.importStringConfiguration.trailingComma": "multiLine",
+  "importSorter.generalConfiguration.sortOnBeforeSave": true,
   "importSorter.sortConfiguration.customOrderingRules.defaultNumberOfEmptyLinesAfterGroup": 0,
+  "importSorter.sortConfiguration.removeUnusedImports": false,
+  "importSorter.sortConfiguration.importMembers.order": "unsorted",
   "importSorter.sortConfiguration.customOrderingRules.rules": [
     {
       "type": "importMember",
@@ -52,9 +115,5 @@
       "orderLevel": 30
     }
   ],
-  "importSorter.sortConfiguration.removeUnusedImports": true,
-
-  "markdownlint.config": {
-    "no-duplicate-heading": { "siblings_only": true },
-  },
+  "cSpell.enabled": true
 }

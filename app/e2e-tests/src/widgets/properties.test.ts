@@ -1,7 +1,8 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import { Page } from "playwright";
 import { page } from "../setup";
 import { getEditor, getWidget, openTestIModel } from "../utils";
@@ -50,10 +51,7 @@ describe("properties widget #local", () => {
     await propertiesWidget.locator("text=Select element(s) to view properties.").waitFor();
 
     // simulate network error
-    await page.context().route(
-      contentUrlIdentifier,
-      async (route) => route.abort(),
-    );
+    await page.context().route(contentUrlIdentifier, async (route) => route.abort());
 
     await selectAnyTreeNode(page);
     await propertiesWidget.locator(`text="Error"`).waitFor();

@@ -1,17 +1,28 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import * as React from "react";
 import {
-  FlatGridItemType, IMutableFlatGridItem, IMutableGridCategoryItem, IMutablePropertyGridModel, PropertyCategory, PropertyData,
-  usePropertyGridEventHandler, usePropertyGridModel, useTrackedPropertyGridModelSource, VirtualizedPropertyGrid,
+  FlatGridItemType,
+  IMutableFlatGridItem,
+  IMutableGridCategoryItem,
+  IMutablePropertyGridModel,
+  PropertyCategory,
+  PropertyData,
+  usePropertyGridEventHandler,
+  usePropertyGridModel,
+  useTrackedPropertyGridModelSource,
+  VirtualizedPropertyGrid,
 } from "@itwin/components-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { Orientation } from "@itwin/core-react";
 import { ProgressRadial } from "@itwin/itwinui-react";
 import {
-  PresentationPropertyDataProvider, PresentationPropertyDataProviderProps, usePropertyDataProviderWithUnifiedSelection,
+  PresentationPropertyDataProvider,
+  PresentationPropertyDataProviderProps,
+  usePropertyDataProviderWithUnifiedSelection,
 } from "@itwin/presentation-components";
 import { CenteredContent } from "../CenteredContent";
 import { EditableRuleset } from "../EditableRuleset";
@@ -51,19 +62,19 @@ export interface PropertyGridAttributes {
  * Displays properties of selected elements. This component updates itself when {@linkcode EditableRuleset} content
  * changes.
  */
-export const PropertyGrid = React.forwardRef<PropertyGridAttributes, PropertyGridProps>(
-  function PropertyGrid(props, ref): React.ReactElement | null {
-    const { iModel, editableRuleset, keepCategoriesExpanded, ...restProps } = props;
-    const dataProvider = useDataProvider(iModel, editableRuleset, !!keepCategoriesExpanded);
-    if (!dataProvider) {
-      return null;
-    }
+export const PropertyGrid = React.forwardRef<PropertyGridAttributes, PropertyGridProps>(function PropertyGrid(props, ref): React.ReactElement | null {
+  const { iModel, editableRuleset, keepCategoriesExpanded, ...restProps } = props;
+  const dataProvider = useDataProvider(iModel, editableRuleset, !!keepCategoriesExpanded);
+  if (!dataProvider) {
+    return null;
+  }
 
-    return <PropertyGridWithProvider ref={ref} {...restProps} dataProvider={dataProvider}/>;
-  },
-);
+  return <PropertyGridWithProvider ref={ref} {...restProps} dataProvider={dataProvider} />;
+});
 
-type PropertyGridWithProviderProps = Omit<PropertyGridProps, "iModel" | "editableRuleset" | "keepCategoriesExpanded"> & { dataProvider: AutoExpandingPropertyDataProvider };
+type PropertyGridWithProviderProps = Omit<PropertyGridProps, "iModel" | "editableRuleset" | "keepCategoriesExpanded"> & {
+  dataProvider: AutoExpandingPropertyDataProvider;
+};
 
 const PropertyGridWithProvider = React.forwardRef<PropertyGridAttributes, PropertyGridWithProviderProps>(
   function PropertyGridWithProvider(props, ref): React.ReactElement {
@@ -84,7 +95,7 @@ const PropertyGridWithProvider = React.forwardRef<PropertyGridAttributes, Proper
         },
         collapseAllCategories() {
           modelSource.modifyModel((model) => {
-            walkCategories(model, (category) => category.isExpanded = false);
+            walkCategories(model, (category) => (category.isExpanded = false));
           });
         },
       }),
@@ -93,23 +104,33 @@ const PropertyGridWithProvider = React.forwardRef<PropertyGridAttributes, Proper
 
     const { isOverLimit, numSelectedElements } = usePropertyDataProviderWithUnifiedSelection({ dataProvider });
     if (numSelectedElements === 0) {
-      return props.noElementsSelectedState?.() ?? (
-        <CenteredContent width={props.width} height={props.height}>No elements selected.</CenteredContent>
+      return (
+        props.noElementsSelectedState?.() ?? (
+          <CenteredContent width={props.width} height={props.height}>
+            No elements selected.
+          </CenteredContent>
+        )
       );
     }
 
     if (isOverLimit) {
-      return props.tooManyElementsSelectedState?.() ?? (
-        <CenteredContent width={props.width} height={props.height}>Too many elements selected.</CenteredContent>
+      return (
+        props.tooManyElementsSelectedState?.() ?? (
+          <CenteredContent width={props.width} height={props.height}>
+            Too many elements selected.
+          </CenteredContent>
+        )
       );
     }
 
     if (propertyGridModel === undefined || inProgress) {
-      return props.loadingPropertiesState?.() ?? (
-        <CenteredContent width={props.width} height={props.height}>
-          <ProgressRadial size="large" indeterminate={true} />
-          Loading properties...
-        </CenteredContent>
+      return (
+        props.loadingPropertiesState?.() ?? (
+          <CenteredContent width={props.width} height={props.height}>
+            <ProgressRadial size="large" indeterminate={true} />
+            Loading properties...
+          </CenteredContent>
+        )
       );
     }
 
@@ -160,7 +181,10 @@ function useDataProvider(
 
 /** @internal */
 export class AutoExpandingPropertyDataProvider extends PresentationPropertyDataProvider {
-  constructor(props: PresentationPropertyDataProviderProps, private keepExpandedRef: React.MutableRefObject<boolean>) {
+  constructor(
+    props: PresentationPropertyDataProviderProps,
+    private keepExpandedRef: React.MutableRefObject<boolean>,
+  ) {
     super(props);
   }
 

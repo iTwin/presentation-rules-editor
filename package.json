@@ -25,7 +25,9 @@
     "typecheck:watch:components": "npm run typecheck:watch --prefix ./presentation-rules-editor-react",
     "typecheck:watch:frontend": "npm run typecheck:watch --prefix ./app/frontend",
     "typecheck:watch:e2e-tests": "npm run typecheck:watch --prefix ./app/e2e-tests",
-    "typecheck:watch:scripts": "npm run typecheck:watch --prefix ./scripts"
+    "typecheck:watch:scripts": "npm run typecheck:watch --prefix ./scripts",
+    "prettier": "prettier --check .",
+    "prettier:fix": "prettier --write ."
   },
   "engines": {
     "pnpm": ">=8",
@@ -34,6 +36,8 @@
   },
   "dependencies": {
     "cross-env": "^7.0.3",
-    "npm-run-all": "^4.1.5"
+    "eslint-config-prettier": "^9.1.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.3.3"
   }
 }

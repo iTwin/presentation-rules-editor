@@ -21,47 +21,36 @@ import { EditableRuleset, PropertyGrid, SoloRulesetEditor, Tree } from "@itwin/p
 
 function MyComponent(props: { iModel: IModelConnection }): React.ReactElement {
   const [editableRuleset] = useState(() => new EditableRuleset({ initialRuleset: ruleset }));
-  const [rulesetEditor] = useState(
-    () => new SoloRulesetEditor({ editableRuleset, monaco, contributions: { submitButton: true } }),
-  );
+  const [rulesetEditor] = useState(() => new SoloRulesetEditor({ editableRuleset, monaco, contributions: { submitButton: true } }));
 
-  useEffect(
-    () => {
-      // Free resources when MyComponent unmounts
-      return () => {
-        rulesetEditor.dispose();
-        editableRuleset.dispose();
-      };
-    },
-    [editableRuleset, rulesetEditor],
-  );
+  useEffect(() => {
+    // Free resources when MyComponent unmounts
+    return () => {
+      rulesetEditor.dispose();
+      editableRuleset.dispose();
+    };
+  }, [editableRuleset, rulesetEditor]);
 
   return (
     <>
       <rulesetEditor.Component width={800} height={600} />
-      <Tree
-        width={350}
-        height={400}
-        iModel={props.iModel}
-        editableRuleset={editableRuleset}
-      />
-      <PropertyGrid
-        width={350}
-        height={400}
-        iModel={props.iModel}
-        editableRuleset={editableRuleset}
-      />
+      <Tree width={350} height={400} iModel={props.iModel} editableRuleset={editableRuleset} />
+      <PropertyGrid width={350} height={400} iModel={props.iModel} editableRuleset={editableRuleset} />
     </>
   );
 }
 
 const ruleset: Ruleset = {
   id: "ruleset1",
-  rules: [{
-    ruleType: RuleTypes.Content,
-    specifications: [{
-      specType: ContentSpecificationTypes.SelectedNodeInstances,
-    }],
-  }],
+  rules: [
+    {
+      ruleType: RuleTypes.Content,
+      specifications: [
+        {
+          specType: ContentSpecificationTypes.SelectedNodeInstances,
+        },
+      ],
+    },
+  ],
 };
 ```
