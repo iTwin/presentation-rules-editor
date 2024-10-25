@@ -52,31 +52,14 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
 
   const demoAuthorizationClient = new DemoAuthClient();
 
-  return function AuthorizationProvider(props: React.PropsWithChildren<{}>): React.ReactElement {
-    const [sessionState, setSessionState] = React.useState<SessionState>(SessionState.Stale);
-    const signIn = async () => {
-      setSessionState(SessionState.SignInWaiting);
-      try {
-        await userManager.signinRedirect({
-          state: window.location.pathname + window.location.search + window.location.hash,
-        });
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.warn(error);
-        setSessionState(SessionState.Stale);
-      }
-    };
-    const signOut = async () => {
-      setSessionState(SessionState.SignOutWaiting);
-      try {
-        await userManager.signoutRedirect();
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.warn(error);
-        setSessionState(SessionState.Stale);
-      }
-    };
+  const signIn = async () => {
+    await userManager.signinRedirect({
+      state: window.location.pathname + window.location.search + window.location.hash,
+    });
+  };
+  const signOut = async () => userManager.signoutRedirect();
 
+  return function AuthorizationProvider(props: React.PropsWithChildren<{}>): React.ReactElement {
     const [authorizationContextValue, setAuthorizationContextValue] = React.useState<AuthorizationContext>({
       userManager,
       demoAuthorizationClient,
@@ -89,7 +72,6 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
 
     React.useEffect(() => {
       const handleUserLoaded = (user: User) => {
-        setSessionState(SessionState.SignedIn);
         setAuthorizationContextValue({
           userManager,
           demoAuthorizationClient,
@@ -102,7 +84,6 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
       };
 
       const handleUserUnloaded = () => {
-        setSessionState(SessionState.SignedOut);
         setAuthorizationContextValue({
           userManager,
           demoAuthorizationClient,
@@ -124,7 +105,7 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
     }, []);
 
     React.useEffect(() => {
-      if (sessionState !== SessionState.Stale || window.self !== window.top) {
+      if (window.self !== window.top) {
         // It could be that parent document has already initiated silent sign-in in an invisible iframe, and now the
         // identity provider has redirected the iframe back to the app.
         return;
@@ -155,7 +136,7 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
       return () => {
         disposed = true;
       };
-    }, [sessionState]);
+    }, []);
 
     return <authorizationContext.Provider value={authorizationContextValue}>{props.children}</authorizationContext.Provider>;
   };
@@ -187,14 +168,6 @@ export enum AuthorizationState {
   SignedIn,
 }
 
-export enum SessionState {
-  Stale,
-  SignInWaiting,
-  SignedIn,
-  SignOutWaiting,
-  SignedOut,
-}
-
 class AuthClient implements AuthorizationClient {
   constructor(private userManager: UserManager) {}
 
@@ -224,11 +197,7 @@ export function useAuthorization(): AuthorizationContext {
 }
 
 const authorizationContext = React.createContext<AuthorizationContext>({
-  userManager: new UserManager({
-    authority: "",
-    client_id: "",
-    redirect_uri: "",
-  }),
+  userManager: new UserManager({ authority: "", client_id: "", redirect_uri: "" }),
   demoAuthorizationClient: new DemoAuthClient(),
   state: AuthorizationState.Offline,
   user: undefined,
@@ -250,10 +219,7 @@ export function SignInCallback(): React.ReactElement {
     if (isOAuthErrorCode(errorCode)) {
       // eslint-disable-next-line no-console
       console.error(`Authorization error (${errorCode}): ${errorDescription ?? ""}`);
-      setAuthError({
-        code: errorCode,
-        description: errorDescription ?? undefined,
-      });
+      setAuthError({ code: errorCode, description: errorDescription ?? undefined });
       return;
     }
 
