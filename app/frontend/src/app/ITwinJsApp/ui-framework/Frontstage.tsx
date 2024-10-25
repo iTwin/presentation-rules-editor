@@ -2,14 +2,14 @@
  * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
-/* eslint-disable sort-imports */
+
 import React, { ReactElement } from "react";
 import {
   ConfigurableCreateInfo,
   ConfigurableUiContent,
-  ContentControl as FrameworkContentControl,
   ContentGroup,
   ContentLayoutDef,
+  ContentControl as FrameworkContentControl,
   FrontstageConfig as FrameworkFrontstageConfig,
   FrontstageProvider,
   StagePanelConfig,

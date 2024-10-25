@@ -2,7 +2,6 @@
  * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
-/* eslint-disable no-console */
 
 import * as React from "react";
 import { PropertyRecord } from "@itwin/appui-abstract";
@@ -91,6 +90,7 @@ function useIModelSelectedElementIds() {
   const elementIds = useDebouncedAsyncValue(
     React.useCallback(async () => {
       if (!selectionContextOnce) {
+        // eslint-disable-next-line no-console
         console.error("UnifiedSelectionContext is not available.");
         return undefined;
       }
@@ -115,12 +115,12 @@ function useIModelSelectedElementIds() {
           ],
         },
       });
-      /* eslint-disable-next-line @typescript-eslint/no-shadow */
-      const elementIds = new Array<Id64String>();
+
+      const ids = new Array<Id64String>();
       for await (const key of res.items()) {
-        elementIds.push(key.id);
+        ids.push(key.id);
       }
-      return elementIds;
+      return ids;
     }, [selectionContextOnce]),
   );
   return {
@@ -147,11 +147,13 @@ function useComputedStationValue(props: { imodel?: IModelConnection; elementId?:
       const persistenceUnit = await units.findUnitByName("Units:M");
       const formatsSchema = await schemas.getSchema(new SchemaKey("Formats", new ECVersion(1)));
       if (!formatsSchema) {
+        // eslint-disable-next-line no-console
         console.error(`Failed to find "Formats" schema.`);
         return undefined;
       }
       const schemaFormat = await formatsSchema.getItem<SchemaFormat>("StationZ_1000_3");
       if (!schemaFormat) {
+        // eslint-disable-next-line no-console
         console.error(`Failed to find the "StationZ_1000_3" format in "Formats" schema.`);
         return undefined;
       }
