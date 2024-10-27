@@ -52,27 +52,27 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
 
   const demoAuthorizationClient = new DemoAuthClient();
 
+  const signIn = async () => {
+    try {
+      await userManager.signinRedirect({
+        state: window.location.pathname + window.location.search + window.location.hash,
+      });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn(err);
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      await userManager.signoutRedirect();
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn(err);
+    }
+  };
+
   return function AuthorizationProvider(props: React.PropsWithChildren<{}>): React.ReactElement {
-    const signIn = async () => {
-      try {
-        await userManager.signinRedirect({
-          state: window.location.pathname + window.location.search + window.location.hash,
-        });
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.warn(err);
-      }
-    };
-
-    const signOut = async () => {
-      try {
-        await userManager.signoutRedirect();
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.warn(err);
-      }
-    };
-
     const [authorizationContextValue, setAuthorizationContextValue] = React.useState<AuthorizationContext>({
       userManager,
       demoAuthorizationClient,
