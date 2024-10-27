@@ -53,9 +53,7 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
   const demoAuthorizationClient = new DemoAuthClient();
 
   return function AuthorizationProvider(props: React.PropsWithChildren<{}>): React.ReactElement {
-    const [sessionState, setSessionState] = React.useState<SessionState>(SessionState.Stale);
     const signIn = async () => {
-      setSessionState(SessionState.SignInWaiting);
       try {
         await userManager.signinRedirect({
           state: window.location.pathname + window.location.search + window.location.hash,
@@ -63,18 +61,15 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
       } catch (err) {
         // eslint-disable-next-line no-console
         console.warn(err);
-        setSessionState(SessionState.Stale);
       }
     };
 
     const signOut = async () => {
-      setSessionState(SessionState.SignOutWaiting);
       try {
         await userManager.signoutRedirect();
       } catch (err) {
         // eslint-disable-next-line no-console
         console.warn(err);
-        setSessionState(SessionState.Stale);
       }
     };
 
@@ -90,7 +85,6 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
 
     React.useEffect(() => {
       const handleUserLoaded = (user: User) => {
-        setSessionState(SessionState.SignedIn);
         setAuthorizationContextValue({
           userManager,
           demoAuthorizationClient,
@@ -103,7 +97,6 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
       };
 
       const handleUserUnloaded = () => {
-        setSessionState(SessionState.SignedOut);
         setAuthorizationContextValue({
           userManager,
           demoAuthorizationClient,
@@ -118,45 +111,26 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
       userManager.events.addUserLoaded(handleUserLoaded);
       userManager.events.addUserUnloaded(handleUserUnloaded);
 
+      userManager
+        .getUser()
+        .then((user) => {
+          if (user === null) {
+            handleUserUnloaded();
+            return;
+          }
+          handleUserLoaded(user);
+        })
+        .catch((e) => {
+          // eslint-disable-next-line no-console
+          console.warn(e);
+          handleUserUnloaded();
+        });
+
       return () => {
         userManager.events.removeUserLoaded(handleUserLoaded);
         userManager.events.removeUserUnloaded(handleUserUnloaded);
       };
     }, []);
-
-    React.useEffect(() => {
-      if (sessionState !== SessionState.Stale || window.self !== window.top) {
-        // It could be that parent document has already initiated silent sign-in in an invisible iframe, and now the
-        // identity provider has redirected the iframe back to the app.
-        return;
-      }
-
-      let disposed = false;
-      void (async () => {
-        try {
-          await userManager.signinSilent();
-          await userManager.clearStaleState();
-        } catch (error) {
-          if (disposed) {
-            return;
-          }
-
-          setAuthorizationContextValue({
-            userManager,
-            demoAuthorizationClient,
-            state: AuthorizationState.SignedOut,
-            user: undefined,
-            userAuthorizationClient: undefined,
-            signIn,
-            signOut,
-          });
-        }
-      })();
-
-      return () => {
-        disposed = true;
-      };
-    }, [sessionState]);
 
     return <authorizationContext.Provider value={authorizationContextValue}>{props.children}</authorizationContext.Provider>;
   };
@@ -186,14 +160,6 @@ export enum AuthorizationState {
   Pending,
   SignedOut,
   SignedIn,
-}
-
-enum SessionState {
-  Stale,
-  SignedIn,
-  SignedOut,
-  SignInWaiting,
-  SignOutWaiting,
 }
 
 class AuthClient implements AuthorizationClient {
