@@ -53,11 +53,24 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
   const demoAuthorizationClient = new DemoAuthClient();
 
   const signIn = async () => {
-    await userManager.signinRedirect({
-      state: window.location.pathname + window.location.search + window.location.hash,
-    });
+    try {
+      await userManager.signinRedirect({
+        state: window.location.pathname + window.location.search + window.location.hash,
+      });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn(err);
+    }
   };
-  const signOut = async () => userManager.signoutRedirect();
+
+  const signOut = async () => {
+    try {
+      await userManager.signoutRedirect();
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn(err);
+    }
+  };
 
   return function AuthorizationProvider(props: React.PropsWithChildren<{}>): React.ReactElement {
     const [authorizationContextValue, setAuthorizationContextValue] = React.useState<AuthorizationContext>({
@@ -98,43 +111,24 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
       userManager.events.addUserLoaded(handleUserLoaded);
       userManager.events.addUserUnloaded(handleUserUnloaded);
 
+      userManager
+        .getUser()
+        .then((user) => {
+          if (user === null) {
+            handleUserUnloaded();
+            return;
+          }
+          handleUserLoaded(user);
+        })
+        .catch((e) => {
+          // eslint-disable-next-line no-console
+          console.warn(e);
+          handleUserUnloaded();
+        });
+
       return () => {
         userManager.events.removeUserLoaded(handleUserLoaded);
         userManager.events.removeUserUnloaded(handleUserUnloaded);
-      };
-    }, []);
-
-    React.useEffect(() => {
-      if (window.self !== window.top) {
-        // It could be that parent document has already initiated silent sign-in in an invisible iframe, and now the
-        // identity provider has redirected the iframe back to the app.
-        return;
-      }
-
-      let disposed = false;
-      void (async () => {
-        try {
-          await userManager.signinSilent();
-          await userManager.clearStaleState();
-        } catch (error) {
-          if (disposed) {
-            return;
-          }
-
-          setAuthorizationContextValue({
-            userManager,
-            demoAuthorizationClient,
-            state: AuthorizationState.SignedOut,
-            user: undefined,
-            userAuthorizationClient: undefined,
-            signIn,
-            signOut,
-          });
-        }
-      })();
-
-      return () => {
-        disposed = true;
       };
     }, []);
 
