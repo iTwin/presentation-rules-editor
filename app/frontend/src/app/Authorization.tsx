@@ -111,22 +111,26 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
       userManager.events.addUserLoaded(handleUserLoaded);
       userManager.events.addUserUnloaded(handleUserUnloaded);
 
-      userManager
-        .getUser()
-        .then((user) => {
-          if (user === null) {
+      let disposed = false;
+      if (!disposed) {
+        userManager
+          .getUser()
+          .then((user) => {
+            if (user === null) {
+              handleUserUnloaded();
+              return;
+            }
+            handleUserLoaded(user);
+          })
+          .catch((e) => {
+            // eslint-disable-next-line no-console
+            console.warn(e);
             handleUserUnloaded();
-            return;
-          }
-          handleUserLoaded(user);
-        })
-        .catch((e) => {
-          // eslint-disable-next-line no-console
-          console.warn(e);
-          handleUserUnloaded();
-        });
+          });
+      }
 
       return () => {
+        disposed = true;
         userManager.events.removeUserLoaded(handleUserLoaded);
         userManager.events.removeUserUnloaded(handleUserUnloaded);
       };
