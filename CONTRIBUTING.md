@@ -86,3 +86,11 @@ The procedure used for generating optimized font subsets is laid out below. It a
    The character ranges in `unicodes` parameter for the first command must include all latin characters, digits, punctuation, and a © (copyright) symbol. The second font subset is generated out of all remaining characters, and may overlap slightly with the first one. Counterintuitively, although the first 32 unicode characters are not printable, expanding the range to include them results in a smaller font file.
 
 4. Make sure that the character ranges which were used to generate font subsets are matched in stylesheet rules.
+
+## Threat Model
+
+This repo uses [Threagile](https://github.com/BentleySystems/threagile) to generate a threat model (see the `.threat-model/threagile.yaml` in this repo). To ensure that we keep our threat model up-to-date (both in terms of the architecture of our service and any potential threats) we will review the threat model under two different circumstances. Each review entails making sure the threat model continuously aligns with our service, captures known threats, and reflects the current status of any risk-tracking items.
+
+1. During every PR, care should be taken to identify changes that could have a security impact. In such cases, `threagile.yaml`, representing the threat model, should be updated in the same PR. It is both the developer's and reviewer's responsibility to ask, "what could go wrong?" resulting from direct changes or changes to prior security assumptions. Developers should use each PR as an opportunity to preemptively update `threagile.yaml` to expedite this process. No PRs will be approved or merged without including required `threagile.yaml` changes.
+
+2. A quarterly review of `threagile.yaml`. Each quarterly review will be tracked via a GitHub issue in this repo with the tag ["threat model"](https://github.com/iTwin/presentation-rules-editor/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22threat%20model%22), and should be approved by the security champion and dev lead by typing 'APPROVED' in the issue once the review is complete. Threat model review consists of validating system model accuracy, identifying any new manual threats, and verifying up-to-date statuses on all risk tracking items.
