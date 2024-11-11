@@ -7,7 +7,7 @@ import "./ContentTabs.scss";
 import * as React from "react";
 import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-frontend";
 import { SvgLink } from "@itwin/itwinui-icons-react";
-import { Button, Tabs } from "@itwin/itwinui-react";
+import { Button, Tabs, useToaster } from "@itwin/itwinui-react";
 import { SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
 import { OpeningIModelHint } from "../common/OpeningIModelHint";
 import { rulesetEditorContext, RulesetEditorTab } from "../ITwinJsAppContext";
@@ -57,11 +57,12 @@ interface ShareButtonProps {
 }
 
 function ShareButton(props: ShareButtonProps): React.ReactElement {
-  const handleShareButtonClick = async () => {
+  const toaster = useToaster();
+  const handleShareButtonClick = React.useCallback(async () => {
     window.location.hash = serializeEditorState(props.editor.model.getValue());
     await navigator.clipboard.writeText(window.location.toString());
-    displayToast(OutputMessagePriority.Success, IModelApp.localization.getLocalizedString("App:toast:link-copied"));
-  };
+    displayToast(toaster, OutputMessagePriority.Success, IModelApp.localization.getLocalizedString("App:toast:link-copied"));
+  }, [props.editor.model, toaster]);
 
   return (
     <Button id="share" size="small" startIcon={<SvgLink />} onClick={handleShareButtonClick}>

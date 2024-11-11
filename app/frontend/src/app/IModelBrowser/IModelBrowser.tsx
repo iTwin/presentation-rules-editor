@@ -63,9 +63,9 @@ export const IModelBrowser = React.memo(function IModelBrowser(props: IModelBrow
               <Grid>
                 <Grid.Item className="imodel-browser-controls" columnSpan={12}>
                   <LabeledInput
+                    className="search-input"
                     placeholder="Search"
                     svgIcon={<SvgSearch />}
-                    iconDisplayStyle="inline"
                     value={searchQuery}
                     maxLength={255}
                     onChange={(event) => setSearchQuery(event.target.value)}

@@ -34,7 +34,7 @@
     "Rules"
   ],
   "engines": {
-    "node": ">=12"
+    "node": ">=20"
   },
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
@@ -46,7 +46,7 @@
     "*.scss"
   ],
   "dependencies": {
-    "@itwin/itwinui-react": "~2.12.25"
+    "@itwin/itwinui-react": "3.15.5"
   },
   "peerDependencies": {
     "@itwin/appui-abstract": "^4.9.7",

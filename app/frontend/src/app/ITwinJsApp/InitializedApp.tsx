@@ -9,6 +9,7 @@ import * as React from "react";
 import { StagePanelState, WidgetState } from "@itwin/appui-react";
 import { AuthorizationClient } from "@itwin/core-common";
 import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-frontend";
+import { useToaster } from "@itwin/itwinui-react";
 import { ChildNodeSpecificationTypes, ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
 import { EditableRuleset, SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
 import { useIModelBrowserSettings } from "../IModelBrowser/IModelBrowser";
@@ -18,7 +19,7 @@ import { ContentTabs } from "./content-tabs/ContentTabs";
 import { areIModelIdentifiersEqual, IModelIdentifier, isDemoIModel, isSnapshotIModel } from "./IModelIdentifier";
 import { backendApiContext, rulesetEditorContext, RulesetEditorTab } from "./ITwinJsAppContext";
 import { parseEditorState } from "./misc/EditorStateSerializer";
-import { displayToast } from "./misc/Notifications";
+import { displayToast, Toaster } from "./misc/Notifications";
 import { Frontstage } from "./ui-framework/Frontstage";
 import { StagePanel, StagePanelZone } from "./ui-framework/StagePanel";
 import { UIFramework } from "./ui-framework/UIFramework";
@@ -114,6 +115,7 @@ function useIModel(
   authorizationClient: AuthorizationClient | undefined,
 ): IModelConnection | undefined {
   const [iModel, setIModel] = React.useState<IModelConnection>();
+  const toaster = useToaster();
   const setMostRecentIModel = useRecentIModels();
 
   React.useEffect(() => {
@@ -137,9 +139,9 @@ function useIModel(
         }
       } catch (error) {
         if (isSnapshotIModel(iModelIdentifier)) {
-          displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-open-local", { imodel: iModelIdentifier }), error);
+          displayIModelError(toaster, IModelApp.localization.getLocalizedString("App:error:imodel-open-local", { imodel: iModelIdentifier }), error);
         } else {
-          displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-open-remote"), error);
+          displayIModelError(toaster, IModelApp.localization.getLocalizedString("App:error:imodel-open-remote"), error);
         }
       }
     })();
@@ -152,14 +154,14 @@ function useIModel(
           await openedIModel.close();
         } catch (error) {
           if (isSnapshotIModel(iModelIdentifier)) {
-            displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-close-local", { imodel: iModelIdentifier }), error);
+            displayIModelError(toaster, IModelApp.localization.getLocalizedString("App:error:imodel-close-local", { imodel: iModelIdentifier }), error);
           } else {
-            displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-close-remote"), error);
+            displayIModelError(toaster, IModelApp.localization.getLocalizedString("App:error:imodel-close-remote"), error);
           }
         }
       })();
     };
-  }, [authorizationClient, backendApi, iModelIdentifier, setMostRecentIModel]);
+  }, [authorizationClient, backendApi, iModelIdentifier, setMostRecentIModel, toaster]);
 
   return iModel;
 }
@@ -175,9 +177,9 @@ function useRecentIModels(): (iModelIdentifier: IModelIdentifier) => void {
   }).current;
 }
 
-function displayIModelError(message: string, error: unknown): void {
+function displayIModelError(toaster: Toaster, message: string, error: unknown): void {
   const errorMessage = error && typeof error === "object" ? (error as { message: unknown }).message : error;
-  displayToast(OutputMessagePriority.Error, message, typeof errorMessage === "string" ? errorMessage : undefined);
+  displayToast(toaster, OutputMessagePriority.Error, message, typeof errorMessage === "string" ? errorMessage : undefined);
 }
 
 interface UseSoloRulesetEditorReturnType {
