@@ -10,7 +10,7 @@ import { assert } from "@itwin/core-bentley";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgImodelHollow, SvgProject } from "@itwin/itwinui-icons-react";
 import { FluidGrid } from "@itwin/itwinui-layouts-react";
-import { Anchor, Button, Table, TableProps, Text, Tile } from "@itwin/itwinui-react";
+import { Anchor, Button, Table, Text, Tile } from "@itwin/itwinui-react";
 import { appNavigationContext } from "../AppContext";
 import { AuthorizationState, useAuthorization } from "../Authorization";
 import { HorizontalStack, VerticalStack } from "../common/CenteredStack";
@@ -108,7 +108,7 @@ interface ITwinBrowserTableViewProps {
 
 function ITwinBrowserTableView(props: ITwinBrowserTableViewProps): React.ReactElement {
   const navigate = useNavigate();
-  const columns = React.useMemo<TableProps["columns"]>(
+  const columns = React.useMemo(
     () => [
       {
         Header: "Table",
@@ -212,7 +212,7 @@ interface IModelBrowserTableViewProps {
 
 function IModelBrowserTableView(props: IModelBrowserTableViewProps): React.ReactElement {
   const navigation = React.useContext(appNavigationContext);
-  const columns = React.useMemo<TableProps["columns"]>(
+  const columns = React.useMemo(
     () => [
       {
         Header: "Table",

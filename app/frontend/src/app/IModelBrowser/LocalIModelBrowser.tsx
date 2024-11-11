@@ -8,7 +8,7 @@ import { CellProps } from "react-table";
 import { IModelMetadata } from "@app/common";
 import { SvgImodelHollow, SvgMore } from "@itwin/itwinui-icons-react";
 import { FluidGrid } from "@itwin/itwinui-layouts-react";
-import { Anchor, DropdownMenu, IconButton, MenuItem, Table, TableProps, Text } from "@itwin/itwinui-react";
+import { Anchor, DropdownMenu, IconButton, MenuItem, Table, Text } from "@itwin/itwinui-react";
 import { appNavigationContext } from "../AppContext";
 import { AsyncActionButton } from "../common/AsyncActionButton";
 import { VerticalStack } from "../common/CenteredStack";
@@ -92,7 +92,7 @@ interface TableViewProps {
 function TableView(props: TableViewProps): React.ReactElement {
   const navigation = React.useContext(appNavigationContext);
   const { openSnapshotsFolder } = props;
-  const columns = React.useMemo<TableProps["columns"]>(() => {
+  const columns = React.useMemo(() => {
     const menuItems = (close: () => void) => [
       <MenuItem
         key="open-folder"
