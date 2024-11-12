@@ -65,7 +65,6 @@ export function AppHeader(): React.ReactElement {
       }
       breadcrumbs={<Breadcrumbs />}
       actions={actions}
-      className="page-header"
     />
   );
 }

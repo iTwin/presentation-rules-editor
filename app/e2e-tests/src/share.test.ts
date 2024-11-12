@@ -86,7 +86,7 @@ describe("opening shared link #local #web", () => {
   it("offers user to sign in when link points to a private iModel", async () => {
     await page.goto(`${getServiceUrl()}/open-imodel?iTwinId=test_itwin&iModelId=test_imodel`);
 
-    const appHeader = page.locator(".page-header");
+    const appHeader = page.getByRole("banner");
     const options = page.locator(".landing-page-options");
     await Promise.all([appHeader.waitFor(), options.waitFor()]);
 

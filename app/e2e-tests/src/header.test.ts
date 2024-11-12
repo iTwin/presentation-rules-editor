@@ -13,7 +13,7 @@ describe("header #local", () => {
   });
 
   it("populates header with opened snapshot information", async () => {
-    const header = page.locator(".page-header nav");
+    const header = page.getByRole("navigation", { name: "breadcrumbs" });
     expect(await header.getByText("Local snapshots").isVisible()).to.be.true;
     expect(await header.getByText("Baytown.bim").isVisible()).to.be.true;
   });
@@ -25,7 +25,7 @@ describe("header #local", () => {
 
   it("clears breadcrumbs after navigating to home", async () => {
     await page.getByText("Local snapshots").click();
-    const header = page.locator(".page-header nav");
+    const header = page.getByRole("navigation", { name: "breadcrumbs" });
     await header.waitFor({ state: "attached" });
     expect(await header.textContent()).to.be.empty;
   });
@@ -37,7 +37,7 @@ describe("header #web", () => {
   });
 
   it("populates header with opened demo iModel information", async () => {
-    const header = page.locator(".page-header nav");
+    const header = page.getByRole("navigation", { name: "breadcrumbs" });
     await header.waitFor();
     expect(await header.getByText("Demo iModel").isVisible()).to.be.true;
     expect(await header.getByText("Bay Town Process Plant").isVisible()).to.be.true;
@@ -50,7 +50,7 @@ describe("header #web", () => {
 
   it("clears breadcrumbs after navigating to home", async () => {
     await page.getByText("Presentation Rules Editor").click();
-    const header = page.locator(".page-header nav");
+    const header = page.getByRole("navigation", { name: "breadcrumbs" });
     await header.waitFor({ state: "attached" });
     expect(await header.textContent()).to.be.empty;
   });
