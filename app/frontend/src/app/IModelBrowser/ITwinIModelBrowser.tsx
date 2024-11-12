@@ -107,12 +107,7 @@ interface ITwinBrowserTableViewProps {
   iTwins: ITwinRepresentation[] | undefined;
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-type ITwinBrowserTableData = {
-  id: string;
-  name: string;
-  dateCreated: string;
-};
+type ITwinBrowserTableData = Record<"id" | "name" | "dateCreated", string>;
 
 function ITwinBrowserTableView(props: ITwinBrowserTableViewProps): React.ReactElement {
   const navigate = useNavigate();
@@ -218,14 +213,7 @@ interface IModelBrowserTableViewProps {
   iModels: IModelRepresentation[] | undefined;
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-type IModelBrowserTableData = {
-  id: string;
-  iTwinId: string;
-  name: string;
-  description: string | null;
-  dateCreated: string;
-};
+type IModelBrowserTableData = Record<"id" | "iTwinId" | "name" | "description" | "dateCreated", string>;
 
 function IModelBrowserTableView(props: IModelBrowserTableViewProps): React.ReactElement {
   const navigation = React.useContext(appNavigationContext);
@@ -250,7 +238,7 @@ function IModelBrowserTableView(props: IModelBrowserTableViewProps): React.React
     id: iModel.id,
     iTwinId: iModel.iTwinId,
     name: iModel.displayName,
-    description: iModel.description,
+    description: iModel.description ?? "",
     dateCreated: new Date(iModel.createdDateTime).toLocaleDateString(),
   }));
   return <Table columns={columns} data={tableData ?? []} isLoading={tableData === undefined} emptyTableContent="" />;

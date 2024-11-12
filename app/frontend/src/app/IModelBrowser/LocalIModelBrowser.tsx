@@ -90,13 +90,6 @@ interface TableViewProps {
   openSnapshotsFolder: () => void;
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-type TableData = {
-  name: string;
-  size: string;
-  dateModified: string;
-};
-
 function TableView(props: TableViewProps): React.ReactElement {
   const navigation = React.useContext(appNavigationContext);
   const { openSnapshotsFolder } = props;
@@ -139,7 +132,7 @@ function TableView(props: TableViewProps): React.ReactElement {
         },
       },
     ];
-  }, [navigation, openSnapshotsFolder]) satisfies Column<TableData>[];
+  }, [navigation, openSnapshotsFolder]) satisfies Column<Record<"name" | "size" | "dateModified", string>>[];
 
   const tableData = props.availableIModels?.map((iModel) => ({
     name: iModel.name,
