@@ -86,9 +86,7 @@ function HeaderUserIcon(props: HeaderUserIconProps): React.ReactElement | null {
     <DropdownMenu
       menuItems={() => [
         <MenuExtraContent key={0}>
-          <>
             <Text variant="leading">{displayName}</Text>
-          </>
         </MenuExtraContent>,
         <MenuDivider key={1} />,
         <MenuItem key={2} onClick={signOut}>
