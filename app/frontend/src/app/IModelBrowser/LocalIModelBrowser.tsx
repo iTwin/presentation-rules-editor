@@ -3,12 +3,13 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import * as React from "react";
-import { CellProps } from "react-table";
 import { IModelMetadata } from "@app/common";
 import { SvgImodelHollow, SvgMore } from "@itwin/itwinui-icons-react";
 import { FluidGrid } from "@itwin/itwinui-layouts-react";
 import { Anchor, DropdownMenu, IconButton, MenuItem, Table, Text } from "@itwin/itwinui-react";
+import { Column } from "@itwin/itwinui-react/react-table";
+import * as React from "react";
+import { CellProps } from "react-table";
 import { appNavigationContext } from "../AppContext";
 import { AsyncActionButton } from "../common/AsyncActionButton";
 import { VerticalStack } from "../common/CenteredStack";
@@ -89,6 +90,13 @@ interface TableViewProps {
   openSnapshotsFolder: () => void;
 }
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+type TableData = {
+  name: string;
+  size: string;
+  dateModified: string;
+};
+
 function TableView(props: TableViewProps): React.ReactElement {
   const navigation = React.useContext(appNavigationContext);
   const { openSnapshotsFolder } = props;
@@ -106,37 +114,32 @@ function TableView(props: TableViewProps): React.ReactElement {
     ];
     return [
       {
-        Header: "Table",
-        columns: [
-          {
-            Header: "Name",
-            accessor: "name",
-            Cell(cellProps: CellProps<{}, string>) {
-              return <Anchor onClick={() => navigation.openRulesetEditor(cellProps.value)}>{cellProps.value}</Anchor>;
-            },
-          },
-          { Header: "File size", accessor: "size" },
-          { Header: "Date modified", accessor: "dateModified" },
-          {
-            Header: "",
-            id: "actions",
-            maxWidth: 48,
-            columnClassName: "iui-slot",
-            cellClassName: "iui-slot",
-            Cell() {
-              return (
-                <DropdownMenu menuItems={menuItems}>
-                  <IconButton styleType="borderless">
-                    <SvgMore />
-                  </IconButton>
-                </DropdownMenu>
-              );
-            },
-          },
-        ],
+        Header: "Name",
+        accessor: "name",
+        Cell(cellProps: CellProps<{}, string>) {
+          return <Anchor onClick={() => navigation.openRulesetEditor(cellProps.value)}>{cellProps.value}</Anchor>;
+        },
+      },
+      { Header: "File size", accessor: "size" },
+      { Header: "Date modified", accessor: "dateModified" },
+      {
+        Header: "",
+        id: "actions",
+        maxWidth: 48,
+        columnClassName: "iui-slot",
+        cellClassName: "iui-slot",
+        Cell() {
+          return (
+            <DropdownMenu menuItems={menuItems}>
+              <IconButton styleType="borderless">
+                <SvgMore />
+              </IconButton>
+            </DropdownMenu>
+          );
+        },
       },
     ];
-  }, [navigation, openSnapshotsFolder]);
+  }, [navigation, openSnapshotsFolder]) satisfies Column<TableData>[];
 
   const tableData = props.availableIModels?.map((iModel) => ({
     name: iModel.name,

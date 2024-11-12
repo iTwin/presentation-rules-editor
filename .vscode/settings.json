@@ -29,6 +29,7 @@
     "sidenav",
     "signin",
     "signout",
+    "tablist",
     "testid",
     "threagile",
     "twinjs",
@@ -63,7 +64,8 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
   },
 
   "eslint.useFlatConfig": true,

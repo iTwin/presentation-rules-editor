@@ -3,14 +3,13 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import * as React from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { CellProps } from "react-table";
 import { assert } from "@itwin/core-bentley";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgImodelHollow, SvgProject } from "@itwin/itwinui-icons-react";
 import { FluidGrid } from "@itwin/itwinui-layouts-react";
 import { Anchor, Button, Table, Text, Tile } from "@itwin/itwinui-react";
+import * as React from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { appNavigationContext } from "../AppContext";
 import { AuthorizationState, useAuthorization } from "../Authorization";
 import { HorizontalStack, VerticalStack } from "../common/CenteredStack";
@@ -18,6 +17,8 @@ import { OfflineModeExplainer } from "../common/OfflineModeExplainer";
 import { getITwinIModels, getUserProjects, IModelRepresentation, ITwinRepresentation } from "../ITwinApi";
 import { LoadingHint } from "../ITwinJsApp/common/LoadingHint";
 import { iModelBrowserContext, IModelTile } from "./IModelBrowser";
+
+import type { CellProps, Column } from "@itwin/itwinui-react/react-table";
 
 export function ITwinBrowser(): React.ReactElement {
   const { userAuthorizationClient: authorizationClient, state, signIn } = useAuthorization();
@@ -106,32 +107,39 @@ interface ITwinBrowserTableViewProps {
   iTwins: ITwinRepresentation[] | undefined;
 }
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+type ITwinBrowserTableData = {
+  id: string;
+  name: string;
+  dateCreated: string;
+};
+
 function ITwinBrowserTableView(props: ITwinBrowserTableViewProps): React.ReactElement {
   const navigate = useNavigate();
   const columns = React.useMemo(
     () => [
       {
-        Header: "Table",
-        columns: [
-          {
-            Header: "Name",
-            accessor: "name",
-            Cell(cellProps: CellProps<{ id: string }>) {
-              return <Anchor onClick={() => navigate(cellProps.row.original.id)}>{cellProps.value}</Anchor>;
-            },
-          },
-          { Header: "Date created", accessor: "dateCreated" },
-        ],
+        id: "name",
+        Header: "Name",
+        accessor: "name",
+        Cell(cellProps: CellProps<ITwinBrowserTableData>) {
+          return <Anchor onClick={() => navigate(cellProps.row.original.id)}>{cellProps.value}</Anchor>;
+        },
       },
+      { id: "dateCreated", Header: "Date created", accessor: "dateCreated" },
     ],
     [navigate],
+  ) satisfies Column<ITwinBrowserTableData>[];
+  const data = React.useMemo(
+    () =>
+      props.iTwins?.map((iTwin) => ({
+        id: iTwin.id,
+        name: iTwin.displayName,
+        dateCreated: new Date(iTwin.createdDateTime).toLocaleDateString(),
+      })),
+    [props.iTwins],
   );
-  const tableData = props.iTwins?.map((iTwin) => ({
-    id: iTwin.id,
-    name: iTwin.displayName,
-    dateCreated: new Date(iTwin.createdDateTime).toLocaleDateString(),
-  }));
-  return <Table columns={columns} data={tableData ?? []} isLoading={tableData === undefined} emptyTableContent="" />;
+  return <Table columns={columns} data={data ?? []} isLoading={data === undefined} emptyTableContent="" />;
 }
 
 export function ITwinIModelBrowser(): React.ReactElement {
@@ -210,30 +218,34 @@ interface IModelBrowserTableViewProps {
   iModels: IModelRepresentation[] | undefined;
 }
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+type IModelBrowserTableData = {
+  id: string;
+  iTwinId: string;
+  name: string;
+  description: string | null;
+  dateCreated: string;
+};
+
 function IModelBrowserTableView(props: IModelBrowserTableViewProps): React.ReactElement {
   const navigation = React.useContext(appNavigationContext);
   const columns = React.useMemo(
     () => [
       {
-        Header: "Table",
-        columns: [
-          {
-            Header: "Name",
-            accessor: "name",
-            Cell(cellProps: CellProps<{ id: string; iTwinId: string }>) {
-              const iTwinId = cellProps.row.original.iTwinId;
-              const iModelId = cellProps.row.original.id;
-              const handleClick = () => navigation.openRulesetEditor({ iTwinId, iModelId });
-              return <Anchor onClick={handleClick}>{cellProps.value}</Anchor>;
-            },
-          },
-          { Header: "Description", accessor: "description" },
-          { Header: "Date created", accessor: "dateCreated" },
-        ],
+        Header: "Name",
+        accessor: "name",
+        Cell(cellProps: CellProps<IModelBrowserTableData>) {
+          const iTwinId = cellProps.row.original.iTwinId;
+          const iModelId = cellProps.row.original.id;
+          const handleClick = () => navigation.openRulesetEditor({ iTwinId, iModelId });
+          return <Anchor onClick={handleClick}>{cellProps.value}</Anchor>;
+        },
       },
+      { Header: "Description", accessor: "description" },
+      { Header: "Date created", accessor: "dateCreated" },
     ],
     [navigation],
-  );
+  ) satisfies Column<IModelBrowserTableData>[];
   const tableData = props.iModels?.map((iModel) => ({
     id: iModel.id,
     iTwinId: iModel.iTwinId,

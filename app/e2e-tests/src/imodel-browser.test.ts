@@ -12,15 +12,19 @@ describe("iModel browser #local", () => {
   });
 
   it("gives options for browsing snapshots, iTwins and demo iModels", async () => {
-    await page.waitForSelector(".iui-tabs >> text=Local snapshots");
-    await page.waitForSelector(".iui-tabs >> text=My iTwins");
-    await page.waitForSelector(".iui-tabs >> text=Demo iModels");
+    const tabList = page.getByRole("tablist");
+    await tabList.waitFor();
+    await Promise.all([
+      page.getByRole("tab", { name: "Local snapshots" }).waitFor(),
+      page.getByRole("tab", { name: "My iTwins" }).waitFor(),
+      page.getByRole("tab", { name: "Demo iModels" }).waitFor(),
+    ]);
   });
 
   it("allows opening a snapshot iModel", async () => {
-    await page.click("text=Local snapshots");
-    await page.click("text=Baytown.bim");
-    await page.waitForSelector("text=Submit ruleset");
+    await page.getByRole("tab", { name: "Local snapshots" }).click();
+    await page.getByText("Baytown.bim").click();
+    await page.getByText("Submit ruleset").waitFor();
   });
 });
 
@@ -30,13 +34,14 @@ describe("iModel browser #web", () => {
   });
 
   it("gives options for browsing iTwins and demo iModels", async () => {
-    await page.waitForSelector(".iui-tabs >> text=My iTwins");
-    await page.waitForSelector(".iui-tabs >> text=Demo iModels");
+    const tabList = page.getByRole("tablist");
+    await tabList.waitFor();
+    await Promise.all([page.getByRole("tab", { name: "My iTwins" }).waitFor(), page.getByRole("tab", { name: "Demo iModels" }).waitFor()]);
   });
 
   it("allows opening a demo iModel", async () => {
-    await page.click("text=Demo iModels");
-    await page.click("text=Bay Town Process Plant");
-    await page.waitForSelector("text=Submit ruleset");
+    await page.getByRole("tab", { name: "Demo iModels" }).click();
+    await page.getByText("Bay Town Process Plant").click();
+    await page.getByText("Submit ruleset").waitFor();
   });
 });

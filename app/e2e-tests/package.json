@@ -29,7 +29,7 @@
     "jest-dev-server": "^10.0.0",
     "mocha": "^10.3.0",
     "mocha-junit-reporter": "^2.2.1",
-    "playwright": "^1.42.1",
+    "playwright": "^1.48.2",
     "ts-node": "^10.9.2",
     "typescript": "^4.9.5"
   }

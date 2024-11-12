@@ -150,8 +150,8 @@ importers:
         specifier: ^2.2.1
         version: 2.2.1(mocha@10.3.0)
       playwright:
-        specifier: ^1.42.1
-        version: 1.42.1
+        specifier: ^1.48.2
+        version: 1.48.2
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@16.18.89)(typescript@4.9.5)
@@ -372,7 +372,7 @@ importers:
   presentation-rules-editor-react:
     dependencies:
       '@itwin/itwinui-react':
-        specifier: 3.15.5
+        specifier: ^3.15.5
         version: 3.15.5(@types/react@17.0.78)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     devDependencies:
       '@itwin/appui-abstract':
@@ -4134,14 +4134,14 @@ packages:
     resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==}
     engines: {node: '>=8'}
 
-  playwright-core@1.42.1:
-    resolution: {integrity: sha512-mxz6zclokgrke9p1vtdy/COWBH+eOZgYUVVU34C73M+4j4HLlQJHtfcqiqqxpP0o8HhMkflvfbquLX5dg6wlfA==}
-    engines: {node: '>=16'}
+  playwright-core@1.48.2:
+    resolution: {integrity: sha512-sjjw+qrLFlriJo64du+EK0kJgZzoQPsabGF4lBvsid+3CNIZIYLgnMj9V6JY5VhM2Peh20DJWIVpVljLLnlawA==}
+    engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.42.1:
-    resolution: {integrity: sha512-PgwB03s2DZBcNRoW+1w9E+VkLBxweib6KTXM0M3tkiT4jVxKSi6PmVJ591J+0u10LUrgxB7dLRbiJqO5s2QPMg==}
-    engines: {node: '>=16'}
+  playwright@1.48.2:
+    resolution: {integrity: sha512-NjYvYgp4BPmiwfe31j4gHLa3J7bD2WiBz8Lk2RoSsmX38SVIARZ18VYjxLjAcDsAhA+F4iSEXTSGgjua0rrlgQ==}
+    engines: {node: '>=18'}
     hasBin: true
 
   possible-typed-array-names@1.0.0:
@@ -9671,11 +9671,11 @@ snapshots:
     dependencies:
       find-up: 4.1.0
 
-  playwright-core@1.42.1: {}
+  playwright-core@1.48.2: {}
 
-  playwright@1.42.1:
+  playwright@1.48.2:
     dependencies:
-      playwright-core: 1.42.1
+      playwright-core: 1.48.2
     optionalDependencies:
       fsevents: 2.3.2
 

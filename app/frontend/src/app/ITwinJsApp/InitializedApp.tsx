@@ -3,23 +3,22 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import "./InitializedApp.scss";
-import * as monaco from "monaco-editor";
-import * as React from "react";
 import { StagePanelState, WidgetState } from "@itwin/appui-react";
 import { AuthorizationClient } from "@itwin/core-common";
 import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-frontend";
-import { useToaster } from "@itwin/itwinui-react";
 import { ChildNodeSpecificationTypes, ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
 import { EditableRuleset, SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
+import * as monaco from "monaco-editor";
+import * as React from "react";
 import { useIModelBrowserSettings } from "../IModelBrowser/IModelBrowser";
 import { applyUrlPrefix } from "../utils/Environment";
 import { BackendApi } from "./api/BackendApi";
 import { ContentTabs } from "./content-tabs/ContentTabs";
 import { areIModelIdentifiersEqual, IModelIdentifier, isDemoIModel, isSnapshotIModel } from "./IModelIdentifier";
+import "./InitializedApp.scss";
 import { backendApiContext, rulesetEditorContext, RulesetEditorTab } from "./ITwinJsAppContext";
 import { parseEditorState } from "./misc/EditorStateSerializer";
-import { displayToast, Toaster } from "./misc/Notifications";
+import { useToastMessage } from "./misc/UseToastMessage";
 import { Frontstage } from "./ui-framework/Frontstage";
 import { StagePanel, StagePanelZone } from "./ui-framework/StagePanel";
 import { UIFramework } from "./ui-framework/UIFramework";
@@ -114,8 +113,8 @@ function useIModel(
   iModelIdentifier: IModelIdentifier,
   authorizationClient: AuthorizationClient | undefined,
 ): IModelConnection | undefined {
+  const toaster = useToastMessage();
   const [iModel, setIModel] = React.useState<IModelConnection>();
-  const toaster = useToaster();
   const setMostRecentIModel = useRecentIModels();
 
   React.useEffect(() => {
@@ -139,9 +138,9 @@ function useIModel(
         }
       } catch (error) {
         if (isSnapshotIModel(iModelIdentifier)) {
-          displayIModelError(toaster, IModelApp.localization.getLocalizedString("App:error:imodel-open-local", { imodel: iModelIdentifier }), error);
+          toaster(OutputMessagePriority.Error, IModelApp.localization.getLocalizedString("App:error:imodel-open-local", { imodel: iModelIdentifier }));
         } else {
-          displayIModelError(toaster, IModelApp.localization.getLocalizedString("App:error:imodel-open-remote"), error);
+          toaster(OutputMessagePriority.Error, IModelApp.localization.getLocalizedString("App:error:imodel-open-remote"));
         }
       }
     })();
@@ -154,9 +153,9 @@ function useIModel(
           await openedIModel.close();
         } catch (error) {
           if (isSnapshotIModel(iModelIdentifier)) {
-            displayIModelError(toaster, IModelApp.localization.getLocalizedString("App:error:imodel-close-local", { imodel: iModelIdentifier }), error);
+            toaster(OutputMessagePriority.Error, IModelApp.localization.getLocalizedString("App:error:imodel-close-local", { imodel: iModelIdentifier }));
           } else {
-            displayIModelError(toaster, IModelApp.localization.getLocalizedString("App:error:imodel-close-remote"), error);
+            toaster(OutputMessagePriority.Error, IModelApp.localization.getLocalizedString("App:error:imodel-close-remote"));
           }
         }
       })();
@@ -175,11 +174,6 @@ function useRecentIModels(): (iModelIdentifier: IModelIdentifier) => void {
       return { ...prevState, recentIModels: newRecentIModels.slice(-10) };
     });
   }).current;
-}
-
-function displayIModelError(toaster: Toaster, message: string, error: unknown): void {
-  const errorMessage = error && typeof error === "object" ? (error as { message: unknown }).message : error;
-  displayToast(toaster, OutputMessagePriority.Error, message, typeof errorMessage === "string" ? errorMessage : undefined);
 }
 
 interface UseSoloRulesetEditorReturnType {

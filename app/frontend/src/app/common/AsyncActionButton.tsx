@@ -27,14 +27,10 @@ export function AsyncActionButton(props: AsyncActionButtonProps): React.ReactEle
 
   return (
     <div className="async-action-button">
-      {/* <Button disabled={actionInProgress} onClick={handleButtonClick}>
-        {props.children}
-      </Button>
-      {actionInProgress && <ProgressRadial indeterminate={true} size="small" />} */}
       <Button disabled={actionInProgress} onClick={handleButtonClick}>
         {props.children}
       </Button>
-      <ProgressRadial className="action-in-progress-radial" indeterminate={true} size="small" />
+      {actionInProgress && <ProgressRadial className="action-in-progress-radial" indeterminate={true} size="small" />}
     </div>
   );
 }

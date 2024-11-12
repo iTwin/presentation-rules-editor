@@ -1,0 +1,36 @@
+/*---------------------------------------------------------------------------------------------
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
+import { OutputMessagePriority } from "@itwin/core-frontend";
+import { useToaster } from "@itwin/itwinui-react";
+import * as React from "react";
+
+export function useToastMessage() {
+  const toaster = useToaster();
+  toaster.setSettings({ placement: "top" });
+
+  return React.useCallback(
+    (messageType: OutputMessagePriority, messageShort: string) => {
+      switch (messageType) {
+        case OutputMessagePriority.Fatal:
+        case OutputMessagePriority.Error:
+          toaster.negative(messageShort);
+          break;
+        case OutputMessagePriority.Warning:
+          toaster.warning(messageShort, { duration: 3000 });
+          break;
+        case OutputMessagePriority.Info:
+        case OutputMessagePriority.Debug:
+        case OutputMessagePriority.None:
+          toaster.informational(messageShort, { duration: 3000 });
+          break;
+        case OutputMessagePriority.Success:
+          toaster.positive(messageShort, { duration: 3000 });
+          break;
+      }
+    },
+    [toaster],
+  );
+}

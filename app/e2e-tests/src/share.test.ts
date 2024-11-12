@@ -86,15 +86,19 @@ describe("opening shared link #local #web", () => {
   it("offers user to sign in when link points to a private iModel", async () => {
     await page.goto(`${getServiceUrl()}/open-imodel?iTwinId=test_itwin&iModelId=test_imodel`);
 
-    const appHeader = await page.waitForSelector(".iui-page-header");
-    const options = await page.waitForSelector(".landing-page-options");
-    expect(await options?.textContent()).to.contain(process.env.WEB_TEST || (await appHeader.$('text="Offline mode"')) === null ? "Sign In" : "Go to homepage");
+    const appHeader = page.locator(".page-header");
+    const options = page.locator(".landing-page-options");
+    await Promise.all([appHeader.waitFor(), options.waitFor()]);
+
+    const offlineMode = appHeader.getByText("Offline mode");
+    const isOfflineModeVisible = await offlineMode.isVisible();
+    expect(await options?.textContent()).to.contain(process.env.WEB_TEST || isOfflineModeVisible === false ? "Sign In" : "Go to homepage");
   });
 });
 
 describe("opening snapshot link in #web", () => {
   it("shows user 404 error", async () => {
     await page.goto(`${getServiceUrl()}/open-imodel?snapshot=test_snapshot`);
-    await page.waitForSelector('text="Page Not Found"');
+    await page.getByText("Page Not Found").waitFor();
   });
 });
