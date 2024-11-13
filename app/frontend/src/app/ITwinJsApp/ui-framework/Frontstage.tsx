@@ -7,6 +7,7 @@ import {
   ConfigurableUiContent,
   ContentGroup,
   ContentLayoutDef,
+  Frontstage as FrontstageFromAppUI,
   StagePanelConfig,
   StagePanelLocation,
   StagePanelSection,
