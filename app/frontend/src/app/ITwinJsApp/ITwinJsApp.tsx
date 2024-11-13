@@ -3,9 +3,8 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import * as React from "react";
 import { rpcInterfaces } from "@app/common";
-import { AppNotificationManager, FrameworkReducer, StateManager, UiFramework } from "@itwin/appui-react";
+import { AppNotificationManager, UiFramework } from "@itwin/appui-react";
 import { Logger, LogLevel } from "@itwin/core-bentley";
 import { AuthorizationClient, BentleyCloudRpcManager, ChangesetIndexAndId, IModelVersion, RpcConfiguration } from "@itwin/core-common";
 import { FrontendHubAccess, IModelApp, IModelIdArg } from "@itwin/core-frontend";
@@ -13,6 +12,7 @@ import { ITwinLocalization } from "@itwin/core-i18n";
 import { FrontendIModelsAccess } from "@itwin/imodels-access-frontend";
 import { IModelsClient } from "@itwin/imodels-client-management";
 import { Presentation } from "@itwin/presentation-frontend";
+import * as React from "react";
 import { LoadingIndicator } from "../common/LoadingIndicator";
 import { applyUrlPrefix, EXPERIMENTAL_STATION_VALUE_RENDERER } from "../utils/Environment";
 import { BackendApi } from "./api/BackendApi";
@@ -98,8 +98,7 @@ async function initializePresentation(appFrontend: BackendApi): Promise<void> {
 }
 
 async function initializeUIFramework(): Promise<void> {
-  await UiFramework.initialize(undefined);
-  new StateManager({ frameworkState: FrameworkReducer });
+  await UiFramework.initialize();
 }
 
 class HubAccess implements FrontendHubAccess {

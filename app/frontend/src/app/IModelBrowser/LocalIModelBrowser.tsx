@@ -7,9 +7,8 @@ import { IModelMetadata } from "@app/common";
 import { SvgImodelHollow, SvgMore } from "@itwin/itwinui-icons-react";
 import { FluidGrid } from "@itwin/itwinui-layouts-react";
 import { Anchor, DropdownMenu, IconButton, MenuItem, Table, Text } from "@itwin/itwinui-react";
-import { Column } from "@itwin/itwinui-react/react-table";
+import { CellProps, Column } from "@itwin/itwinui-react/react-table";
 import * as React from "react";
-import { CellProps } from "react-table";
 import { appNavigationContext } from "../AppContext";
 import { AsyncActionButton } from "../common/AsyncActionButton";
 import { VerticalStack } from "../common/CenteredStack";
@@ -90,6 +89,8 @@ interface TableViewProps {
   openSnapshotsFolder: () => void;
 }
 
+type TableData = Record<"name" | "size" | "dateModified", string>;
+
 function TableView(props: TableViewProps): React.ReactElement {
   const navigation = React.useContext(appNavigationContext);
   const { openSnapshotsFolder } = props;
@@ -109,7 +110,7 @@ function TableView(props: TableViewProps): React.ReactElement {
       {
         Header: "Name",
         accessor: "name",
-        Cell(cellProps: CellProps<{}, string>) {
+        Cell(cellProps: CellProps<TableData>) {
           return <Anchor onClick={() => navigation.openRulesetEditor(cellProps.value)}>{cellProps.value}</Anchor>;
         },
       },
@@ -132,7 +133,7 @@ function TableView(props: TableViewProps): React.ReactElement {
         },
       },
     ];
-  }, [navigation, openSnapshotsFolder]) satisfies Column<Record<"name" | "size" | "dateModified", string>>[];
+  }, [navigation, openSnapshotsFolder]) satisfies Column<TableData>[];
 
   const tableData = props.availableIModels?.map((iModel) => ({
     name: iModel.name,
