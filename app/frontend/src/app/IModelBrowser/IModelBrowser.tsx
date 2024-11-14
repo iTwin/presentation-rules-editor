@@ -3,13 +3,12 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import "./IModelBrowser.scss";
-import * as React from "react";
-import { Outlet, useMatch, useNavigate } from "react-router-dom";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgHistory, SvgImodel, SvgList, SvgSearch, SvgThumbnails } from "@itwin/itwinui-icons-react";
 import { FluidGrid, Grid, PageLayout } from "@itwin/itwinui-layouts-react";
 import { ButtonGroup, IconButton, LabeledInput, MenuItem, Surface, Tab, Tabs, Text, Tile } from "@itwin/itwinui-react";
+import * as React from "react";
+import { Outlet, useMatch, useNavigate } from "react-router-dom";
 import { AppPage, AppSideNavigation } from "../App";
 import { appNavigationContext } from "../AppContext";
 import { useAuthorization } from "../Authorization";
@@ -18,6 +17,7 @@ import { useLocalStorage } from "../common/LocalStorage";
 import { getIModel, getIModelThumbnail } from "../ITwinApi";
 import { BackendApi } from "../ITwinJsApp/api/BackendApi";
 import { demoIModels, IModelIdentifier, isDemoIModel, isIModelIdentifier, isSnapshotIModel, ITwinIModelIdentifier } from "../ITwinJsApp/IModelIdentifier";
+import "./IModelBrowser.scss";
 
 export interface IModelBrowserProps {
   backendApiPromise: Promise<BackendApi> | undefined;
@@ -75,12 +75,14 @@ export const IModelBrowser = React.memo(function IModelBrowser(props: IModelBrow
                       <IconButton
                         isActive={settings.displayMode === "grid"}
                         onClick={() => setSettings((prevState) => ({ ...prevState, displayMode: "grid" }))}
+                        label="Open grid view"
                       >
                         <SvgThumbnails />
                       </IconButton>
                       <IconButton
                         isActive={settings.displayMode === "list"}
                         onClick={() => setSettings((prevState) => ({ ...prevState, displayMode: "list" }))}
+                        label="Open list view"
                       >
                         <SvgList />
                       </IconButton>

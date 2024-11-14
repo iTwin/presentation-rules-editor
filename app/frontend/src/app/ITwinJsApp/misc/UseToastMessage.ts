@@ -9,10 +9,10 @@ import * as React from "react";
 
 export function useToastMessage() {
   const toaster = useToaster();
-  toaster.setSettings({ placement: "top" });
 
   return React.useCallback(
     (messageType: OutputMessagePriority, messageShort: string) => {
+      toaster.setSettings({ placement: "top" });
       switch (messageType) {
         case OutputMessagePriority.Fatal:
         case OutputMessagePriority.Error:

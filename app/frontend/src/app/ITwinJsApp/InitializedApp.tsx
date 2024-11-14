@@ -35,11 +35,15 @@ export interface InitializedAppProps {
 
 export function InitializedApp(props: InitializedAppProps): React.ReactElement | null {
   const imodel = useIModel(props.backendApi, props.iModelIdentifier, props.authorizationClient);
-  const { editableRuleset, rulesetEditor } = useSoloRulesetEditor(defaultRuleset);
+  const soloRulesetEditor = useSoloRulesetEditor(defaultRuleset);
   const [editorContext, setEditorContext] = React.useState({
     activeTab: RulesetEditorTab.Editor,
     setActiveTab: (tab: RulesetEditorTab) => setEditorContext((prevState) => ({ ...prevState, activeTab: tab })),
   });
+
+  if (!soloRulesetEditor) {
+    return null;
+  }
 
   return (
     <backendApiContext.Provider value={props.backendApi}>
@@ -48,10 +52,10 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement |
           <UIFramework>
             <Frontstage
               rightPanel={
-                <StagePanel size={450}>
+                <StagePanel sizeSpec={450}>
                   <StagePanelZone>
                     <Widget id="TreeWidget" label={IModelApp.localization.getLocalizedString("App:label:tree-widget")} defaultState={WidgetState.Open}>
-                      <TreeWidget imodel={imodel} ruleset={editableRuleset} />
+                      <TreeWidget imodel={imodel} ruleset={soloRulesetEditor.editableRuleset} />
                     </Widget>
                   </StagePanelZone>
                   <StagePanelZone>
@@ -60,22 +64,22 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement |
                       label={IModelApp.localization.getLocalizedString("App:label:property-grid-widget")}
                       defaultState={WidgetState.Open}
                     >
-                      <PropertyGridWidget imodel={imodel} ruleset={editableRuleset} />
+                      <PropertyGridWidget imodel={imodel} ruleset={soloRulesetEditor.editableRuleset} />
                     </Widget>
                   </StagePanelZone>
                 </StagePanel>
               }
               bottomPanel={
-                <StagePanel size={300} defaultState={StagePanelState.Minimized}>
+                <StagePanel sizeSpec={300} defaultState={StagePanelState.Minimized}>
                   <StagePanelZone>
                     <Widget id="TableWidget" label={IModelApp.localization.getLocalizedString("App:label:table-widget")} defaultState={WidgetState.Open}>
-                      <TableWidget imodel={imodel} ruleset={editableRuleset} />
+                      <TableWidget imodel={imodel} ruleset={soloRulesetEditor.editableRuleset} />
                     </Widget>
                   </StagePanelZone>
                 </StagePanel>
               }
             >
-              <ContentTabs imodel={imodel} editor={rulesetEditor} />
+              <ContentTabs imodel={imodel} editor={soloRulesetEditor.rulesetEditor} />
             </Frontstage>
           </UIFramework>
         </div>
@@ -182,9 +186,10 @@ interface UseSoloRulesetEditorReturnType {
 }
 
 /** Instantiates and manages the lifetimes of {@linkcode EditableRuleset} and {@linkcode SoloRulesetEditor}. */
-function useSoloRulesetEditor(initialRuleset: Ruleset): UseSoloRulesetEditorReturnType {
-  const result = React.useRef(undefined as unknown as UseSoloRulesetEditorReturnType);
-  if (result.current === undefined) {
+function useSoloRulesetEditor(initialRuleset: Ruleset): UseSoloRulesetEditorReturnType | undefined {
+  const [result, setResult] = React.useState<UseSoloRulesetEditorReturnType>();
+
+  React.useEffect(() => {
     const editorSettings = parseEditorState(window.location.hash);
     const editableRuleset = new EditableRuleset({
       initialRuleset: editorSettings ? parseRuleset(editorSettings.ruleset) : initialRuleset,
@@ -195,17 +200,15 @@ function useSoloRulesetEditor(initialRuleset: Ruleset): UseSoloRulesetEditorRetu
       initialContent: editorSettings?.ruleset,
       contributions: { submitButton: true },
     });
-    result.current = { editableRuleset, rulesetEditor };
-  }
+    setResult({ editableRuleset, rulesetEditor });
 
-  React.useEffect(() => {
     return () => {
-      result.current.rulesetEditor.dispose();
-      result.current.editableRuleset.dispose();
+      rulesetEditor.dispose();
+      editableRuleset.dispose();
     };
-  }, []);
+  }, [initialRuleset]);
 
-  return result.current;
+  return result;
 }
 
 function parseRuleset(rulesetContent: string): Ruleset {

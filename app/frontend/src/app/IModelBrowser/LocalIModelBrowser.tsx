@@ -24,6 +24,7 @@ export function LocalIModelBrowser(props: LocalIModelBrowserProps): React.ReactE
   const backendApi = useBackendApi(props.backendApiPromise);
   const { displayMode, searchQuery } = React.useContext(iModelBrowserContext);
   const availableIModels = useAvailableIModels(backendApi, searchQuery);
+  const openSnapshotsFolder = React.useCallback(async () => backendApi?.openIModelsDirectory(), [backendApi]);
   if (availableIModels?.length === 0) {
     return (
       <VerticalStack className="imodel-browser-no-data">
@@ -35,8 +36,6 @@ export function LocalIModelBrowser(props: LocalIModelBrowserProps): React.ReactE
       </VerticalStack>
     );
   }
-
-  const openSnapshotsFolder = async () => backendApi?.openIModelsDirectory();
 
   return displayMode === "grid" ? (
     <GridView availableIModels={availableIModels} openSnapshotsFolder={openSnapshotsFolder} />
@@ -62,7 +61,10 @@ function useAvailableIModels(backendApi: BackendApi | undefined, searchQuery: st
   }, [backendApi]);
 
   searchQuery = searchQuery.trim().toLowerCase();
-  return availableIModels?.filter(({ name }) => searchQuery === "" || name.toLowerCase().includes(searchQuery));
+  return React.useMemo(
+    () => availableIModels?.filter(({ name }) => searchQuery === "" || name.toLowerCase().includes(searchQuery)),
+    [availableIModels, searchQuery],
+  );
 }
 
 interface GridViewProps {
@@ -93,7 +95,7 @@ type TableData = Record<"name" | "size" | "dateModified", string>;
 
 function TableView(props: TableViewProps): React.ReactElement {
   const navigation = React.useContext(appNavigationContext);
-  const { openSnapshotsFolder } = props;
+  const { openSnapshotsFolder, availableIModels } = props;
   const columns = React.useMemo(() => {
     const menuItems = (close: () => void) => [
       <MenuItem
@@ -125,7 +127,7 @@ function TableView(props: TableViewProps): React.ReactElement {
         Cell() {
           return (
             <DropdownMenu menuItems={menuItems}>
-              <IconButton styleType="borderless">
+              <IconButton styleType="borderless" label="Open actions">
                 <SvgMore />
               </IconButton>
             </DropdownMenu>
@@ -135,10 +137,14 @@ function TableView(props: TableViewProps): React.ReactElement {
     ];
   }, [navigation, openSnapshotsFolder]) satisfies Column<TableData>[];
 
-  const tableData = props.availableIModels?.map((iModel) => ({
-    name: iModel.name,
-    dateModified: iModel.dateModified.toLocaleDateString(),
-    size: iModel.size,
-  }));
-  return <Table columns={columns} data={tableData ?? []} isLoading={tableData === undefined} emptyTableContent="" />;
+  const tableData = React.useMemo(
+    () =>
+      availableIModels?.map((iModel) => ({
+        name: iModel.name,
+        dateModified: iModel.dateModified.toLocaleDateString(),
+        size: iModel.size,
+      })) ?? [],
+    [availableIModels],
+  );
+  return <Table columns={columns} data={tableData} isLoading={availableIModels === undefined} emptyTableContent="" />;
 }

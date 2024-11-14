@@ -52,7 +52,7 @@ export function AppHeader(): React.ReactElement {
       );
       break;
     case AuthorizationState.SignedIn:
-      actions.push(<HeaderUserIcon profile={user.profile} signOut={signOut} />);
+      actions.push(<HeaderUserIcon profile={user.profile} key="signout" signOut={signOut} />);
       break;
   }
 

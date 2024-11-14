@@ -2,6 +2,7 @@
  * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
+
 import { IModelMetadata, PresentationRulesEditorRpcInterface } from "@app/common";
 import { Guid, Id64, Id64String, Logger } from "@itwin/core-bentley";
 import { BentleyCloudRpcProtocol, IModelVersion } from "@itwin/core-common";
@@ -22,7 +23,7 @@ export class BackendApi {
   public async openIModel(iModelIdentifier: IModelIdentifier): Promise<IModelConnection> {
     if (isSnapshotIModel(iModelIdentifier)) {
       Logger.logInfo("presentation", `Opening snapshot: ${iModelIdentifier}`);
-      return SnapshotConnection.openFile(iModelIdentifier);
+      return SnapshotConnection.openFile(`assets/imodels/${iModelIdentifier}`);
     }
 
     if (isDemoIModel(iModelIdentifier)) {
