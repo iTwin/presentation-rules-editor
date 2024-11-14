@@ -131,10 +131,10 @@ function ITwinBrowserTableView(props: ITwinBrowserTableViewProps): React.ReactEl
         id: iTwin.id,
         name: iTwin.displayName,
         dateCreated: new Date(iTwin.createdDateTime).toLocaleDateString(),
-      })),
+      })) ?? [],
     [props.iTwins],
   );
-  return <Table columns={columns} data={data ?? []} isLoading={data === undefined} emptyTableContent="" />;
+  return <Table columns={columns} data={data} isLoading={props.iTwins === undefined} emptyTableContent="" />;
 }
 
 export function ITwinIModelBrowser(): React.ReactElement {
@@ -234,14 +234,18 @@ function IModelBrowserTableView(props: IModelBrowserTableViewProps): React.React
     ],
     [navigation],
   ) satisfies Column<IModelBrowserTableData>[];
-  const tableData = props.iModels?.map((iModel) => ({
-    id: iModel.id,
-    iTwinId: iModel.iTwinId,
-    name: iModel.displayName,
-    description: iModel.description ?? "",
-    dateCreated: new Date(iModel.createdDateTime).toLocaleDateString(),
-  }));
-  return <Table columns={columns} data={tableData ?? []} isLoading={tableData === undefined} emptyTableContent="" />;
+  const tableData = React.useMemo(
+    () =>
+      props.iModels?.map((iModel) => ({
+        id: iModel.id,
+        iTwinId: iModel.iTwinId,
+        name: iModel.displayName,
+        description: iModel.description ?? "",
+        dateCreated: new Date(iModel.createdDateTime).toLocaleDateString(),
+      })) ?? [],
+    [props.iModels],
+  );
+  return <Table columns={columns} data={tableData} isLoading={props.iModels === undefined} emptyTableContent="" />;
 }
 
 function useDebouncedAsyncEffect(effect: (disposedRef: { current: boolean }) => Promise<void>, dependencies: unknown[], cooldownMilliseconds: number): void {
