@@ -13,19 +13,20 @@ describe("header #local", () => {
   });
 
   it("populates header with opened snapshot information", async () => {
-    const header = await page.waitForSelector(".iui-page-header nav");
-    expect(await header.waitForSelector('text="Local snapshots"'));
-    expect(await header.waitForSelector("text=Baytown.bim"));
+    const header = page.getByRole("navigation", { name: "breadcrumbs" });
+    expect(await header.getByText("Local snapshots").isVisible()).to.be.true;
+    expect(await header.getByText("Baytown.bim").isVisible()).to.be.true;
   });
 
   it("allows navigating to snapshot iModels browser", async () => {
-    await page.click('text="Local snapshots"');
-    expect(await page.waitForSelector("button.iui-tab.iui-active >> text='Local snapshots'"));
+    await page.getByText("Local snapshots").click();
+    await page.getByRole("tab", { name: "Local snapshots", selected: true }).waitFor();
   });
 
   it("clears breadcrumbs after navigating to home", async () => {
-    await page.click('text="Local snapshots"');
-    const header = await page.waitForSelector(".iui-page-header nav", { state: "attached" });
+    await page.getByText("Local snapshots").click();
+    const header = page.getByRole("navigation", { name: "breadcrumbs" });
+    await header.waitFor({ state: "attached" });
     expect(await header.textContent()).to.be.empty;
   });
 });
@@ -36,19 +37,21 @@ describe("header #web", () => {
   });
 
   it("populates header with opened demo iModel information", async () => {
-    const header = await page.waitForSelector(".iui-page-header nav");
-    expect(header.$('text="Demo iModel"'));
-    expect(header.$('text="Bay Town Process Plant"'));
+    const header = page.getByRole("navigation", { name: "breadcrumbs" });
+    await header.waitFor();
+    expect(await header.getByText("Demo iModel").isVisible()).to.be.true;
+    expect(await header.getByText("Bay Town Process Plant").isVisible()).to.be.true;
   });
 
   it("allows navigating to demo iModels browser", async () => {
-    await page.click('text="Demo iModels"');
-    expect(await page.waitForSelector("button.iui-tab.iui-active >> text='Demo iModels'"));
+    await page.getByText("Demo iModels").click();
+    await page.getByRole("tab", { name: "Demo iModels", selected: true }).waitFor();
   });
 
   it("clears breadcrumbs after navigating to home", async () => {
-    await page.click('text="Presentation Rules Editor"');
-    const header = await page.waitForSelector(".iui-page-header nav", { state: "attached" });
+    await page.getByText("Presentation Rules Editor").click();
+    const header = page.getByRole("navigation", { name: "breadcrumbs" });
+    await header.waitFor({ state: "attached" });
     expect(await header.textContent()).to.be.empty;
   });
 });

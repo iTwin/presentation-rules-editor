@@ -11,7 +11,7 @@ export function getServiceUrl(): string {
 
 export async function loadHomepage(page: Page): Promise<void> {
   await page.goto(getServiceUrl());
-  await page.waitForSelector("text=Presentation Rules Editor");
+  await page.getByText("Presentation Rules Editor").waitFor();
 }
 
 export async function openIModelBrowser(page: Page): Promise<void> {
@@ -21,14 +21,14 @@ export async function openIModelBrowser(page: Page): Promise<void> {
 
 export async function openTestIModel(page: Page): Promise<void> {
   await page.goto(`${getServiceUrl()}/open-imodel?snapshot=Baytown.bim`);
-  await page.waitForSelector("id=app-loader", { state: "detached" });
+  await page.locator("id=app-loader").waitFor({ state: "detached" });
 }
 
 export async function openDemoIModel(page: Page): Promise<void> {
   const iTwinId = "b27dc251-0e53-4a36-9a38-182fc309be07";
   const iModelId = "f30566da-8fdf-4cba-b09a-fd39f5397ae6";
   await page.goto(`${getServiceUrl()}/open-imodel?iTwinId=${iTwinId}&iModelId=${iModelId}`);
-  await page.waitForSelector("id=app-loader", { state: "detached" });
+  await page.locator("id=app-loader").waitFor({ state: "detached" });
 }
 
 export function getWidget(page: Page, widget: string): Locator {

@@ -30,9 +30,9 @@
     "prettier:fix": "prettier --write ."
   },
   "engines": {
-    "pnpm": ">=8",
+    "pnpm": ">=9",
     "npm": "<0",
-    "node": ">=18"
+    "node": ">=20"
   },
   "dependencies": {
     "cross-env": "^7.0.3",

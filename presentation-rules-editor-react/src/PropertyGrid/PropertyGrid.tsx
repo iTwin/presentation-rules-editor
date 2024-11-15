@@ -3,12 +3,12 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import * as React from "react";
 import {
   FlatGridItemType,
   IMutableFlatGridItem,
   IMutableGridCategoryItem,
   IMutablePropertyGridModel,
+  Orientation,
   PropertyCategory,
   PropertyData,
   usePropertyGridEventHandler,
@@ -17,13 +17,13 @@ import {
   VirtualizedPropertyGrid,
 } from "@itwin/components-react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { Orientation } from "@itwin/core-react";
 import { ProgressRadial } from "@itwin/itwinui-react";
 import {
   PresentationPropertyDataProvider,
   PresentationPropertyDataProviderProps,
   usePropertyDataProviderWithUnifiedSelection,
 } from "@itwin/presentation-components";
+import * as React from "react";
 import { CenteredContent } from "../CenteredContent";
 import { EditableRuleset } from "../EditableRuleset";
 
@@ -165,7 +165,6 @@ function useDataProvider(
       {
         imodel: iModel,
         ruleset: editableRuleset.id,
-        enableContentAutoUpdate: true,
       },
       keepExpandedRef,
     );

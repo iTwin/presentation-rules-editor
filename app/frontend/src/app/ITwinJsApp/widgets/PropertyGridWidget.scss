@@ -3,22 +3,6 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-.property-grid {
-  display: grid;
-  grid-template-rows: 44px 1fr;
-
-  > .controls {
-    display: flex;
-    align-items: center;
-    margin: 0 4px;
-  }
-
-  > .iui-toggle-switch {
-    justify-self: end;
-    margin-right: 12px;
-  }
-}
-
 .presentation-rules-editor-property-grid {
   padding: var(--iui-size-2xs);
   padding-right: 0;

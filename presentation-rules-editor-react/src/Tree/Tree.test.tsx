@@ -3,12 +3,11 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { expect } from "chai";
-import * as sinon from "sinon";
 import * as componentsReact from "@itwin/components-react";
-import { ControlledTreeProps } from "@itwin/components-react";
 import * as presentationComponents from "@itwin/presentation-components";
 import { render } from "@testing-library/react";
+import { expect } from "chai";
+import * as sinon from "sinon";
 import { EditableRuleset } from "../EditableRuleset";
 import { stubPresentationManager } from "../TestUtils";
 import { Tree } from "./Tree";
@@ -37,16 +36,14 @@ describe("Tree", () => {
   it("enables hierarchy auto update", () => {
     const editableRuleset = new EditableRuleset({ initialRuleset: { id: "", rules: [] } });
     render(<Tree width={100} height={100} iModel={{} as any} editableRuleset={editableRuleset} />);
-    expect(presentationComponents.usePresentationTreeState).to.have.been.calledOnce.and.calledWithMatch(
-      sinon.match({ ruleset: editableRuleset.id, enableHierarchyAutoUpdate: true }),
-    );
+    expect(presentationComponents.usePresentationTreeState).to.have.been.calledOnce.and.calledWithMatch(sinon.match({ ruleset: editableRuleset.id }));
   });
 
   it("renders with `PresentationTreeRenderer`", () => {
     const editableRuleset = new EditableRuleset({ initialRuleset: { id: "", rules: [] } });
     render(<Tree width={100} height={100} iModel={{} as any} editableRuleset={editableRuleset} />);
     expect(componentsReact.ControlledTree).to.have.been.calledOnce.and.calledWith(
-      sinon.match((props: ControlledTreeProps) => {
+      sinon.match((props: componentsReact.ControlledTreeProps) => {
         expect(props.treeRenderer).to.not.be.undefined;
         expect(presentationComponents.PresentationTreeRenderer).to.not.be.called;
         render(props.treeRenderer!({} as any));

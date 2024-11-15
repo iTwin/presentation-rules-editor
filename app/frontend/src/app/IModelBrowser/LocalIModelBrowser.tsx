@@ -3,12 +3,12 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import * as React from "react";
-import { CellProps } from "react-table";
 import { IModelMetadata } from "@app/common";
 import { SvgImodelHollow, SvgMore } from "@itwin/itwinui-icons-react";
 import { FluidGrid } from "@itwin/itwinui-layouts-react";
-import { Anchor, DropdownMenu, IconButton, MenuItem, Table, TableProps, Text } from "@itwin/itwinui-react";
+import { Anchor, DropdownMenu, IconButton, MenuItem, Table, Text } from "@itwin/itwinui-react";
+import { CellProps, Column } from "@itwin/itwinui-react/react-table";
+import * as React from "react";
 import { appNavigationContext } from "../AppContext";
 import { AsyncActionButton } from "../common/AsyncActionButton";
 import { VerticalStack } from "../common/CenteredStack";
@@ -24,6 +24,7 @@ export function LocalIModelBrowser(props: LocalIModelBrowserProps): React.ReactE
   const backendApi = useBackendApi(props.backendApiPromise);
   const { displayMode, searchQuery } = React.useContext(iModelBrowserContext);
   const availableIModels = useAvailableIModels(backendApi, searchQuery);
+  const openSnapshotsFolder = React.useCallback(async () => backendApi?.openIModelsDirectory(), [backendApi]);
   if (availableIModels?.length === 0) {
     return (
       <VerticalStack className="imodel-browser-no-data">
@@ -35,8 +36,6 @@ export function LocalIModelBrowser(props: LocalIModelBrowserProps): React.ReactE
       </VerticalStack>
     );
   }
-
-  const openSnapshotsFolder = async () => backendApi?.openIModelsDirectory();
 
   return displayMode === "grid" ? (
     <GridView availableIModels={availableIModels} openSnapshotsFolder={openSnapshotsFolder} />
@@ -62,7 +61,10 @@ function useAvailableIModels(backendApi: BackendApi | undefined, searchQuery: st
   }, [backendApi]);
 
   searchQuery = searchQuery.trim().toLowerCase();
-  return availableIModels?.filter(({ name }) => searchQuery === "" || name.toLowerCase().includes(searchQuery));
+  return React.useMemo(
+    () => availableIModels?.filter(({ name }) => searchQuery === "" || name.toLowerCase().includes(searchQuery)),
+    [availableIModels, searchQuery],
+  );
 }
 
 interface GridViewProps {
@@ -89,10 +91,12 @@ interface TableViewProps {
   openSnapshotsFolder: () => void;
 }
 
+type TableData = Record<"name" | "size" | "dateModified", string>;
+
 function TableView(props: TableViewProps): React.ReactElement {
   const navigation = React.useContext(appNavigationContext);
-  const { openSnapshotsFolder } = props;
-  const columns = React.useMemo<TableProps["columns"]>(() => {
+  const { openSnapshotsFolder, availableIModels } = props;
+  const columns = React.useMemo(() => {
     const menuItems = (close: () => void) => [
       <MenuItem
         key="open-folder"
@@ -106,42 +110,41 @@ function TableView(props: TableViewProps): React.ReactElement {
     ];
     return [
       {
-        Header: "Table",
-        columns: [
-          {
-            Header: "Name",
-            accessor: "name",
-            Cell(cellProps: CellProps<{}, string>) {
-              return <Anchor onClick={() => navigation.openRulesetEditor(cellProps.value)}>{cellProps.value}</Anchor>;
-            },
-          },
-          { Header: "File size", accessor: "size" },
-          { Header: "Date modified", accessor: "dateModified" },
-          {
-            Header: "",
-            id: "actions",
-            maxWidth: 48,
-            columnClassName: "iui-slot",
-            cellClassName: "iui-slot",
-            Cell() {
-              return (
-                <DropdownMenu menuItems={menuItems}>
-                  <IconButton styleType="borderless">
-                    <SvgMore />
-                  </IconButton>
-                </DropdownMenu>
-              );
-            },
-          },
-        ],
+        Header: "Name",
+        accessor: "name",
+        Cell(cellProps: CellProps<TableData>) {
+          return <Anchor onClick={() => navigation.openRulesetEditor(cellProps.value)}>{cellProps.value}</Anchor>;
+        },
+      },
+      { Header: "File size", accessor: "size" },
+      { Header: "Date modified", accessor: "dateModified" },
+      {
+        Header: "",
+        id: "actions",
+        maxWidth: 48,
+        columnClassName: "iui-slot",
+        cellClassName: "iui-slot",
+        Cell() {
+          return (
+            <DropdownMenu menuItems={menuItems}>
+              <IconButton styleType="borderless" label="Open actions">
+                <SvgMore />
+              </IconButton>
+            </DropdownMenu>
+          );
+        },
       },
     ];
-  }, [navigation, openSnapshotsFolder]);
+  }, [navigation, openSnapshotsFolder]) satisfies Column<TableData>[];
 
-  const tableData = props.availableIModels?.map((iModel) => ({
-    name: iModel.name,
-    dateModified: iModel.dateModified.toLocaleDateString(),
-    size: iModel.size,
-  }));
-  return <Table columns={columns} data={tableData ?? []} isLoading={tableData === undefined} emptyTableContent="" />;
+  const tableData = React.useMemo(
+    () =>
+      availableIModels?.map((iModel) => ({
+        name: iModel.name,
+        dateModified: iModel.dateModified.toLocaleDateString(),
+        size: iModel.size,
+      })) ?? [],
+    [availableIModels],
+  );
+  return <Table columns={columns} data={tableData} isLoading={availableIModels === undefined} emptyTableContent="" />;
 }

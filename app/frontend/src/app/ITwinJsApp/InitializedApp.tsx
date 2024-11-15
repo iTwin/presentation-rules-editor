@@ -3,22 +3,22 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import "./InitializedApp.scss";
-import * as monaco from "monaco-editor";
-import * as React from "react";
 import { StagePanelState, WidgetState } from "@itwin/appui-react";
 import { AuthorizationClient } from "@itwin/core-common";
 import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-frontend";
 import { ChildNodeSpecificationTypes, ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
 import { EditableRuleset, SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
+import * as monaco from "monaco-editor";
+import * as React from "react";
 import { useIModelBrowserSettings } from "../IModelBrowser/IModelBrowser";
 import { applyUrlPrefix } from "../utils/Environment";
 import { BackendApi } from "./api/BackendApi";
 import { ContentTabs } from "./content-tabs/ContentTabs";
 import { areIModelIdentifiersEqual, IModelIdentifier, isDemoIModel, isSnapshotIModel } from "./IModelIdentifier";
+import "./InitializedApp.scss";
 import { backendApiContext, rulesetEditorContext, RulesetEditorTab } from "./ITwinJsAppContext";
 import { parseEditorState } from "./misc/EditorStateSerializer";
-import { displayToast } from "./misc/Notifications";
+import { useToastMessage } from "./misc/UseToastMessage";
 import { Frontstage } from "./ui-framework/Frontstage";
 import { StagePanel, StagePanelZone } from "./ui-framework/StagePanel";
 import { UIFramework } from "./ui-framework/UIFramework";
@@ -35,11 +35,15 @@ export interface InitializedAppProps {
 
 export function InitializedApp(props: InitializedAppProps): React.ReactElement | null {
   const imodel = useIModel(props.backendApi, props.iModelIdentifier, props.authorizationClient);
-  const { editableRuleset, rulesetEditor } = useSoloRulesetEditor(defaultRuleset);
+  const soloRulesetEditor = useSoloRulesetEditor(defaultRuleset);
   const [editorContext, setEditorContext] = React.useState({
     activeTab: RulesetEditorTab.Editor,
     setActiveTab: (tab: RulesetEditorTab) => setEditorContext((prevState) => ({ ...prevState, activeTab: tab })),
   });
+
+  if (!soloRulesetEditor) {
+    return null;
+  }
 
   return (
     <backendApiContext.Provider value={props.backendApi}>
@@ -48,10 +52,10 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement |
           <UIFramework>
             <Frontstage
               rightPanel={
-                <StagePanel size={450}>
+                <StagePanel sizeSpec={450}>
                   <StagePanelZone>
                     <Widget id="TreeWidget" label={IModelApp.localization.getLocalizedString("App:label:tree-widget")} defaultState={WidgetState.Open}>
-                      <TreeWidget imodel={imodel} ruleset={editableRuleset} />
+                      <TreeWidget imodel={imodel} ruleset={soloRulesetEditor.editableRuleset} />
                     </Widget>
                   </StagePanelZone>
                   <StagePanelZone>
@@ -60,22 +64,22 @@ export function InitializedApp(props: InitializedAppProps): React.ReactElement |
                       label={IModelApp.localization.getLocalizedString("App:label:property-grid-widget")}
                       defaultState={WidgetState.Open}
                     >
-                      <PropertyGridWidget imodel={imodel} ruleset={editableRuleset} />
+                      <PropertyGridWidget imodel={imodel} ruleset={soloRulesetEditor.editableRuleset} />
                     </Widget>
                   </StagePanelZone>
                 </StagePanel>
               }
               bottomPanel={
-                <StagePanel size={300} defaultState={StagePanelState.Minimized}>
+                <StagePanel sizeSpec={300} defaultState={StagePanelState.Minimized}>
                   <StagePanelZone>
                     <Widget id="TableWidget" label={IModelApp.localization.getLocalizedString("App:label:table-widget")} defaultState={WidgetState.Open}>
-                      <TableWidget imodel={imodel} ruleset={editableRuleset} />
+                      <TableWidget imodel={imodel} ruleset={soloRulesetEditor.editableRuleset} />
                     </Widget>
                   </StagePanelZone>
                 </StagePanel>
               }
             >
-              <ContentTabs imodel={imodel} editor={rulesetEditor} />
+              <ContentTabs imodel={imodel} editor={soloRulesetEditor.rulesetEditor} />
             </Frontstage>
           </UIFramework>
         </div>
@@ -113,6 +117,7 @@ function useIModel(
   iModelIdentifier: IModelIdentifier,
   authorizationClient: AuthorizationClient | undefined,
 ): IModelConnection | undefined {
+  const toaster = useToastMessage();
   const [iModel, setIModel] = React.useState<IModelConnection>();
   const setMostRecentIModel = useRecentIModels();
 
@@ -137,9 +142,9 @@ function useIModel(
         }
       } catch (error) {
         if (isSnapshotIModel(iModelIdentifier)) {
-          displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-open-local", { imodel: iModelIdentifier }), error);
+          toaster(OutputMessagePriority.Error, IModelApp.localization.getLocalizedString("App:error:imodel-open-local", { imodel: iModelIdentifier }));
         } else {
-          displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-open-remote"), error);
+          toaster(OutputMessagePriority.Error, IModelApp.localization.getLocalizedString("App:error:imodel-open-remote"));
         }
       }
     })();
@@ -152,14 +157,14 @@ function useIModel(
           await openedIModel.close();
         } catch (error) {
           if (isSnapshotIModel(iModelIdentifier)) {
-            displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-close-local", { imodel: iModelIdentifier }), error);
+            toaster(OutputMessagePriority.Error, IModelApp.localization.getLocalizedString("App:error:imodel-close-local", { imodel: iModelIdentifier }));
           } else {
-            displayIModelError(IModelApp.localization.getLocalizedString("App:error:imodel-close-remote"), error);
+            toaster(OutputMessagePriority.Error, IModelApp.localization.getLocalizedString("App:error:imodel-close-remote"));
           }
         }
       })();
     };
-  }, [authorizationClient, backendApi, iModelIdentifier, setMostRecentIModel]);
+  }, [authorizationClient, backendApi, iModelIdentifier, setMostRecentIModel, toaster]);
 
   return iModel;
 }
@@ -175,20 +180,16 @@ function useRecentIModels(): (iModelIdentifier: IModelIdentifier) => void {
   }).current;
 }
 
-function displayIModelError(message: string, error: unknown): void {
-  const errorMessage = error && typeof error === "object" ? (error as { message: unknown }).message : error;
-  displayToast(OutputMessagePriority.Error, message, typeof errorMessage === "string" ? errorMessage : undefined);
-}
-
 interface UseSoloRulesetEditorReturnType {
   editableRuleset: EditableRuleset;
   rulesetEditor: SoloRulesetEditor;
 }
 
 /** Instantiates and manages the lifetimes of {@linkcode EditableRuleset} and {@linkcode SoloRulesetEditor}. */
-function useSoloRulesetEditor(initialRuleset: Ruleset): UseSoloRulesetEditorReturnType {
-  const result = React.useRef(undefined as unknown as UseSoloRulesetEditorReturnType);
-  if (result.current === undefined) {
+function useSoloRulesetEditor(initialRuleset: Ruleset): UseSoloRulesetEditorReturnType | undefined {
+  const [result, setResult] = React.useState<UseSoloRulesetEditorReturnType>();
+
+  React.useEffect(() => {
     const editorSettings = parseEditorState(window.location.hash);
     const editableRuleset = new EditableRuleset({
       initialRuleset: editorSettings ? parseRuleset(editorSettings.ruleset) : initialRuleset,
@@ -199,17 +200,15 @@ function useSoloRulesetEditor(initialRuleset: Ruleset): UseSoloRulesetEditorRetu
       initialContent: editorSettings?.ruleset,
       contributions: { submitButton: true },
     });
-    result.current = { editableRuleset, rulesetEditor };
-  }
+    setResult({ editableRuleset, rulesetEditor });
 
-  React.useEffect(() => {
     return () => {
-      result.current.rulesetEditor.dispose();
-      result.current.editableRuleset.dispose();
+      rulesetEditor.dispose();
+      editableRuleset.dispose();
     };
-  }, []);
+  }, [initialRuleset]);
 
-  return result.current;
+  return result;
 }
 
 function parseRuleset(rulesetContent: string): Ruleset {

@@ -3,10 +3,23 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
+import {
+  Avatar,
+  Button,
+  DropdownMenu,
+  getUserColor,
+  Header,
+  HeaderBreadcrumbs,
+  HeaderLogo,
+  IconButton,
+  MenuDivider,
+  MenuExtraContent,
+  MenuItem,
+  Text,
+} from "@itwin/itwinui-react";
 import { UserProfile } from "oidc-client-ts";
 import * as React from "react";
-import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
-import { Avatar, Button, DropdownMenu, getUserColor, Header, HeaderBreadcrumbs, HeaderLogo, IconButton, MenuItem } from "@itwin/itwinui-react";
 import { appNavigationContext } from "./AppContext";
 import { AuthorizationState, useAuthorization } from "./Authorization";
 import { HorizontalStack } from "./common/CenteredStack";
@@ -18,7 +31,7 @@ export function AppHeader(): React.ReactElement {
   const navigation = React.useContext(appNavigationContext);
 
   const actions = [
-    <IconButton key="Repository" as="a" href="https://github.com/iTwin/presentation-rules-editor" title="Source code" styleType="borderless">
+    <IconButton key="Repository" as="a" href="https://github.com/iTwin/presentation-rules-editor" label="Source code" styleType="borderless">
       <GitHubLogoSmall />
     </IconButton>,
   ];
@@ -38,9 +51,10 @@ export function AppHeader(): React.ReactElement {
         </Button>,
       );
       break;
+    case AuthorizationState.SignedIn:
+      actions.push(<HeaderUserIcon profile={user.profile} key="signout" signOut={signOut} />);
+      break;
   }
-
-  const userIcon = state === AuthorizationState.SignedIn && user !== undefined ? <HeaderUserIcon profile={user.profile} signOut={signOut} /> : null;
 
   return (
     <Header
@@ -51,7 +65,6 @@ export function AppHeader(): React.ReactElement {
       }
       breadcrumbs={<Breadcrumbs />}
       actions={actions}
-      userIcon={userIcon}
     />
   );
 }
@@ -71,12 +84,16 @@ function HeaderUserIcon(props: HeaderUserIconProps): React.ReactElement | null {
   return (
     <DropdownMenu
       menuItems={() => [
-        <MenuItem key="signout" onClick={signOut}>
-          Sign Out
+        <MenuExtraContent key={"displayName"}>
+          <Text variant="leading">{displayName}</Text>
+        </MenuExtraContent>,
+        <MenuDivider key={"divider"} />,
+        <MenuItem key={"signout"} onClick={signOut}>
+          Sign out
         </MenuItem>,
       ]}
     >
-      <IconButton styleType="borderless" title="Account Actions">
+      <IconButton styleType="borderless" label="Account Actions">
         <Avatar title={displayName} abbreviation={initials} backgroundColor={getUserColor(displayName)} />
       </IconButton>
     </DropdownMenu>

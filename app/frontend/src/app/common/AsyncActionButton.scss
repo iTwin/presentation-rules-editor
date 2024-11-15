@@ -3,18 +3,6 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-.async-action-button {
-  // Counteract 'position: absolute' that is going to be applied to the progress indicator
-  position: relative;
-
-  > div.iui-progress-indicator-radial {
-    // Make progress indicator not be considered when determining element layout
-    position: absolute;
-
-    // Position the progress indicator
-    height: 100%;
-    display: inline-flex;
-    align-items: center;
-    margin-left: 10px;
-  }
+.action-in-progress-radial {
+  margin-left: 10px;
 }

@@ -3,9 +3,6 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import "./PropertyGridWidget.scss";
-import * as React from "react";
-import { ErrorBoundary } from "react-error-boundary";
 import { IModelApp, IModelConnection } from "@itwin/core-frontend";
 import { SvgCollapseAll, SvgExpandAll } from "@itwin/itwinui-icons-react";
 import { SvgError, SvgTimedOut } from "@itwin/itwinui-illustrations-react";
@@ -13,12 +10,15 @@ import { Button, IconButton, NonIdealState } from "@itwin/itwinui-react";
 import { PresentationError, PresentationStatus } from "@itwin/presentation-common";
 import { UnifiedSelectionContextProvider } from "@itwin/presentation-components";
 import { EditableRuleset, PropertyGrid, PropertyGridAttributes } from "@itwin/presentation-rules-editor-react";
+import * as React from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { VerticalStack } from "../../common/CenteredStack";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
 import { AutoSizer } from "../common/AutoSizer";
 import { LoadingHint } from "../common/LoadingHint";
 import { OpeningIModelHint } from "../common/OpeningIModelHint";
 import { rulesetEditorContext, RulesetEditorTab } from "../ITwinJsAppContext";
+import "./PropertyGridWidget.scss";
 
 export interface PropertyGridProps {
   imodel: IModelConnection | undefined;
@@ -77,10 +77,10 @@ function LoadedPropertyGrid(props: LoadedPropertyGridProps): React.ReactElement 
         {({ width, height }) => (
           <>
             <div className="presentation-rules-editor-property-grid-controls" data-hovered={!suppressControls && hovered}>
-              <IconButton styleType="borderless" isActive={keepExpanded} title={keepExpanded ? "Turn off auto-expand" : "Expand"} onClick={handleExpandClick}>
+              <IconButton styleType="borderless" isActive={keepExpanded} label={keepExpanded ? "Turn off auto-expand" : "Expand"} onClick={handleExpandClick}>
                 <SvgExpandAll />
               </IconButton>
-              <IconButton styleType="borderless" title="Collapse" onClick={handleCollapseClick}>
+              <IconButton styleType="borderless" label="Collapse" onClick={handleCollapseClick}>
                 <SvgCollapseAll />
               </IconButton>
             </div>

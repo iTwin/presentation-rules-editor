@@ -3,16 +3,16 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import "./ContentTabs.scss";
-import * as React from "react";
 import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-frontend";
 import { SvgLink } from "@itwin/itwinui-icons-react";
 import { Button, Tabs } from "@itwin/itwinui-react";
 import { SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
+import * as React from "react";
 import { OpeningIModelHint } from "../common/OpeningIModelHint";
 import { rulesetEditorContext, RulesetEditorTab } from "../ITwinJsAppContext";
 import { serializeEditorState } from "../misc/EditorStateSerializer";
-import { displayToast } from "../misc/Notifications";
+import { useToastMessage } from "../misc/UseToastMessage";
+import "./ContentTabs.scss";
 import { EditorTab } from "./EditorTab";
 import { ViewportTab } from "./ViewportTab";
 
@@ -57,10 +57,11 @@ interface ShareButtonProps {
 }
 
 function ShareButton(props: ShareButtonProps): React.ReactElement {
+  const toaster = useToastMessage();
   const handleShareButtonClick = async () => {
     window.location.hash = serializeEditorState(props.editor.model.getValue());
     await navigator.clipboard.writeText(window.location.toString());
-    displayToast(OutputMessagePriority.Success, IModelApp.localization.getLocalizedString("App:toast:link-copied"));
+    toaster(OutputMessagePriority.Success, IModelApp.localization.getLocalizedString("App:toast:link-copied"));
   };
 
   return (

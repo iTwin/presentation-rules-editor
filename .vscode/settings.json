@@ -29,8 +29,11 @@
     "sidenav",
     "signin",
     "signout",
+    "tablist",
     "testid",
+    "threagile",
     "twinjs",
+    "typecheck",
     "unicodes",
     "unmangled",
     "unregisters",
@@ -52,7 +55,7 @@
     "wdth",
     "wght"
   ],
-  "cSpell.ignorePaths": ["package.json", ".vscode", "*.yaml"],
+  "cSpell.ignorePaths": ["package.json", ".vscode", "*.yaml", "*.yml"],
   "cSpell.ignoreRegExpList": ["from\\s\".*\";"],
 
   "editor.insertSpaces": true,
@@ -61,7 +64,8 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
   },
 
   "eslint.useFlatConfig": true,

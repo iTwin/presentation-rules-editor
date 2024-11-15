@@ -3,15 +3,11 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import React, { ReactElement } from "react";
 import {
-  ConfigurableCreateInfo,
   ConfigurableUiContent,
   ContentGroup,
   ContentLayoutDef,
-  ContentControl as FrameworkContentControl,
-  FrontstageConfig as FrameworkFrontstageConfig,
-  FrontstageProvider,
+  Frontstage as FrontstageFromAppUI,
   StagePanelConfig,
   StagePanelLocation,
   StagePanelSection,
@@ -20,6 +16,7 @@ import {
   UiItemsProvider,
   Widget,
 } from "@itwin/appui-react";
+import React, { ReactElement } from "react";
 import { StagePanelProps, StagePanelZoneProps } from "./StagePanel";
 
 export interface FrontstageProps {
@@ -36,11 +33,24 @@ export const Frontstage: React.FC<FrontstageProps> = (props) => {
   React.useEffect(
     () => {
       void (async () => {
-        const frontstage = new CustomFrontstageProvider({
-          rightPanel: props.rightPanel,
-          bottomPanel: props.bottomPanel,
-        });
-        UiFramework.frontstages.addFrontstageProvider(frontstage);
+        const frontstage: FrontstageFromAppUI = {
+          rightPanel: getStagePanelConfig(props.rightPanel?.props),
+          bottomPanel: getStagePanelConfig(props.bottomPanel?.props),
+          version: 1,
+          id: "CustomFrontstage",
+          contentGroup: new ContentGroup({
+            id: "root_content_group",
+            layout: new ContentLayoutDef({ id: "root_content_group_layout" }),
+            // Remove classId after migrating to appuiV5
+            contents: [{ id: "root_content_group_content", classId: "", content: <ContentFromContext /> }],
+          }),
+        };
+        const stagePanels = new Map([
+          [StagePanelLocation.Right, createStagePanel(props?.rightPanel?.props.children)],
+          [StagePanelLocation.Bottom, createStagePanel(props?.bottomPanel?.props.children)],
+        ]);
+        UiItemsManager.register(new WidgetsProvider(stagePanels));
+        UiFramework.frontstages.addFrontstage(frontstage);
         const frontstageDef = await UiFramework.frontstages.getFrontstageDef(frontstage.id);
         await UiFramework.frontstages.setActiveFrontstageDef(frontstageDef);
       })();
@@ -79,48 +89,6 @@ function gatherWidgetContents(props: FrontstageProps): Map<string, ReactElement 
     collectWidgetContentsFromStagePanels(props.bottomPanel);
   }
   return widgetContents;
-}
-
-/** Defines a Frontstage with content and widget shims. Content for the shims is provided via React Context API. */
-interface CustomFrontstageProviderProps {
-  rightPanel?: React.ReactElement<StagePanelProps>;
-  bottomPanel?: React.ReactElement<StagePanelProps>;
-}
-class CustomFrontstageProvider extends FrontstageProvider {
-  private contentGroup: ContentGroup;
-  private rightPanelProps?: StagePanelProps;
-  private bottomPanelProps?: StagePanelProps;
-
-  constructor(props?: CustomFrontstageProviderProps) {
-    super();
-
-    this.rightPanelProps = props?.rightPanel?.props;
-    this.bottomPanelProps = props?.bottomPanel?.props;
-
-    this.contentGroup = new ContentGroup({
-      id: "root_content_group",
-      layout: new ContentLayoutDef({ id: "root_content_group_layout" }),
-      contents: [{ id: "root_content_group_content", classId: ContentControlShim }],
-    });
-
-    const stagePanels = new Map([
-      [StagePanelLocation.Right, createStagePanel(props?.rightPanel?.props.children)],
-      [StagePanelLocation.Bottom, createStagePanel(props?.bottomPanel?.props.children)],
-    ]);
-    UiItemsManager.register(new WidgetsProvider(stagePanels));
-  }
-
-  public readonly id = "main_frontstage_provider";
-
-  public override frontstageConfig(): FrameworkFrontstageConfig {
-    return {
-      version: 1,
-      id: "CustomFrontstage",
-      contentGroup: this.contentGroup,
-      rightPanel: getStagePanelConfig(this.rightPanelProps),
-      bottomPanel: getStagePanelConfig(this.bottomPanelProps),
-    };
-  }
 }
 
 function getStagePanelConfig(props: StagePanelProps | undefined): StagePanelConfig | undefined {
@@ -170,15 +138,6 @@ function createStagePanel(panelChildren: StagePanelProps["children"]): Map<Stage
       ...widget.props,
       content: <WidgetFromContext id={widget.props.id} />,
     }));
-  }
-}
-
-/** Renders ContentControl content from the context */
-class ContentControlShim extends FrameworkContentControl {
-  constructor(info: ConfigurableCreateInfo, options: unknown) {
-    super(info, options);
-
-    this._reactNode = <ContentFromContext />;
   }
 }
 

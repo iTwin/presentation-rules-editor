@@ -37,7 +37,6 @@ export function Tree(props: TreeProps) {
     imodel: props.iModel,
     ruleset: props.editableRuleset.id,
     pagingSize: 20,
-    enableHierarchyAutoUpdate: true,
     eventHandlerFactory,
   });
 
@@ -52,7 +51,7 @@ export function Tree(props: TreeProps) {
       height={props.height}
       state={state}
       selectionMode={SelectionMode.Extended}
-      treeRenderer={(treeProps) => <PresentationTreeRenderer {...treeProps} imodel={props.iModel} modelSource={state.nodeLoader.modelSource} />}
+      treeRenderer={(treeProps) => <PresentationTreeRenderer {...treeProps} nodeLoader={state.nodeLoader} />}
     />
   );
 }

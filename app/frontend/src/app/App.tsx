@@ -5,6 +5,7 @@
 
 import "./App.scss";
 import "@itwin/itwinui-layouts-css/styles.css";
+import "@itwin/itwinui-react/styles.css";
 import * as React from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { SvgDeveloper, SvgFolderOpened } from "@itwin/itwinui-icons-react";
