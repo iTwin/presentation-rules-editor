@@ -6,9 +6,9 @@
 import { expect } from "chai";
 import * as monaco from "monaco-editor";
 import * as sinon from "sinon";
-import { EditableRuleset } from "../EditableRuleset";
-import { SinonStub, stubPresentationManager } from "../TestUtils";
-import { SoloRulesetEditor } from "./SoloRulesetEditor";
+import { EditableRuleset } from "../EditableRuleset.js";
+import { SinonStub, stubPresentationManager } from "../TestUtils.js";
+import { SoloRulesetEditor } from "./SoloRulesetEditor.js";
 
 describe("SoloRulesetEditor", () => {
   let editableRuleset: EditableRuleset;

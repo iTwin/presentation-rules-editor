@@ -2,13 +2,12 @@
   "name": "@itwin/presentation-rules-editor-react",
   "description": "iTwin.js Presentation Rules Editor React components",
   "version": "0.1.1",
+  "type": "module",
   "scripts": {
     "build": "run-p build:* copy:*",
-    "build:cjs": "tsc --project tsconfig.build.json --outDir ./lib/cjs --module CommonJS",
-    "build:esm": "tsc --project tsconfig.build.json --outDir ./lib/esm --module ES2020",
-    "copy:cjs": "cpx \"./src/**/*.*css\" ./lib/cjs/src",
+    "build:esm": "tsc --project tsconfig.esm.json --outDir ./lib/esm --module NodeNext",
     "copy:esm": "cpx \"./src/**/*.*css\" ./lib/esm/src",
-    "test": "cross-env TS_NODE_TRANSPILE_ONLY=1 mocha -r ts-node/register -r global-jsdom/register -r ignore-styles --exit --file ./src/TestSetup.ts '**/*.test.ts' '**/*.test.tsx'",
+    "test": "cross-env NODE_OPTIONS=\"--import ../ignore-styles.cjs\" mocha --enable-source-maps --config ./.mocharc.json",
     "test:cover": "nyc npm test",
     "lint": "eslint src/**/*.{ts,tsx}",
     "typecheck": "tsc --noEmit",
@@ -67,9 +66,9 @@
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "@itwin/itwinui-react": "^3.15.5",
+    "@itwin/itwinui-react": "^3.16.0",
     "@itwin/appui-abstract": "^4.10.1",
-    "@itwin/components-react": "^4.17.5",
+    "@itwin/components-react": "^4.17.6",
     "@itwin/core-bentley": "^4.10.1",
     "@itwin/core-common": "^4.10.1",
     "@itwin/core-frontend": "^4.10.1",
@@ -77,9 +76,9 @@
     "@itwin/core-i18n": "^4.10.1",
     "@itwin/core-orbitgt": "^4.10.1",
     "@itwin/core-quantity": "^4.10.1",
-    "@itwin/core-react": "^4.17.5",
+    "@itwin/core-react": "^4.17.6",
     "@itwin/eslint-plugin": "^4.1.1",
-    "@itwin/imodel-components-react": "^4.17.5",
+    "@itwin/imodel-components-react": "^4.17.6",
     "@itwin/presentation-common": "^4.10.1",
     "@itwin/presentation-components": "^5.6.0",
     "@itwin/presentation-frontend": "^4.10.1",
@@ -88,6 +87,7 @@
     "@testing-library/dom": "10.4.0",
     "@types/chai": "^5.0.1",
     "@types/chai-as-promised": "^8.0.1",
+    "@types/jsdom": "21.1.7",
     "@types/mocha": "^10.0.9",
     "@types/node": "^20.17.6",
     "@types/react": "^18.3.12",
@@ -111,6 +111,7 @@
     "sinon": "^19.0.2",
     "sinon-chai": "^4.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^4.9.5"
+    "typescript": "^5.6.3",
+    "testdouble": "^3.20.2"
   }
 }

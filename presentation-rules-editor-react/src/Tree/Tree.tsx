@@ -12,7 +12,7 @@ import {
   UnifiedSelectionTreeEventHandler,
   usePresentationTreeState,
 } from "@itwin/presentation-components";
-import { EditableRuleset } from "../EditableRuleset";
+import { EditableRuleset } from "../EditableRuleset.js";
 
 export interface TreeProps {
   /** Width of the tree element. */

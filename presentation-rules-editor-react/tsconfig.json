@@ -1,4 +1,9 @@
 {
   "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ESNext"
+  },
   "include": ["index.ts", "src"]
 }
