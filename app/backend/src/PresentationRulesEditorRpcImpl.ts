@@ -3,13 +3,12 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import { IModelMetadata, PresentationRulesEditorRpcInterface } from "@app/common";
+import { RpcManager } from "@itwin/core-common";
 import { execFileSync } from "child_process";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-import * as prettyBytes from "pretty-bytes";
-import { IModelMetadata, PresentationRulesEditorRpcInterface } from "@app/common";
-import { RpcManager } from "@itwin/core-common";
 import { SnapshotFileNameResolver } from "./SnapshotFileNameResolver";
 
 /** The backend implementation of PresentationRulesEditorRpcInterface. */
@@ -25,8 +24,18 @@ export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcIn
       .filter((entry) => entry.isFile() && (entry.name.endsWith(".ibim") || entry.name.endsWith(".bim")))
       .map((file) => {
         const entry = fs.statSync(path.join(dir, file.name));
-        return { name: file.name, dateModified: entry.mtime, size: prettyBytes(entry.size) };
+        return { name: file.name, dateModified: entry.mtime, size: this.formatBytes(entry.size) };
       });
+  }
+
+  private formatBytes(bytes: number, decimals = 2) {
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["B", "KB", "MB", "GB", "TB", "PB"];
+
+    const i = Math.max(0, Math.floor(Math.log(bytes) / Math.log(k)));
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
   }
 
   public override async openIModelsDirectory(): Promise<void> {
