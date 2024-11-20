@@ -28,9 +28,9 @@ export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcIn
       });
   }
 
-  private formatBytes(bytes: number, decimals = 2) {
+  private formatBytes(bytes: number) {
     const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
+    const dm = 2;
     const sizes = ["B", "KB", "MB", "GB", "TB", "PB"];
 
     const i = Math.max(0, Math.floor(Math.log(bytes) / Math.log(k)));
