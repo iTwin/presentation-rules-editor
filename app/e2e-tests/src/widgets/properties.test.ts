@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Page } from "playwright";
-import { page } from "../setup";
-import { getEditor, getWidget, openTestIModel } from "../utils";
+import { page } from "../setup.js";
+import { getEditor, getWidget, openTestIModel } from "../utils.js";
 
 describe("properties widget #local", () => {
   const contentUrlIdentifier = (url: URL) => {

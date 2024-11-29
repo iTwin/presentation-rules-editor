@@ -3,14 +3,14 @@
   "compilerOptions": {
     "lib": ["DOM"],
     "jsx": "react-jsx",
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "outDir": "lib/cjs",
-    "declaration": true,
+    "outDir": "lib/esm",
     "sourceMap": true,
-    "inlineSources": true
+    "allowSyntheticDefaultImports": true,
+    "noUnusedLocals": false
   },
   "include": ["index.ts", "src/**/*"]
 }

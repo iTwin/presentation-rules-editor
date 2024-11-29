@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { expect } from "chai";
-import { page } from "./setup";
-import { openDemoIModel, openTestIModel } from "./utils";
+import { page } from "./setup.js";
+import { openDemoIModel, openTestIModel } from "./utils.js";
 
 describe("header #local", () => {
   beforeEach(async () => {

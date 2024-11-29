@@ -3,13 +3,13 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import "./SoloRulesetEditor.scss";
-import * as React from "react";
 import { assert, IDisposable } from "@itwin/core-bentley";
 import { Button } from "@itwin/itwinui-react";
 import { Ruleset } from "@itwin/presentation-common";
-import presentationRulesetSchema from "@itwin/presentation-common/Ruleset.schema.json";
-import { EditableRuleset } from "../EditableRuleset";
+import * as React from "react";
+import { EditableRuleset } from "../EditableRuleset.js";
+import presentationRulesetSchema from "./PresentationRulesetSchema.js";
+import "./SoloRulesetEditor.scss";
 
 import type * as monaco from "monaco-editor";
 
@@ -81,7 +81,12 @@ interface SoloRulesetEditorSharedData {
   savedViewState: monaco.editor.ICodeEditorViewState | undefined;
 }
 
-/* istanbul ignore next */
+interface SubmitRulesetWidgetProps {
+  editor: monaco.editor.IStandaloneCodeEditor | undefined;
+  visible: boolean;
+}
+
+/* c8 ignore start */
 function createEditor(
   monacoModule: typeof monaco,
   model: monaco.editor.ITextModel,
@@ -147,12 +152,6 @@ function createEditor(
   };
 }
 
-interface SubmitRulesetWidgetProps {
-  editor: monaco.editor.IStandaloneCodeEditor | undefined;
-  visible: boolean;
-}
-
-/* istanbul ignore next */
 const SubmitRulesetWidget = React.forwardRef<HTMLDivElement, SubmitRulesetWidgetProps>(function SubmitRulesetWidget(props, ref) {
   const handleSubmitButtonClick = () => {
     assert(props.editor !== undefined);
@@ -170,7 +169,6 @@ const SubmitRulesetWidget = React.forwardRef<HTMLDivElement, SubmitRulesetWidget
   );
 });
 
-/* istanbul ignore next */
 function contributeToMonacoEditor(monacoModule: typeof monaco, editor: monaco.editor.IStandaloneCodeEditor, submitRuleset: (ruleset: Ruleset) => void): void {
   if (!initialized) {
     monacoModule.languages.json.jsonDefaults.setDiagnosticsOptions({
@@ -202,7 +200,6 @@ function contributeToMonacoEditor(monacoModule: typeof monaco, editor: monaco.ed
 
 let initialized = false;
 
-/* istanbul ignore next */
 function parseRuleset(rulesetContent: string): Ruleset {
   try {
     const ruleset = JSON.parse(rulesetContent);
@@ -211,3 +208,5 @@ function parseRuleset(rulesetContent: string): Ruleset {
     return { id: "", rules: [] };
   }
 }
+
+/* c8 ignore stop */

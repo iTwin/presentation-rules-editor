@@ -3,9 +3,9 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import "dotenv/config";
 import CopyPlugin from "copy-webpack-plugin";
 import dotenv from "dotenv";
+import "dotenv/config";
 import fs from "fs";
 import HtmlWebpackPlugin, { HtmlTagObject } from "html-webpack-plugin";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
@@ -15,7 +15,7 @@ import { Compilation, Compiler, Configuration, DefinePlugin, WebpackPluginInstan
 
 dotenv.config({ path: "../../.env" });
 
-export default function (webpackEnv: any): Configuration & { devServer?: any } {
+export default function (webpackEnv: any): Configuration {
   const isProductionEnvironment = !webpackEnv.development;
   verifyEnvironmentVariables(isProductionEnvironment);
 
@@ -33,7 +33,7 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
           options: {
             loader: "tsx",
             jsx: "automatic",
-            target: "es2020",
+            target: "es2022",
           },
         },
         {
@@ -149,7 +149,9 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
     ],
     resolve: {
       extensions: [".ts", ".tsx", ".js"],
-      fallback: {},
+      fallback: {
+        fs: false,
+      },
     },
     ...(!isProductionEnvironment && {
       cache: {
@@ -165,6 +167,7 @@ export default function (webpackEnv: any): Configuration & { devServer?: any } {
         port: 3000,
         client: {
           overlay: {
+            warnings: false,
             runtimeErrors: (error: Error) => {
               if (error.message.startsWith("ResizeObserver")) {
                 return false;

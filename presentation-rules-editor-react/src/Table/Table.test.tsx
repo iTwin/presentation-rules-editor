@@ -3,17 +3,21 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { expect } from "chai";
-import * as sinon from "sinon";
 import { PropertyRecord } from "@itwin/appui-abstract";
 import { IModelConnection } from "@itwin/core-frontend";
 import * as itwinuiReact from "@itwin/itwinui-react";
 import { Field } from "@itwin/presentation-common";
 import * as presentationComponents from "@itwin/presentation-components";
-import { cleanup, render } from "@testing-library/react";
-import { EditableRuleset } from "../EditableRuleset";
-import { SinonStub, stubPresentationManager } from "../TestUtils";
-import { Table, TableProps } from "./Table";
+import { cleanup, render, waitFor } from "@testing-library/react";
+import { expect } from "chai";
+import * as sinon from "sinon";
+import * as td from "testdouble";
+import { EditableRuleset } from "../EditableRuleset.js";
+import { SinonStub, stubPresentationManager } from "../TestUtils.js";
+import { TableProps } from "./Table.js";
+
+const presentationComponentsModulePath = import.meta.resolve("@itwin/presentation-components");
+const iTwinUIReactModulePath = import.meta.resolve("@itwin/itwinui-react");
 
 describe("Table", () => {
   interface ColumnType {
@@ -28,17 +32,28 @@ describe("Table", () => {
     iModel: {} as IModelConnection,
   };
 
-  let stubITwinUiTable: SinonStub<typeof itwinuiReact.Table>;
+  let Table: (props: TableProps) => React.JSX.Element;
+  let stubITwinUiTable: any;
   let stubPresentationTableCellRenderer: SinonStub<typeof presentationComponents.TableCellRenderer>;
   let stubUsePresentationTable: SinonStub<typeof presentationComponents.usePresentationTableWithUnifiedSelection<ColumnType, RowType>>;
   let editableRuleset: EditableRuleset;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     stubPresentationManager();
 
-    stubITwinUiTable = sinon.stub(itwinuiReact, "Table").callsFake(() => <></>);
-    stubPresentationTableCellRenderer = sinon.stub(presentationComponents, "TableCellRenderer");
-    stubUsePresentationTable = sinon.stub(presentationComponents, "usePresentationTableWithUnifiedSelection") as any;
+    stubITwinUiTable = sinon.stub().callsFake(() => <></>);
+    stubPresentationTableCellRenderer = sinon.stub();
+    stubUsePresentationTable = sinon.stub();
+    await td.replaceEsm(iTwinUIReactModulePath, {
+      ...itwinuiReact,
+      Table: stubITwinUiTable,
+    });
+    await td.replaceEsm(presentationComponentsModulePath, {
+      ...presentationComponents,
+      TableCellRenderer: stubPresentationTableCellRenderer,
+      usePresentationTableWithUnifiedSelection: stubUsePresentationTable,
+    });
+    Table = (await import("./Table.js")).Table;
     editableRuleset = new EditableRuleset({ initialRuleset: { id: "", rules: [] } });
   });
 
@@ -48,6 +63,7 @@ describe("Table", () => {
 
     editableRuleset.dispose();
     sinon.restore();
+    td.reset();
   });
 
   describe("normal state", () => {
@@ -92,8 +108,10 @@ describe("Table", () => {
     it("uses new ruleset when editable ruleset is updated", async () => {
       render(<Table {...commonProps} editableRuleset={editableRuleset} />);
       await editableRuleset.updateRuleset({ id: "", rules: [] });
-      expect(stubUsePresentationTable).to.have.been.calledTwice;
-      expect(stubUsePresentationTable.firstCall.args[0].ruleset).not.to.equal(stubUsePresentationTable.secondCall.args[0].ruleset);
+      await waitFor(() => {
+        expect(stubUsePresentationTable).to.have.been.calledTwice;
+        expect(stubUsePresentationTable.firstCall.args[0].ruleset).not.to.equal(stubUsePresentationTable.secondCall.args[0].ruleset);
+      });
     });
 
     it("maps Presentation defs to iTwinUi Table defs", () => {

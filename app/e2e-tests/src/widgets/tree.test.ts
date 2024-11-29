@@ -3,8 +3,8 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { page } from "../setup";
-import { getEditor, getWidget, openTestIModel } from "../utils";
+import { page } from "../setup.js";
+import { getEditor, getWidget, openTestIModel } from "../utils.js";
 
 describe("tree widget #local", () => {
   beforeEach(async () => {

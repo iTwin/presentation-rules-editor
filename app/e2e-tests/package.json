@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "license": "MIT",
   "private": true,
+  "type": "module",
   "author": {
     "name": "Bentley Systems, Inc.",
     "url": "https://www.bentley.com"
@@ -10,27 +11,27 @@
   "scripts": {
     "start": "npm test",
     "lint": "eslint ./src/**/*.{ts,tsx}",
-    "test": "mocha -r ts-node/register/transpile-only --timeout 60000 --exit --grep '#local' '**/*.test.ts'",
-    "test:web": "cross-env WEB_TEST=1 mocha -r ts-node/register/transpile-only --timeout 60000 --exit --grep '#web' '**/*.test.ts'",
+    "test": "mocha --config ./.mocharc.json --grep '#local'",
+    "test:web": "cross-env WEB_TEST=1 mocha --config ./.mocharc.json --grep '#web'",
     "test:web:junit": "npm run test:web -- --reporter mocha-junit-reporter",
-    "test:debug": "cross-env PWDEBUG=1 mocha -r ts-node/register/transpile-only --timeout 99999999 --exit --grep '#local' '**/*.test.ts'",
+    "test:debug": "cross-env PWDEBUG=1 mocha --config ./.mocharc.json --timeout 99999999 --grep '#local'",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",
     "prepare": "playwright install chromium"
   },
   "dependencies": {
     "@itwin/eslint-plugin": "^4.1.1",
-    "@types/chai": "^4.3.12",
-    "@types/mocha": "^10.0.6",
+    "@types/chai": "^5.0.1",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^20.17.6",
-    "chai": "^4.4.1",
+    "chai": "^5.1.2",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.1",
-    "jest-dev-server": "^10.0.0",
-    "mocha": "^10.3.0",
+    "jest-dev-server": "^10.1.4",
+    "mocha": "^10.8.2",
     "mocha-junit-reporter": "^2.2.1",
-    "playwright": "^1.48.2",
+    "playwright": "^1.49.0",
     "ts-node": "^10.9.2",
-    "typescript": "^4.9.5"
+    "typescript": "^5.7.2"
   }
 }

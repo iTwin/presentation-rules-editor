@@ -24,8 +24,8 @@ import {
   usePropertyDataProviderWithUnifiedSelection,
 } from "@itwin/presentation-components";
 import * as React from "react";
-import { CenteredContent } from "../CenteredContent";
-import { EditableRuleset } from "../EditableRuleset";
+import { CenteredContent } from "../CenteredContent.js";
+import { EditableRuleset } from "../EditableRuleset.js";
 
 export interface PropertyGridProps {
   /** Width of the property grid element. */

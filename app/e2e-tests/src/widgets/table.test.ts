@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Page } from "playwright";
-import { page } from "../setup";
-import { getEditor, getStagePanelGrip, getWidget, openTestIModel } from "../utils";
+import { page } from "../setup.js";
+import { getEditor, getStagePanelGrip, getWidget, openTestIModel } from "../utils.js";
 
 describe("table widget #local", () => {
   const contentDescriptorUrlIdentifier = (url: URL) => {
@@ -37,7 +37,6 @@ describe("table widget #local", () => {
 
     const editor = getEditor(page);
     await editor.click();
-    await editor.press("PageDown");
     await editor.press("PageDown");
     await editor.getByText(/^"SelectedNodeInstances"$/).click();
     await editor.press("End");

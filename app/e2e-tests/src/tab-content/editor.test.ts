@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { expect } from "chai";
-import { page } from "../setup";
-import { getEditor, getWidget, openTestIModel } from "../utils";
+import { page } from "../setup.js";
+import { getEditor, getWidget, openTestIModel } from "../utils.js";
 
 describe("editor #local", () => {
   beforeEach(async () => {

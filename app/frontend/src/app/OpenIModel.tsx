@@ -3,11 +3,11 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import * as React from "react";
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgHome, SvgUser } from "@itwin/itwinui-icons-react";
 import { HeaderButton, Tile } from "@itwin/itwinui-react";
+import * as React from "react";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { AppPage, AppSideNavigation } from "./App";
 import { appNavigationContext } from "./AppContext";
 import { breadcrumbsContext } from "./AppHeader";
@@ -136,7 +136,7 @@ function OpenITwinIModel(props: OpenITwinIModelProps): React.ReactElement {
   if (iModelRequiresSignIn && state === AuthorizationState.Offline) {
     return (
       <LandingPage headline="Cannot open this iModel while in offline mode">
-        <Tile thumbnail={<SvgHome />} name="Go to homepage" isActionable onClick={() => navigate("/")} />
+        <Tile thumbnail={<SvgHome />} name="Go to homepage" isActionable onClick={async () => navigate("/")} />
       </LandingPage>
     );
   }

@@ -3,8 +3,8 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { page } from "../setup";
-import { openTestIModel } from "../utils";
+import { page } from "../setup.js";
+import { openTestIModel } from "../utils.js";
 
 describe("viewport #local", () => {
   beforeEach(async () => {

@@ -3,8 +3,8 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { page } from "./setup";
-import { openIModelBrowser } from "./utils";
+import { page } from "./setup.js";
+import { openIModelBrowser } from "./utils.js";
 
 describe("iModel browser #local", () => {
   beforeEach(async () => {
