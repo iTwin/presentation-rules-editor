@@ -3,8 +3,8 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { page } from "./setup";
-import { getWidget, openDemoIModel } from "./utils";
+import { page } from "./setup.js";
+import { getWidget, openDemoIModel } from "./utils.js";
 
 // TODO: enable this test when demo imodels work in all environments.
 describe.skip("demo iModel #web", () => {

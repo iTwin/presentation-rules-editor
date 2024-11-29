@@ -3,13 +3,13 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { User, UserManager, WebStorageStateStore } from "oidc-client-ts";
-import * as React from "react";
-import { useNavigate } from "react-router-dom";
 import { AccessToken } from "@itwin/core-bentley";
 import { AuthorizationClient } from "@itwin/core-common";
 import { PageLayout } from "@itwin/itwinui-layouts-react";
 import { Code } from "@itwin/itwinui-react";
+import { User, UserManager, WebStorageStateStore } from "oidc-client-ts";
+import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import { LoadingIndicator } from "./common/LoadingIndicator";
 import { ErrorPage } from "./errors/ErrorPage";
 import { applyUrlPrefix } from "./utils/Environment";
@@ -225,7 +225,7 @@ export function SignInCallback(): React.ReactElement {
           return;
         }
 
-        navigate(user.state || "/", { replace: true });
+        await navigate(user.state || "/", { replace: true });
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);

@@ -182,7 +182,7 @@ export function IModelBrowserTabs(props: IModelBrowserTabsProps): React.ReactEle
       type="borderless"
       labels={labels}
       activeIndex={indexToTab.indexOf(props.activeTab)}
-      onTabSelected={(index) => navigate(`../${indexToTab[index]}`, { replace: true })}
+      onTabSelected={async (index) => navigate(`../${indexToTab[index]}`, { replace: true })}
     >
       <MinimalTileAreaHeight>
         <Outlet />

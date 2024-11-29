@@ -149,7 +149,9 @@ export default function (webpackEnv: any): Configuration {
     ],
     resolve: {
       extensions: [".ts", ".tsx", ".js"],
-      fallback: {},
+      fallback: {
+        fs: false,
+      },
     },
     ...(!isProductionEnvironment && {
       cache: {
@@ -165,7 +167,6 @@ export default function (webpackEnv: any): Configuration {
         port: 3000,
         client: {
           overlay: {
-            errors: true,
             warnings: false,
             runtimeErrors: (error: Error) => {
               if (error.message.startsWith("ResizeObserver")) {

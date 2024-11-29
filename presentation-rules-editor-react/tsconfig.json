@@ -3,7 +3,8 @@
   "compilerOptions": {
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "target": "ESNext"
+    "target": "ESNext",
+    "sourceMap": true
   },
   "include": ["index.ts", "src"]
 }

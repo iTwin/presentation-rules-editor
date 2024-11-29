@@ -34,7 +34,6 @@ export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcIn
     const sizes = ["B", "KB", "MB", "GB", "TB", "PB"];
 
     const i = Math.max(0, Math.floor(Math.log(bytes) / Math.log(k)));
-
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
   }
 

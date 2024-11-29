@@ -3,14 +3,14 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import "./App.scss";
+import { SvgDeveloper, SvgFolderOpened } from "@itwin/itwinui-icons-react";
 import "@itwin/itwinui-layouts-css/styles.css";
+import { PageLayout } from "@itwin/itwinui-layouts-react";
+import { Footer, SidenavButton, SideNavigation, ThemeProvider } from "@itwin/itwinui-react";
 import "@itwin/itwinui-react/styles.css";
 import * as React from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import { SvgDeveloper, SvgFolderOpened } from "@itwin/itwinui-icons-react";
-import { PageLayout } from "@itwin/itwinui-layouts-react";
-import { Footer, SidenavButton, SideNavigation, ThemeProvider } from "@itwin/itwinui-react";
+import "./App.scss";
 import { appNavigationContext, AppNavigationContext } from "./AppContext";
 import { AppHeader, breadcrumbsContext } from "./AppHeader";
 import { AuthorizationState, createAuthorizationProvider, SignInCallback, SignInSilent, useAuthorization } from "./Authorization";
@@ -101,22 +101,28 @@ function useAppNavigationContext(): AppNavigationContext {
   return React.useMemo(
     () => ({
       openRulesetEditor: (iModelIdentifier) => {
-        if (!iModelIdentifier) {
-          navigate("/open-imodel");
-        } else {
-          navigate(
-            `/open-imodel?${
-              isSnapshotIModel(iModelIdentifier) ? `snapshot=${iModelIdentifier}` : `iTwinId=${iModelIdentifier.iTwinId}&iModelId=${iModelIdentifier.iModelId}`
-            }`,
-          );
-        }
+        void (async () => {
+          if (!iModelIdentifier) {
+            await navigate("/open-imodel");
+          } else {
+            await navigate(
+              `/open-imodel?${
+                isSnapshotIModel(iModelIdentifier)
+                  ? `snapshot=${iModelIdentifier}`
+                  : `iTwinId=${iModelIdentifier.iTwinId}&iModelId=${iModelIdentifier.iModelId}`
+              }`,
+            );
+          }
+        })();
       },
       openIModelBrowser: (tab) => {
-        if (!tab) {
-          navigate("/browse-imodels");
-        } else {
-          navigate(`/browse-imodels/${tab}`);
-        }
+        void (async () => {
+          if (!tab) {
+            await navigate("/browse-imodels");
+          } else {
+            await navigate(`/browse-imodels/${tab}`);
+          }
+        })();
       },
     }),
     [navigate],

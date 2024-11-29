@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { expect } from "chai";
-import { page } from "./setup";
-import { getEditor, getServiceUrl, getWidget, openDemoIModel, openTestIModel } from "./utils";
+import { page } from "./setup.js";
+import { getEditor, getServiceUrl, getWidget, openDemoIModel, openTestIModel } from "./utils.js";
 
 describe("share button #local #web", () => {
   const testConfiguration = process.env.WEB_TEST

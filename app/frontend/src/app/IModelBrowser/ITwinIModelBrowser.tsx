@@ -95,7 +95,7 @@ function ITwinBrowserGridView(props: ITwinBrowserGridViewProps): React.ReactElem
             isActionable
             thumbnail={iTwin.image ?? <SvgProject />}
             description={iTwin.number}
-            onClick={() => navigate(iTwin.id)}
+            onClick={async () => navigate(iTwin.id)}
           />
         </div>
       ))}
@@ -118,7 +118,7 @@ function ITwinBrowserTableView(props: ITwinBrowserTableViewProps): React.ReactEl
         Header: "Name",
         accessor: "name",
         Cell(cellProps: CellProps<ITwinBrowserTableData>) {
-          return <Anchor onClick={() => navigate(cellProps.row.original.id)}>{cellProps.value}</Anchor>;
+          return <Anchor onClick={async () => navigate(cellProps.row.original.id)}>{cellProps.value}</Anchor>;
         },
       },
       { id: "dateCreated", Header: "Date created", accessor: "dateCreated" },

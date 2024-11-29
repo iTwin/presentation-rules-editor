@@ -1,5 +1,4 @@
 {
-  "$schema": "https://json.schemastore.org/mocharc.json",
   "require": ["ignore-styles", "./lib/esm/src/TestSetup.js"],
   "spec": ["./lib/esm/src/**/*.test.js"]
 }

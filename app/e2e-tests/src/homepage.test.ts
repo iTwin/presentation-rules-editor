@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { expect } from "chai";
-import { page } from "./setup";
-import { getServiceUrl, loadHomepage } from "./utils";
+import { page } from "./setup.js";
+import { getServiceUrl, loadHomepage } from "./utils.js";
 
 describe("homepage #local", () => {
   beforeEach(async () => {

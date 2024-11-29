@@ -8,7 +8,7 @@ import * as fs from "fs";
 import { Config, setup as setupDevServers, teardown as teardownDevServers } from "jest-dev-server";
 import { Socket } from "net";
 import { chromium, ChromiumBrowser, Page } from "playwright";
-import { getServiceUrl } from "./utils";
+import { getServiceUrl } from "./utils.js";
 
 export let browser: ChromiumBrowser;
 export let page: Page;
