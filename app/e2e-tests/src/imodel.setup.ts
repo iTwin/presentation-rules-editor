@@ -2,8 +2,7 @@ import { test as setup } from "@playwright/test";
 import { exec } from "child_process";
 import * as fs from "fs";
 
-setup("Setup Baytown", async ({ page }) => {
-  page.on("console", () => {});
+setup("Setup Baytown", async () => {
   await setupIModel();
 });
 
