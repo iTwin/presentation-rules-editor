@@ -2,7 +2,7 @@ import { test as setup } from "@playwright/test";
 import { exec } from "child_process";
 import * as fs from "fs";
 
-setup("Setup Baytown", async () => {
+setup("Setup Baytown #web #local", async () => {
   await setupIModel();
 });
 
