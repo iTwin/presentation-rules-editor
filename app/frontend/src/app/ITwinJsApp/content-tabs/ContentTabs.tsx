@@ -8,13 +8,13 @@ import { SvgLink } from "@itwin/itwinui-icons-react";
 import { Button, Tabs } from "@itwin/itwinui-react";
 import { SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
 import * as React from "react";
-import { OpeningIModelHint } from "../common/OpeningIModelHint";
-import { rulesetEditorContext, RulesetEditorTab } from "../ITwinJsAppContext";
-import { serializeEditorState } from "../misc/EditorStateSerializer";
-import { useToastMessage } from "../misc/UseToastMessage";
+import { OpeningIModelHint } from "../common/OpeningIModelHint.js";
+import { rulesetEditorContext, RulesetEditorTab } from "../ITwinJsAppContext.js";
+import { serializeEditorState } from "../misc/EditorStateSerializer.js";
+import { useToastMessage } from "../misc/UseToastMessage.js";
 import "./ContentTabs.scss";
-import { EditorTab } from "./EditorTab";
-import { ViewportTab } from "./ViewportTab";
+import { EditorTab } from "./EditorTab.js";
+import { ViewportTab } from "./ViewportTab.js";
 
 export interface ContentTabsProps {
   imodel: IModelConnection | undefined;

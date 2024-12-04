@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import { LoadingIndicator } from "./LoadingIndicator";
+import { LoadingIndicator } from "./LoadingIndicator.js";
 
 export function CheckingSignInStatusHint(): React.ReactElement {
   return <LoadingIndicator>Checking signin status...</LoadingIndicator>;

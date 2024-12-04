@@ -41,6 +41,7 @@
     "unstringified",
     "unsymlinking",
     "viewports",
+    "vite",
     "widgetid"
   ],
   "cSpell.ignoreWords": [
@@ -55,7 +56,7 @@
     "wdth",
     "wght"
   ],
-  "cSpell.ignorePaths": ["package.json", ".vscode", "*.yaml", "*.yml"],
+  "cSpell.ignorePaths": ["package.json", ".vscode", "*.yaml", "*.yml", "*.map"],
   "cSpell.ignoreRegExpList": ["from\\s\".*\";"],
 
   "editor.insertSpaces": true,

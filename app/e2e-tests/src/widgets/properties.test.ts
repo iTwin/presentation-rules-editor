@@ -3,24 +3,24 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import { test } from "@playwright/test";
 import { Page } from "playwright";
-import { page } from "../setup.js";
 import { getEditor, getWidget, openTestIModel } from "../utils.js";
 
-describe("properties widget #local", () => {
+test.describe("properties widget #local", () => {
   const contentUrlIdentifier = (url: URL) => {
     return url.pathname.includes("getPagedContent");
   };
 
-  beforeEach(async () => {
+  test.beforeEach(async ({ page }) => {
     await openTestIModel(page);
   });
 
-  afterEach(async () => {
+  test.afterEach(async ({ page }) => {
     await page.context().unroute(contentUrlIdentifier);
   });
 
-  it("displays properties", async () => {
+  test("displays properties", async ({ page }) => {
     const propertiesWidget = getWidget(page, "Properties");
     await propertiesWidget.locator("text=Select element(s) to view properties.").waitFor();
 
@@ -28,7 +28,7 @@ describe("properties widget #local", () => {
     await propertiesWidget.locator("text=Selected Item(s)").waitFor();
   });
 
-  it("updates properties when ruleset changes", async () => {
+  test("updates properties when ruleset changes", async ({ page }) => {
     await selectAnyTreeNode(page);
 
     const editor = getEditor(page);
@@ -46,7 +46,7 @@ describe("properties widget #local", () => {
     await propertiesWidget.locator("text=custom_category").waitFor();
   });
 
-  it("renders error status on error", async () => {
+  test("renders error status on error", async ({ page }) => {
     const propertiesWidget = getWidget(page, "Properties");
     await propertiesWidget.locator("text=Select element(s) to view properties.").waitFor();
 

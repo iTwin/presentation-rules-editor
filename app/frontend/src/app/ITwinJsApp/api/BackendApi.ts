@@ -7,7 +7,7 @@ import { IModelMetadata, PresentationRulesEditorRpcInterface } from "@app/common
 import { Guid, Id64, Id64String, Logger } from "@itwin/core-bentley";
 import { BentleyCloudRpcProtocol, IModelVersion } from "@itwin/core-common";
 import { CheckpointConnection, IModelConnection, SnapshotConnection } from "@itwin/core-frontend";
-import { IModelIdentifier, isDemoIModel, isSnapshotIModel } from "../IModelIdentifier";
+import { IModelIdentifier, isDemoIModel, isSnapshotIModel } from "../IModelIdentifier.js";
 
 export class BackendApi {
   constructor(public protocol: BentleyCloudRpcProtocol) {}

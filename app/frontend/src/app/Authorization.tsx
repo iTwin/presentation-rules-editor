@@ -10,9 +10,9 @@ import { Code } from "@itwin/itwinui-react";
 import { User, UserManager, WebStorageStateStore } from "oidc-client-ts";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { LoadingIndicator } from "./common/LoadingIndicator";
-import { ErrorPage } from "./errors/ErrorPage";
-import { applyUrlPrefix } from "./utils/Environment";
+import { LoadingIndicator } from "./common/LoadingIndicator.js";
+import { ErrorPage } from "./errors/ErrorPage.js";
+import { applyUrlPrefix } from "./utils/Environment.js";
 
 export interface AuthorizationProviderConfig {
   authority: string;

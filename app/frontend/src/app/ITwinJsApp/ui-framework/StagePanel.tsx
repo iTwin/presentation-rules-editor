@@ -3,9 +3,9 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import * as React from "react";
 import { StagePanelConfig } from "@itwin/appui-react";
-import { WidgetProps } from "./Widget/Widget";
+import * as React from "react";
+import { WidgetProps } from "./Widget/Widget.js";
 
 export interface StagePanelProps extends StagePanelConfig {
   /** Stage panel contents */

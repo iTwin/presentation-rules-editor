@@ -9,12 +9,12 @@ import { FluidGrid } from "@itwin/itwinui-layouts-react";
 import { Anchor, DropdownMenu, IconButton, MenuItem, Table, Text } from "@itwin/itwinui-react";
 import { CellProps, Column } from "@itwin/itwinui-react/react-table";
 import * as React from "react";
-import { appNavigationContext } from "../AppContext";
-import { AsyncActionButton } from "../common/AsyncActionButton";
-import { VerticalStack } from "../common/CenteredStack";
-import { BackendApi } from "../ITwinJsApp/api/BackendApi";
-import { LoadingHint } from "../ITwinJsApp/common/LoadingHint";
-import { iModelBrowserContext, IModelSnapshotTile, useBackendApi } from "./IModelBrowser";
+import { appNavigationContext } from "../AppContext.js";
+import { AsyncActionButton } from "../common/AsyncActionButton.js";
+import { VerticalStack } from "../common/CenteredStack.js";
+import { BackendApi } from "../ITwinJsApp/api/BackendApi.js";
+import { LoadingHint } from "../ITwinJsApp/common/LoadingHint.js";
+import { iModelBrowserContext, IModelSnapshotTile, useBackendApi } from "./IModelBrowser.js";
 
 export interface LocalIModelBrowserProps {
   backendApiPromise: Promise<BackendApi> | undefined;

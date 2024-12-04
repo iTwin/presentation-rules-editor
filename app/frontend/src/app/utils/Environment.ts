@@ -14,12 +14,8 @@ export function applyUrlPrefix(url: string): string {
   return modifierUrl.toString();
 }
 
-export const clientId = getAppMetadata("clientId");
-export const urlPrefix = getAppMetadata("urlPrefix");
-export const appInsightsConnectionString = getAppMetadata("appInsights");
-
-function getAppMetadata(propertyName: string): string {
-  return document.head.querySelector(`meta[itemprop=${propertyName}]`)?.getAttribute("content") ?? "";
-}
+export const clientId = import.meta.env.VITE_OAUTH_CLIENT_ID;
+export const urlPrefix = import.meta.env.VITE_IMJS_URL_PREFIX;
+export const appInsightsConnectionString = import.meta.env.VITE_APPLICATION_INSIGHTS_CONNECTION_STRING;
 
 export const EXPERIMENTAL_STATION_VALUE_RENDERER = true;

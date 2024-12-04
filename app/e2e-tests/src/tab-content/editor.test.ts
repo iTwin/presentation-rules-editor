@@ -3,21 +3,20 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { expect } from "chai";
-import { page } from "../setup.js";
+import { expect, test } from "@playwright/test";
 import { getEditor, getWidget, openTestIModel } from "../utils.js";
 
-describe("editor #local", () => {
-  beforeEach(async () => {
+test.describe("editor #local", () => {
+  test.beforeEach(async ({ page }) => {
     await openTestIModel(page);
   });
 
-  it("is populated with template ruleset", async () => {
+  test("is populated with template ruleset", async ({ page }) => {
     const editor = getEditor(page);
-    expect(await editor.textContent()).to.contain('"Ruleset1"');
+    expect(await editor.textContent()).toContain('"Ruleset1"');
   });
 
-  it("suggests completions based on ruleset schema", async () => {
+  test("suggests completions based on ruleset schema", async ({ page }) => {
     const editor = getEditor(page);
     await editor
       .getByText(/^true$/)
@@ -27,13 +26,13 @@ describe("editor #local", () => {
     await editor.press("Control+Space");
     const options = editor.locator(".suggest-widget");
     await options.waitFor();
-    expect(await options.locator("[role=option]").count()).to.be.equal(2);
-    expect(await options.locator("[role=option]", { hasText: "false" }).elementHandle()).not.to.be.null;
-    expect(await options.locator("[role=option]", { hasText: "true" }).elementHandle()).not.to.be.null;
+    await expect(options.locator("[role=option]")).toHaveCount(2);
+    expect(await options.locator("[role=option]", { hasText: "false" }).elementHandle()).not.toBeNull();
+    expect(await options.locator("[role=option]", { hasText: "true" }).elementHandle()).not.toBeNull();
   });
 
-  describe("ruleset submission", () => {
-    it("submits ruleset when button is clicked", async () => {
+  test.describe("ruleset submission", () => {
+    test("submits ruleset when button is clicked", async ({ page }) => {
       const editor = getEditor(page);
       await editor.getByText(/^"Element"$/).dblclick();
       await editor.press("Backspace");
@@ -42,7 +41,7 @@ describe("editor #local", () => {
       await getWidget(page, "Tree").locator("text=The data required for this tree layout is not available in this iModel.").waitFor();
     });
 
-    it("submits ruleset when keyboard shortcut is pressed", async () => {
+    test("submits ruleset when keyboard shortcut is pressed", async ({ page }) => {
       const editor = getEditor(page);
       await editor.getByText(/^"Element"$/).dblclick();
       await editor.press("Backspace");
@@ -51,7 +50,7 @@ describe("editor #local", () => {
       await getWidget(page, "Tree").locator("text=The data required for this tree layout is not available in this iModel.").waitFor();
     });
 
-    it("submits ruleset when command is invoked from the command palette", async () => {
+    test("submits ruleset when command is invoked from the command palette", async ({ page }) => {
       const editor = getEditor(page);
       await editor.getByText(/^"Element"$/).dblclick();
       await editor.press("Backspace");

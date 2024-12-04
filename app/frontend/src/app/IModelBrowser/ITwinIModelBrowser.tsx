@@ -10,13 +10,13 @@ import { FluidGrid } from "@itwin/itwinui-layouts-react";
 import { Anchor, Button, Table, Text, Tile } from "@itwin/itwinui-react";
 import * as React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { appNavigationContext } from "../AppContext";
-import { AuthorizationState, useAuthorization } from "../Authorization";
-import { HorizontalStack, VerticalStack } from "../common/CenteredStack";
-import { OfflineModeExplainer } from "../common/OfflineModeExplainer";
-import { getITwinIModels, getUserProjects, IModelRepresentation, ITwinRepresentation } from "../ITwinApi";
-import { LoadingHint } from "../ITwinJsApp/common/LoadingHint";
-import { iModelBrowserContext, IModelTile } from "./IModelBrowser";
+import { appNavigationContext } from "../AppContext.js";
+import { AuthorizationState, useAuthorization } from "../Authorization.js";
+import { HorizontalStack, VerticalStack } from "../common/CenteredStack.js";
+import { OfflineModeExplainer } from "../common/OfflineModeExplainer.js";
+import { getITwinIModels, getUserProjects, IModelRepresentation, ITwinRepresentation } from "../ITwinApi.js";
+import { LoadingHint } from "../ITwinJsApp/common/LoadingHint.js";
+import { iModelBrowserContext, IModelTile } from "./IModelBrowser.js";
 
 import type { CellProps, Column } from "@itwin/itwinui-react/react-table";
 

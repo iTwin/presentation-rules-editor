@@ -1,9 +1,10 @@
 {
   "scripts": {
-    "start": "run-p --silent start:backend start:frontend",
-    "start:qa": "cross-env IMJS_URL_PREFIX=qa- run-p --silent start:backend start:frontend",
-    "start:web": "cross-env DEPLOYMENT_TYPE=web npm run start:frontend",
+    "start": "run-p --silent start:backend start:web",
+    "start:qa": "cross-env VITE_IMJS_URL_PREFIX=qa- run-p --silent start:backend start:frontend",
+    "start:web": "cross-env VITE_DEPLOYMENT_TYPE=web npm run start:frontend",
     "start:backend": "npm run start --prefix ./app/backend",
+    "build:components": "npm run build --prefix ./presentation-rules-editor-react",
     "start:frontend": "npm run start --prefix ./app/frontend -- --open",
     "link": "npm run link --prefix ./scripts --",
     "unlink": "npm run unlink --prefix ./scripts --",
@@ -42,8 +43,7 @@
   },
   "pnpm": {
     "overrides": {
-      "npm-run-all@^4.1.5>cross-spawn@^6": "^7.0.6",
-      "webpack-dev-server@5.1.0>webpack-dev-middleware@7.4.2": "7.2.1"
+      "npm-run-all@^4.1.5>cross-spawn@^6": "^7.0.6"
     }
   }
 }

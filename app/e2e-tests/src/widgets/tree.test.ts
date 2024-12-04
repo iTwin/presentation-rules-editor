@@ -3,20 +3,20 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { page } from "../setup.js";
+import { test } from "@playwright/test";
 import { getEditor, getWidget, openTestIModel } from "../utils.js";
 
-describe("tree widget #local", () => {
-  beforeEach(async () => {
+test.describe("tree widget #local", () => {
+  test.beforeEach(async ({ page }) => {
     await openTestIModel(page);
   });
 
-  it("displays tree hierarchy", async () => {
+  test("displays tree hierarchy", async ({ page }) => {
     const treeWidget = getWidget(page, "Tree");
     await treeWidget.locator(".core-tree-node").first().waitFor();
   });
 
-  it("updates tree when ruleset changes", async () => {
+  test("updates tree when ruleset changes", async ({ page }) => {
     const editor = getEditor(page);
     await editor.getByText(/^"rules"$/).click();
     await editor.press("Control+Enter");

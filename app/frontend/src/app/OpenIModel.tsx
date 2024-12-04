@@ -8,19 +8,26 @@ import { SvgHome, SvgUser } from "@itwin/itwinui-icons-react";
 import { HeaderButton, Tile } from "@itwin/itwinui-react";
 import * as React from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { AppPage, AppSideNavigation } from "./App";
-import { appNavigationContext } from "./AppContext";
-import { breadcrumbsContext } from "./AppHeader";
-import { AuthorizationState, useAuthorization } from "./Authorization";
-import { LandingPage } from "./common/LandingPage";
-import { LoadingIndicator } from "./common/LoadingIndicator";
-import { PageNotFound } from "./errors/PageNotFound";
-import { IModelBrowserTab } from "./IModelBrowser/IModelBrowser";
-import { getIModel, getProject } from "./ITwinApi";
-import { BackendApi } from "./ITwinJsApp/api/BackendApi";
-import { demoIModels, IModelIdentifier, isDemoIModel, isSnapshotIModel, ITwinIModelIdentifier, SnapshotIModelIdentifier } from "./ITwinJsApp/IModelIdentifier";
+import { AppPage, AppSideNavigation } from "./App.js";
+import { appNavigationContext } from "./AppContext.js";
+import { breadcrumbsContext } from "./AppHeader.js";
+import { AuthorizationState, useAuthorization } from "./Authorization.js";
+import { LandingPage } from "./common/LandingPage.js";
+import { LoadingIndicator } from "./common/LoadingIndicator.js";
+import { PageNotFound } from "./errors/PageNotFound.js";
+import { IModelBrowserTab } from "./IModelBrowser/IModelBrowser.js";
+import { getIModel, getProject } from "./ITwinApi.js";
+import { BackendApi } from "./ITwinJsApp/api/BackendApi.js";
+import {
+  demoIModels,
+  IModelIdentifier,
+  isDemoIModel,
+  isSnapshotIModel,
+  ITwinIModelIdentifier,
+  SnapshotIModelIdentifier,
+} from "./ITwinJsApp/IModelIdentifier.js";
 
-import type { ITwinJsApp } from "./ITwinJsApp/ITwinJsApp";
+import type { ITwinJsApp } from "./ITwinJsApp/ITwinJsApp.js";
 
 export interface ITwinJsAppData {
   component: typeof ITwinJsApp;
@@ -65,7 +72,7 @@ export function OpenIModel(props: OpenIModelProps): React.ReactElement {
 
   activeIModelRef.current = iModelIdentifier;
   if (isSnapshotIModel(iModelIdentifier)) {
-    if (process.env.DEPLOYMENT_TYPE === "web") {
+    if (import.meta.env.VITE_DEPLOYMENT_TYPE === "web") {
       return <PageNotFound />;
     }
 

@@ -5,7 +5,7 @@
 
 import { ThemeManager, UiFramework, UiStateStorageHandler } from "@itwin/appui-react";
 import * as React from "react";
-import { MemoryUISettingsStorage } from "./MemoryUISettingsStorage";
+import { MemoryUISettingsStorage } from "./MemoryUISettingsStorage.js";
 
 export interface UIFrameworkProps {
   children: React.ReactNode;

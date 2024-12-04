@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import { IModelBrowserTab } from "./IModelBrowser/IModelBrowser";
-import { IModelIdentifier } from "./ITwinJsApp/IModelIdentifier";
+import { IModelBrowserTab } from "./IModelBrowser/IModelBrowser.js";
+import { IModelIdentifier } from "./ITwinJsApp/IModelIdentifier.js";
 
 export interface AppNavigationContext {
   openRulesetEditor(iModelIdentifier?: IModelIdentifier): void;

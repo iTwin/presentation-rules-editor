@@ -10,22 +10,22 @@ import { ChildNodeSpecificationTypes, ContentSpecificationTypes, Ruleset, RuleTy
 import { EditableRuleset, SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
 import * as monaco from "monaco-editor";
 import * as React from "react";
-import { useIModelBrowserSettings } from "../IModelBrowser/IModelBrowser";
-import { applyUrlPrefix } from "../utils/Environment";
-import { BackendApi } from "./api/BackendApi";
-import { ContentTabs } from "./content-tabs/ContentTabs";
-import { areIModelIdentifiersEqual, IModelIdentifier, isDemoIModel, isSnapshotIModel } from "./IModelIdentifier";
+import { useIModelBrowserSettings } from "../IModelBrowser/IModelBrowser.js";
+import { applyUrlPrefix } from "../utils/Environment.js";
+import { BackendApi } from "./api/BackendApi.js";
+import { ContentTabs } from "./content-tabs/ContentTabs.js";
+import { areIModelIdentifiersEqual, IModelIdentifier, isDemoIModel, isSnapshotIModel } from "./IModelIdentifier.js";
 import "./InitializedApp.scss";
-import { backendApiContext, rulesetEditorContext, RulesetEditorTab } from "./ITwinJsAppContext";
-import { parseEditorState } from "./misc/EditorStateSerializer";
-import { useToastMessage } from "./misc/UseToastMessage";
-import { Frontstage } from "./ui-framework/Frontstage";
-import { StagePanel, StagePanelZone } from "./ui-framework/StagePanel";
-import { UIFramework } from "./ui-framework/UIFramework";
-import { Widget } from "./ui-framework/Widget/Widget";
-import { PropertyGridWidget } from "./widgets/PropertyGridWidget";
-import { TableWidget } from "./widgets/TableWidget";
-import { TreeWidget } from "./widgets/TreeWidget";
+import { backendApiContext, rulesetEditorContext, RulesetEditorTab } from "./ITwinJsAppContext.js";
+import { parseEditorState } from "./misc/EditorStateSerializer.js";
+import { useToastMessage } from "./misc/UseToastMessage.js";
+import { Frontstage } from "./ui-framework/Frontstage.js";
+import { StagePanel, StagePanelZone } from "./ui-framework/StagePanel.js";
+import { UIFramework } from "./ui-framework/UIFramework.js";
+import { Widget } from "./ui-framework/Widget/Widget.js";
+import { PropertyGridWidget } from "./widgets/PropertyGridWidget.js";
+import { TableWidget } from "./widgets/TableWidget.js";
+import { TreeWidget } from "./widgets/TreeWidget.js";
 
 export interface InitializedAppProps {
   backendApi: BackendApi;
@@ -125,7 +125,7 @@ function useIModel(
     setIModel(undefined);
 
     IModelApp.authorizationClient = authorizationClient;
-    if (process.env.DEPLOYMENT_TYPE === "web") {
+    if (import.meta.env.VITE_DEPLOYMENT_TYPE === "web") {
       const backendUrl = "https://api.bentley.com/imodeljs";
       // eslint-disable-next-line @itwin/no-internal
       backendApi.protocol.pathPrefix = isDemoIModel(iModelIdentifier) ? backendUrl : applyUrlPrefix(backendUrl);

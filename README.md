@@ -15,17 +15,23 @@ To start editing rulesets, you will need to build the editor application:
    npx pnpm install
    ```
 
-3. Start the application:
+3. Build presentation-rules-editor-react (if it was never built prior):
+
+   ```shell
+   npm run build:components
+   ```
+
+4. Start the application:
 
    ```shell
    npm start
    ```
 
-4. Select an imodel within the launched browser window.
+5. Select an imodel within the launched browser window.
 
    > If you have a snapshot imodel, put it inside `app/backend/assets/imodels` folder.
 
-5. You will now be presented with a ruleset editor.
+6. You will now be presented with a ruleset editor.
 
 ## Contributing
 

@@ -12,12 +12,12 @@ import { UnifiedSelectionContextProvider } from "@itwin/presentation-components"
 import { EditableRuleset, PropertyGrid, PropertyGridAttributes } from "@itwin/presentation-rules-editor-react";
 import * as React from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { VerticalStack } from "../../common/CenteredStack";
-import { LoadingIndicator } from "../../common/LoadingIndicator";
-import { AutoSizer } from "../common/AutoSizer";
-import { LoadingHint } from "../common/LoadingHint";
-import { OpeningIModelHint } from "../common/OpeningIModelHint";
-import { rulesetEditorContext, RulesetEditorTab } from "../ITwinJsAppContext";
+import { VerticalStack } from "../../common/CenteredStack.js";
+import { LoadingIndicator } from "../../common/LoadingIndicator.js";
+import { AutoSizer } from "../common/AutoSizer.js";
+import { LoadingHint } from "../common/LoadingHint.js";
+import { OpeningIModelHint } from "../common/OpeningIModelHint.js";
+import { rulesetEditorContext, RulesetEditorTab } from "../ITwinJsAppContext.js";
 import "./PropertyGridWidget.scss";
 
 export interface PropertyGridProps {

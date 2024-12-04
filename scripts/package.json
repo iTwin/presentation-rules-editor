@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "license": "MIT",
   "private": true,
+  "type": "module",
   "author": {
     "name": "Bentley Systems, Inc.",
     "url": "https://www.bentley.com"

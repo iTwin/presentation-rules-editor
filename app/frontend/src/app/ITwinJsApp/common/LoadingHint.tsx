@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import { LoadingIndicator } from "../../common/LoadingIndicator";
+import { LoadingIndicator } from "../../common/LoadingIndicator.js";
 
 export function LoadingHint(): React.ReactElement {
   return <LoadingIndicator>Loading...</LoadingIndicator>;

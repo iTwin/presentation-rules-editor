@@ -11,18 +11,18 @@ import "@itwin/itwinui-react/styles.css";
 import * as React from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.scss";
-import { appNavigationContext, AppNavigationContext } from "./AppContext";
-import { AppHeader, breadcrumbsContext } from "./AppHeader";
-import { AuthorizationState, createAuthorizationProvider, SignInCallback, SignInSilent, useAuthorization } from "./Authorization";
-import { CheckingSignInStatusHint } from "./common/CheckingSignInStatusHint";
-import { PageNotFound } from "./errors/PageNotFound";
-import { DemoIModelBrowser } from "./IModelBrowser/DemoIModelBrowser";
-import { IModelBrowser, IModelBrowserTab, IModelBrowserTabs } from "./IModelBrowser/IModelBrowser";
-import { ITwinBrowser, ITwinIModelBrowser } from "./IModelBrowser/ITwinIModelBrowser";
-import { LocalIModelBrowser } from "./IModelBrowser/LocalIModelBrowser";
-import { isSnapshotIModel } from "./ITwinJsApp/IModelIdentifier";
-import { ITwinJsAppData, OpenIModel } from "./OpenIModel";
-import { appInsightsConnectionString, applyUrlPrefix, clientId } from "./utils/Environment";
+import { appNavigationContext, AppNavigationContext } from "./AppContext.js";
+import { AppHeader, breadcrumbsContext } from "./AppHeader.js";
+import { AuthorizationState, createAuthorizationProvider, SignInCallback, SignInSilent, useAuthorization } from "./Authorization.js";
+import { CheckingSignInStatusHint } from "./common/CheckingSignInStatusHint.js";
+import { PageNotFound } from "./errors/PageNotFound.js";
+import { DemoIModelBrowser } from "./IModelBrowser/DemoIModelBrowser.js";
+import { IModelBrowser, IModelBrowserTab, IModelBrowserTabs } from "./IModelBrowser/IModelBrowser.js";
+import { ITwinBrowser, ITwinIModelBrowser } from "./IModelBrowser/ITwinIModelBrowser.js";
+import { LocalIModelBrowser } from "./IModelBrowser/LocalIModelBrowser.js";
+import { isSnapshotIModel } from "./ITwinJsApp/IModelIdentifier.js";
+import { ITwinJsAppData, OpenIModel } from "./OpenIModel.js";
+import { appInsightsConnectionString, applyUrlPrefix, clientId } from "./utils/Environment.js";
 
 export function App(): React.ReactElement {
   const appContextValue = useAppNavigationContext();
@@ -70,8 +70,8 @@ function Main(): React.ReactElement {
       <Route index element={<IndexRedirect />} />
       <Route path="open-imodel" element={<OpenIModel iTwinJsApp={iTwinJsApp} />} />
       <Route path="browse-imodels" element={<IModelBrowser backendApiPromise={iTwinJsApp?.backendApiPromise} />}>
-        <Route index element={<Navigate replace to={process.env.DEPLOYMENT_TYPE === "web" ? "iTwins" : "local"} />} />
-        {process.env.DEPLOYMENT_TYPE !== "web" && (
+        <Route index element={<Navigate replace to={import.meta.env.VITE_DEPLOYMENT_TYPE === "web" ? "iTwins" : "local"} />} />
+        {import.meta.env.VITE_DEPLOYMENT_TYPE !== "web" && (
           <Route path="local" element={<IModelBrowserTabs activeTab={IModelBrowserTab.Local} />}>
             <Route index element={<LocalIModelBrowser backendApiPromise={iTwinJsApp?.backendApiPromise} />} />
           </Route>
@@ -134,7 +134,7 @@ function useBackgroundITwinJsAppLoading(): ITwinJsAppData | undefined {
   React.useEffect(() => {
     let disposed = false;
     void (async () => {
-      const { ITwinJsApp: component, initializeApp } = await import("./ITwinJsApp/ITwinJsApp");
+      const { ITwinJsApp: component, initializeApp } = await import("./ITwinJsApp/ITwinJsApp.js");
       if (!disposed) {
         setITwinJsApp({ component, backendApiPromise: initializeApp() });
       }
@@ -152,7 +152,7 @@ function useApplicationInsights(): void {
     if (appInsightsConnectionString) {
       void (async () => {
         try {
-          const { initialize } = await import("./ApplicationInsights");
+          const { initialize } = await import("./ApplicationInsights.js");
           initialize(appInsightsConnectionString);
         } catch (error) {
           // eslint-disable-next-line no-console
@@ -204,7 +204,7 @@ export const AppSideNavigation = React.memo<AppSideNavigationProps>(function App
 function IndexRedirect(): React.ReactElement {
   const { state } = useAuthorization();
 
-  if (process.env.DEPLOYMENT_TYPE !== "web") {
+  if (import.meta.env.VITE_DEPLOYMENT_TYPE !== "web") {
     return <Navigate replace to={"/browse-imodels"} />;
   }
 

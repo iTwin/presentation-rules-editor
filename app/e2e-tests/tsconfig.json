@@ -12,5 +12,5 @@
     "allowSyntheticDefaultImports": true,
     "noUnusedLocals": false
   },
-  "include": ["src"]
+  "include": ["playwright.config.ts", "src"]
 }

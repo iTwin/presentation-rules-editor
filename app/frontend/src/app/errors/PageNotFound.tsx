@@ -3,9 +3,9 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import * as React from "react";
 import { Svg404 } from "@itwin/itwinui-illustrations-react";
-import { ErrorPage } from "./ErrorPage";
+import * as React from "react";
+import { ErrorPage } from "./ErrorPage.js";
 
 /** Component to display in case of 404: Page not found error. */
 export function PageNotFound(): React.ReactElement {

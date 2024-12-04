@@ -17,7 +17,7 @@ import {
   Widget,
 } from "@itwin/appui-react";
 import React, { ReactElement } from "react";
-import { StagePanelProps, StagePanelZoneProps } from "./StagePanel";
+import { StagePanelProps, StagePanelZoneProps } from "./StagePanel.js";
 
 export interface FrontstageProps {
   /** Widgets on the right-hand side */
