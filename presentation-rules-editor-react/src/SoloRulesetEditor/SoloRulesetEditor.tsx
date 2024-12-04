@@ -8,14 +8,10 @@ import { Button } from "@itwin/itwinui-react";
 import { Ruleset } from "@itwin/presentation-common";
 import * as React from "react";
 import { EditableRuleset } from "../EditableRuleset.js";
-import "./SoloRulesetEditor.scss";
-// import { createRequire } from "node:module";
 import presentationRulesetSchema from "./PresentationRulesetSchema.js";
+import "./SoloRulesetEditor.scss";
 
 import type * as monaco from "monaco-editor";
-
-// const nodeRequire = createRequire(import.meta.url);
-// const presentationRulesetSchema = nodeRequire(import.meta.resolve("@itwin/presentation-common/Ruleset.schema.json"));
 
 export interface SoloRulesetEditorParams {
   /** Ruleset that is going to be associated with the editor. */
