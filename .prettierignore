@@ -12,5 +12,3 @@ pnpm-workspace.yaml
 
 # Ignore configs
 .github
-
-**/PresentationRulesetSchema.ts
