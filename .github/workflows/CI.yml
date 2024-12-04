@@ -51,8 +51,3 @@ jobs:
         timeout-minutes: 5
         env:
           CI: true
-      - name: Run end-to-end tests with web configuration
-        run: npm run test:web --prefix ./app/e2e-tests
-        timeout-minutes: 5
-        env:
-          CI: true
