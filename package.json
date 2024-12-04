@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "run-p --silent start:backend start",
+    "start": "run-p --silent start:backend start:frontend",
     "start:qa": "cross-env VITE_IMJS_URL_PREFIX=qa- run-p --silent start:backend start:frontend",
     "start:web": "cross-env VITE_DEPLOYMENT_TYPE=web npm run start:frontend",
     "start:backend": "npm run start --prefix ./app/backend",
