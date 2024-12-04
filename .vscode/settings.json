@@ -56,7 +56,7 @@
     "wdth",
     "wght"
   ],
-  "cSpell.ignorePaths": ["package.json", ".vscode", "*.yaml", "*.yml", "*.map"],
+  "cSpell.ignorePaths": ["package.json", ".vscode", "*.yaml", "*.yml"],
   "cSpell.ignoreRegExpList": ["from\\s\".*\";"],
 
   "editor.insertSpaces": true,
