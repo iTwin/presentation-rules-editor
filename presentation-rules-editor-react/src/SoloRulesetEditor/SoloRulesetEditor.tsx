@@ -109,7 +109,6 @@ function createEditor(
           model,
           language: "json",
           dimension: { width: props.width, height: props.height },
-          quickSuggestions: true,
         });
         editorRef.current.layout({ width: props.width, height: props.height });
 
