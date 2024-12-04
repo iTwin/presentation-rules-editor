@@ -51,7 +51,6 @@ export default defineConfig({
       command: "npm start --prefix ../frontend",
       url: "http://localhost:3000/",
       reuseExistingServer: !process.env.CI,
-      timeout: 60000,
     },
     {
       command: "npm start --prefix ../backend",

@@ -1,4 +1,4 @@
-.env
+.env.local
 .pnpm-debug.log
 build
 coverage

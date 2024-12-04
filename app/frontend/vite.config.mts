@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    logLevel: "error",
+    envPrefix: ["DEPLOYMENT_", "OAUTH_", "IMJS_", "APPLICATION_"],
     resolve: {
       alias: [
         {
@@ -53,17 +53,17 @@ export default defineConfig(({ mode }) => {
 
 function verifyEnvironmentVariables(mode: string): void {
   const isProductionEnvironment = mode === "production";
-  (process.env.VITE_DEPLOYMENT_TYPE as any) ??= isProductionEnvironment || process.env.WEB_TEST ? "web" : "dev";
+  (process.env.DEPLOYMENT_TYPE as any) ??= isProductionEnvironment || process.env.WEB_TEST ? "web" : "dev";
 
   const env = loadEnv(mode, process.cwd(), "");
 
-  if (!new Set(["dev", "local", "web"]).has(env.VITE_DEPLOYMENT_TYPE)) {
-    throw new Error(`Environment variable VITE_DEPLOYMENT_TYPE has invalid value: '${process.env.VITE_DEPLOYMENT_TYPE}'.`);
+  if (!new Set(["dev", "local", "web"]).has(env.DEPLOYMENT_TYPE)) {
+    throw new Error(`Environment variable DEPLOYMENT_TYPE has invalid value: '${process.env.DEPLOYMENT_TYPE}'.`);
   }
 
-  if ((env.VITE_DEPLOYMENT_TYPE !== "dev" && !env.VITE_OAUTH_CLIENT_ID) || env.VITE_OAUTH_CLIENT_ID === "spa-xxxxxxxxxxxxxxxxxxxxxxxxx") {
+  if ((env.DEPLOYMENT_TYPE !== "dev" && !env.OAUTH_CLIENT_ID) || env.OAUTH_CLIENT_ID === "spa-xxxxxxxxxxxxxxxxxxxxxxxxx") {
     // eslint-disable-next-line no-console
-    throw new Error(`Environment variable VITE_OAUTH_CLIENT_ID has not been set. Instructions in .env.example file \
+    throw new Error(`Environment variable OAUTH_CLIENT_ID has not been set. Instructions in .env file \
 will guide you through the setup process.`);
   }
 }

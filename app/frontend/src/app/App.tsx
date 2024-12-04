@@ -70,8 +70,8 @@ function Main(): React.ReactElement {
       <Route index element={<IndexRedirect />} />
       <Route path="open-imodel" element={<OpenIModel iTwinJsApp={iTwinJsApp} />} />
       <Route path="browse-imodels" element={<IModelBrowser backendApiPromise={iTwinJsApp?.backendApiPromise} />}>
-        <Route index element={<Navigate replace to={import.meta.env.VITE_DEPLOYMENT_TYPE === "web" ? "iTwins" : "local"} />} />
-        {import.meta.env.VITE_DEPLOYMENT_TYPE !== "web" && (
+        <Route index element={<Navigate replace to={import.meta.env.DEPLOYMENT_TYPE === "web" ? "iTwins" : "local"} />} />
+        {import.meta.env.DEPLOYMENT_TYPE !== "web" && (
           <Route path="local" element={<IModelBrowserTabs activeTab={IModelBrowserTab.Local} />}>
             <Route index element={<LocalIModelBrowser backendApiPromise={iTwinJsApp?.backendApiPromise} />} />
           </Route>
@@ -204,7 +204,7 @@ export const AppSideNavigation = React.memo<AppSideNavigationProps>(function App
 function IndexRedirect(): React.ReactElement {
   const { state } = useAuthorization();
 
-  if (import.meta.env.VITE_DEPLOYMENT_TYPE !== "web") {
+  if (import.meta.env.DEPLOYMENT_TYPE !== "web") {
     return <Navigate replace to={"/browse-imodels"} />;
   }
 

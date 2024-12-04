@@ -11,6 +11,10 @@ Follow the [steps for running the application](./README.md#using). These actuall
 - `app/` — contains source code for the editor application.
 - `presentation-rules-editor-react/` — contains reusable components that can be added to other applications that wish to integrate a presentation ruleset editor.
 
+### Environment variables
+
+- `app/frontend/` — has a `.env` file which has `OAUTH_CLIENT_ID` set to the same value that used in production. However, if you try to Sign In using this client, it won't work. You need to set create a new client and use it's value in `.env.local`. See [.env](app/frontend/.env) for details.
+
 ### Localization
 
 Localization provides very limited value to Presentation Rules Editor because the ruleset schema and the documentation is only available in the English language. Nevertheless, we do attempt to prepare user-facing strings for localization when it is not inconvenient.

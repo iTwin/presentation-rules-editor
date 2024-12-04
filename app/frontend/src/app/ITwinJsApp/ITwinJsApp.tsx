@@ -57,10 +57,10 @@ export async function initializeApp(): Promise<BackendApi> {
   Logger.initializeToConsole();
   Logger.setLevelDefault(LogLevel.Warning);
 
-  RpcConfiguration.developmentMode = import.meta.env.VITE_DEPLOYMENT_TYPE === "dev";
-  RpcConfiguration.disableRoutingValidation = import.meta.env.VITE_DEPLOYMENT_TYPE !== "web";
+  RpcConfiguration.developmentMode = import.meta.env.DEPLOYMENT_TYPE === "dev";
+  RpcConfiguration.disableRoutingValidation = import.meta.env.DEPLOYMENT_TYPE !== "web";
   const rpcParams =
-    import.meta.env.VITE_DEPLOYMENT_TYPE === "web"
+    import.meta.env.DEPLOYMENT_TYPE === "web"
       ? { info: { title: "visualization", version: "v4.0" } }
       : {
           info: { title: "presentation-rules-editor", version: "v1.0" },

@@ -125,7 +125,7 @@ function useIModel(
     setIModel(undefined);
 
     IModelApp.authorizationClient = authorizationClient;
-    if (import.meta.env.VITE_DEPLOYMENT_TYPE === "web") {
+    if (import.meta.env.DEPLOYMENT_TYPE === "web") {
       const backendUrl = "https://api.bentley.com/imodeljs";
       // eslint-disable-next-line @itwin/no-internal
       backendApi.protocol.pathPrefix = isDemoIModel(iModelIdentifier) ? backendUrl : applyUrlPrefix(backendUrl);

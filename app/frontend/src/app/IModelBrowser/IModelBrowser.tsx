@@ -170,7 +170,7 @@ export function IModelBrowserTabs(props: IModelBrowserTabsProps): React.ReactEle
   const indexToTab = ["local", "iTwins", "demo"];
   const labels = [<Tab key="snapshots" label="Local snapshots" />, <Tab key="itwins" label="My iTwins" />, <Tab key="demo" label="Demo iModels" />];
 
-  if (import.meta.env.VITE_DEPLOYMENT_TYPE === "web") {
+  if (import.meta.env.DEPLOYMENT_TYPE === "web") {
     indexToTab.shift();
     labels.shift();
   }

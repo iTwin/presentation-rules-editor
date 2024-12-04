@@ -14,8 +14,8 @@ export function applyUrlPrefix(url: string): string {
   return modifierUrl.toString();
 }
 
-export const clientId = import.meta.env.VITE_OAUTH_CLIENT_ID;
-export const urlPrefix = import.meta.env.VITE_IMJS_URL_PREFIX;
-export const appInsightsConnectionString = import.meta.env.VITE_APPLICATION_INSIGHTS_CONNECTION_STRING;
+export const clientId = import.meta.env.OAUTH_CLIENT_ID;
+export const urlPrefix = import.meta.env.IMJS_URL_PREFIX;
+export const appInsightsConnectionString = import.meta.env.APPLICATION_INSIGHTS_CONNECTION_STRING;
 
 export const EXPERIMENTAL_STATION_VALUE_RENDERER = true;

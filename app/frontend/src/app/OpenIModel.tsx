@@ -72,7 +72,7 @@ export function OpenIModel(props: OpenIModelProps): React.ReactElement {
 
   activeIModelRef.current = iModelIdentifier;
   if (isSnapshotIModel(iModelIdentifier)) {
-    if (import.meta.env.VITE_DEPLOYMENT_TYPE === "web") {
+    if (import.meta.env.DEPLOYMENT_TYPE === "web") {
       return <PageNotFound />;
     }
 
