@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc && npm run copy",
     "copy": "cpx \"./src/**/*.*css\" ./lib/src",
-    "test": "cross-env NODE_OPTIONS=\"--import ../ignore-styles.cjs\" mocha --enable-source-maps --config ./.mocharc.json",
+    "test": "cross-env NODE_OPTIONS=\"--import ../node-hooks/ignore-styles.cjs\" mocha --enable-source-maps --config ./.mocharc.json",
     "test:cover": "c8 npm test",
     "lint": "eslint src/**/*.{ts,tsx}",
     "typecheck": "tsc --noEmit",
