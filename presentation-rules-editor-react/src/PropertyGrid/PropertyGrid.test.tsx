@@ -30,10 +30,10 @@ describe("PropertyGrid", () => {
 
   const initialAutoExpandingPropertyDataProviderPrototype = Object.getPrototypeOf(AutoExpandingPropertyDataProviderOG);
 
-  let stubUsePropertyGridModelSource: sinon.SinonStub<
+  let stubUsePropertyGridModelSource = sinon.stub<
     [props: { dataProvider: componentsReact.IPropertyDataProvider }],
     { modelSource: componentsReact.PropertyGridModelSource; inProgress: boolean }
-  >;
+  >();
   let stubUsePropertyDataProvider: sinon.SinonStub<
     [presentationComponents.PropertyDataProviderWithUnifiedSelectionProps],
     presentationComponents.UsePropertyDataProviderWithUnifiedSelectionResult
@@ -51,9 +51,9 @@ describe("PropertyGrid", () => {
   beforeEach(async () => {
     stubPresentationManager();
 
-    stubUsePropertyGridModelSource = sinon
-      .stub<[props: { dataProvider: componentsReact.IPropertyDataProvider }], { modelSource: componentsReact.PropertyGridModelSource; inProgress: boolean }>()
-      .callsFake(() => ({}) as ReturnType<typeof componentsReact.useTrackedPropertyGridModelSource>);
+    stubUsePropertyGridModelSource = stubUsePropertyGridModelSource.callsFake(
+      () => ({}) as ReturnType<typeof componentsReact.useTrackedPropertyGridModelSource>,
+    );
 
     stubUsePropertyGridModel = sinon.stub();
 

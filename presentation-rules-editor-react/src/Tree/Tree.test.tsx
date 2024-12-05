@@ -17,26 +17,24 @@ const presentationComponentsModulePath = import.meta.resolve("@itwin/presentatio
 
 describe("Tree", () => {
   let Tree: (props: TreeProps) => React.JSX.Element | null;
-  let usePresentationTreeStateStub: sinon.SinonStub<
+  let usePresentationTreeStateStub = sinon.stub<
     [presentationComponents.UsePresentationTreeStateProps],
     presentationComponents.UsePresentationTreeStateResult | undefined
-  >;
-  let presentationTreeRendererStub: sinon.SinonStub<[presentationComponents.PresentationTreeRendererProps], React.JSX.Element>;
-  let PresentationTreeStub: sinon.SinonStub<[presentationComponents.PresentationTreeProps<componentsReact.TreeEventHandler>], React.JSX.Element>;
+  >();
+  let PresentationTreeRendererStub = sinon.stub<[presentationComponents.PresentationTreeRendererProps], React.JSX.Element>();
+  let PresentationTreeStub = sinon.stub<[presentationComponents.PresentationTreeProps<componentsReact.TreeEventHandler>], React.JSX.Element>();
   beforeEach(async () => {
     stubPresentationManager();
 
-    usePresentationTreeStateStub = sinon
-      .stub<[presentationComponents.UsePresentationTreeStateProps], presentationComponents.UsePresentationTreeStateResult | undefined>()
-      .callsFake(() => ({ nodeLoader: { modelSource: undefined }, onItemsRendered: undefined, eventHandler: {} }) as any);
-    presentationTreeRendererStub = sinon.stub<[presentationComponents.PresentationTreeRendererProps], React.JSX.Element>().callsFake(() => <></>);
-    PresentationTreeStub = sinon
-      .stub<[presentationComponents.PresentationTreeProps<componentsReact.TreeEventHandler>], React.JSX.Element>()
-      .callsFake(() => <></>);
+    usePresentationTreeStateStub = usePresentationTreeStateStub.callsFake(
+      () => ({ nodeLoader: { modelSource: undefined }, onItemsRendered: undefined, eventHandler: {} }) as any,
+    );
+    PresentationTreeRendererStub = PresentationTreeRendererStub.callsFake(() => <></>);
+    PresentationTreeStub = PresentationTreeStub.callsFake(() => <></>);
     await td.replaceEsm(presentationComponentsModulePath, {
       ...presentationComponents,
       usePresentationTreeState: usePresentationTreeStateStub,
-      PresentationTreeRenderer: presentationTreeRendererStub,
+      PresentationTreeRenderer: PresentationTreeRendererStub,
       PresentationTree: PresentationTreeStub,
     });
 
@@ -59,9 +57,9 @@ describe("Tree", () => {
     expect(PresentationTreeStub).to.have.been.calledOnce.and.calledWith(
       sinon.match((props: presentationComponents.PresentationTreeProps<any>) => {
         expect(props.treeRenderer).to.not.be.undefined;
-        expect(presentationTreeRendererStub).to.not.be.called;
+        expect(PresentationTreeRendererStub).to.not.be.called;
         render(props.treeRenderer?.({} as any));
-        expect(presentationTreeRendererStub).to.be.calledOnce;
+        expect(PresentationTreeRendererStub).to.be.calledOnce;
         return true;
       }),
     );
