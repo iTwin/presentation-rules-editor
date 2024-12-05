@@ -225,7 +225,7 @@ function IModelBrowserTableView(props: IModelBrowserTableViewProps): React.React
         Cell(cellProps: CellProps<IModelBrowserTableData>) {
           const iTwinId = cellProps.row.original.iTwinId;
           const iModelId = cellProps.row.original.id;
-          const handleClick = () => navigation.openRulesetEditor({ iTwinId, iModelId });
+          const handleClick = async () => navigation.openRulesetEditor({ iTwinId, iModelId });
           return <Anchor onClick={handleClick}>{cellProps.value}</Anchor>;
         },
       },

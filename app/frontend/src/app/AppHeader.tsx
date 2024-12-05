@@ -59,7 +59,7 @@ export function AppHeader(): React.ReactElement {
   return (
     <Header
       appLogo={
-        <HeaderLogo logo={<SvgImodelHollow />} onClick={() => navigation.openIModelBrowser()}>
+        <HeaderLogo logo={<SvgImodelHollow />} onClick={async () => navigation.openIModelBrowser()}>
           Presentation Rules Editor
         </HeaderLogo>
       }

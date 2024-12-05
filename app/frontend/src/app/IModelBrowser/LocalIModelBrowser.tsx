@@ -113,7 +113,7 @@ function TableView(props: TableViewProps): React.ReactElement {
         Header: "Name",
         accessor: "name",
         Cell(cellProps: CellProps<TableData>) {
-          return <Anchor onClick={() => navigation.openRulesetEditor(cellProps.value)}>{cellProps.value}</Anchor>;
+          return <Anchor onClick={async () => navigation.openRulesetEditor(cellProps.value)}>{cellProps.value}</Anchor>;
         },
       },
       { Header: "File size", accessor: "size" },

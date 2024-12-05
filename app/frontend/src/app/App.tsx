@@ -100,29 +100,23 @@ function useAppNavigationContext(): AppNavigationContext {
   const navigate = useNavigate();
   return React.useMemo(
     () => ({
-      openRulesetEditor: (iModelIdentifier) => {
-        void (async () => {
-          if (!iModelIdentifier) {
-            await navigate("/open-imodel");
-          } else {
-            await navigate(
-              `/open-imodel?${
-                isSnapshotIModel(iModelIdentifier)
-                  ? `snapshot=${iModelIdentifier}`
-                  : `iTwinId=${iModelIdentifier.iTwinId}&iModelId=${iModelIdentifier.iModelId}`
-              }`,
-            );
-          }
-        })();
+      openRulesetEditor: async (iModelIdentifier) => {
+        if (!iModelIdentifier) {
+          await navigate("/open-imodel");
+        } else {
+          await navigate(
+            `/open-imodel?${
+              isSnapshotIModel(iModelIdentifier) ? `snapshot=${iModelIdentifier}` : `iTwinId=${iModelIdentifier.iTwinId}&iModelId=${iModelIdentifier.iModelId}`
+            }`,
+          );
+        }
       },
-      openIModelBrowser: (tab) => {
-        void (async () => {
-          if (!tab) {
-            await navigate("/browse-imodels");
-          } else {
-            await navigate(`/browse-imodels/${tab}`);
-          }
-        })();
+      openIModelBrowser: async (tab) => {
+        if (!tab) {
+          await navigate("/browse-imodels");
+        } else {
+          await navigate(`/browse-imodels/${tab}`);
+        }
       },
     }),
     [navigate],
@@ -183,7 +177,7 @@ export const AppSideNavigation = React.memo<AppSideNavigationProps>(function App
             key={AppPage.RulesetEditor}
             startIcon={<SvgDeveloper />}
             isActive={props.activePage === AppPage.RulesetEditor}
-            onClick={() => navigation.openRulesetEditor()}
+            onClick={async () => navigation.openRulesetEditor()}
           >
             Ruleset Editor
           </SidenavButton>,
@@ -191,7 +185,7 @@ export const AppSideNavigation = React.memo<AppSideNavigationProps>(function App
             key={AppPage.iModelBrowser}
             startIcon={<SvgFolderOpened />}
             isActive={props.activePage === AppPage.iModelBrowser}
-            onClick={() => navigation.openIModelBrowser()}
+            onClick={async () => navigation.openIModelBrowser()}
           >
             Browse iModels
           </SidenavButton>,

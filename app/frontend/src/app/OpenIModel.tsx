@@ -103,7 +103,7 @@ function OpenSnapshotIModel(props: OpenSnapshotIModelProps): React.ReactElement 
 
   React.useEffect(() => {
     setBreadcrumbs([
-      <HeaderButton key="iTwin" name="Local snapshots" onClick={() => navigation.openIModelBrowser(IModelBrowserTab.Local)} />,
+      <HeaderButton key="iTwin" name="Local snapshots" onClick={async () => navigation.openIModelBrowser(IModelBrowserTab.Local)} />,
       <HeaderButton key="iModel" name={props.iModelIdentifier} />,
     ]);
 
@@ -175,7 +175,7 @@ function usePopulateHeaderBreadcrumbs(iModelIdentifier: ITwinIModelIdentifier, a
     const demoIModel = demoIModels.get(iModelIdentifier.iModelId);
     if (demoIModel) {
       setBreadcrumbs([
-        <HeaderButton key="iTwin" name="Demo iModels" onClick={() => navigation.openIModelBrowser(IModelBrowserTab.Demo)} />,
+        <HeaderButton key="iTwin" name="Demo iModels" onClick={async () => navigation.openIModelBrowser(IModelBrowserTab.Demo)} />,
         <HeaderButton key="iModel" name={demoIModel.name} />,
       ]);
     } else if (authorizationClient) {
@@ -190,7 +190,7 @@ function usePopulateHeaderBreadcrumbs(iModelIdentifier: ITwinIModelIdentifier, a
               key="iTwin"
               name={project.displayName}
               description={project.number !== project.displayName ? project.number : undefined}
-              onClick={() => navigation.openIModelBrowser(IModelBrowserTab.iTwins)}
+              onClick={async () => navigation.openIModelBrowser(IModelBrowserTab.iTwins)}
             />,
             <HeaderButton key="iModel" name={iModel.name} description={iModel.description} />,
           ]);

@@ -8,11 +8,11 @@ import { IModelBrowserTab } from "./IModelBrowser/IModelBrowser.js";
 import { IModelIdentifier } from "./ITwinJsApp/IModelIdentifier.js";
 
 export interface AppNavigationContext {
-  openRulesetEditor(iModelIdentifier?: IModelIdentifier): void;
-  openIModelBrowser(tab?: IModelBrowserTab): void;
+  openRulesetEditor(iModelIdentifier?: IModelIdentifier): Promise<void>;
+  openIModelBrowser(tab?: IModelBrowserTab): Promise<void>;
 }
 
 export const appNavigationContext = React.createContext<AppNavigationContext>({
-  openRulesetEditor: () => {},
-  openIModelBrowser: () => {},
+  openRulesetEditor: async () => {},
+  openIModelBrowser: async () => {},
 });
