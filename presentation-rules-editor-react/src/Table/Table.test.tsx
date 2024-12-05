@@ -62,7 +62,7 @@ describe("Table", () => {
     cleanup();
 
     editableRuleset.dispose();
-    sinon.restore();
+    sinon.reset();
     td.reset();
   });
 
@@ -168,6 +168,9 @@ describe("Table", () => {
         sort: sinon.stub(),
       }));
     });
+    afterEach(() => {
+      sinon.reset();
+    });
 
     it("renders supplied component", () => {
       const { getByText } = render(<Table {...commonProps} editableRuleset={editableRuleset} loadingContentState={() => <>Test Component</>} />);
@@ -192,6 +195,9 @@ describe("Table", () => {
         filter: sinon.stub(),
         sort: sinon.stub(),
       }));
+    });
+    afterEach(() => {
+      sinon.reset();
     });
 
     it("renders supplied component", () => {
@@ -221,6 +227,9 @@ describe("Table", () => {
         filter: sinon.stub(),
         sort: sinon.stub(),
       }));
+    });
+    afterEach(() => {
+      sinon.reset();
     });
 
     it("passes supplied component to iTwinUi Table", () => {

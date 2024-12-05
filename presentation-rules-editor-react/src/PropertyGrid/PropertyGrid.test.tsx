@@ -77,7 +77,7 @@ describe("PropertyGrid", () => {
     cleanup();
 
     editableRuleset.dispose();
-    sinon.restore();
+    sinon.reset();
     td.reset();
   });
 
@@ -92,6 +92,7 @@ describe("PropertyGrid", () => {
     });
     afterEach(() => {
       Object.setPrototypeOf(AutoExpandingPropertyDataProvider, initialAutoExpandingPropertyDataProviderPrototype);
+      sinon.reset();
     });
 
     it("renders with AutoExpandingPropertyDataProvider", () => {
@@ -106,6 +107,9 @@ describe("PropertyGrid", () => {
     beforeEach(async () => {
       stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: false, numSelectedElements: 0 }));
       PropertyGrid = (await import("./PropertyGrid.js")).PropertyGrid;
+    });
+    afterEach(() => {
+      sinon.reset();
     });
 
     it("renders supplied component", () => {
@@ -123,6 +127,9 @@ describe("PropertyGrid", () => {
     beforeEach(async () => {
       stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: true, numSelectedElements: 1 }));
       PropertyGrid = (await import("./PropertyGrid.js")).PropertyGrid;
+    });
+    afterEach(() => {
+      sinon.reset();
     });
 
     it("renders supplied component", () => {
@@ -143,6 +150,9 @@ describe("PropertyGrid", () => {
       stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: false, numSelectedElements: 1 }));
       stubUsePropertyGridModel.callsFake(() => undefined);
       PropertyGrid = (await import("./PropertyGrid.js")).PropertyGrid;
+    });
+    afterEach(() => {
+      sinon.reset();
     });
 
     it("renders supplied component", () => {
@@ -182,6 +192,9 @@ describe("PropertyGrid", () => {
       };
 
       propertyGridModel = new componentsReact.MutablePropertyGridModel(propertyData, new componentsReact.MutableGridItemFactory());
+    });
+    afterEach(() => {
+      sinon.reset();
     });
 
     describe("expandAllCategories", () => {
@@ -249,6 +262,9 @@ describe("PropertyGrid", () => {
         ],
         records: {},
       };
+    });
+    afterEach(() => {
+      sinon.reset();
     });
 
     it("expands all nested categories when true", async () => {

@@ -42,6 +42,7 @@ describe("Tree", () => {
   });
 
   afterEach(() => {
+    sinon.reset();
     td.reset();
   });
 

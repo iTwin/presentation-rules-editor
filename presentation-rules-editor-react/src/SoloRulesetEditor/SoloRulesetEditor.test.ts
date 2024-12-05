@@ -20,7 +20,7 @@ describe("SoloRulesetEditor", () => {
 
   after(() => {
     editableRuleset.dispose();
-    sinon.restore();
+    sinon.reset();
   });
 
   let stubGetModel: SinonStub<(typeof monaco.editor)["getModel"]>;

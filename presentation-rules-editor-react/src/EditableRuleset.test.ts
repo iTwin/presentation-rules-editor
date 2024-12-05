@@ -16,7 +16,7 @@ describe("EditableRuleset", () => {
   });
 
   after(() => {
-    sinon.restore();
+    sinon.reset();
   });
 
   beforeEach(() => {
