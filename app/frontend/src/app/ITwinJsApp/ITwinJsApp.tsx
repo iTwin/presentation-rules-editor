@@ -3,6 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import * as React from "react";
 import { rpcInterfaces } from "@app/common";
 import { AppNotificationManager, UiFramework } from "@itwin/appui-react";
 import { Logger, LogLevel } from "@itwin/core-bentley";
@@ -12,7 +13,6 @@ import { ITwinLocalization } from "@itwin/core-i18n";
 import { FrontendIModelsAccess } from "@itwin/imodels-access-frontend";
 import { IModelsClient } from "@itwin/imodels-client-management";
 import { Presentation } from "@itwin/presentation-frontend";
-import * as React from "react";
 import { LoadingIndicator } from "../common/LoadingIndicator.js";
 import { applyUrlPrefix, EXPERIMENTAL_STATION_VALUE_RENDERER } from "../utils/Environment.js";
 import { BackendApi } from "./api/BackendApi.js";

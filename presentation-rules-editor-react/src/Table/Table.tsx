@@ -3,12 +3,12 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import * as React from "react";
 import { PropertyRecord } from "@itwin/appui-abstract";
 import { IModelConnection } from "@itwin/core-frontend";
 import { ProgressRadial, Table as UiTable } from "@itwin/itwinui-react";
 import { Ruleset } from "@itwin/presentation-common";
 import { TableCellRenderer, TableColumnDefinition, TableRowDefinition, usePresentationTableWithUnifiedSelection } from "@itwin/presentation-components";
-import * as React from "react";
 import { CenteredContent } from "../CenteredContent.js";
 import { EditableRuleset } from "../EditableRuleset.js";
 

@@ -3,8 +3,8 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { test } from "@playwright/test";
 import { Page } from "playwright";
+import { test } from "@playwright/test";
 import { getEditor, getWidget, openTestIModel } from "../utils.js";
 
 test.describe("properties widget #local", () => {

@@ -3,11 +3,11 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import * as React from "react";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
 import { FluidGrid } from "@itwin/itwinui-layouts-react";
 import { Text } from "@itwin/itwinui-react";
-import * as React from "react";
 import { useAuthorization } from "../Authorization.js";
 import { VerticalStack } from "../common/CenteredStack.js";
 import { getIModel } from "../ITwinApi.js";

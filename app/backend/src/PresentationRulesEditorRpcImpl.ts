@@ -3,12 +3,12 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { IModelMetadata, PresentationRulesEditorRpcInterface } from "@app/common";
-import { RpcManager } from "@itwin/core-common";
 import { execFileSync } from "child_process";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
+import { IModelMetadata, PresentationRulesEditorRpcInterface } from "@app/common";
+import { RpcManager } from "@itwin/core-common";
 import { SnapshotFileNameResolver } from "./SnapshotFileNameResolver";
 
 /** The backend implementation of PresentationRulesEditorRpcInterface. */

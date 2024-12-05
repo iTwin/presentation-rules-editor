@@ -3,19 +3,19 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import "./InitializedApp.scss";
+import * as monaco from "monaco-editor";
+import * as React from "react";
 import { StagePanelState, WidgetState } from "@itwin/appui-react";
 import { AuthorizationClient } from "@itwin/core-common";
 import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-frontend";
 import { ChildNodeSpecificationTypes, ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
 import { EditableRuleset, SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
-import * as monaco from "monaco-editor";
-import * as React from "react";
 import { useIModelBrowserSettings } from "../IModelBrowser/IModelBrowser.js";
 import { applyUrlPrefix } from "../utils/Environment.js";
 import { BackendApi } from "./api/BackendApi.js";
 import { ContentTabs } from "./content-tabs/ContentTabs.js";
 import { areIModelIdentifiersEqual, IModelIdentifier, isDemoIModel, isSnapshotIModel } from "./IModelIdentifier.js";
-import "./InitializedApp.scss";
 import { backendApiContext, rulesetEditorContext, RulesetEditorTab } from "./ITwinJsAppContext.js";
 import { parseEditorState } from "./misc/EditorStateSerializer.js";
 import { useToastMessage } from "./misc/UseToastMessage.js";

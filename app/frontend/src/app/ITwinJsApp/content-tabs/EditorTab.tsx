@@ -3,8 +3,8 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
 import * as React from "react";
+import { SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
 import { AutoSizer } from "../common/AutoSizer.js";
 
 export interface EditorTabProps {

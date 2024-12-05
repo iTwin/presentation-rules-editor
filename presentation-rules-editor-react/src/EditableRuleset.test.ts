@@ -3,10 +3,10 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { Ruleset } from "@itwin/presentation-common";
-import { Presentation } from "@itwin/presentation-frontend";
 import { expect } from "chai";
 import * as sinon from "sinon";
+import { Ruleset } from "@itwin/presentation-common";
+import { Presentation } from "@itwin/presentation-frontend";
 import { EditableRuleset } from "./EditableRuleset.js";
 import { stubPresentationManager } from "./TestUtils.js";
 

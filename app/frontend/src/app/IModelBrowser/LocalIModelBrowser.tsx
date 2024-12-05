@@ -3,12 +3,12 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import * as React from "react";
 import { IModelMetadata } from "@app/common";
 import { SvgImodelHollow, SvgMore } from "@itwin/itwinui-icons-react";
 import { FluidGrid } from "@itwin/itwinui-layouts-react";
 import { Anchor, DropdownMenu, IconButton, MenuItem, Table, Text } from "@itwin/itwinui-react";
 import { CellProps, Column } from "@itwin/itwinui-react/react-table";
-import * as React from "react";
 import { appNavigationContext } from "../AppContext.js";
 import { AsyncActionButton } from "../common/AsyncActionButton.js";
 import { VerticalStack } from "../common/CenteredStack.js";

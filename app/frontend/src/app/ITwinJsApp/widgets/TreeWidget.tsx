@@ -3,10 +3,10 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import * as React from "react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { UnifiedSelectionContextProvider } from "@itwin/presentation-components";
 import { EditableRuleset, Tree } from "@itwin/presentation-rules-editor-react";
-import * as React from "react";
 import { AutoSizer } from "../common/AutoSizer.js";
 import { LoadingHint } from "../common/LoadingHint.js";
 import { OpeningIModelHint } from "../common/OpeningIModelHint.js";

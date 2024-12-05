@@ -3,13 +3,13 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import { User, UserManager, WebStorageStateStore } from "oidc-client-ts";
+import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import { AccessToken } from "@itwin/core-bentley";
 import { AuthorizationClient } from "@itwin/core-common";
 import { PageLayout } from "@itwin/itwinui-layouts-react";
 import { Code } from "@itwin/itwinui-react";
-import { User, UserManager, WebStorageStateStore } from "oidc-client-ts";
-import * as React from "react";
-import { useNavigate } from "react-router-dom";
 import { LoadingIndicator } from "./common/LoadingIndicator.js";
 import { ErrorPage } from "./errors/ErrorPage.js";
 import { applyUrlPrefix } from "./utils/Environment.js";

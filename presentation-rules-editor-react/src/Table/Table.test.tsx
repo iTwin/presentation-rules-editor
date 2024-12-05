@@ -3,15 +3,15 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import { expect } from "chai";
+import * as sinon from "sinon";
+import * as td from "testdouble";
 import { PropertyRecord } from "@itwin/appui-abstract";
 import { IModelConnection } from "@itwin/core-frontend";
 import * as itwinuiReact from "@itwin/itwinui-react";
 import { Field } from "@itwin/presentation-common";
 import * as presentationComponents from "@itwin/presentation-components";
 import { cleanup, render, waitFor } from "@testing-library/react";
-import { expect } from "chai";
-import * as sinon from "sinon";
-import * as td from "testdouble";
 import { EditableRuleset } from "../EditableRuleset.js";
 import { SinonStub, stubPresentationManager } from "../TestUtils.js";
 import { TableProps } from "./Table.js";

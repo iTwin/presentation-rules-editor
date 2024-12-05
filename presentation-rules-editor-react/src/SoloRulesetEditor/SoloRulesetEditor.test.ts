@@ -52,15 +52,15 @@ describe("SoloRulesetEditor", () => {
 
       new SoloRulesetEditor({ editableRuleset, monaco: monacoModule as typeof monaco });
 
-      expect(monacoModule.editor!.getModel).to.have.been.calledOnceWithExactly(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
-      expect(monacoModule.editor!.createModel).not.to.have.been.called;
+      expect(monacoModule.editor?.getModel).to.have.been.calledOnceWithExactly(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
+      expect(monacoModule.editor?.createModel).not.to.have.been.called;
     });
 
     it("creates new model of one doesn't exist", () => {
       new SoloRulesetEditor({ editableRuleset, monaco: monacoModule as typeof monaco });
 
-      expect(monacoModule.editor!.getModel).to.have.been.calledOnceWithExactly(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
-      expect(monacoModule.editor!.createModel).to.have.been.calledOnce;
+      expect(monacoModule.editor?.getModel).to.have.been.calledOnceWithExactly(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
+      expect(monacoModule.editor?.createModel).to.have.been.calledOnce;
     });
   });
 

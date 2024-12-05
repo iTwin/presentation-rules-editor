@@ -3,13 +3,13 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import "./SoloRulesetEditor.scss";
+import * as React from "react";
 import { assert, IDisposable } from "@itwin/core-bentley";
 import { Button } from "@itwin/itwinui-react";
 import { Ruleset } from "@itwin/presentation-common";
-import * as React from "react";
 import { EditableRuleset } from "../EditableRuleset.js";
 import presentationRulesetSchema from "./PresentationRulesetSchema.js";
-import "./SoloRulesetEditor.scss";
 
 import type * as monaco from "monaco-editor";
 

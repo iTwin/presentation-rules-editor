@@ -3,12 +3,13 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import "./IModelBrowser.scss";
+import * as React from "react";
+import { Outlet, useMatch, useNavigate } from "react-router-dom";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgHistory, SvgImodel, SvgList, SvgSearch, SvgThumbnails } from "@itwin/itwinui-icons-react";
 import { FluidGrid, Grid, PageLayout } from "@itwin/itwinui-layouts-react";
 import { ButtonGroup, IconButton, LabeledInput, MenuItem, Surface, Tab, Tabs, Text, Tile } from "@itwin/itwinui-react";
-import * as React from "react";
-import { Outlet, useMatch, useNavigate } from "react-router-dom";
 import { AppPage, AppSideNavigation } from "../App.js";
 import { appNavigationContext } from "../AppContext.js";
 import { useAuthorization } from "../Authorization.js";
@@ -17,7 +18,6 @@ import { useLocalStorage } from "../common/LocalStorage.js";
 import { getIModel, getIModelThumbnail } from "../ITwinApi.js";
 import { BackendApi } from "../ITwinJsApp/api/BackendApi.js";
 import { demoIModels, IModelIdentifier, isDemoIModel, isIModelIdentifier, isSnapshotIModel, ITwinIModelIdentifier } from "../ITwinJsApp/IModelIdentifier.js";
-import "./IModelBrowser.scss";
 
 export interface IModelBrowserProps {
   backendApiPromise: Promise<BackendApi> | undefined;

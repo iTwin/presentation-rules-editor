@@ -3,8 +3,8 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { IModelApp } from "@itwin/core-frontend";
 import * as React from "react";
+import { IModelApp } from "@itwin/core-frontend";
 import { LoadingIndicator } from "../../common/LoadingIndicator.js";
 
 export function OpeningIModelHint(): React.ReactElement {

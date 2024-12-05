@@ -3,14 +3,14 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { SvgDeveloper, SvgFolderOpened } from "@itwin/itwinui-icons-react";
 import "@itwin/itwinui-layouts-css/styles.css";
-import { PageLayout } from "@itwin/itwinui-layouts-react";
-import { Footer, SidenavButton, SideNavigation, ThemeProvider } from "@itwin/itwinui-react";
 import "@itwin/itwinui-react/styles.css";
+import "./App.scss";
 import * as React from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import "./App.scss";
+import { SvgDeveloper, SvgFolderOpened } from "@itwin/itwinui-icons-react";
+import { PageLayout } from "@itwin/itwinui-layouts-react";
+import { Footer, SidenavButton, SideNavigation, ThemeProvider } from "@itwin/itwinui-react";
 import { appNavigationContext, AppNavigationContext } from "./AppContext.js";
 import { AppHeader, breadcrumbsContext } from "./AppHeader.js";
 import { AuthorizationState, createAuthorizationProvider, SignInCallback, SignInSilent, useAuthorization } from "./Authorization.js";

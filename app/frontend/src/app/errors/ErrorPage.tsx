@@ -3,12 +3,12 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import "./ErrorPage.scss";
+import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import { SvgError } from "@itwin/itwinui-illustrations-react";
 import { PageLayout } from "@itwin/itwinui-layouts-react";
 import { Button, ExpandableBlock, Text } from "@itwin/itwinui-react";
-import * as React from "react";
-import { useNavigate } from "react-router-dom";
-import "./ErrorPage.scss";
 
 export interface ErrorPageProps {
   /** Illustration component. Default: {@link SvgError}. */

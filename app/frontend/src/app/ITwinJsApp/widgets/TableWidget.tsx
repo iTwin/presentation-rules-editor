@@ -3,21 +3,21 @@
  *   See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import "./TableWidget.scss";
+import * as React from "react";
+import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 import { IModelApp, IModelConnection } from "@itwin/core-frontend";
 import { SvgError, SvgTimedOut } from "@itwin/itwinui-illustrations-react";
 import { Button, NonIdealState } from "@itwin/itwinui-react";
 import { PresentationError, PresentationStatus } from "@itwin/presentation-common";
 import { UnifiedSelectionContextProvider } from "@itwin/presentation-components";
 import { EditableRuleset, Table } from "@itwin/presentation-rules-editor-react";
-import * as React from "react";
-import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 import { VerticalStack } from "../../common/CenteredStack.js";
 import { LoadingIndicator } from "../../common/LoadingIndicator.js";
 import { AutoSizer } from "../common/AutoSizer.js";
 import { LoadingHint } from "../common/LoadingHint.js";
 import { OpeningIModelHint } from "../common/OpeningIModelHint.js";
 import { rulesetEditorContext, RulesetEditorTab } from "../ITwinJsAppContext.js";
-import "./TableWidget.scss";
 
 export interface TableProps {
   imodel: IModelConnection | undefined;

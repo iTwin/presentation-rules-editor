@@ -3,15 +3,15 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import { expect } from "chai";
+import { ForwardRefExoticComponent, RefAttributes, useRef } from "react";
+import * as sinon from "sinon";
+import * as td from "testdouble";
 import { PropertyRecord, PropertyValueFormat, StandardTypeNames } from "@itwin/appui-abstract";
 import * as componentsReact from "@itwin/components-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import * as presentationComponents from "@itwin/presentation-components";
 import { cleanup, render, waitFor } from "@testing-library/react";
-import { expect } from "chai";
-import { ForwardRefExoticComponent, RefAttributes, useRef } from "react";
-import * as sinon from "sinon";
-import * as td from "testdouble";
 import { EditableRuleset } from "../EditableRuleset.js";
 import { stubPresentationManager } from "../TestUtils.js";
 import { AutoExpandingPropertyDataProvider as AutoExpandingPropertyDataProviderOG, PropertyGridAttributes, PropertyGridProps } from "./PropertyGrid.js";
@@ -260,7 +260,7 @@ describe("PropertyGrid", () => {
 
       const data = await dataProvider.getData();
       expect(data.categories[0].expand).to.be.true;
-      expect(data.categories[0].childCategories![0].expand).to.be.true;
+      expect(data.categories[0].childCategories?.[0].expand).to.be.true;
     });
 
     it("does not modify category expansion when false", async () => {
@@ -272,7 +272,7 @@ describe("PropertyGrid", () => {
 
       const data = await dataProvider.getData();
       expect(data.categories[0].expand).to.be.true;
-      expect(data.categories[0].childCategories![0].expand).to.be.false;
+      expect(data.categories[0].childCategories?.[0].expand).to.be.false;
     });
   });
 });

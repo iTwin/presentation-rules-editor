@@ -1,6 +1,11 @@
-import { test as setup } from "@playwright/test";
+/*---------------------------------------------------------------------------------------------
+ * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+ * See LICENSE.md in the project root for license terms and full copyright notice.
+ *--------------------------------------------------------------------------------------------*/
+
 import { exec } from "child_process";
 import * as fs from "fs";
+import { test as setup } from "@playwright/test";
 
 setup("Setup Baytown #web #local", async () => {
   await setupIModel();

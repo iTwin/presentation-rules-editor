@@ -3,8 +3,8 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { IModelHost } from "@itwin/core-backend";
 import * as path from "path";
+import { IModelHost } from "@itwin/core-backend";
 
 export class SnapshotFileNameResolver {
   public static getIModelsDirectory(): string {

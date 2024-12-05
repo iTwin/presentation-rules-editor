@@ -3,11 +3,11 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import * as React from "react";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgHome, SvgUser } from "@itwin/itwinui-icons-react";
 import { HeaderButton, Tile } from "@itwin/itwinui-react";
-import * as React from "react";
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { AppPage, AppSideNavigation } from "./App.js";
 import { appNavigationContext } from "./AppContext.js";
 import { breadcrumbsContext } from "./AppHeader.js";

@@ -3,6 +3,8 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import { UserProfile } from "oidc-client-ts";
+import * as React from "react";
 import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
 import {
   Avatar,
@@ -18,8 +20,6 @@ import {
   MenuItem,
   Text,
 } from "@itwin/itwinui-react";
-import { UserProfile } from "oidc-client-ts";
-import * as React from "react";
 import { appNavigationContext } from "./AppContext.js";
 import { AuthorizationState, useAuthorization } from "./Authorization.js";
 import { HorizontalStack } from "./common/CenteredStack.js";

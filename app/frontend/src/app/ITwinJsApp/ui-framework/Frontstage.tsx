@@ -3,6 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import React, { ReactElement } from "react";
 import {
   ConfigurableUiContent,
   ContentGroup,
@@ -16,7 +17,6 @@ import {
   UiItemsProvider,
   Widget,
 } from "@itwin/appui-react";
-import React, { ReactElement } from "react";
 import { StagePanelProps, StagePanelZoneProps } from "./StagePanel.js";
 
 export interface FrontstageProps {

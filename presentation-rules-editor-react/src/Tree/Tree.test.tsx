@@ -3,12 +3,12 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import * as componentsReact from "@itwin/components-react";
-import * as presentationComponents from "@itwin/presentation-components";
-import { render } from "@testing-library/react";
 import { expect } from "chai";
 import * as sinon from "sinon";
 import * as td from "testdouble";
+import * as componentsReact from "@itwin/components-react";
+import * as presentationComponents from "@itwin/presentation-components";
+import { render } from "@testing-library/react";
 import { EditableRuleset } from "../EditableRuleset.js";
 import { stubPresentationManager } from "../TestUtils.js";
 import { TreeProps } from "./Tree.js";
@@ -60,7 +60,7 @@ describe("Tree", () => {
       sinon.match((props: presentationComponents.PresentationTreeProps<any>) => {
         expect(props.treeRenderer).to.not.be.undefined;
         expect(presentationTreeRendererStub).to.not.be.called;
-        render(props.treeRenderer!({} as any));
+        render(props.treeRenderer?.({} as any));
         expect(presentationTreeRendererStub).to.be.calledOnce;
         return true;
       }),

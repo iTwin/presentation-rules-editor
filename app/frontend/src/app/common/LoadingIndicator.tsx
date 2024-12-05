@@ -3,8 +3,8 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { ProgressRadial, Text } from "@itwin/itwinui-react";
 import * as React from "react";
+import { ProgressRadial, Text } from "@itwin/itwinui-react";
 import { VerticalStack } from "./CenteredStack.js";
 
 export interface LoadingIndicatorProps {
