@@ -1,29 +1,14 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "target": "ESNext",
     "sourceMap": true,
     "isolatedModules": true,
+    "moduleResolution": "NodeNext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "esModuleInterop": true,
     "jsx": "react-jsx",
-    "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "outDir": "lib/esm",
-    "strict": true,
-    "skipLibCheck": true,
-    "emitDecoratorMetadata": true,
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "forceConsistentCasingInFileNames": true,
-    "useDefineForClassFields": true
+    "outDir": "lib"
   },
   "include": ["vite.config.mts", "src"]
 }

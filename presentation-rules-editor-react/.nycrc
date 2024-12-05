@@ -4,7 +4,7 @@
   "functions": 100,
   "branches": 100,
   "lines": 100,
-  "include": ["lib/esm/**/*.js"],
+  "include": ["lib/**/*.js"],
   "exclude": ["**/*.test.js"],
   "reporter": ["lcov", "text-summary"],
   "temp-dir": "./coverage/.nyc_output",
