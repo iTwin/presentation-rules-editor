@@ -1,10 +1,17 @@
 {
-  "extends": "./tsconfig.build.json",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "target": "ESNext",
-    "sourceMap": true
+    "lib": ["DOM"],
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "outDir": "lib",
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "noUnusedLocals": false
   },
   "include": ["index.ts", "src"]
 }
