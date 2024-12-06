@@ -15,10 +15,14 @@ To start editing rulesets, you will need to build the editor application:
    npx pnpm install
    ```
 
-3. Build presentation-rules-editor-react (if it was never built prior):
+3. Build app/common and presentation-rules-editor-react (if it was never built prior):
 
    ```shell
    npm run build:components
+   ```
+
+   ```shell
+   npm run build:common
    ```
 
 4. Start the application:

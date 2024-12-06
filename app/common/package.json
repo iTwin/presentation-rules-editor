@@ -3,12 +3,20 @@
   "version": "0.0.1",
   "license": "MIT",
   "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "author": {
     "name": "Bentley Systems, Inc.",
     "url": "https://www.bentley.com"
   },
   "scripts": {
-    "lint": "eslint **/*.{ts,tsx}"
+    "lint": "eslint **/*.{ts,tsx}",
+    "build": "tsc"
   },
   "dependencies": {
     "@itwin/core-bentley": "^4.10.2",

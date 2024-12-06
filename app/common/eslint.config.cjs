@@ -4,12 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 const iTwinPlugin = require("@itwin/eslint-plugin");
-const eslintBaseConfig = require("../../eslint.base.config");
+const eslintBaseConfig = require("../../eslint.base.config.js");
 
 module.exports = [
   {
     files: ["**/*.{ts,tsx}"],
     ...iTwinPlugin.configs.iTwinjsRecommendedConfig,
+  },
+  {
+    ignores: ["lib/"],
   },
   ...eslintBaseConfig,
 ];

@@ -34,11 +34,14 @@ jobs:
       - name: ESLint
         run: npm run lint
 
-      - name: Typecheck
-        run: npm run typecheck
-
       - name: Prettier
         run: npm run prettier
+
+      - name: Build app/common
+        run: npm run build --prefix ./app/common
+
+      - name: Typecheck
+        run: npm run typecheck
 
       - name: Build presentation-rules-editor-react package
         run: npm run build --prefix ./presentation-rules-editor-react

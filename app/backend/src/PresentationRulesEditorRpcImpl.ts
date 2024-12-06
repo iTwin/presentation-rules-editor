@@ -9,7 +9,7 @@ import * as os from "os";
 import * as path from "path";
 import { IModelMetadata, PresentationRulesEditorRpcInterface } from "@app/common";
 import { RpcManager } from "@itwin/core-common";
-import { SnapshotFileNameResolver } from "./SnapshotFileNameResolver";
+import { SnapshotFileNameResolver } from "./SnapshotFileNameResolver.js";
 
 /** The backend implementation of PresentationRulesEditorRpcInterface. */
 export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcInterface {

@@ -3,5 +3,5 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-export * from "./src/PresentationRulesEditorRpcInterface";
-export * from "./src/Rpcs";
+export * from "./src/PresentationRulesEditorRpcInterface.js";
+export * from "./src/Rpcs.js";

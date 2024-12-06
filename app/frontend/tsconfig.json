@@ -3,7 +3,6 @@
   "compilerOptions": {
     "sourceMap": true,
     "isolatedModules": true,
-    "moduleResolution": "NodeNext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "esModuleInterop": true,
     "jsx": "react-jsx",

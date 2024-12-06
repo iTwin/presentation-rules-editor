@@ -1,7 +1,6 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "moduleResolution": "NodeNext",
     "lib": ["DOM"],
     "jsx": "react-jsx",
     "resolveJsonModule": true,
