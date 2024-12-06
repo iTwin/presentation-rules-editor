@@ -54,9 +54,14 @@ export default defineConfig({
       url: "http://localhost:3000/",
       reuseExistingServer: !process.env.CI,
     },
-    {
-      command: "npm start --prefix ../backend",
-      url: "http://localhost:3001/",
-    },
+    ...(!process.env.WEB_TEST
+      ? [
+          {
+            command: "npm start --prefix ../backend",
+            url: "http://localhost:3001/",
+            reuseExistingServer: !process.env.CI,
+          },
+        ]
+      : []),
   ],
 });

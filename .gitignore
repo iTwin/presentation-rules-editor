@@ -1,6 +1,7 @@
 .env.local
 .pnpm-debug.log
 build
+dist
 coverage
 lib
 node_modules

@@ -11,10 +11,10 @@
   "scripts": {
     "start": "npm test",
     "lint": "eslint ./src/**/*.{ts,tsx}",
-    "test": "npx playwright test --grep=#local",
+    "test:local": "npx playwright test --grep=#local",
     "test:web": "cross-env WEB_TEST=1 npx playwright test --grep=#web",
-    "test:debug": "npx playwright test --grep=#local --ui",
-    "test:web:debug": "npx playwright test --grep=#web --ui",
+    "test:local:debug": "npx playwright test --grep=#local --ui",
+    "test:web:debug": "cross-env WEB_TEST=1 npx playwright test --grep=#web --ui",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",
     "prepare": "playwright install chromium"

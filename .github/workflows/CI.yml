@@ -47,7 +47,7 @@ jobs:
         run: npm run test:cover --prefix ./presentation-rules-editor-react
 
       - name: Run end-to-end tests with local configuration
-        run: npm run test --prefix ./app/e2e-tests
+        run: npm run test:local --prefix ./app/e2e-tests
         timeout-minutes: 5
         env:
           CI: true
