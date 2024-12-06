@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Page } from "playwright";
-import { page } from "../setup";
-import { getEditor, getStagePanelGrip, getWidget, openTestIModel } from "../utils";
+import { test } from "@playwright/test";
+import { getEditor, getStagePanelGrip, getWidget, openTestIModel } from "../utils.js";
 
-describe("table widget #local", () => {
+test.describe("table widget #local", () => {
   const contentDescriptorUrlIdentifier = (url: URL) => {
     return url.pathname.includes("getContentDescriptor");
   };
 
-  beforeEach(async () => {
+  test.beforeEach(async ({ page }) => {
     await openTestIModel(page);
 
     // expand the stage panel
@@ -20,11 +20,11 @@ describe("table widget #local", () => {
     await grip.dblclick();
   });
 
-  afterEach(async () => {
+  test.afterEach(async ({ page }) => {
     await page.context().unroute(contentDescriptorUrlIdentifier);
   });
 
-  it("displays properties", async () => {
+  test("displays properties", async ({ page }) => {
     const tableWidget = getWidget(page, "Table");
     await tableWidget.locator("text=Select element(s) to view properties.").waitFor();
 
@@ -32,12 +32,11 @@ describe("table widget #local", () => {
     await tableWidget.locator("role=table").waitFor();
   });
 
-  it("updates properties when ruleset changes", async () => {
+  test("updates properties when ruleset changes", async ({ page }) => {
     await selectAnyTreeNode(page);
 
     const editor = getEditor(page);
     await editor.click();
-    await editor.press("PageDown");
     await editor.press("PageDown");
     await editor.getByText(/^"SelectedNodeInstances"$/).click();
     await editor.press("End");
@@ -49,7 +48,7 @@ describe("table widget #local", () => {
     await tableWidget.locator(`text="Custom Property Label"`).waitFor();
   });
 
-  it("renders error status on error", async () => {
+  test("renders error status on error", async ({ page }) => {
     const tableWidget = getWidget(page, "Table");
     await tableWidget.locator("text=Select element(s) to view properties.").waitFor();
 

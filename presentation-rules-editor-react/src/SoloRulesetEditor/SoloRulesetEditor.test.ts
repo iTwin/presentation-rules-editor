@@ -6,9 +6,9 @@
 import { expect } from "chai";
 import * as monaco from "monaco-editor";
 import * as sinon from "sinon";
-import { EditableRuleset } from "../EditableRuleset";
-import { SinonStub, stubPresentationManager } from "../TestUtils";
-import { SoloRulesetEditor } from "./SoloRulesetEditor";
+import { EditableRuleset } from "../EditableRuleset.js";
+import { SinonStub, stubPresentationManager } from "../TestUtils.js";
+import { SoloRulesetEditor } from "./SoloRulesetEditor.js";
 
 describe("SoloRulesetEditor", () => {
   let editableRuleset: EditableRuleset;
@@ -20,7 +20,7 @@ describe("SoloRulesetEditor", () => {
 
   after(() => {
     editableRuleset.dispose();
-    sinon.restore();
+    sinon.reset();
   });
 
   let stubGetModel: SinonStub<(typeof monaco.editor)["getModel"]>;
@@ -52,15 +52,15 @@ describe("SoloRulesetEditor", () => {
 
       new SoloRulesetEditor({ editableRuleset, monaco: monacoModule as typeof monaco });
 
-      expect(monacoModule.editor!.getModel).to.have.been.calledOnceWithExactly(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
-      expect(monacoModule.editor!.createModel).not.to.have.been.called;
+      expect(monacoModule.editor?.getModel).to.have.been.calledOnceWithExactly(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
+      expect(monacoModule.editor?.createModel).not.to.have.been.called;
     });
 
     it("creates new model of one doesn't exist", () => {
       new SoloRulesetEditor({ editableRuleset, monaco: monacoModule as typeof monaco });
 
-      expect(monacoModule.editor!.getModel).to.have.been.calledOnceWithExactly(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
-      expect(monacoModule.editor!.createModel).to.have.been.calledOnce;
+      expect(monacoModule.editor?.getModel).to.have.been.calledOnceWithExactly(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
+      expect(monacoModule.editor?.createModel).to.have.been.calledOnce;
     });
   });
 

@@ -4,6 +4,11 @@
     "start:qa": "cross-env IMJS_URL_PREFIX=qa- run-p --silent start:backend start:frontend",
     "start:web": "cross-env DEPLOYMENT_TYPE=web npm run start:frontend",
     "start:backend": "npm run start --prefix ./app/backend",
+    "build": "npm run build:common && npm run build:components && run-p build:backend build:frontend",
+    "build:backend": "npm run build --prefix ./app/backend",
+    "build:components": "npm run build --prefix ./presentation-rules-editor-react",
+    "build:frontend": "npm run build --prefix ./app/frontend",
+    "build:common": "npm run build --prefix ./app/common",
     "start:frontend": "npm run start --prefix ./app/frontend -- --open",
     "link": "npm run link --prefix ./scripts --",
     "unlink": "npm run unlink --prefix ./scripts --",
@@ -38,6 +43,11 @@
     "cross-env": "^7.0.3",
     "eslint-config-prettier": "^9.1.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^3.3.3"
+    "prettier": "^3.4.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "npm-run-all@^4.1.5>cross-spawn@^6": "^7.0.6"
+    }
   }
 }

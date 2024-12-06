@@ -41,6 +41,7 @@
     "unstringified",
     "unsymlinking",
     "viewports",
+    "vite",
     "widgetid"
   ],
   "cSpell.ignoreWords": [
@@ -65,7 +66,6 @@
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
-    "source.organizeImports": "explicit"
   },
 
   "eslint.useFlatConfig": true,

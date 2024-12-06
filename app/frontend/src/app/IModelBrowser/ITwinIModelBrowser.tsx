@@ -3,20 +3,20 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import * as React from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { assert } from "@itwin/core-bentley";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgImodelHollow, SvgProject } from "@itwin/itwinui-icons-react";
 import { FluidGrid } from "@itwin/itwinui-layouts-react";
 import { Anchor, Button, Table, Text, Tile } from "@itwin/itwinui-react";
-import * as React from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { appNavigationContext } from "../AppContext";
-import { AuthorizationState, useAuthorization } from "../Authorization";
-import { HorizontalStack, VerticalStack } from "../common/CenteredStack";
-import { OfflineModeExplainer } from "../common/OfflineModeExplainer";
-import { getITwinIModels, getUserProjects, IModelRepresentation, ITwinRepresentation } from "../ITwinApi";
-import { LoadingHint } from "../ITwinJsApp/common/LoadingHint";
-import { iModelBrowserContext, IModelTile } from "./IModelBrowser";
+import { appNavigationContext } from "../AppContext.js";
+import { AuthorizationState, useAuthorization } from "../Authorization.js";
+import { HorizontalStack, VerticalStack } from "../common/CenteredStack.js";
+import { OfflineModeExplainer } from "../common/OfflineModeExplainer.js";
+import { getITwinIModels, getUserProjects, IModelRepresentation, ITwinRepresentation } from "../ITwinApi.js";
+import { LoadingHint } from "../ITwinJsApp/common/LoadingHint.js";
+import { iModelBrowserContext, IModelTile } from "./IModelBrowser.js";
 
 import type { CellProps, Column } from "@itwin/itwinui-react/react-table";
 
@@ -95,7 +95,7 @@ function ITwinBrowserGridView(props: ITwinBrowserGridViewProps): React.ReactElem
             isActionable
             thumbnail={iTwin.image ?? <SvgProject />}
             description={iTwin.number}
-            onClick={() => navigate(iTwin.id)}
+            onClick={async () => navigate(iTwin.id)}
           />
         </div>
       ))}
@@ -118,7 +118,7 @@ function ITwinBrowserTableView(props: ITwinBrowserTableViewProps): React.ReactEl
         Header: "Name",
         accessor: "name",
         Cell(cellProps: CellProps<ITwinBrowserTableData>) {
-          return <Anchor onClick={() => navigate(cellProps.row.original.id)}>{cellProps.value}</Anchor>;
+          return <Anchor onClick={async () => navigate(cellProps.row.original.id)}>{cellProps.value}</Anchor>;
         },
       },
       { id: "dateCreated", Header: "Date created", accessor: "dateCreated" },
@@ -225,7 +225,7 @@ function IModelBrowserTableView(props: IModelBrowserTableViewProps): React.React
         Cell(cellProps: CellProps<IModelBrowserTableData>) {
           const iTwinId = cellProps.row.original.iTwinId;
           const iModelId = cellProps.row.original.id;
-          const handleClick = () => navigation.openRulesetEditor({ iTwinId, iModelId });
+          const handleClick = async () => navigation.openRulesetEditor({ iTwinId, iModelId });
           return <Anchor onClick={handleClick}>{cellProps.value}</Anchor>;
         },
       },

@@ -4,44 +4,66 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { expect } from "chai";
-import * as React from "react";
+import { ForwardRefExoticComponent, RefAttributes, useRef } from "react";
 import * as sinon from "sinon";
+import * as td from "testdouble";
 import { PropertyRecord, PropertyValueFormat, StandardTypeNames } from "@itwin/appui-abstract";
 import * as componentsReact from "@itwin/components-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import * as presentationComponents from "@itwin/presentation-components";
 import { cleanup, render, waitFor } from "@testing-library/react";
-import { EditableRuleset } from "../EditableRuleset";
-import { SinonStub, stubPresentationManager } from "../TestUtils";
-import { AutoExpandingPropertyDataProvider, PropertyGrid, PropertyGridAttributes, PropertyGridProps } from "./PropertyGrid";
+import { EditableRuleset } from "../EditableRuleset.js";
+import { stubPresentationManager } from "../TestUtils.js";
+import { AutoExpandingPropertyDataProvider as AutoExpandingPropertyDataProviderOG, PropertyGridAttributes, PropertyGridProps } from "./PropertyGrid.js";
+
+const presentationComponentsModulePath = import.meta.resolve("@itwin/presentation-components");
+const componentsReactModulePath = import.meta.resolve("@itwin/components-react");
 
 describe("PropertyGrid", () => {
+  let PropertyGrid: ForwardRefExoticComponent<PropertyGridProps & RefAttributes<PropertyGridAttributes>>;
+  let AutoExpandingPropertyDataProvider: typeof AutoExpandingPropertyDataProviderOG;
   const commonProps: Omit<PropertyGridProps, "editableRuleset"> = {
     width: 100,
     height: 100,
     iModel: {} as IModelConnection,
   };
 
-  const initialAutoExpandingPropertyDataProviderPrototype = Object.getPrototypeOf(AutoExpandingPropertyDataProvider);
+  const initialAutoExpandingPropertyDataProviderPrototype = Object.getPrototypeOf(AutoExpandingPropertyDataProviderOG);
 
-  let stubUsePropertyGridModelSource: SinonStub<typeof componentsReact.useTrackedPropertyGridModelSource>;
-  let stubUsePropertyDataProvider: SinonStub<typeof presentationComponents.usePropertyDataProviderWithUnifiedSelection>;
-  let stubUsePropertyGridModel: SinonStub<typeof componentsReact.usePropertyGridModel>;
+  const stubUsePropertyGridModelSource = sinon.stub<
+    [props: { dataProvider: componentsReact.IPropertyDataProvider }],
+    { modelSource: componentsReact.PropertyGridModelSource; inProgress: boolean }
+  >();
+  const stubUsePropertyDataProvider = sinon.stub<
+    [presentationComponents.PropertyDataProviderWithUnifiedSelectionProps],
+    presentationComponents.UsePropertyDataProviderWithUnifiedSelectionResult
+  >();
+  const stubUsePropertyGridModel = sinon.stub<
+    [
+      props: {
+        modelSource: componentsReact.IPropertyGridModelSource;
+      },
+    ],
+    componentsReact.IPropertyGridModel | undefined
+  >();
   let editableRuleset: EditableRuleset;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     stubPresentationManager();
 
-    stubUsePropertyGridModelSource = sinon.stub(componentsReact, "useTrackedPropertyGridModelSource");
     stubUsePropertyGridModelSource.callsFake(() => ({}) as ReturnType<typeof componentsReact.useTrackedPropertyGridModelSource>);
-    sinon.stub(componentsReact, "usePropertyGridEventHandler");
-    sinon.stub(AutoExpandingPropertyDataProvider.prototype, "dispose");
 
-    Object.setPrototypeOf(AutoExpandingPropertyDataProvider, Object);
-
-    stubUsePropertyDataProvider = sinon.stub(presentationComponents, "usePropertyDataProviderWithUnifiedSelection");
-    stubUsePropertyGridModel = sinon.stub(componentsReact, "usePropertyGridModel");
     editableRuleset = new EditableRuleset({ initialRuleset: { id: "", rules: [] } });
+    await td.replaceEsm(componentsReactModulePath, {
+      ...componentsReact,
+      useTrackedPropertyGridModelSource: stubUsePropertyGridModelSource,
+      usePropertyGridModel: stubUsePropertyGridModel,
+      VirtualizedPropertyGrid: sinon.stub().callsFake(() => null),
+    });
+    await td.replaceEsm(presentationComponentsModulePath, {
+      ...presentationComponents,
+      usePropertyDataProviderWithUnifiedSelection: stubUsePropertyDataProvider,
+    });
   });
 
   afterEach(() => {
@@ -49,28 +71,35 @@ describe("PropertyGrid", () => {
     cleanup();
 
     editableRuleset.dispose();
-    Object.setPrototypeOf(AutoExpandingPropertyDataProvider, initialAutoExpandingPropertyDataProviderPrototype);
-    sinon.restore();
+    sinon.reset();
+    td.reset();
   });
 
   describe("normal state", () => {
-    beforeEach(() => {
-      sinon.stub(componentsReact, "VirtualizedPropertyGrid").callsFake(() => null);
+    beforeEach(async () => {
       stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: false, numSelectedElements: 1 }));
       stubUsePropertyGridModel.callsFake(() => ({}) as componentsReact.IPropertyGridModel);
+      const propertyGridImport = await import("./PropertyGrid.js");
+      PropertyGrid = propertyGridImport.PropertyGrid;
+      AutoExpandingPropertyDataProvider = propertyGridImport.AutoExpandingPropertyDataProvider;
+      sinon.stub(AutoExpandingPropertyDataProvider.prototype, "dispose");
+    });
+    afterEach(() => {
+      Object.setPrototypeOf(AutoExpandingPropertyDataProvider, initialAutoExpandingPropertyDataProviderPrototype);
     });
 
     it("renders with AutoExpandingPropertyDataProvider", () => {
       render(<PropertyGrid {...commonProps} editableRuleset={editableRuleset} />);
-      expect(componentsReact.useTrackedPropertyGridModelSource).to.have.been.calledOnce.and.calledWithMatch(
+      expect(stubUsePropertyGridModelSource).to.have.been.calledOnce.and.calledWithMatch(
         sinon.match(({ dataProvider }) => dataProvider instanceof AutoExpandingPropertyDataProvider),
       );
     });
   });
 
   describe("no elements selected state", () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: false, numSelectedElements: 0 }));
+      PropertyGrid = (await import("./PropertyGrid.js")).PropertyGrid;
     });
 
     it("renders supplied component", () => {
@@ -85,8 +114,9 @@ describe("PropertyGrid", () => {
   });
 
   describe("too many elements selected state", () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: true, numSelectedElements: 1 }));
+      PropertyGrid = (await import("./PropertyGrid.js")).PropertyGrid;
     });
 
     it("renders supplied component", () => {
@@ -103,9 +133,10 @@ describe("PropertyGrid", () => {
   });
 
   describe("undefined property grid model state", () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: false, numSelectedElements: 1 }));
       stubUsePropertyGridModel.callsFake(() => undefined);
+      PropertyGrid = (await import("./PropertyGrid.js")).PropertyGrid;
     });
 
     it("renders supplied component", () => {
@@ -122,18 +153,15 @@ describe("PropertyGrid", () => {
   describe("imperative handle", () => {
     let propertyGridModel: componentsReact.MutablePropertyGridModel;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: false, numSelectedElements: 1 }));
 
       const stubModelSource = {
         modifyModel: sinon.fake((callback: any) => callback(propertyGridModel)),
       } as unknown as componentsReact.PropertyGridModelSource;
-
-      stubUsePropertyGridModelSource.reset();
       stubUsePropertyGridModelSource.callsFake(() => ({ modelSource: stubModelSource, inProgress: false }));
-    });
+      PropertyGrid = (await import("./PropertyGrid.js")).PropertyGrid;
 
-    beforeEach(() => {
       const propertyData: componentsReact.PropertyData = {
         label: new PropertyRecord({ valueFormat: PropertyValueFormat.Primitive }, { name: "test", displayLabel: "test", typename: StandardTypeNames.String }),
         categories: [
@@ -153,7 +181,7 @@ describe("PropertyGrid", () => {
     describe("expandAllCategories", () => {
       it("expands all nested categories", async () => {
         const TestComponent = () => {
-          const propertyGridRef = React.useRef<PropertyGridAttributes>(null);
+          const propertyGridRef = useRef<PropertyGridAttributes>(null);
 
           return (
             <>
@@ -176,7 +204,7 @@ describe("PropertyGrid", () => {
     describe("collapseAllCategories", () => {
       it("collapses all nested categories", async () => {
         const TestComponent = () => {
-          const propertyGridRef = React.useRef<PropertyGridAttributes>(null);
+          const propertyGridRef = useRef<PropertyGridAttributes>(null);
 
           return (
             <>
@@ -200,9 +228,9 @@ describe("PropertyGrid", () => {
   describe("keepCategoriesExpanded", () => {
     let propertyData: componentsReact.PropertyData;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: false, numSelectedElements: 1 }));
-
+      PropertyGrid = (await import("./PropertyGrid.js")).PropertyGrid;
       propertyData = {
         label: new PropertyRecord({ valueFormat: PropertyValueFormat.Primitive }, { name: "test", displayLabel: "test", typename: StandardTypeNames.String }),
         categories: [
@@ -226,7 +254,7 @@ describe("PropertyGrid", () => {
 
       const data = await dataProvider.getData();
       expect(data.categories[0].expand).to.be.true;
-      expect(data.categories[0].childCategories![0].expand).to.be.true;
+      expect(data.categories[0].childCategories?.[0].expand).to.be.true;
     });
 
     it("does not modify category expansion when false", async () => {
@@ -238,7 +266,7 @@ describe("PropertyGrid", () => {
 
       const data = await dataProvider.getData();
       expect(data.categories[0].expand).to.be.true;
-      expect(data.categories[0].childCategories![0].expand).to.be.false;
+      expect(data.categories[0].childCategories?.[0].expand).to.be.false;
     });
   });
 });

@@ -6,7 +6,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as rimraf from "rimraf";
-import * as yargs from "yargs";
+import yargs from "yargs";
 
 const packagesToLink = new Set([
   "@bentley/imodeljs-native",

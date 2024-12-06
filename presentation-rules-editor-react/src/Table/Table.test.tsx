@@ -5,19 +5,24 @@
 
 import { expect } from "chai";
 import * as sinon from "sinon";
+import * as td from "testdouble";
 import { PropertyRecord } from "@itwin/appui-abstract";
 import { IModelConnection } from "@itwin/core-frontend";
 import * as itwinuiReact from "@itwin/itwinui-react";
 import { Field } from "@itwin/presentation-common";
 import * as presentationComponents from "@itwin/presentation-components";
-import { cleanup, render } from "@testing-library/react";
-import { EditableRuleset } from "../EditableRuleset";
-import { SinonStub, stubPresentationManager } from "../TestUtils";
-import { Table, TableProps } from "./Table";
+import { cleanup, render, waitFor } from "@testing-library/react";
+import { EditableRuleset } from "../EditableRuleset.js";
+import { SinonStub, stubPresentationManager } from "../TestUtils.js";
+import { TableProps } from "./Table.js";
+
+const presentationComponentsModulePath = import.meta.resolve("@itwin/presentation-components");
+const iTwinUIReactModulePath = import.meta.resolve("@itwin/itwinui-react");
 
 describe("Table", () => {
   interface ColumnType {
     id: string;
+    Cell?: any;
   }
   interface RowType {
     [columnId: string]: string;
@@ -28,17 +33,25 @@ describe("Table", () => {
     iModel: {} as IModelConnection,
   };
 
-  let stubITwinUiTable: SinonStub<typeof itwinuiReact.Table>;
-  let stubPresentationTableCellRenderer: SinonStub<typeof presentationComponents.TableCellRenderer>;
-  let stubUsePresentationTable: SinonStub<typeof presentationComponents.usePresentationTableWithUnifiedSelection<ColumnType, RowType>>;
+  let Table: (props: TableProps) => React.JSX.Element;
+  const stubITwinUiTable = sinon.stub();
+  const stubPresentationTableCellRenderer: SinonStub<typeof presentationComponents.TableCellRenderer> = sinon.stub();
+  const stubUsePresentationTable: SinonStub<typeof presentationComponents.usePresentationTableWithUnifiedSelection<ColumnType, RowType>> = sinon.stub();
   let editableRuleset: EditableRuleset;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     stubPresentationManager();
-
-    stubITwinUiTable = sinon.stub(itwinuiReact, "Table").callsFake(() => <></>);
-    stubPresentationTableCellRenderer = sinon.stub(presentationComponents, "TableCellRenderer");
-    stubUsePresentationTable = sinon.stub(presentationComponents, "usePresentationTableWithUnifiedSelection") as any;
+    stubITwinUiTable.callsFake(() => <></>);
+    await td.replaceEsm(iTwinUIReactModulePath, {
+      ...itwinuiReact,
+      Table: stubITwinUiTable,
+    });
+    await td.replaceEsm(presentationComponentsModulePath, {
+      ...presentationComponents,
+      TableCellRenderer: stubPresentationTableCellRenderer,
+      usePresentationTableWithUnifiedSelection: stubUsePresentationTable,
+    });
+    Table = (await import("./Table.js")).Table;
     editableRuleset = new EditableRuleset({ initialRuleset: { id: "", rules: [] } });
   });
 
@@ -47,7 +60,8 @@ describe("Table", () => {
     cleanup();
 
     editableRuleset.dispose();
-    sinon.restore();
+    sinon.reset();
+    td.reset();
   });
 
   describe("normal state", () => {
@@ -92,8 +106,10 @@ describe("Table", () => {
     it("uses new ruleset when editable ruleset is updated", async () => {
       render(<Table {...commonProps} editableRuleset={editableRuleset} />);
       await editableRuleset.updateRuleset({ id: "", rules: [] });
-      expect(stubUsePresentationTable).to.have.been.calledTwice;
-      expect(stubUsePresentationTable.firstCall.args[0].ruleset).not.to.equal(stubUsePresentationTable.secondCall.args[0].ruleset);
+      await waitFor(() => {
+        expect(stubUsePresentationTable).to.have.been.calledTwice;
+        expect(stubUsePresentationTable.firstCall.args[0].ruleset).not.to.equal(stubUsePresentationTable.secondCall.args[0].ruleset);
+      });
     });
 
     it("maps Presentation defs to iTwinUi Table defs", () => {
@@ -106,7 +122,7 @@ describe("Table", () => {
         name: "test-column",
         label: "Test Column",
         field: sinon.createStubInstance(Field),
-      }) as any;
+      });
       expect(columnMapperResult).to.deep.eq({
         id: "test-column",
         accessor: "test-column",

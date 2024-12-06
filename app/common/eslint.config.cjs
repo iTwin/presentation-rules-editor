@@ -3,9 +3,16 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import * as React from "react";
-import { LoadingIndicator } from "../../common/LoadingIndicator.js";
+const iTwinPlugin = require("@itwin/eslint-plugin");
+const eslintBaseConfig = require("../../eslint.base.config.js");
 
-export function LoadingHint(): React.ReactElement {
-  return <LoadingIndicator>Loading...</LoadingIndicator>;
-}
+module.exports = [
+  {
+    files: ["**/*.{ts,tsx}"],
+    ...iTwinPlugin.configs.iTwinjsRecommendedConfig,
+  },
+  {
+    ignores: ["lib/"],
+  },
+  ...eslintBaseConfig,
+];

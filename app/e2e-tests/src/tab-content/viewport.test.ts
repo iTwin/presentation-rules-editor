@@ -3,15 +3,15 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { page } from "../setup";
-import { openTestIModel } from "../utils";
+import { test } from "@playwright/test";
+import { openTestIModel } from "../utils.js";
 
-describe("viewport #local", () => {
-  beforeEach(async () => {
+test.describe("viewport #local", () => {
+  test.beforeEach(async ({ page }) => {
     await openTestIModel(page);
   });
 
-  it("displays an iModel", async () => {
+  test("displays an iModel", async ({ page }) => {
     await page.click("text=Viewport");
     await page.waitForSelector("data-testid=viewport-component", { state: "visible" });
   });

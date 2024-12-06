@@ -3,9 +3,9 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { ThemeManager, UiFramework, UiStateStorageHandler } from "@itwin/appui-react";
 import * as React from "react";
-import { MemoryUISettingsStorage } from "./MemoryUISettingsStorage";
+import { ThemeManager, UiFramework, UiStateStorageHandler } from "@itwin/appui-react";
+import { MemoryUISettingsStorage } from "./MemoryUISettingsStorage.js";
 
 export interface UIFrameworkProps {
   children: React.ReactNode;

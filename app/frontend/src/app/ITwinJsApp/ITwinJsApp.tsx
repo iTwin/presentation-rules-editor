@@ -3,6 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import * as React from "react";
 import { rpcInterfaces } from "@app/common";
 import { AppNotificationManager, UiFramework } from "@itwin/appui-react";
 import { Logger, LogLevel } from "@itwin/core-bentley";
@@ -12,15 +13,14 @@ import { ITwinLocalization } from "@itwin/core-i18n";
 import { FrontendIModelsAccess } from "@itwin/imodels-access-frontend";
 import { IModelsClient } from "@itwin/imodels-client-management";
 import { Presentation } from "@itwin/presentation-frontend";
-import * as React from "react";
-import { LoadingIndicator } from "../common/LoadingIndicator";
-import { applyUrlPrefix, EXPERIMENTAL_STATION_VALUE_RENDERER } from "../utils/Environment";
-import { BackendApi } from "./api/BackendApi";
-import { demoIModels, IModelIdentifier } from "./IModelIdentifier";
-import { InitializedApp } from "./InitializedApp";
+import { LoadingIndicator } from "../common/LoadingIndicator.js";
+import { applyUrlPrefix, EXPERIMENTAL_STATION_VALUE_RENDERER } from "../utils/Environment.js";
+import { BackendApi } from "./api/BackendApi.js";
+import { demoIModels, IModelIdentifier } from "./IModelIdentifier.js";
+import { InitializedApp } from "./InitializedApp.js";
 
 if (EXPERIMENTAL_STATION_VALUE_RENDERER) {
-  require("../experimental/StationPropertyValueRenderer");
+  import("../experimental/StationPropertyValueRenderer.js");
 }
 
 export interface ITwinJsAppProps {
@@ -57,10 +57,10 @@ export async function initializeApp(): Promise<BackendApi> {
   Logger.initializeToConsole();
   Logger.setLevelDefault(LogLevel.Warning);
 
-  RpcConfiguration.developmentMode = process.env.DEPLOYMENT_TYPE === "dev";
-  RpcConfiguration.disableRoutingValidation = process.env.DEPLOYMENT_TYPE !== "web";
+  RpcConfiguration.developmentMode = import.meta.env.DEPLOYMENT_TYPE === "dev";
+  RpcConfiguration.disableRoutingValidation = import.meta.env.DEPLOYMENT_TYPE !== "web";
   const rpcParams =
-    process.env.DEPLOYMENT_TYPE === "web"
+    import.meta.env.DEPLOYMENT_TYPE === "web"
       ? { info: { title: "visualization", version: "v4.0" } }
       : {
           info: { title: "presentation-rules-editor", version: "v1.0" },

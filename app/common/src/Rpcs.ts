@@ -6,7 +6,7 @@
 import { IModelReadRpcInterface, IModelTileRpcInterface, SnapshotIModelRpcInterface } from "@itwin/core-common";
 import { ECSchemaRpcInterface } from "@itwin/ecschema-rpcinterface-common";
 import { PresentationRpcInterface } from "@itwin/presentation-common";
-import { PresentationRulesEditorRpcInterface } from "./PresentationRulesEditorRpcInterface";
+import { PresentationRulesEditorRpcInterface } from "./PresentationRulesEditorRpcInterface.js";
 
 export const rpcInterfaces = [
   ECSchemaRpcInterface,

@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import { BackendApi } from "./api/BackendApi";
+import { BackendApi } from "./api/BackendApi.js";
 
 export const backendApiContext = React.createContext<BackendApi>(new BackendApi({} as any));
 

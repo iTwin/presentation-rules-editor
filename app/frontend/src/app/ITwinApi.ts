@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { AuthorizationClient } from "@itwin/core-common";
-import { demoIModels } from "./ITwinJsApp/IModelIdentifier";
-import { applyUrlPrefix } from "./utils/Environment";
+import { demoIModels } from "./ITwinJsApp/IModelIdentifier.js";
+import { applyUrlPrefix } from "./utils/Environment.js";
 
 export interface ITwinRepresentation {
   id: string;

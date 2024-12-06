@@ -3,10 +3,10 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import "./index.scss";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { App } from "./app/App";
-import "./index.scss";
+import { App } from "./app/App.js";
 
 const div = document.createElement("div");
 div.className = "app";

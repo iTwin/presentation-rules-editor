@@ -3,21 +3,21 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import "./IModelBrowser.scss";
+import * as React from "react";
+import { Outlet, useMatch, useNavigate } from "react-router-dom";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgHistory, SvgImodel, SvgList, SvgSearch, SvgThumbnails } from "@itwin/itwinui-icons-react";
 import { FluidGrid, Grid, PageLayout } from "@itwin/itwinui-layouts-react";
 import { ButtonGroup, IconButton, LabeledInput, MenuItem, Surface, Tab, Tabs, Text, Tile } from "@itwin/itwinui-react";
-import * as React from "react";
-import { Outlet, useMatch, useNavigate } from "react-router-dom";
-import { AppPage, AppSideNavigation } from "../App";
-import { appNavigationContext } from "../AppContext";
-import { useAuthorization } from "../Authorization";
-import { VerticalStack } from "../common/CenteredStack";
-import { useLocalStorage } from "../common/LocalStorage";
-import { getIModel, getIModelThumbnail } from "../ITwinApi";
-import { BackendApi } from "../ITwinJsApp/api/BackendApi";
-import { demoIModels, IModelIdentifier, isDemoIModel, isIModelIdentifier, isSnapshotIModel, ITwinIModelIdentifier } from "../ITwinJsApp/IModelIdentifier";
-import "./IModelBrowser.scss";
+import { AppPage, AppSideNavigation } from "../App.js";
+import { appNavigationContext } from "../AppContext.js";
+import { useAuthorization } from "../Authorization.js";
+import { VerticalStack } from "../common/CenteredStack.js";
+import { useLocalStorage } from "../common/LocalStorage.js";
+import { getIModel, getIModelThumbnail } from "../ITwinApi.js";
+import { BackendApi } from "../ITwinJsApp/api/BackendApi.js";
+import { demoIModels, IModelIdentifier, isDemoIModel, isIModelIdentifier, isSnapshotIModel, ITwinIModelIdentifier } from "../ITwinJsApp/IModelIdentifier.js";
 
 export interface IModelBrowserProps {
   backendApiPromise: Promise<BackendApi> | undefined;
@@ -170,7 +170,7 @@ export function IModelBrowserTabs(props: IModelBrowserTabsProps): React.ReactEle
   const indexToTab = ["local", "iTwins", "demo"];
   const labels = [<Tab key="snapshots" label="Local snapshots" />, <Tab key="itwins" label="My iTwins" />, <Tab key="demo" label="Demo iModels" />];
 
-  if (process.env.DEPLOYMENT_TYPE === "web") {
+  if (import.meta.env.DEPLOYMENT_TYPE === "web") {
     indexToTab.shift();
     labels.shift();
   }
@@ -182,7 +182,7 @@ export function IModelBrowserTabs(props: IModelBrowserTabsProps): React.ReactEle
       type="borderless"
       labels={labels}
       activeIndex={indexToTab.indexOf(props.activeTab)}
-      onTabSelected={(index) => navigate(`../${indexToTab[index]}`, { replace: true })}
+      onTabSelected={async (index) => navigate(`../${indexToTab[index]}`, { replace: true })}
     >
       <MinimalTileAreaHeight>
         <Outlet />
@@ -295,7 +295,7 @@ export function IModelTile(props: IModelTileProps): React.ReactElement {
       description={props.description ?? <Text isSkeleton />}
       thumbnail={thumbnail ? <img style={{ objectFit: "cover" }} src={thumbnail} alt="" /> : <div ref={divRef} id="imodel-thumbnail-placeholder" />}
       isActionable
-      onClick={() => navigation.openRulesetEditor({ iTwinId: props.iTwinId, iModelId: props.iModelId })}
+      onClick={async () => navigation.openRulesetEditor({ iTwinId: props.iTwinId, iModelId: props.iModelId })}
     />
   );
 }
@@ -307,13 +307,13 @@ export interface IModelSnapshotTileProps {
 
 export function IModelSnapshotTile(props: IModelSnapshotTileProps): React.ReactElement {
   const navigation = React.useContext(appNavigationContext);
-  const handleTileClick = (name: string) => (event: React.MouseEvent) => {
+  const handleTileClick = async (event: React.MouseEvent) => {
     // This function is called whenever any element within the tile is clicked
     if ((event.target as Element).matches("button[aria-label='More options'], button[aria-label='More options'] *")) {
       return;
     }
 
-    navigation.openRulesetEditor(name);
+    await navigation.openRulesetEditor(props.name);
   };
 
   return (
@@ -322,7 +322,7 @@ export function IModelSnapshotTile(props: IModelSnapshotTileProps): React.ReactE
       description="Snapshot iModel"
       thumbnail={<SvgImodel />}
       isActionable
-      onClick={handleTileClick(props.name)}
+      onClick={async (event) => handleTileClick(event)}
       moreOptions={[
         <MenuItem key="open-folder" onClick={props.openSnapshotsFolder}>
           Open containing folder

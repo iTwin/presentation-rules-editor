@@ -1,12 +1,13 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "esModuleInterop": true,
+    "sourceMap": true,
     "isolatedModules": true,
-    "lib": ["DOM"],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "esModuleInterop": true,
     "jsx": "react-jsx",
-    "experimentalDecorators": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "outDir": "lib"
   },
-  "include": ["custom.d.ts", "webpack.config.ts", "src"]
+  "include": ["vite.config.mts", "src"]
 }

@@ -3,9 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import * as React from "react";
-import { LoadingIndicator } from "../../common/LoadingIndicator.js";
+// This file is saved without formatting as import assertion gets removed.
+import presentationRulesetSchema from "@itwin/presentation-common/Ruleset.schema.json" assert { type: "json" };
 
-export function LoadingHint(): React.ReactElement {
-  return <LoadingIndicator>Loading...</LoadingIndicator>;
-}
+export default presentationRulesetSchema;

@@ -3,12 +3,12 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { page } from "./setup";
-import { getWidget, openDemoIModel } from "./utils";
+import { test } from "@playwright/test";
+import { getWidget, openDemoIModel } from "./utils.js";
 
 // TODO: enable this test when demo imodels work in all environments.
-describe.skip("demo iModel #web", () => {
-  it("opens", async () => {
+test.describe.skip("demo iModel #web", () => {
+  test("opens", async ({ page }) => {
     await openDemoIModel(page);
     const treeWidget = getWidget(page, "Tree");
     await treeWidget.locator(".core-tree-node").first().waitFor();

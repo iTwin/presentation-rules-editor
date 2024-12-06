@@ -3,26 +3,25 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { expect } from "chai";
-import { page } from "./setup";
-import { getServiceUrl, loadHomepage } from "./utils";
+import { expect, test } from "@playwright/test";
+import { getServiceUrl, loadHomepage } from "./utils.js";
 
-describe("homepage #local", () => {
-  beforeEach(async () => {
+test.describe("homepage #local", () => {
+  test.beforeEach(async ({ page }) => {
     await loadHomepage(page);
   });
 
-  it("opens iModel browser", async () => {
-    expect(page.url().startsWith(`${getServiceUrl()}/browse-imodels`)).to.be.true;
+  test("opens iModel browser", async ({ page }) => {
+    expect(page.url().startsWith(`${getServiceUrl()}/browse-imodels`)).toBeTruthy();
   });
 });
 
-describe("homepage #web", () => {
-  beforeEach(async () => {
+test.describe("homepage #web", () => {
+  test.beforeEach(async ({ page }) => {
     await loadHomepage(page);
   });
 
-  it("opens default demo iModel", async () => {
-    expect(page.url().startsWith(`${getServiceUrl()}/open-imodel?`)).to.be.true;
+  test("opens default demo iModel", async ({ page }) => {
+    expect(page.url()).toContain(`${getServiceUrl()}/open-imodel`);
   });
 });

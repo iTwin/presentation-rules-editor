@@ -3,9 +3,9 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import * as React from "react";
 import { OutputMessagePriority } from "@itwin/core-frontend";
 import { useToaster } from "@itwin/itwinui-react";
-import * as React from "react";
 
 export function useToastMessage() {
   const toaster = useToaster();

@@ -1,4 +1,14 @@
 {
-  "extends": "./tsconfig.build.json",
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["DOM"],
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "outDir": "lib",
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "noUnusedLocals": false
+  },
   "include": ["index.ts", "src"]
 }

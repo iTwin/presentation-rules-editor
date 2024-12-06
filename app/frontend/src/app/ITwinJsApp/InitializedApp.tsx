@@ -3,29 +3,29 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import "./InitializedApp.scss";
+import * as monaco from "monaco-editor";
+import * as React from "react";
 import { StagePanelState, WidgetState } from "@itwin/appui-react";
 import { AuthorizationClient } from "@itwin/core-common";
 import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-frontend";
 import { ChildNodeSpecificationTypes, ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
 import { EditableRuleset, SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
-import * as monaco from "monaco-editor";
-import * as React from "react";
-import { useIModelBrowserSettings } from "../IModelBrowser/IModelBrowser";
-import { applyUrlPrefix } from "../utils/Environment";
-import { BackendApi } from "./api/BackendApi";
-import { ContentTabs } from "./content-tabs/ContentTabs";
-import { areIModelIdentifiersEqual, IModelIdentifier, isDemoIModel, isSnapshotIModel } from "./IModelIdentifier";
-import "./InitializedApp.scss";
-import { backendApiContext, rulesetEditorContext, RulesetEditorTab } from "./ITwinJsAppContext";
-import { parseEditorState } from "./misc/EditorStateSerializer";
-import { useToastMessage } from "./misc/UseToastMessage";
-import { Frontstage } from "./ui-framework/Frontstage";
-import { StagePanel, StagePanelZone } from "./ui-framework/StagePanel";
-import { UIFramework } from "./ui-framework/UIFramework";
-import { Widget } from "./ui-framework/Widget/Widget";
-import { PropertyGridWidget } from "./widgets/PropertyGridWidget";
-import { TableWidget } from "./widgets/TableWidget";
-import { TreeWidget } from "./widgets/TreeWidget";
+import { useIModelBrowserSettings } from "../IModelBrowser/IModelBrowser.js";
+import { applyUrlPrefix } from "../utils/Environment.js";
+import { BackendApi } from "./api/BackendApi.js";
+import { ContentTabs } from "./content-tabs/ContentTabs.js";
+import { areIModelIdentifiersEqual, IModelIdentifier, isDemoIModel, isSnapshotIModel } from "./IModelIdentifier.js";
+import { backendApiContext, rulesetEditorContext, RulesetEditorTab } from "./ITwinJsAppContext.js";
+import { parseEditorState } from "./misc/EditorStateSerializer.js";
+import { useToastMessage } from "./misc/UseToastMessage.js";
+import { Frontstage } from "./ui-framework/Frontstage.js";
+import { StagePanel, StagePanelZone } from "./ui-framework/StagePanel.js";
+import { UIFramework } from "./ui-framework/UIFramework.js";
+import { Widget } from "./ui-framework/Widget/Widget.js";
+import { PropertyGridWidget } from "./widgets/PropertyGridWidget.js";
+import { TableWidget } from "./widgets/TableWidget.js";
+import { TreeWidget } from "./widgets/TreeWidget.js";
 
 export interface InitializedAppProps {
   backendApi: BackendApi;
@@ -125,7 +125,7 @@ function useIModel(
     setIModel(undefined);
 
     IModelApp.authorizationClient = authorizationClient;
-    if (process.env.DEPLOYMENT_TYPE === "web") {
+    if (import.meta.env.DEPLOYMENT_TYPE === "web") {
       const backendUrl = "https://api.bentley.com/imodeljs";
       // eslint-disable-next-line @itwin/no-internal
       backendApi.protocol.pathPrefix = isDemoIModel(iModelIdentifier) ? backendUrl : applyUrlPrefix(backendUrl);

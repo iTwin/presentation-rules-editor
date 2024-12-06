@@ -2,6 +2,7 @@
  * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
  *   See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
+
 import "./TableWidget.scss";
 import * as React from "react";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
@@ -11,12 +12,12 @@ import { Button, NonIdealState } from "@itwin/itwinui-react";
 import { PresentationError, PresentationStatus } from "@itwin/presentation-common";
 import { UnifiedSelectionContextProvider } from "@itwin/presentation-components";
 import { EditableRuleset, Table } from "@itwin/presentation-rules-editor-react";
-import { VerticalStack } from "../../common/CenteredStack";
-import { LoadingIndicator } from "../../common/LoadingIndicator";
-import { AutoSizer } from "../common/AutoSizer";
-import { LoadingHint } from "../common/LoadingHint";
-import { OpeningIModelHint } from "../common/OpeningIModelHint";
-import { rulesetEditorContext, RulesetEditorTab } from "../ITwinJsAppContext";
+import { VerticalStack } from "../../common/CenteredStack.js";
+import { LoadingIndicator } from "../../common/LoadingIndicator.js";
+import { AutoSizer } from "../common/AutoSizer.js";
+import { LoadingHint } from "../common/LoadingHint.js";
+import { OpeningIModelHint } from "../common/OpeningIModelHint.js";
+import { rulesetEditorContext, RulesetEditorTab } from "../ITwinJsAppContext.js";
 
 export interface TableProps {
   imodel: IModelConnection | undefined;

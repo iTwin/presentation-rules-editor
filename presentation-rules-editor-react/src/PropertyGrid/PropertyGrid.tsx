@@ -3,6 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import * as React from "react";
 import {
   FlatGridItemType,
   IMutableFlatGridItem,
@@ -23,9 +24,8 @@ import {
   PresentationPropertyDataProviderProps,
   usePropertyDataProviderWithUnifiedSelection,
 } from "@itwin/presentation-components";
-import * as React from "react";
-import { CenteredContent } from "../CenteredContent";
-import { EditableRuleset } from "../EditableRuleset";
+import { CenteredContent } from "../CenteredContent.js";
+import { EditableRuleset } from "../EditableRuleset.js";
 
 export interface PropertyGridProps {
   /** Width of the property grid element. */

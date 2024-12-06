@@ -5,7 +5,7 @@
 
 import * as React from "react";
 import { Svg404 } from "@itwin/itwinui-illustrations-react";
-import { ErrorPage } from "./ErrorPage";
+import { ErrorPage } from "./ErrorPage.js";
 
 /** Component to display in case of 404: Page not found error. */
 export function PageNotFound(): React.ReactElement {

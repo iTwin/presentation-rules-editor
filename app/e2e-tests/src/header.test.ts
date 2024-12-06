@@ -3,55 +3,56 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { expect } from "chai";
-import { page } from "./setup";
-import { openDemoIModel, openTestIModel } from "./utils";
+import { expect, test } from "@playwright/test";
+import { openDemoIModel, openTestIModel } from "./utils.js";
 
-describe("header #local", () => {
-  beforeEach(async () => {
+test.describe("header #local", () => {
+  test.beforeEach(async ({ page }) => {
     await openTestIModel(page);
   });
 
-  it("populates header with opened snapshot information", async () => {
+  test("populates header with opened snapshot information", async ({ page }) => {
     const header = page.getByRole("navigation", { name: "breadcrumbs" });
-    expect(await header.getByText("Local snapshots").isVisible()).to.be.true;
-    expect(await header.getByText("Baytown.bim").isVisible()).to.be.true;
+    expect(await header.getByText("Local snapshots").isVisible()).toBeTruthy();
+    expect(await header.getByText("Baytown.bim").isVisible()).toBeTruthy();
   });
 
-  it("allows navigating to snapshot iModels browser", async () => {
+  test("allows navigating to snapshot iModels browser", async ({ page }) => {
     await page.getByText("Local snapshots").click();
     await page.getByRole("tab", { name: "Local snapshots", selected: true }).waitFor();
   });
 
-  it("clears breadcrumbs after navigating to home", async () => {
+  test("clears breadcrumbs after navigating to home", async ({ page }) => {
     await page.getByText("Local snapshots").click();
+    await page.getByText("Demo iModels").waitFor({ state: "visible" });
     const header = page.getByRole("navigation", { name: "breadcrumbs" });
     await header.waitFor({ state: "attached" });
-    expect(await header.textContent()).to.be.empty;
+    expect(await header.textContent()).toEqual("");
   });
 });
 
-describe("header #web", () => {
-  beforeEach(async () => {
+test.describe("header #web", () => {
+  test.beforeEach(async ({ page }) => {
     await openDemoIModel(page);
   });
 
-  it("populates header with opened demo iModel information", async () => {
+  test("populates header with opened demo iModel information", async ({ page }) => {
     const header = page.getByRole("navigation", { name: "breadcrumbs" });
     await header.waitFor();
-    expect(await header.getByText("Demo iModel").isVisible()).to.be.true;
-    expect(await header.getByText("Bay Town Process Plant").isVisible()).to.be.true;
+    expect(await header.getByText("Demo iModel").isVisible()).toBeTruthy();
+    expect(await header.getByText("Bay Town Process Plant").isVisible()).toBeTruthy();
   });
 
-  it("allows navigating to demo iModels browser", async () => {
+  test("allows navigating to demo iModels browser", async ({ page }) => {
     await page.getByText("Demo iModels").click();
     await page.getByRole("tab", { name: "Demo iModels", selected: true }).waitFor();
   });
 
-  it("clears breadcrumbs after navigating to home", async () => {
+  test("clears breadcrumbs after navigating to home", async ({ page }) => {
     await page.getByText("Presentation Rules Editor").click();
+    await page.getByText("Demo iModels").waitFor({ state: "visible" });
     const header = page.getByRole("navigation", { name: "breadcrumbs" });
     await header.waitFor({ state: "attached" });
-    expect(await header.textContent()).to.be.empty;
+    expect(await header.textContent()).toEqual("");
   });
 });

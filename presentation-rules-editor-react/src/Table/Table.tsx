@@ -9,8 +9,8 @@ import { IModelConnection } from "@itwin/core-frontend";
 import { ProgressRadial, Table as UiTable } from "@itwin/itwinui-react";
 import { Ruleset } from "@itwin/presentation-common";
 import { TableCellRenderer, TableColumnDefinition, TableRowDefinition, usePresentationTableWithUnifiedSelection } from "@itwin/presentation-components";
-import { CenteredContent } from "../CenteredContent";
-import { EditableRuleset } from "../EditableRuleset";
+import { CenteredContent } from "../CenteredContent.js";
+import { EditableRuleset } from "../EditableRuleset.js";
 
 export interface TableProps {
   /** Width of the property grid element. */

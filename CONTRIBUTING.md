@@ -11,6 +11,10 @@ Follow the [steps for running the application](./README.md#using). These actuall
 - `app/` — contains source code for the editor application.
 - `presentation-rules-editor-react/` — contains reusable components that can be added to other applications that wish to integrate a presentation ruleset editor.
 
+### Environment variables
+
+- `app/frontend/` — has an `.env` file which has `OAUTH_CLIENT_ID` set to the same value that used in production. However, if you try to Sign In using this client id, it won't work. You need to register a new client and specify it's id in `.env.local`. See [.env](app/frontend/.env) for details.
+
 ### Localization
 
 Localization provides very limited value to Presentation Rules Editor because the ruleset schema and the documentation is only available in the English language. Nevertheless, we do attempt to prepare user-facing strings for localization when it is not inconvenient.
@@ -62,30 +66,6 @@ To run these tests, execute `npm test` in `presentation-rules-editor-react/` and
    Otherwise, you may experience weird behavior and errors when trying to run iTwin.js tests and test applications.
 
 When using Visual Studio Code, you will need to add iTwin.js repository to the workspace in order to be able to set breakpoints in library code. This can be achieved by executing `Workspaces: Add Folder to Workspace...` command.
-
-## Optimizing fonts
-
-Presentation Rules Editor application is configured to request only a subset of `Open Sans` font for the initial page load. The rest of the font is downloaded separately when there is a demand for it.
-
-The procedure used for generating optimized font subsets is laid out below. It assumes that the system has Python 3.7 or later.
-
-1. Make sure the following Python packages are installed:
-
-   ```bash
-   pip install brotli fonttools
-   ```
-
-2. Download [`Open Sans` font](https://fonts.google.com/specimen/Open+Sans) archive and extract the compressed files.
-3. Generate optimized font subsets by issuing the following commands:
-
-   ```bash
-   pyftsubset OpenSans-VariableFont_wdth,wght.ttf --unicodes="00-7F,A9" --flavor="woff2" --output-file=OpenSans-subset.woff2
-   pyftsubset OpenSans-VariableFont_wdth,wght.ttf --unicodes="80-FFFF" --flavor="woff2" --output-file=OpenSans-rest.woff2
-   ```
-
-   The character ranges in `unicodes` parameter for the first command must include all latin characters, digits, punctuation, and a © (copyright) symbol. The second font subset is generated out of all remaining characters, and may overlap slightly with the first one. Counterintuitively, although the first 32 unicode characters are not printable, expanding the range to include them results in a smaller font file.
-
-4. Make sure that the character ranges which were used to generate font subsets are matched in stylesheet rules.
 
 ## Threat Model
 

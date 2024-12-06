@@ -10,9 +10,9 @@ import { AccessToken } from "@itwin/core-bentley";
 import { AuthorizationClient } from "@itwin/core-common";
 import { PageLayout } from "@itwin/itwinui-layouts-react";
 import { Code } from "@itwin/itwinui-react";
-import { LoadingIndicator } from "./common/LoadingIndicator";
-import { ErrorPage } from "./errors/ErrorPage";
-import { applyUrlPrefix } from "./utils/Environment";
+import { LoadingIndicator } from "./common/LoadingIndicator.js";
+import { ErrorPage } from "./errors/ErrorPage.js";
+import { applyUrlPrefix } from "./utils/Environment.js";
 
 export interface AuthorizationProviderConfig {
   authority: string;
@@ -225,7 +225,7 @@ export function SignInCallback(): React.ReactElement {
           return;
         }
 
-        navigate(user.state || "/", { replace: true });
+        await navigate(user.state || "/", { replace: true });
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);

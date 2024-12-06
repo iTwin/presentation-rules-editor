@@ -7,8 +7,8 @@ import { expect } from "chai";
 import * as sinon from "sinon";
 import { Ruleset } from "@itwin/presentation-common";
 import { Presentation } from "@itwin/presentation-frontend";
-import { EditableRuleset } from "./EditableRuleset";
-import { stubPresentationManager } from "./TestUtils";
+import { EditableRuleset } from "./EditableRuleset.js";
+import { stubPresentationManager } from "./TestUtils.js";
 
 describe("EditableRuleset", () => {
   before(() => {
@@ -16,7 +16,7 @@ describe("EditableRuleset", () => {
   });
 
   after(() => {
-    sinon.restore();
+    sinon.reset();
   });
 
   beforeEach(() => {

@@ -3,51 +3,62 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import { expect } from "chai";
+import * as sinon from "sinon";
+import * as td from "testdouble";
 import * as componentsReact from "@itwin/components-react";
 import * as presentationComponents from "@itwin/presentation-components";
 import { render } from "@testing-library/react";
-import { expect } from "chai";
-import * as sinon from "sinon";
-import { EditableRuleset } from "../EditableRuleset";
-import { stubPresentationManager } from "../TestUtils";
-import { Tree } from "./Tree";
+import { EditableRuleset } from "../EditableRuleset.js";
+import { stubPresentationManager } from "../TestUtils.js";
+import { TreeProps } from "./Tree.js";
+
+const presentationComponentsModulePath = import.meta.resolve("@itwin/presentation-components");
 
 describe("Tree", () => {
-  before(() => {
+  let Tree: (props: TreeProps) => React.JSX.Element | null;
+  const usePresentationTreeStateStub = sinon.stub<
+    [presentationComponents.UsePresentationTreeStateProps],
+    presentationComponents.UsePresentationTreeStateResult | undefined
+  >();
+  const PresentationTreeRendererStub = sinon.stub<[presentationComponents.PresentationTreeRendererProps], React.JSX.Element>();
+  const PresentationTreeStub = sinon.stub<[presentationComponents.PresentationTreeProps<componentsReact.TreeEventHandler>], React.JSX.Element>();
+  beforeEach(async () => {
     stubPresentationManager();
 
-    sinon
-      .stub(presentationComponents, "usePresentationTreeState")
-      .callsFake(() => ({ nodeLoader: { modelSource: undefined }, onItemsRendered: undefined, eventHandler: {} }) as any);
-    sinon.stub(presentationComponents, "useUnifiedSelectionTreeEventHandler").callsFake(() => ({}) as any);
-    sinon.stub(presentationComponents, "PresentationTreeRenderer").callsFake(() => <></>);
-    sinon.stub(componentsReact, "useTreeModel").callsFake(() => ({}) as any);
-    sinon.stub(componentsReact, "ControlledTree").callsFake(() => <></>);
+    usePresentationTreeStateStub.callsFake(() => ({ nodeLoader: { modelSource: undefined }, onItemsRendered: undefined, eventHandler: {} }) as any);
+    PresentationTreeRendererStub.callsFake(() => <></>);
+    PresentationTreeStub.callsFake(() => <></>);
+    await td.replaceEsm(presentationComponentsModulePath, {
+      ...presentationComponents,
+      usePresentationTreeState: usePresentationTreeStateStub,
+      PresentationTreeRenderer: PresentationTreeRendererStub,
+      PresentationTree: PresentationTreeStub,
+    });
+
+    Tree = (await import("./Tree.js")).Tree;
   });
 
-  beforeEach(() => {
-    sinon.resetHistory();
-  });
-
-  after(() => {
-    sinon.restore();
+  afterEach(() => {
+    sinon.reset();
+    td.reset();
   });
 
   it("enables hierarchy auto update", () => {
     const editableRuleset = new EditableRuleset({ initialRuleset: { id: "", rules: [] } });
     render(<Tree width={100} height={100} iModel={{} as any} editableRuleset={editableRuleset} />);
-    expect(presentationComponents.usePresentationTreeState).to.have.been.calledOnce.and.calledWithMatch(sinon.match({ ruleset: editableRuleset.id }));
+    expect(usePresentationTreeStateStub).to.have.been.calledOnce.and.calledWithMatch(sinon.match({ ruleset: editableRuleset.id }));
   });
 
   it("renders with `PresentationTreeRenderer`", () => {
     const editableRuleset = new EditableRuleset({ initialRuleset: { id: "", rules: [] } });
     render(<Tree width={100} height={100} iModel={{} as any} editableRuleset={editableRuleset} />);
-    expect(componentsReact.ControlledTree).to.have.been.calledOnce.and.calledWith(
-      sinon.match((props: componentsReact.ControlledTreeProps) => {
+    expect(PresentationTreeStub).to.have.been.calledOnce.and.calledWith(
+      sinon.match((props: presentationComponents.PresentationTreeProps<any>) => {
         expect(props.treeRenderer).to.not.be.undefined;
-        expect(presentationComponents.PresentationTreeRenderer).to.not.be.called;
-        render(props.treeRenderer!({} as any));
-        expect(presentationComponents.PresentationTreeRenderer).to.be.calledOnce;
+        expect(PresentationTreeRendererStub).to.not.be.called;
+        render(props.treeRenderer?.({} as any));
+        expect(PresentationTreeRendererStub).to.be.calledOnce;
         return true;
       }),
     );

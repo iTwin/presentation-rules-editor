@@ -11,7 +11,7 @@ export function getServiceUrl(): string {
 
 export async function loadHomepage(page: Page): Promise<void> {
   await page.goto(getServiceUrl());
-  await page.getByText("Presentation Rules Editor").waitFor();
+  await page.getByText("Demo iModels").waitFor();
 }
 
 export async function openIModelBrowser(page: Page): Promise<void> {

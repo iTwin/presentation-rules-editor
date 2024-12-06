@@ -3,6 +3,8 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import { UserProfile } from "oidc-client-ts";
+import * as React from "react";
 import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
 import {
   Avatar,
@@ -18,13 +20,11 @@ import {
   MenuItem,
   Text,
 } from "@itwin/itwinui-react";
-import { UserProfile } from "oidc-client-ts";
-import * as React from "react";
-import { appNavigationContext } from "./AppContext";
-import { AuthorizationState, useAuthorization } from "./Authorization";
-import { HorizontalStack } from "./common/CenteredStack";
-import { GitHubLogoSmall } from "./common/GitHubLogo";
-import { OfflineModeExplainer } from "./common/OfflineModeExplainer";
+import { appNavigationContext } from "./AppContext.js";
+import { AuthorizationState, useAuthorization } from "./Authorization.js";
+import { HorizontalStack } from "./common/CenteredStack.js";
+import { GitHubLogoSmall } from "./common/GitHubLogo.js";
+import { OfflineModeExplainer } from "./common/OfflineModeExplainer.js";
 
 export function AppHeader(): React.ReactElement {
   const { state, user, signIn, signOut } = useAuthorization();
@@ -59,7 +59,7 @@ export function AppHeader(): React.ReactElement {
   return (
     <Header
       appLogo={
-        <HeaderLogo logo={<SvgImodelHollow />} onClick={() => navigation.openIModelBrowser()}>
+        <HeaderLogo logo={<SvgImodelHollow />} onClick={async () => navigation.openIModelBrowser()}>
           Presentation Rules Editor
         </HeaderLogo>
       }

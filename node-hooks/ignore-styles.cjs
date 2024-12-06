@@ -3,9 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import * as React from "react";
-import { LoadingIndicator } from "../../common/LoadingIndicator.js";
+const { register } = require("node:module");
+const { pathToFileURL } = require("node:url");
 
-export function LoadingHint(): React.ReactElement {
-  return <LoadingIndicator>Loading...</LoadingIndicator>;
-}
+register("./ignore-styles-hook.cjs", pathToFileURL(__filename));

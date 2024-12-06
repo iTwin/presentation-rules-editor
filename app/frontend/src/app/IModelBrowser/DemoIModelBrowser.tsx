@@ -8,11 +8,11 @@ import { AuthorizationClient } from "@itwin/core-common";
 import { SvgImodelHollow } from "@itwin/itwinui-icons-react";
 import { FluidGrid } from "@itwin/itwinui-layouts-react";
 import { Text } from "@itwin/itwinui-react";
-import { useAuthorization } from "../Authorization";
-import { VerticalStack } from "../common/CenteredStack";
-import { getIModel } from "../ITwinApi";
-import { demoIModels } from "../ITwinJsApp/IModelIdentifier";
-import { iModelBrowserContext, IModelTile } from "./IModelBrowser";
+import { useAuthorization } from "../Authorization.js";
+import { VerticalStack } from "../common/CenteredStack.js";
+import { getIModel } from "../ITwinApi.js";
+import { demoIModels } from "../ITwinJsApp/IModelIdentifier.js";
+import { iModelBrowserContext, IModelTile } from "./IModelBrowser.js";
 
 export function DemoIModelBrowser(): React.ReactElement {
   const { demoAuthorizationClient } = useAuthorization();

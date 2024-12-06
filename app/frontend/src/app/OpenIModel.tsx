@@ -8,19 +8,26 @@ import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgHome, SvgUser } from "@itwin/itwinui-icons-react";
 import { HeaderButton, Tile } from "@itwin/itwinui-react";
-import { AppPage, AppSideNavigation } from "./App";
-import { appNavigationContext } from "./AppContext";
-import { breadcrumbsContext } from "./AppHeader";
-import { AuthorizationState, useAuthorization } from "./Authorization";
-import { LandingPage } from "./common/LandingPage";
-import { LoadingIndicator } from "./common/LoadingIndicator";
-import { PageNotFound } from "./errors/PageNotFound";
-import { IModelBrowserTab } from "./IModelBrowser/IModelBrowser";
-import { getIModel, getProject } from "./ITwinApi";
-import { BackendApi } from "./ITwinJsApp/api/BackendApi";
-import { demoIModels, IModelIdentifier, isDemoIModel, isSnapshotIModel, ITwinIModelIdentifier, SnapshotIModelIdentifier } from "./ITwinJsApp/IModelIdentifier";
+import { AppPage, AppSideNavigation } from "./App.js";
+import { appNavigationContext } from "./AppContext.js";
+import { breadcrumbsContext } from "./AppHeader.js";
+import { AuthorizationState, useAuthorization } from "./Authorization.js";
+import { LandingPage } from "./common/LandingPage.js";
+import { LoadingIndicator } from "./common/LoadingIndicator.js";
+import { PageNotFound } from "./errors/PageNotFound.js";
+import { IModelBrowserTab } from "./IModelBrowser/IModelBrowser.js";
+import { getIModel, getProject } from "./ITwinApi.js";
+import { BackendApi } from "./ITwinJsApp/api/BackendApi.js";
+import {
+  demoIModels,
+  IModelIdentifier,
+  isDemoIModel,
+  isSnapshotIModel,
+  ITwinIModelIdentifier,
+  SnapshotIModelIdentifier,
+} from "./ITwinJsApp/IModelIdentifier.js";
 
-import type { ITwinJsApp } from "./ITwinJsApp/ITwinJsApp";
+import type { ITwinJsApp } from "./ITwinJsApp/ITwinJsApp.js";
 
 export interface ITwinJsAppData {
   component: typeof ITwinJsApp;
@@ -65,7 +72,7 @@ export function OpenIModel(props: OpenIModelProps): React.ReactElement {
 
   activeIModelRef.current = iModelIdentifier;
   if (isSnapshotIModel(iModelIdentifier)) {
-    if (process.env.DEPLOYMENT_TYPE === "web") {
+    if (import.meta.env.DEPLOYMENT_TYPE === "web") {
       return <PageNotFound />;
     }
 
@@ -96,7 +103,7 @@ function OpenSnapshotIModel(props: OpenSnapshotIModelProps): React.ReactElement 
 
   React.useEffect(() => {
     setBreadcrumbs([
-      <HeaderButton key="iTwin" name="Local snapshots" onClick={() => navigation.openIModelBrowser(IModelBrowserTab.Local)} />,
+      <HeaderButton key="iTwin" name="Local snapshots" onClick={async () => navigation.openIModelBrowser(IModelBrowserTab.Local)} />,
       <HeaderButton key="iModel" name={props.iModelIdentifier} />,
     ]);
 
@@ -136,7 +143,7 @@ function OpenITwinIModel(props: OpenITwinIModelProps): React.ReactElement {
   if (iModelRequiresSignIn && state === AuthorizationState.Offline) {
     return (
       <LandingPage headline="Cannot open this iModel while in offline mode">
-        <Tile thumbnail={<SvgHome />} name="Go to homepage" isActionable onClick={() => navigate("/")} />
+        <Tile thumbnail={<SvgHome />} name="Go to homepage" isActionable onClick={async () => navigate("/")} />
       </LandingPage>
     );
   }
@@ -168,7 +175,7 @@ function usePopulateHeaderBreadcrumbs(iModelIdentifier: ITwinIModelIdentifier, a
     const demoIModel = demoIModels.get(iModelIdentifier.iModelId);
     if (demoIModel) {
       setBreadcrumbs([
-        <HeaderButton key="iTwin" name="Demo iModels" onClick={() => navigation.openIModelBrowser(IModelBrowserTab.Demo)} />,
+        <HeaderButton key="iTwin" name="Demo iModels" onClick={async () => navigation.openIModelBrowser(IModelBrowserTab.Demo)} />,
         <HeaderButton key="iModel" name={demoIModel.name} />,
       ]);
     } else if (authorizationClient) {
@@ -183,7 +190,7 @@ function usePopulateHeaderBreadcrumbs(iModelIdentifier: ITwinIModelIdentifier, a
               key="iTwin"
               name={project.displayName}
               description={project.number !== project.displayName ? project.number : undefined}
-              onClick={() => navigation.openIModelBrowser(IModelBrowserTab.iTwins)}
+              onClick={async () => navigation.openIModelBrowser(IModelBrowserTab.iTwins)}
             />,
             <HeaderButton key="iModel" name={iModel.name} description={iModel.description} />,
           ]);

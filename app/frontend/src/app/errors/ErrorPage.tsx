@@ -45,7 +45,7 @@ export function ErrorPage(props: ErrorPageProps): React.ReactElement {
           {props.troubleshooting}
         </ExpandableBlock>
       )}
-      <Button styleType="high-visibility" onClick={() => navigate("/")}>
+      <Button styleType="high-visibility" onClick={async () => navigate("/")}>
         Go to homepage
       </Button>
     </PageLayout.Content>

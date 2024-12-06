@@ -5,7 +5,7 @@
 
 import * as React from "react";
 import { StagePanelConfig } from "@itwin/appui-react";
-import { WidgetProps } from "./Widget/Widget";
+import { WidgetProps } from "./Widget/Widget.js";
 
 export interface StagePanelProps extends StagePanelConfig {
   /** Stage panel contents */
