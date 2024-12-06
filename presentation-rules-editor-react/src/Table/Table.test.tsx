@@ -22,6 +22,7 @@ const iTwinUIReactModulePath = import.meta.resolve("@itwin/itwinui-react");
 describe("Table", () => {
   interface ColumnType {
     id: string;
+    Cell?: any;
   }
   interface RowType {
     [columnId: string]: string;
@@ -33,17 +34,14 @@ describe("Table", () => {
   };
 
   let Table: (props: TableProps) => React.JSX.Element;
-  let stubITwinUiTable: any;
-  let stubPresentationTableCellRenderer: SinonStub<typeof presentationComponents.TableCellRenderer>;
-  let stubUsePresentationTable: SinonStub<typeof presentationComponents.usePresentationTableWithUnifiedSelection<ColumnType, RowType>>;
+  const stubITwinUiTable = sinon.stub();
+  const stubPresentationTableCellRenderer: SinonStub<typeof presentationComponents.TableCellRenderer> = sinon.stub();
+  const stubUsePresentationTable: SinonStub<typeof presentationComponents.usePresentationTableWithUnifiedSelection<ColumnType, RowType>> = sinon.stub();
   let editableRuleset: EditableRuleset;
 
   beforeEach(async () => {
     stubPresentationManager();
-
-    stubITwinUiTable = sinon.stub().callsFake(() => <></>);
-    stubPresentationTableCellRenderer = sinon.stub();
-    stubUsePresentationTable = sinon.stub();
+    stubITwinUiTable.callsFake(() => <></>);
     await td.replaceEsm(iTwinUIReactModulePath, {
       ...itwinuiReact,
       Table: stubITwinUiTable,
@@ -124,7 +122,7 @@ describe("Table", () => {
         name: "test-column",
         label: "Test Column",
         field: sinon.createStubInstance(Field),
-      }) as any;
+      });
       expect(columnMapperResult).to.deep.eq({
         id: "test-column",
         accessor: "test-column",

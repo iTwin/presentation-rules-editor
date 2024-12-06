@@ -30,7 +30,7 @@ describe("PropertyGrid", () => {
 
   const initialAutoExpandingPropertyDataProviderPrototype = Object.getPrototypeOf(AutoExpandingPropertyDataProviderOG);
 
-  let stubUsePropertyGridModelSource = sinon.stub<
+  const stubUsePropertyGridModelSource = sinon.stub<
     [props: { dataProvider: componentsReact.IPropertyDataProvider }],
     { modelSource: componentsReact.PropertyGridModelSource; inProgress: boolean }
   >();
@@ -51,9 +51,7 @@ describe("PropertyGrid", () => {
   beforeEach(async () => {
     stubPresentationManager();
 
-    stubUsePropertyGridModelSource = stubUsePropertyGridModelSource.callsFake(
-      () => ({}) as ReturnType<typeof componentsReact.useTrackedPropertyGridModelSource>,
-    );
+    stubUsePropertyGridModelSource.callsFake(() => ({}) as ReturnType<typeof componentsReact.useTrackedPropertyGridModelSource>);
 
     editableRuleset = new EditableRuleset({ initialRuleset: { id: "", rules: [] } });
     await td.replaceEsm(componentsReactModulePath, {

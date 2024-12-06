@@ -17,20 +17,18 @@ const presentationComponentsModulePath = import.meta.resolve("@itwin/presentatio
 
 describe("Tree", () => {
   let Tree: (props: TreeProps) => React.JSX.Element | null;
-  let usePresentationTreeStateStub = sinon.stub<
+  const usePresentationTreeStateStub = sinon.stub<
     [presentationComponents.UsePresentationTreeStateProps],
     presentationComponents.UsePresentationTreeStateResult | undefined
   >();
-  let PresentationTreeRendererStub = sinon.stub<[presentationComponents.PresentationTreeRendererProps], React.JSX.Element>();
-  let PresentationTreeStub = sinon.stub<[presentationComponents.PresentationTreeProps<componentsReact.TreeEventHandler>], React.JSX.Element>();
+  const PresentationTreeRendererStub = sinon.stub<[presentationComponents.PresentationTreeRendererProps], React.JSX.Element>();
+  const PresentationTreeStub = sinon.stub<[presentationComponents.PresentationTreeProps<componentsReact.TreeEventHandler>], React.JSX.Element>();
   beforeEach(async () => {
     stubPresentationManager();
 
-    usePresentationTreeStateStub = usePresentationTreeStateStub.callsFake(
-      () => ({ nodeLoader: { modelSource: undefined }, onItemsRendered: undefined, eventHandler: {} }) as any,
-    );
-    PresentationTreeRendererStub = PresentationTreeRendererStub.callsFake(() => <></>);
-    PresentationTreeStub = PresentationTreeStub.callsFake(() => <></>);
+    usePresentationTreeStateStub.callsFake(() => ({ nodeLoader: { modelSource: undefined }, onItemsRendered: undefined, eventHandler: {} }) as any);
+    PresentationTreeRendererStub.callsFake(() => <></>);
+    PresentationTreeStub.callsFake(() => <></>);
     await td.replaceEsm(presentationComponentsModulePath, {
       ...presentationComponents,
       usePresentationTreeState: usePresentationTreeStateStub,
