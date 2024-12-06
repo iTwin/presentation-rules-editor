@@ -67,30 +67,6 @@ To run these tests, execute `npm test` in `presentation-rules-editor-react/` and
 
 When using Visual Studio Code, you will need to add iTwin.js repository to the workspace in order to be able to set breakpoints in library code. This can be achieved by executing `Workspaces: Add Folder to Workspace...` command.
 
-## Optimizing fonts
-
-Presentation Rules Editor application is configured to request only a subset of `Open Sans` font for the initial page load. The rest of the font is downloaded separately when there is a demand for it.
-
-The procedure used for generating optimized font subsets is laid out below. It assumes that the system has Python 3.7 or later.
-
-1. Make sure the following Python packages are installed:
-
-   ```bash
-   pip install brotli fonttools
-   ```
-
-2. Download [`Open Sans` font](https://fonts.google.com/specimen/Open+Sans) archive and extract the compressed files.
-3. Generate optimized font subsets by issuing the following commands:
-
-   ```bash
-   pyftsubset OpenSans-VariableFont_wdth,wght.ttf --unicodes="00-7F,A9" --flavor="woff2" --output-file=OpenSans-subset.woff2
-   pyftsubset OpenSans-VariableFont_wdth,wght.ttf --unicodes="80-FFFF" --flavor="woff2" --output-file=OpenSans-rest.woff2
-   ```
-
-   The character ranges in `unicodes` parameter for the first command must include all latin characters, digits, punctuation, and a © (copyright) symbol. The second font subset is generated out of all remaining characters, and may overlap slightly with the first one. Counterintuitively, although the first 32 unicode characters are not printable, expanding the range to include them results in a smaller font file.
-
-4. Make sure that the character ranges which were used to generate font subsets are matched in stylesheet rules.
-
 ## Threat Model
 
 This repo uses [Threagile](https://github.com/BentleySystems/threagile) to generate a threat model (see the `.threat-model/threagile.yaml` in this repo). To ensure that we keep our threat model up-to-date (both in terms of the architecture of our service and any potential threats) we will review the threat model under two different circumstances. Each review entails making sure the threat model continuously aligns with our service, captures known threats, and reflects the current status of any risk-tracking items.
