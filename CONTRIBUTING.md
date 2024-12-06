@@ -13,7 +13,7 @@ Follow the [steps for running the application](./README.md#using). These actuall
 
 ### Environment variables
 
-- `app/frontend/` — has a `.env` file which has `OAUTH_CLIENT_ID` set to the same value that used in production. However, if you try to Sign In using this client, it won't work. You need to set create a new client and use it's value in `.env.local`. See [.env](app/frontend/.env) for details.
+- `app/frontend/` — has an `.env` file which has `OAUTH_CLIENT_ID` set to the same value that used in production. However, if you try to Sign In using this client id, it won't work. You need to register a new client and specify it's id in `.env.local`. See [.env](app/frontend/.env) for details.
 
 ### Localization
 
