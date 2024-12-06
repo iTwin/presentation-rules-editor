@@ -307,13 +307,13 @@ export interface IModelSnapshotTileProps {
 
 export function IModelSnapshotTile(props: IModelSnapshotTileProps): React.ReactElement {
   const navigation = React.useContext(appNavigationContext);
-  const handleTileClick = async (name: string) => async (event: React.MouseEvent) => {
+  const handleTileClick = async (event: React.MouseEvent) => {
     // This function is called whenever any element within the tile is clicked
     if ((event.target as Element).matches("button[aria-label='More options'], button[aria-label='More options'] *")) {
       return;
     }
 
-    await navigation.openRulesetEditor(name);
+    await navigation.openRulesetEditor(props.name);
   };
 
   return (
@@ -322,7 +322,7 @@ export function IModelSnapshotTile(props: IModelSnapshotTileProps): React.ReactE
       description="Snapshot iModel"
       thumbnail={<SvgImodel />}
       isActionable
-      onClick={async () => handleTileClick(props.name)}
+      onClick={async (event) => handleTileClick(event)}
       moreOptions={[
         <MenuItem key="open-folder" onClick={props.openSnapshotsFolder}>
           Open containing folder
