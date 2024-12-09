@@ -13,7 +13,6 @@
     "lint": "eslint ./src/**/*.{ts,tsx}",
     "test:local": "npx playwright test --grep=#local",
     "test:web": "cross-env WEB_TEST=1 npx playwright test --grep=#web",
-    "test:web:junit": "cross-env J_UNIT=1 WEB_TEST=1 npx playwright test --grep=#web",
     "test:local:debug": "npx playwright test --grep=#local --ui",
     "test:web:debug": "cross-env WEB_TEST=1 npx playwright test --grep=#web --ui",
     "typecheck": "tsc --noEmit",

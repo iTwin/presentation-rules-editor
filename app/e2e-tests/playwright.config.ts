@@ -23,11 +23,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [
-    ["list"],
-    ["html", { open: "never" }],
-    ...(process.env.J_UNIT ? [["junit", { outputFile: "junit-results.xml" }] as ["junit", { outputFile?: string }]] : []),
-  ],
+  reporter: [["list"], ["html", { open: "never" }], ["junit", { outputFile: "junit-results.xml" }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
