@@ -9,8 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `@itwin` peer dependencies have been upgraded to `^3.6.2 || ^4.0.0`.
-- `monaco-editor` peer dependency has been upgraded to `^0.40.0`.
+- `@itwin/itwinui-react` peer dependency has been upgraded to `^3.0.0`.
+- `@itwin/presentation-components` peer dependency has been upgraded to `^5.0.0`.
+- All other `@itwin` peer dependencies have been upgraded to `^4.0.0`.
+- `react` and `react-dom` peer dependencies have been upgraded to `^18.0.0`.
+- `monaco-editor` peer dependency has been upgraded to `^0.52.0`.
 - Update package dependencies.
 
 ### Added
