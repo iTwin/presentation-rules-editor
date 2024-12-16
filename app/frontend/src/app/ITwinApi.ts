@@ -12,7 +12,7 @@ export interface ITwinRepresentation {
   class: string;
   subClass: string;
   type?: string;
-  // eslint-disable-next-line id-blacklist
+  // eslint-disable-next-line id-denylist
   number: string;
   displayName: string;
   dataCenterLocation: string;

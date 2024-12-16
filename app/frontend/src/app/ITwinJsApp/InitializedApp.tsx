@@ -140,7 +140,7 @@ function useIModel(
           setIModel(openedIModel);
           setMostRecentIModel(iModelIdentifier);
         }
-      } catch (error) {
+      } catch {
         if (isSnapshotIModel(iModelIdentifier)) {
           toaster(OutputMessagePriority.Error, IModelApp.localization.getLocalizedString("App:error:imodel-open-local", { imodel: iModelIdentifier }));
         } else {
@@ -155,7 +155,7 @@ function useIModel(
         const openedIModel = await iModelPromise;
         try {
           await openedIModel.close();
-        } catch (error) {
+        } catch {
           if (isSnapshotIModel(iModelIdentifier)) {
             toaster(OutputMessagePriority.Error, IModelApp.localization.getLocalizedString("App:error:imodel-close-local", { imodel: iModelIdentifier }));
           } else {

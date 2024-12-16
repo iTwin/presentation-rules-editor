@@ -59,7 +59,6 @@ test.describe("table widget #local", () => {
     await tableWidget.locator(`text="Error"`).waitFor();
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-shadow
   async function selectAnyTreeNode(page: Page): Promise<void> {
     const treeWidget = getWidget(page, "Tree");
     await treeWidget.locator(".core-tree-node").first().click();

@@ -25,9 +25,9 @@
     "@itwin/core-quantity": "^4.10.2",
     "@itwin/ecschema-metadata": "^4.10.2",
     "@itwin/ecschema-rpcinterface-common": "^4.10.2",
-    "@itwin/eslint-plugin": "^4.1.1",
+    "@itwin/eslint-plugin": "^5.0.0-dev.2",
     "@itwin/presentation-common": "^4.10.2",
-    "eslint": "^8.57.1",
+    "eslint": "9.14.0",
     "typescript": "^5.7.2"
   }
 }

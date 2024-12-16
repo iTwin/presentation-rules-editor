@@ -135,7 +135,6 @@ const PropertyGridWithProvider = React.forwardRef<PropertyGridAttributes, Proper
     }
 
     return (
-      // eslint-disable-next-line @itwin/no-internal
       <VirtualizedPropertyGrid
         width={props.width}
         height={props.height}
