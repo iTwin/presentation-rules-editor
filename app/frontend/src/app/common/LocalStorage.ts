@@ -6,7 +6,7 @@
 import * as React from "react";
 
 /** Retrieves the value in local storage under the specified key. The key value change is not tracked by this hook. */
-export function useLocalStorage<T>(key: string, init: (initialValue: {} | string | undefined) => T): [T, (action: React.SetStateAction<T>) => void] {
+export function useLocalStorage<T>(key: string, init: (initialValue: object | string | undefined) => T): [T, (action: React.SetStateAction<T>) => void] {
   const [state, setState] = React.useState<T>(() => {
     const initialValue = init(getLocalStorageValue(key));
     localStorage.setItem(normalizeKey(key), JSON.stringify(initialValue));
@@ -24,11 +24,14 @@ export function useLocalStorage<T>(key: string, init: (initialValue: {} | string
   return [state, setValue];
 }
 
-function getLocalStorageValue(key: string): {} | string | undefined {
+function getLocalStorageValue(key: string): object | string | undefined {
   const value = localStorage.getItem(normalizeKey(key));
+  if (value === null) {
+    return undefined;
+  }
   try {
     // JSON.parse returns null when the input is null
-    return JSON.parse(value!) ?? undefined;
+    return JSON.parse(value) ?? undefined;
   } catch {
     return undefined;
   }

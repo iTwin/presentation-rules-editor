@@ -31,6 +31,11 @@ export default defineConfig(({ mode }) => {
       port: 3000,
       strictPort: true,
     },
+    esbuild: {
+      supported: {
+        "top-level-await": true, // browsers can handle top-level-await features
+      },
+    },
     css: {
       preprocessorOptions: {
         scss: {

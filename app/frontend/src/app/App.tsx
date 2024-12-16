@@ -59,7 +59,7 @@ const AuthorizationProvider = clientId
       post_logout_redirect_uri: "/",
       scope: "itwinjs imodelaccess:read imodels:read itwins:read openid profile",
     })
-  : (props: React.PropsWithChildren<{}>) => <>{props.children}</>;
+  : (props: React.PropsWithChildren<object>) => <>{props.children}</>;
 
 function Main(): React.ReactElement {
   useApplicationInsights();

@@ -20,7 +20,7 @@ import { demoIModels, IModelIdentifier } from "./IModelIdentifier.js";
 import { InitializedApp } from "./InitializedApp.js";
 
 if (EXPERIMENTAL_STATION_VALUE_RENDERER) {
-  import("../experimental/StationPropertyValueRenderer.js");
+  await import("../experimental/StationPropertyValueRenderer.js");
 }
 
 export interface ITwinJsAppProps {

@@ -72,7 +72,7 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
     }
   };
 
-  return function AuthorizationProvider(props: React.PropsWithChildren<{}>): React.ReactElement {
+  return function AuthorizationProvider(props: React.PropsWithChildren<object>): React.ReactElement {
     const [authorizationContextValue, setAuthorizationContextValue] = React.useState<AuthorizationContext>({
       userManager,
       demoAuthorizationClient,
