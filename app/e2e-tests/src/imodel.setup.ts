@@ -7,8 +7,10 @@ import { exec } from "child_process";
 import * as fs from "fs";
 import { test as setup } from "@playwright/test";
 
-setup("Setup Baytown #web #local", async () => {
-  await setupIModel();
+setup("Setup Baytown", async () => {
+  if (!process.env.WEB_TEST) {
+    await setupIModel();
+  }
 });
 
 async function setupIModel(): Promise<void> {

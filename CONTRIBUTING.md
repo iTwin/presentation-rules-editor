@@ -28,9 +28,26 @@ To summarize, we only do string localization inside `ITwinJsApp/` subdirectory.
 We have two sets of tests:
 
 - Unit tests for `presentation-rules-editor` package, which require 100% test coverage.
-- End-to-end tests for the editor application.
 
-To run these tests, execute `npm test` in `presentation-rules-editor-react/` and `app/e2e-tests/` directories respectively.
+  - To run these tests navigate to `presentation-rules-editor-react/` and execute:
+
+  ```bash
+   npm test
+  ```
+
+- End-to-end tests for the editor application. These tests are split into `web` and `local` tests.
+
+  - To run `web` tests navigate to `app/e2e-tests/` and execute:
+
+  ```bash
+   npm run test:web
+  ```
+
+  - To run `local` tests navigate to `app/e2e-tests/` and execute:
+
+  ```bash
+   npm run test:local
+  ```
 
 ## Debugging
 
