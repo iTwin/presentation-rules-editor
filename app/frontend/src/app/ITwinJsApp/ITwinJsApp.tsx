@@ -20,8 +20,7 @@ import { demoIModels, IModelIdentifier } from "./IModelIdentifier.js";
 import { InitializedApp } from "./InitializedApp.js";
 
 if (EXPERIMENTAL_STATION_VALUE_RENDERER) {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  import("../experimental/StationPropertyValueRenderer.js");
+  await import("../experimental/StationPropertyValueRenderer.js");
 }
 
 export interface ITwinJsAppProps {
