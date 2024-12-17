@@ -22,19 +22,18 @@ export default defineConfig(({ mode }) => {
             src: "./node_modules/@itwin/*/lib/public/*",
             dest: ".",
           },
-          { src: "public/locales", dest: "locales" },
         ],
       }),
-      monacoEditorPlugin.default({}),
+      monacoEditorPlugin.default({
+        languageWorkers: ["json"],
+      }),
     ],
     server: {
       port: 3000,
       strictPort: true,
     },
-    esbuild: {
-      supported: {
-        "top-level-await": true, // browsers can handle top-level-await features
-      },
+    build: {
+      target: "es2022",
     },
     css: {
       preprocessorOptions: {
@@ -67,7 +66,6 @@ function verifyEnvironmentVariables(mode: string): void {
   }
 
   if ((env.DEPLOYMENT_TYPE !== "dev" && !env.OAUTH_CLIENT_ID) || env.OAUTH_CLIENT_ID === "spa-xxxxxxxxxxxxxxxxxxxxxxxxx") {
-    // eslint-disable-next-line no-console
     throw new Error(`Environment variable OAUTH_CLIENT_ID has not been set. Instructions in .env file \
 will guide you through the setup process.`);
   }
