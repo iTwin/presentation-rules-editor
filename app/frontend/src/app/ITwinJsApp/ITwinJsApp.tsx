@@ -3,6 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import "../experimental/StationPropertyValueRenderer.js";
 import * as React from "react";
 import { rpcInterfaces } from "@app/common";
 import { AppNotificationManager, UiFramework } from "@itwin/appui-react";
@@ -14,14 +15,10 @@ import { FrontendIModelsAccess } from "@itwin/imodels-access-frontend";
 import { IModelsClient } from "@itwin/imodels-client-management";
 import { Presentation } from "@itwin/presentation-frontend";
 import { LoadingIndicator } from "../common/LoadingIndicator.js";
-import { applyUrlPrefix, EXPERIMENTAL_STATION_VALUE_RENDERER } from "../utils/Environment.js";
+import { applyUrlPrefix } from "../utils/Environment.js";
 import { BackendApi } from "./api/BackendApi.js";
 import { demoIModels, IModelIdentifier } from "./IModelIdentifier.js";
 import { InitializedApp } from "./InitializedApp.js";
-
-if (EXPERIMENTAL_STATION_VALUE_RENDERER) {
-  await import("../experimental/StationPropertyValueRenderer.js");
-}
 
 export interface ITwinJsAppProps {
   backendApiPromise: Promise<BackendApi>;
