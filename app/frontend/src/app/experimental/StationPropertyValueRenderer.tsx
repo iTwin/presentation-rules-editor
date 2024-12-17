@@ -19,23 +19,25 @@ import { Presentation } from "@itwin/presentation-frontend";
 
 type StationValueType = "from" | "to" | "at";
 
-Presentation.registerInitializationHandler(async (): Promise<() => void> => {
-  const customRenderers: Array<{ name: string; renderer: IPropertyValueRenderer }> = [
-    { name: "AtStation", renderer: new StationPropertyValueRenderer("at") },
-    { name: "FromStation", renderer: new StationPropertyValueRenderer("from") },
-    { name: "ToStation", renderer: new StationPropertyValueRenderer("to") },
-  ];
+export function registerStationPropertyFeature() {
+  Presentation.registerInitializationHandler(async (): Promise<() => void> => {
+    const customRenderers: Array<{ name: string; renderer: IPropertyValueRenderer }> = [
+      { name: "AtStation", renderer: new StationPropertyValueRenderer("at") },
+      { name: "FromStation", renderer: new StationPropertyValueRenderer("from") },
+      { name: "ToStation", renderer: new StationPropertyValueRenderer("to") },
+    ];
 
-  for (const { name, renderer } of customRenderers) {
-    PropertyValueRendererManager.defaultManager.registerRenderer(name, renderer);
-  }
-
-  return () => {
-    for (const { name } of customRenderers) {
-      PropertyValueRendererManager.defaultManager.unregisterRenderer(name);
+    for (const { name, renderer } of customRenderers) {
+      PropertyValueRendererManager.defaultManager.registerRenderer(name, renderer);
     }
-  };
-});
+
+    return () => {
+      for (const { name } of customRenderers) {
+        PropertyValueRendererManager.defaultManager.unregisterRenderer(name);
+      }
+    };
+  });
+}
 
 /**
  * Property value renderer for STATION values.
