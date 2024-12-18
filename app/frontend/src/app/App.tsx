@@ -57,7 +57,7 @@ const AuthorizationProvider = clientId
       redirect_uri: "/auth/callback",
       silent_redirect_uri: "/auth/silent",
       post_logout_redirect_uri: "/",
-      scope: "itwin-platform itwinjs openid profile",
+      scope: "itwin-platform openid profile",
     })
   : (props: React.PropsWithChildren<object>) => <>{props.children}</>;
 
