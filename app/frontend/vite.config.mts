@@ -4,7 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { defineConfig, loadEnv } from "vite";
-import monacoEditorPlugin from "vite-plugin-monaco-editor";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import react from "@vitejs/plugin-react";
 
@@ -23,9 +22,6 @@ export default defineConfig(({ mode }) => {
             dest: ".",
           },
         ],
-      }),
-      monacoEditorPlugin.default({
-        languageWorkers: ["json"],
       }),
     ],
     server: {
