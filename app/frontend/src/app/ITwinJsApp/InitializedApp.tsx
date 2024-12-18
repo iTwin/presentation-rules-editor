@@ -99,8 +99,8 @@ const defaultRuleset: Ruleset = {
           classes: {
             schemaName: "BisCore",
             classNames: ["Element"],
+            arePolymorphic: true,
           },
-          arePolymorphic: true,
           groupByClass: true,
         },
       ],
