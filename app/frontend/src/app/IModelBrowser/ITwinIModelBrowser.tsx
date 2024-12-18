@@ -88,16 +88,15 @@ function ITwinBrowserGridView(props: ITwinBrowserGridViewProps): React.ReactElem
   return (
     <FluidGrid>
       {props.iTwins.map((iTwin) => (
-        <div key={iTwin.id}>
-          <Tile
-            name={iTwin.displayName}
-            variant="folder"
-            isActionable
-            thumbnail={iTwin.image ?? <SvgProject />}
-            description={iTwin.number}
-            onClick={async () => navigate(iTwin.id)}
-          />
-        </div>
+        <Tile
+          key={iTwin.id}
+          name={iTwin.displayName}
+          variant="folder"
+          isActionable
+          thumbnail={iTwin.image ?? <SvgProject />}
+          description={iTwin.number}
+          onClick={async () => navigate(iTwin.id)}
+        />
       ))}
     </FluidGrid>
   );
