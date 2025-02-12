@@ -7,7 +7,7 @@ import "@itwin/itwinui-layouts-css/styles.css";
 import "@itwin/itwinui-react/styles.css";
 import "./App.scss";
 import * as React from "react";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router";
 import { SvgDeveloper, SvgFolderOpened } from "@itwin/itwinui-icons-react";
 import { PageLayout } from "@itwin/itwinui-layouts-react";
 import { Footer, SidenavButton, SideNavigation, ThemeProvider } from "@itwin/itwinui-react";

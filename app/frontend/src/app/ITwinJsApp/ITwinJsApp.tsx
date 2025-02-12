@@ -63,7 +63,7 @@ export async function initializeApp(): Promise<BackendApi> {
   RpcConfiguration.disableRoutingValidation = import.meta.env.DEPLOYMENT_TYPE !== "web";
   const rpcParams =
     import.meta.env.DEPLOYMENT_TYPE === "web"
-      ? { info: { title: "visualization", version: "v4.0" } }
+      ? { info: { title: "imodel/rpc", version: "v4" } }
       : {
           info: { title: "presentation-rules-editor", version: "v1.0" },
           uriPrefix: "http://localhost:3001",
