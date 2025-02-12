@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgHome, SvgUser } from "@itwin/itwinui-icons-react";
 import { HeaderButton, Tile } from "@itwin/itwinui-react";
