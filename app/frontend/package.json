@@ -43,7 +43,7 @@
     "@itwin/itwinui-illustrations-react": "^2.1.0",
     "@itwin/itwinui-layouts-css": "^0.4.0",
     "@itwin/itwinui-layouts-react": "^0.4.1",
-    "@itwin/itwinui-react": "^3.16.0",
+    "@itwin/itwinui-react": "^3.16.6",
     "@itwin/presentation-common": "^4.10.2",
     "@itwin/presentation-components": "^5.6.1",
     "@itwin/presentation-frontend": "^4.10.2",
