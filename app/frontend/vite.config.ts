@@ -86,12 +86,12 @@ function injectAppMetadata(mode: string): Plugin {
 }
 
 function verifyEnvironmentVariables(mode: string): void {
-  const isProductionEnvironment = mode === "production";
-  (process.env.DEPLOYMENT_TYPE as any) ??= isProductionEnvironment || process.env.WEB_TEST ? "web" : "dev";
-
   const env = loadEnv(mode, process.cwd(), "");
 
-  if (!new Set(["dev", "local", "web"]).has(env.DEPLOYMENT_TYPE)) {
+  // if `DEPLOYMENT_TYPE` is not set, first use the value from .env file and fallback to value based on `mode` or `WEB_TEST` variables.
+  process.env.DEPLOYMENT_TYPE ??= env.DEPLOYMENT_TYPE ?? (mode === "production" || process.env.WEB_TEST ? "web" : "dev");
+
+  if (!new Set(["dev", "local", "web"]).has(process.env.DEPLOYMENT_TYPE)) {
     throw new Error(`Environment variable DEPLOYMENT_TYPE has invalid value: '${process.env.DEPLOYMENT_TYPE}'.`);
   }
 

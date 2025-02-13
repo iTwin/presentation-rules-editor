@@ -34,6 +34,7 @@
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write ."
   },
+  "packageManager": "pnpm@9.15.0",
   "engines": {
     "pnpm": ">=9",
     "npm": "<0",
