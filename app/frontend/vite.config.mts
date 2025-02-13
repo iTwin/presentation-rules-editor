@@ -3,7 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig, HtmlTagDescriptor, loadEnv, Plugin } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import react from "@vitejs/plugin-react";
 
@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => {
           },
         ],
       }),
+      injectAppMetadata(mode),
     ],
     server: {
       port: 3000,
@@ -50,6 +51,39 @@ export default defineConfig(({ mode }) => {
     },
   };
 });
+
+function injectAppMetadata(mode: string): Plugin {
+  const env = loadEnv(mode, process.cwd(), "");
+
+  return {
+    name: "inject-app-metadata",
+    transformIndexHtml: () => {
+      const tags: HtmlTagDescriptor[] = [
+        {
+          tag: "meta",
+          attrs: { name: "clientId", content: env.OAUTH_CLIENT_ID },
+          injectTo: "head",
+        },
+      ];
+      if (env.IMJS_URL_PREFIX) {
+        tags.push({
+          tag: "meta",
+          attrs: { name: "urlPrefix", content: env.IMJS_URL_PREFIX },
+          injectTo: "head",
+        });
+      }
+      if (env.APPLICATION_INSIGHTS_CONNECTION_STRING) {
+        tags.push({
+          tag: "meta",
+          attrs: { name: "appInsights", content: env.APPLICATION_INSIGHTS_CONNECTION_STRING },
+          injectTo: "head",
+        });
+      }
+
+      return tags;
+    },
+  };
+}
 
 function verifyEnvironmentVariables(mode: string): void {
   const isProductionEnvironment = mode === "production";

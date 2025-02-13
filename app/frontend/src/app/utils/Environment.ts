@@ -14,8 +14,12 @@ export function applyUrlPrefix(url: string): string {
   return modifierUrl.toString();
 }
 
-export const clientId = import.meta.env.OAUTH_CLIENT_ID;
-export const urlPrefix = import.meta.env.IMJS_URL_PREFIX;
-export const appInsightsConnectionString = import.meta.env.APPLICATION_INSIGHTS_CONNECTION_STRING;
+export const clientId = getAppMetadata("clientId");
+export const urlPrefix = getAppMetadata("urlPrefix");
+export const appInsightsConnectionString = getAppMetadata("appInsights");
+
+function getAppMetadata(propertyName: string): string {
+  return document.head.querySelector(`meta[name=${propertyName}]`)?.getAttribute("content") ?? "";
+}
 
 export const EXPERIMENTAL_STATION_VALUE_RENDERER = true;
