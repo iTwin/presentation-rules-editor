@@ -114,7 +114,7 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
       userManager
         .getUser()
         .then((user) => {
-          if (user === null) {
+          if (user === null || user.expired) {
             handleUserUnloaded();
             return;
           }
