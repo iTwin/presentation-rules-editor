@@ -1,0 +1,87 @@
+name: $(Date:yyyy.M.d)$(Rev:.r)
+
+trigger:
+  - master
+  - threagile-pipeline
+
+variables:
+  - name: NodeVersion
+    value: 22.x
+  - name: pnpm_config_cache
+    value: $(Pipeline.Workspace)/.pnpm-store
+
+jobs:
+  - job: publish_repo_content
+    displayName: Publish repo content
+    workspace:
+      clean: all
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - checkout: self
+        fetchDepth: 1
+        fetchTags: false
+
+      - task: CopyFiles@2
+        displayName: "Copy Files to staging directory"
+        inputs:
+          Contents: |
+            **
+            !.git/**
+          TargetFolder: "$(Build.ArtifactStagingDirectory)"
+
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact: presentation-rules-editor-repo"
+        inputs:
+          ArtifactName: presentation-rules-editor-repo
+
+  - job: build_publish_app
+    displayName: Build & publish app
+    workspace:
+      clean: all
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - checkout: self
+        fetchDepth: 1
+        fetchTags: false
+
+      - task: UseNode@1
+        displayName: "Use Node $(NodeVersion)"
+        inputs:
+          version: $(NodeVersion)
+
+      - task: Cache@2
+        displayName: Cache pnpm
+        inputs:
+          key: 'pnpm | "$(Agent.OS)" | pnpm-lock.yaml'
+          path: $(pnpm_config_cache)
+
+      - script: corepack enable
+        displayName: "Enable corepack"
+
+      - script: pnpm config set store-dir $(pnpm_config_cache)
+        displayName: "Setup pnpm"
+        env:
+          COREPACK_INTEGRITY_KEYS: 0
+
+      - script: pnpm install --filter @app/frontend...
+
+      - script: npm run build
+        displayName: Bundle
+
+      - task: octopusdeploy.octopus-deploy-build-release-tasks.octopus-pack-nuget.OctopusPackNuGet@6
+        displayName: Package presentation-rules-editor-static
+        inputs:
+          PackageId: presentation-rules-editor-static
+          PackageVersion: $(Build.BuildNumber)
+          SourcePath: app/frontend/dist
+          OutputPath: $(Build.ArtifactStagingDirectory)
+          NuGetDescription: Presentation rules editor static web site
+          NuGetAuthors: Bentley Systems, Inc.
+
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact: presentation-rules-editor-static"
+        inputs:
+          PathtoPublish: $(Build.ArtifactStagingDirectory)/presentation-rules-editor-static.$(Build.BuildNumber).nupkg
+          ArtifactName: presentation-rules-editor-static
