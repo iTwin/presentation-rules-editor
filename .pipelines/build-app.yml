@@ -85,3 +85,47 @@ jobs:
         inputs:
           PathtoPublish: $(Build.ArtifactStagingDirectory)/presentation-rules-editor-static.$(Build.BuildNumber).nupkg
           ArtifactName: presentation-rules-editor-static
+
+  - job: threagile
+    displayName: Run Threagile
+    pool:
+      vmImage: ubuntu-latest
+    variables:
+      - name: ModelsDirectory
+        value: "$(Build.SourcesDirectory)/.threat-model"
+      - name: ThreagileModelFilename
+        value: "threagile.yaml"
+      - name: ThreagileVersion
+        value: "1.4.0"
+    steps:
+      - task: UniversalPackages@0
+        displayName: Download threagile image
+        inputs:
+          command: download
+          vstsFeed: "AppSec/AppSec"
+          vstsFeedPackage: "threagile-$(ThreagileVersion)"
+          vstsPackageVersion: "*"
+          downloadDirectory: "$(Build.SourcesDirectory)"
+
+      - bash: |
+          docker load -i '$(Build.SourcesDirectory)/threagile-$(ThreagileVersion).tar'
+        displayName: "Load threagile docker image"
+
+      - bash: |
+          chmod a+rwx $(Build.ArtifactStagingDirectory)
+        displayName: "Set permissions on output directory"
+
+      - pwsh: >
+          docker run --rm
+          --volume "$(ModelsDirectory):/app/models"
+          --volume "$(Build.ArtifactStagingDirectory):/app/output"
+          threagile:$(ThreagileVersion)
+          -verbose
+          -model /app/models/$(ThreagileModelFilename)
+          -output /app/output
+        displayName: "Run Threagile model"
+
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact: threagile-output"
+        inputs:
+          ArtifactName: threagile-output
