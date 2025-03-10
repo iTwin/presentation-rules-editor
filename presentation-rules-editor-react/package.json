@@ -77,7 +77,7 @@
     "@itwin/core-react": "^4.17.6",
     "@itwin/eslint-plugin": "^5.0.0-dev.2",
     "@itwin/imodel-components-react": "^4.17.6",
-    "@itwin/itwinui-react": "^3.16.0",
+    "@itwin/itwinui-react": "^3.16.6",
     "@itwin/presentation-common": "^4.10.2",
     "@itwin/presentation-components": "^5.6.1",
     "@itwin/presentation-frontend": "^4.10.2",

@@ -3,7 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig, HtmlTagDescriptor, loadEnv, Plugin } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import react from "@vitejs/plugin-react";
 
@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => {
           },
         ],
       }),
+      injectAppMetadata(mode),
     ],
     server: {
       port: 3000,
@@ -51,13 +52,46 @@ export default defineConfig(({ mode }) => {
   };
 });
 
-function verifyEnvironmentVariables(mode: string): void {
-  const isProductionEnvironment = mode === "production";
-  (process.env.DEPLOYMENT_TYPE as any) ??= isProductionEnvironment || process.env.WEB_TEST ? "web" : "dev";
-
+function injectAppMetadata(mode: string): Plugin {
   const env = loadEnv(mode, process.cwd(), "");
 
-  if (!new Set(["dev", "local", "web"]).has(env.DEPLOYMENT_TYPE)) {
+  return {
+    name: "inject-app-metadata",
+    transformIndexHtml: () => {
+      const tags: HtmlTagDescriptor[] = [
+        {
+          tag: "meta",
+          attrs: { name: "clientId", content: env.OAUTH_CLIENT_ID },
+          injectTo: "head",
+        },
+      ];
+      if (env.IMJS_URL_PREFIX) {
+        tags.push({
+          tag: "meta",
+          attrs: { name: "urlPrefix", content: env.IMJS_URL_PREFIX },
+          injectTo: "head",
+        });
+      }
+      if (env.APPLICATION_INSIGHTS_CONNECTION_STRING) {
+        tags.push({
+          tag: "meta",
+          attrs: { name: "appInsights", content: env.APPLICATION_INSIGHTS_CONNECTION_STRING },
+          injectTo: "head",
+        });
+      }
+
+      return tags;
+    },
+  };
+}
+
+function verifyEnvironmentVariables(mode: string): void {
+  const env = loadEnv(mode, process.cwd(), "");
+
+  // if `DEPLOYMENT_TYPE` is not set, first use the value from .env file and fallback to value based on `mode` or `WEB_TEST` variables.
+  process.env.DEPLOYMENT_TYPE ??= env.DEPLOYMENT_TYPE ?? (mode === "production" || process.env.WEB_TEST ? "web" : "dev");
+
+  if (!new Set(["dev", "local", "web"]).has(process.env.DEPLOYMENT_TYPE)) {
     throw new Error(`Environment variable DEPLOYMENT_TYPE has invalid value: '${process.env.DEPLOYMENT_TYPE}'.`);
   }
 

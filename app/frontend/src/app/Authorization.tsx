@@ -5,7 +5,7 @@
 
 import { User, UserManager, WebStorageStateStore } from "oidc-client-ts";
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { AccessToken } from "@itwin/core-bentley";
 import { AuthorizationClient } from "@itwin/core-common";
 import { PageLayout } from "@itwin/itwinui-layouts-react";
@@ -114,7 +114,7 @@ export function createAuthorizationProvider(config: AuthorizationProviderConfig)
       userManager
         .getUser()
         .then((user) => {
-          if (user === null) {
+          if (user === null || user.expired) {
             handleUserUnloaded();
             return;
           }

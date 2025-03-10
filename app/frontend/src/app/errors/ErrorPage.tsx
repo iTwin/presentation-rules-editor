@@ -5,7 +5,7 @@
 
 import "./ErrorPage.scss";
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { SvgError } from "@itwin/itwinui-illustrations-react";
 import { PageLayout } from "@itwin/itwinui-layouts-react";
 import { Button, ExpandableBlock, Text } from "@itwin/itwinui-react";

@@ -5,7 +5,7 @@
 
 import "./IModelBrowser.scss";
 import * as React from "react";
-import { Outlet, useMatch, useNavigate } from "react-router-dom";
+import { Outlet, useMatch, useNavigate } from "react-router";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgHistory, SvgImodel, SvgList, SvgSearch, SvgThumbnails } from "@itwin/itwinui-icons-react";
 import { FluidGrid, Grid, PageLayout } from "@itwin/itwinui-layouts-react";

@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { assert } from "@itwin/core-bentley";
 import { AuthorizationClient } from "@itwin/core-common";
 import { SvgImodelHollow, SvgProject } from "@itwin/itwinui-icons-react";
