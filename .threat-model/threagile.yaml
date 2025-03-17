@@ -1,56 +1,601 @@
-# yaml-language-server: $schema=file://EXTPRDSEC07/threagile/schema-1.1.3.json
+# yaml-language-server: $schema=http://extprdsec07.bentley.com/threagile/schema-1.4.0.json
 
 # PLEASE SEE REFERENCE DOCUMENTATION (https://github.com/BentleySystems/threagile/blob/master/docs/reference/index.md)
 # FOR GUIDANCE ON ALL AVAILABLE BLOCKS AND ATTRIBUTES.
-title: Presentation Rules Editor (Web)
+title: Presentation rules editor (Web)
 author:
   name: iTwin.js Presentation team
-date: "2022-08-12"
+date: 2022-08-12
+date_of_last_review: 2025-03-17
 business_criticality: important
+business_overview:
+  description: |
+    The Presentation rules editor allows users to select an iModel that they have access to, and run provided Presentation rules against it, quickly seeing the results in primary components: tree, table, property grid.
+technical_overview:
+  description: |
+    The Presentation rules editor is a React static site. It uses iTwins and iModels APIs to query datasets available for the user, including the demo ones that are available for all users. The iModels visualization service is used to evaluate provided Presentation rules against the selected iModel.
+
 data_assets:
-  Storage account:
-    id: storage-account
-    description: "Stores static site data"
+  Static assets:
+    id: presentation-rules-editor-static-assets
+    description: |
+      The static assets of the Presentation rules editor, including the HTML/CSS files and JavaScript chunks.
     usage: business
-    quantity: very-few
+    tags: []
+    origin: Bentley
+    owner: Bentley
+    quantity: few
     confidentiality: public
     integrity: critical
     availability: critical
-technical_assets:
-  Front Door and CDN profiles:
-    id: front-door
-    type: process
+    justification_cia_rating: |
+      The static assets of the Presentation rules editor are critical to the application's functionality. The application cannot run without these assets. Users cannot access the the application without fetching these assets.
+      The static assets are marked public, in that every user gets the same static pages. The assets make up a single page application, indirectly served from an Azure Storage Account and proxied through Azure Front Door.
+  OAuth access token:
+    id: oauth-access-token
+    description: |
+      User OAuth access token. Controls application authorization on behalf of user.
     usage: business
-    out_of_scope: false
-    size: component
+    quantity: very-few
+    confidentiality: strictly-confidential
+    integrity: mission-critical
+    availability: critical
+    origin: OIDC provider (e.g. ims.bentley.com) and/or https://connect-itwinjscodesandbox.bentley.com/api/usertoken
+    owner: "OIDC provider"
+  Presentation rules editor OIDC Config:
+    id: oidc-config
+    description: |
+      The Presentation rules editor's client id which is used to delegate the user token passed along to APIM.
+    usage: business
+    tags: []
+    origin: Bentley
+    owner: Bentley
+    quantity: few
+    confidentiality: strictly-confidential
+    integrity: critical
+    availability: critical
+  AppInsights connection string:
+    id: app-insights-connection-string
+    description: |
+      A connection string that's required to send telemetry events and metrics to Application Insights.
+    usage: business
+    tags: []
+    origin: Application Insights
+    owner: Bentley
+    quantity: very-few
+    confidentiality: restricted
+    integrity: operational
+    availability: operational
+  iTwins Data:
+    id: itwins-data
+    description: |
+      Data providing information on an iTwin and its type.
+    usage: business
+    tags: []
+    origin: Bentley cloud services
+    owner: Bentley
+    quantity: many
+    confidentiality: restricted
+    integrity: critical
+    availability: critical
+    justification_cia_rating: |
+      The GUID associated with an iTwin can be used to retrieve information about it, including its class and user-friendly name.
+  iModels Data:
+    id: imodels-data
+    description: |
+      Data providing information on an iModel and it's different changesets.
+    usage: business
+    tags: []
+    origin: Bentley cloud services
+    owner: Bentley
+    quantity: very-many
+    confidentiality: confidential
+    integrity: critical
+    availability: critical
+    justification_cia_rating: |
+      The GUID associated with an iModel can be used to retrieve information about it. The application allows to query for more information about data inside the iModel.
+
+technical_assets:
+  IMS Service:
+    id: ims
+    description: ims.bentley.com, used for token delegation
+    type: process
+    size: service
+    usage: business
+    out_of_scope: true
+    justification_out_of_scope: |
+      IMS is maintained by the Identity and Access Management (IAM) team, and is out of scope for this threat model.
+    technology: identity-provider
+    tags: []
+    internet: true
+    machine: virtual
+    encryption: none
+    owner: Bentley
+    confidentiality: strictly-confidential
+    integrity: mission-critical
+    availability: critical
+    multi_tenant: true
+    data_assets_processed:
+      - oidc-config
+      - oauth-access-token
+    data_assets_stored:
+      - oauth-access-token
+    communication_links: {}
+    data_formats_accepted: []
+  Demo user auth token service:
+    id: demo-user-auth-token-service
+    description: |
+      A service that provides demo user OAuth access token for the Presentation rules editor.
+    type: process
+    size: service
+    usage: business
+    out_of_scope: true
+    justification_out_of_scope: |
+      The service is maintained by another team, and is out of scope for this threat model.
+    technology: web-service-rest
+    tags: []
+    internet: true
+    machine: virtual
+    encryption: none
+    owner: Bentley
+    confidentiality: restricted
+    integrity: important
+    availability: important
+    multi_tenant: true
+    data_assets_processed:
+      - oauth-access-token
+    data_assets_stored:
+      - oauth-access-token
+    communication_links: {}
+    data_formats_accepted: []
+  Bentley APIM:
+    id: apim
+    description: |
+      API Management gateway for Bentley APIs, normally accessed via 'api.bentley.com'. Presentation rules editor connects to other Bentley APIs and services via this gateway, passing along an OAuth access token.
+    type: process
+    size: service
+    usage: business
+    owner: Bentley
+    out_of_scope: true
+    justification_out_of_scope: |
+      APIM acts as a reverse proxy gateway and is maintained by a different team.
     technology: gateway
     internet: true
     machine: virtual
     encryption: none
-    confidentiality: internal
+    confidentiality: confidential
     integrity: critical
     availability: critical
     multi_tenant: true
     data_assets_processed:
-      - storage-account
+      - oauth-access-token
+      - itwins-data
+      - imodels-data
+    data_assets_stored: []
+    data_formats_accepted:
+      - json
+    communication_links:
+      apim-to-itwins-service-traffic:
+        target: itwins-service
+        description: Presentation rules editor sends requests to the iTwins service to retrieve information about different iTwins.
+        protocol: https
+        authentication: token
+        authorization: enduser-identity-propagation
+        vpn: false
+        ip_filtered: false
+        tags: []
+        data_assets_sent:
+          - oauth-access-token
+        data_assets_received:
+          - itwins-data
+      apim-to-imodels-service-traffic:
+        target: imodels-service
+        description: Presentation rules editor sends requests to the iModels service to retrieve information about different iModels and their changesets.
+        protocol: https
+        authentication: token
+        authorization: enduser-identity-propagation
+        vpn: false
+        ip_filtered: false
+        tags: []
+        data_assets_sent:
+          - oauth-access-token
+        data_assets_received:
+          - imodels-data
+      apim-to-imodels-visualization-traffic:
+        target: imodels-visualization-service
+        description: Presentation rules editor sends requests to the iModels visualization service to retrieve data within an iModel and run presentation rules against it.
+        protocol: https
+        authentication: token
+        authorization: enduser-identity-propagation
+        vpn: false
+        ip_filtered: false
+        tags: []
+        data_assets_sent:
+          - oauth-access-token
+          - itwins-data
+          - imodels-data
+        data_assets_received:
+          - imodels-data
+  iModels visualization service:
+    id: imodels-visualization-service
+    description: |
+      The iModels visualization service is used to retrieve data within an iModel and run presentation rules against it.
+    type: process
+    size: service
+    usage: business
+    out_of_scope: true
+    justification_out_of_scope: |
+      The iModels visualization service is maintained by the Orchestrator team, and is out of scope for this threat model.
+    technology: web-service-rest
+    internet: true
+    machine: virtual
+    encryption: none
+    owner: Bentley
+    confidentiality: confidential
+    integrity: critical
+    availability: critical
+    multi_tenant: true
+    data_assets_processed:
+      - oauth-access-token
+      - itwins-data
+      - imodels-data
     data_assets_stored: []
     data_formats_accepted: []
-    owner: ""
-    diagram_tweak_order: 0
     communication_links: {}
+  Presentation rules editor application:
+    id: presentation-rules-editor-app
+    description: |
+      The React application, published as a static site, holding the functionality of Presentation rules editor.
+    type: process
+    usage: business
+    owner: Bentley
+    out_of_scope: false
+    size: application
+    technology: web-application
+    internet: false
+    machine: virtual
+    encryption: transparent
+    multi_tenant: false
+    confidentiality: confidential
+    integrity: critical
+    availability: critical
+    data_assets_processed:
+      - itwins-data
+      - imodels-data
+      - oauth-access-token
+      - app-insights-connection-string
+    data_assets_stored:
+      - presentation-rules-editor-static-assets
+    communication_links:
+      app-to-app-insights-traffic:
+        target: app-insights
+        description: The app sends custom telemetry events and metrics to Application Insights for monitoring and analytics.
+        protocol: https
+        authentication: token
+        authorization: technical-user
+        vpn: false
+        ip_filtered: false
+        tags: []
+        data_assets_sent:
+          - app-insights-connection-string
+        data_assets_received: []
+      app-to-apim-traffic:
+        target: apim
+        description: The app sends requests to Bentley's API Management gateway to access other Bentley APIs and services, like iTwins API and iModels API.
+        protocol: https
+        authentication: token
+        authorization: enduser-identity-propagation
+        data_assets_sent:
+          - oauth-access-token
+          - itwins-data
+          - imodels-data
+        data_assets_received:
+          - itwins-data
+          - imodels-data
+      app-to-ims-traffic:
+        target: ims
+        description: The app talks to IMS service to delegate user token with necessary scopes for the service.
+        protocol: https
+        authentication: credentials
+        authorization: none
+        tags: []
+        vpn: false
+        ip_filtered: false
+        readonly: false
+        usage: business
+        data_assets_sent:
+          - oidc-config
+        data_assets_received:
+          - oauth-access-token
+      app-to-demo-user-auth-token-service-traffic:
+        target: demo-user-auth-token-service
+        description: The app sends a request to demo user auth token service to get a demo user token with necessary scopes for using demo iModels.
+        protocol: https
+        authentication: none
+        authorization: none
+        tags: []
+        vpn: false
+        ip_filtered: false
+        readonly: true
+        usage: business
+        data_assets_received:
+          - oauth-access-token
+      app-to-front-door-traffic:
+        target: front-door
+        description: The static assets for the application would be fetched by hitting the Azure front door servers.
+        protocol: https
+        authentication: none
+        authorization: none
+        vpn: false
+        ip_filtered: false
+        tags: []
+        data_assets_sent: []
+        data_assets_received:
+          - presentation-rules-editor-static-assets
+  iTwin service:
+    id: itwins-service
+    description: |
+      iTwins service is used to retrieve information about different iTwins, such as Project iTwins or Asset iTwins.
+    type: process
+    size: service
+    usage: business
+    out_of_scope: true
+    justification_out_of_scope: |
+      The iTwins service is maintained by a different team, and is out of scope for this threat model.
+    technology: web-service-rest
+    internet: true
+    machine: virtual
+    encryption: none
+    owner: Bentley
+    confidentiality: confidential
+    integrity: critical
+    availability: critical
+    multi_tenant: true
+    data_assets_processed:
+      - oauth-access-token
+      - itwins-data
+    data_assets_stored:
+      - itwins-data
+    data_formats_accepted: []
+    communication_links: {}
+  iModels service:
+    id: imodels-service
+    description: |
+      iModels service is used to retrieve information about different iModels, such as iModel ID, iModel Name, iModel Description, iModel Changeset, etc.
+    type: process
+    size: service
+    usage: business
+    out_of_scope: true
+    justification_out_of_scope: |
+      The iModels service is maintained by a different team, and is out of scope for this threat model.
+    technology: web-service-rest
+    internet: true
+    machine: virtual
+    encryption: none
+    owner: Bentley
+    confidentiality: confidential
+    integrity: critical
+    availability: critical
+    multi_tenant: true
+    data_assets_processed:
+      - oauth-access-token
+      - imodels-data
+    data_assets_stored:
+      - imodels-data
+    data_formats_accepted: []
+    communication_links: {}
+  Application insights:
+    id: app-insights
+    description: |
+      Application Insights is a monitoring and analytics service provided by Microsoft Azure. It is used to monitor the performance and usage of Presentation rules editor through events and metrics.
+    type: process
+    size: service
+    usage: business
+    out_of_scope: true
+    justification_out_of_scope: |
+      Application Insights is a resource provided and managed by Microsoft Azure, and is out of scope for this threat model.
+    technology: monitoring
+    internet: true
+    machine: virtual
+    encryption: none
+    owner: Bentley
+    confidentiality: confidential
+    integrity: critical
+    availability: critical
+    multi_tenant: true
+    data_assets_processed:
+      - app-insights-connection-string
+    data_assets_stored: []
+    data_formats_accepted: []
+    communication_links: {}
+  Storage account:
+    id: storage-account
+    description: |
+      An Azure storage account, in which the Presentation rules editor's static assets are stored, used to serve the static site.
+    type: datastore
+    usage: business
+    owner: Bentley
+    out_of_scope: true
+    justification_out_of_scope: |
+      The storage account is a resource provided and managed by Microsoft Azure, and is out of scope for this threat model.
+    size: component
+    technology: block-storage
+    internet: true
+    machine: virtual
+    encryption: transparent
+    confidentiality: confidential
+    integrity: critical
+    availability: critical
+    multi_tenant: true
+    data_assets_processed:
+      - presentation-rules-editor-static-assets
+    data_assets_stored:
+      - presentation-rules-editor-static-assets
+    data_formats_accepted: []
+    communication_links: {}
+  Azure Front Door and CDN:
+    id: front-door
+    type: process
+    usage: business
+    owner: Microsoft
+    out_of_scope: true
+    justification_out_of_scope: |
+      The Azure Front Foor and CDN edge servers are resources provided and managed by Microsoft Azure, and is out of scope for this threat model.
+    size: system
+    technology: gateway
+    internet: true
+    machine: virtual
+    encryption: transparent
+    confidentiality: confidential
+    integrity: critical
+    availability: critical
+    multi_tenant: true
+    data_assets_processed:
+      - presentation-rules-editor-static-assets
+    data_assets_stored:
+      - presentation-rules-editor-static-assets
+    communication_links:
+      front-door-to-storage-account-traffic:
+        target: storage-account
+        description: If the application's static assets aren't cached within the front door servers, the static assets would be fetched from the Azure Storage Account, and then cached before returning the data to users.
+        protocol: https
+        authentication: externalized
+        authorization: technical-user
+        vpn: false
+        ip_filtered: false
+        tags: []
+        data_assets_sent: []
+        data_assets_received:
+          - presentation-rules-editor-static-assets
+
 trust_boundaries:
-  Microsoft Azure:
-    id: microsoft-azure
+  Azure Front Door and CDN:
+    id: azure-front-door-boundary
+    description: |
+      Azure Front Door is a global entry point, that uses the Microsoft global edge network to enable fast, secure, and widely scalable web applications. Presentation rules editor's static site is hosted on Azure CDN, which is fronted by Azure Front Door.
     type: network-cloud-provider
-    technical_assets_inside: [front-door]
-shared_runtimes: {}
-individual_risk_categories: {}
-risk_tracking: {}
-# OK to ignore the following Graphviz controls
-diagram_tweak_nodesep: 0
-diagram_tweak_ranksep: 0
-diagram_tweak_edge_layout: ""
-diagram_tweak_suppress_edge_labels: false
-diagram_tweak_layout_left_to_right: false
-diagram_tweak_invisible_connections_between_assets: []
-diagram_tweak_same_rank_assets: []
+    technical_assets_inside:
+      - front-door
+  Presentation rules editor:
+    id: presentation-rules-editor-boundary
+    description: |
+      Presentation rules editor is a React static site, which is the boundary of the Presentation rules editor application. It's static contents are stored in an Azure Storage Account, and is served through Azure Front Door and CDN.
+    type: network-cloud-provider
+    technical_assets_inside:
+      - storage-account
+  User Browser:
+    id: user-browser
+    description: The user's browser, which runs Presentation rules editor as a single page application.
+    type: execution-environment
+    technical_assets_inside:
+      - presentation-rules-editor-app
+  EUS Resources:
+    id: eus-resources
+    description: All of the static site's resources (minus the CDN edge points) resides in the EUS region.
+    type: network-cloud-provider
+    technical_assets_inside:
+      - app-insights
+    trust_boundaries_nested:
+      - presentation-rules-editor-boundary
+  Bentley Microsoft Tenant:
+    id: bentley-microsoft-tenant
+    description: All the services which run inside of the bentley microsoft tenant
+    type: network-cloud-provider
+    technical_assets_inside:
+      - itwins-service
+      - imodels-service
+      - imodels-visualization-service
+      - apim
+      - ims
+      - demo-user-auth-token-service
+    trust_boundaries_nested:
+      - eus-resources
+      - azure-front-door-boundary
+
+risk_tracking:
+  cross-site-scripting@presentation-rules-editor-app:
+    status: mitigated
+    justification: |
+      React mitigates cross site scripting by design, to a certain level - React escapes strings inserted into HTML by default. In addition, functional React components enables us to manipulate the DOM through React state management, and validate those states.
+      We do not use "dangerouslySetInnerHTML" in our codebase either.
+    date: 2025-03-07
+    ticket: ""
+    checked_by: Grigas Petraitis
+  missing-cloud-hardening@bentley-microsoft-tenant:
+    status: accepted
+    justification: |
+      Hardening the Bentley microsoft tenant is considered out of scope for this static site. We are responsible for producing the static assets that make up the React site. Other components of the system that include azure resources are handled by other teams.
+    date: 2025-03-07
+    ticket: ""
+    checked_by: Grigas Petraitis
+  missing-cloud-hardening@eus-resources:
+    status: accepted
+    justification: |
+      Hardening the EUS resources is considered out of scope for this static site. We are responsible for producing the static assets that make up the React site. Other components of the system that include azure resources are handled by other teams.
+    date: 2025-03-07
+    ticket: ""
+    checked_by: Grigas Petraitis
+  missing-cloud-hardening@presentation-rules-editor-boundary:
+    status: accepted
+    justification: |
+      The Azure storage account holds the static files that make up Presentation rules editor. Hardening the storage account is considered out of scope for this static site. We are responsible for producing the static assets that make up the React site. Other components of the system that include azure resources are handled by other teams.
+    date: 2025-03-07
+    ticket: ""
+    checked_by: Grigas Petraitis
+  missing-cloud-hardening@azure-front-door-boundary:
+    status: accepted
+    justification: |
+      Hardening the Azure Front Door is considered out of scope for this static site. We are responsible for producing the static assets that make up the React site. Other components of the system that include azure resources are handled by other teams.
+    date: 2025-03-07
+    ticket: ""
+    checked_by: Grigas Petraitis
+  missing-hardening@presentation-rules-editor-app:
+    status: mitigated
+    justification: |
+      Users access the static site by making requests to the CDN edge servers closest to them, not by directly accessing the Storage Account and retrieving the static assets. The static assets are cached in the CDN edge servers, and served from there. The static site is served over HTTPS, and the Azure CDN edge servers are protected by Azure Front Door, delegating the hardening to these Azure resources.
+      While the contents of the static site change depending on the URL query parameters passed in, those contents are also gated by user authorization and authentication, preventing escalation of privilege.
+    date: 2025-03-07
+    ticket: ""
+    checked_by: Grigas Petraitis
+  server-side-request-forgery@presentation-rules-editor-app@apim@presentation-rules-editor-app>app-to-apim-traffic:
+    status: mitigated
+    justification: |
+      Access tokens and GUIDs are two params passed from the static site to APIM, before being forwarded to other iTwin APIs. Access token comes from auth header, while we validate all GUIDs to make sure it's a valid GUID first before making calls to APIM.
+    date: 2025-03-07
+    ticket: ""
+    checked_by: Grigas Petraitis
+  server-side-request-forgery@presentation-rules-editor-app@ims@presentation-rules-editor-app>app-to-ims-traffic:
+    status: mitigated
+    justification: |
+      When communicating with IMS service, all information passed is not caller controllable with the exception of the token passed as part of the auth header.
+    date: 2025-03-07
+    ticket: ""
+    checked_by: Grigas Petraitis
+  server-side-request-forgery@presentation-rules-editor-app@app-insights@presentation-rules-editor-app>app-to-app-insights-traffic:
+    status: mitigated
+    justification: |
+      The connection string is not caller controllable, and is not passed as a parameter in the URL.
+    date: 2025-03-10
+    ticket: ""
+    checked_by: Grigas Petraitis
+  server-side-request-forgery@presentation-rules-editor-app@demo-user-auth-token-service@presentation-rules-editor-app>app-to-demo-user-auth-token-service-traffic:
+    status: mitigated
+    justification: |
+      The request for demo user auth token doesn't take any parameters.
+    date: 2025-03-07
+    ticket: ""
+    checked_by: Grigas Petraitis
+  server-side-request-forgery@presentation-rules-editor-app@front-door@presentation-rules-editor-app>app-to-front-door-traffic:
+    status: mitigated
+    justification: |
+      As a static site, requests made to the Front door servers are used to retrieve the static assets making up the application. When valid URL parameters are passed alongside the URL request to the Front door server, the current executed application treats those as internal app navigation, and validation logic is setup for that. Invalid url params either would result in a 404 error or be invalidated within the application.
+    date: 2025-03-17
+    ticket: ""
+    checked_by: Grigas Petraitis
+  unnecessary-data-transfer@oidc-config@presentation-rules-editor-app@ims:
+    status: false-positive
+    justification: |
+      The IMS service needs the client ID, a configuration value, for IMS to know what APIs the site should be allowed to access.
+    date: 2025-03-07
+    ticket: ""
+    checked_by: Grigas Petraitis
