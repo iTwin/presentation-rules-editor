@@ -320,6 +320,18 @@ technical_assets:
         usage: business
         data_assets_received:
           - oauth-access-token
+      app-to-front-door-traffic:
+        target: front-door
+        description: The static assets for the application would be fetched by hitting the Azure front door servers.
+        protocol: https
+        authentication: none
+        authorization: none
+        vpn: false
+        ip_filtered: false
+        tags: []
+        data_assets_sent: []
+        data_assets_received:
+          - presentation-rules-editor-static-assets
   iTwin service:
     id: itwins-service
     description: |
@@ -470,8 +482,13 @@ trust_boundaries:
       Presentation rules editor is a React static site, which is the boundary of the Presentation rules editor application. It's static contents are stored in an Azure Storage Account, and is served through Azure Front Door and CDN.
     type: network-cloud-provider
     technical_assets_inside:
-      - presentation-rules-editor-app
       - storage-account
+  User Browser:
+    id: user-browser
+    description: The user's browser, which runs Presentation rules editor as a single page application.
+    type: execution-environment
+    technical_assets_inside:
+      - presentation-rules-editor-app
   EUS Resources:
     id: eus-resources
     description: All of the static site's resources (minus the CDN edge points) resides in the EUS region.
@@ -566,6 +583,13 @@ risk_tracking:
     justification: |
       The request for demo user auth token doesn't take any parameters.
     date: 2025-03-07
+    ticket: ""
+    checked_by: Grigas Petraitis
+  server-side-request-forgery@presentation-rules-editor-app@front-door@presentation-rules-editor-app>app-to-front-door-traffic:
+    status: mitigated
+    justification: |
+      As a static site, requests made to the Front door servers are used to retrieve the static assets making up the application. When valid URL parameters are passed alongside the URL request to the Front door server, the current executed application treats those as internal app navigation, and validation logic is setup for that. Invalid url params either would result in a 404 error or be invalidated within the application.
+    date: 2025-03-17
     ticket: ""
     checked_by: Grigas Petraitis
   unnecessary-data-transfer@oidc-config@presentation-rules-editor-app@ims:
