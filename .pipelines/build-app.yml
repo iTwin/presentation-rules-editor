@@ -69,6 +69,10 @@ jobs:
       - script: pnpm install --filter @app/frontend...
 
       - script: npm run build
+        env:
+          OAUTH_CLIENT_ID: "#{App.ClientId}"
+          IMJS_URL_PREFIX: "#{App.UrlPrefix}"
+          APPLICATION_INSIGHTS_CONNECTION_STRING: "#{App.AppInsightsConnectionString}"
         displayName: Bundle
 
       - task: octopusdeploy.octopus-deploy-build-release-tasks.octopus-pack-nuget.OctopusPackNuGet@6
