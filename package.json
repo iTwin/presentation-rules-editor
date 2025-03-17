@@ -48,7 +48,8 @@
   },
   "pnpm": {
     "overrides": {
-      "npm-run-all@^4.1.5>cross-spawn@^6": "^7.0.6"
+      "npm-run-all@^4.1.5>cross-spawn@^6": "^7.0.6",
+      "dompurify@<3.2.4": "^3.2.4"
     }
   }
 }
