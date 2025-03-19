@@ -134,3 +134,52 @@ jobs:
         displayName: "Publish Artifact: threagile-output"
         inputs:
           ArtifactName: threagile-output
+
+  - job: veracode
+    displayName: Zip and Upload files to Veracode
+    workspace:
+      clean: all
+    pool:
+      vmImage: ubuntu-latest
+    variables:
+      - name: GPRID
+        value: 3258
+      - name: SHORT_CODE
+        value: PRRE
+    steps:
+      - checkout: self
+        fetchDepth: 1
+        fetchTags: false
+
+      - bash: |
+          sourceDirs=("presentation-rules-editor-react" "app")
+          outputFile="rules-editor-veracode.zip"
+          excludedPaths=(".git/*")
+
+          zipCommand="zip -r $outputFile"
+
+          for dir in "${sourceDirs[@]}"; do
+            zipCommand+=" $dir"
+          done
+
+          for path in "${excludedPaths[@]}"; do
+            zipCommand+=" -x \"$path\""
+          done
+
+          eval $zipCommand
+
+          if [[ $? -eq 0 ]]; then
+            echo "Zip file created successfully"
+          else
+            echo "An error occurred while creating the zip file"
+            exit 1
+          fi
+        displayName: Zip files for Veracode
+
+      - task: Veracode@3
+        inputs:
+          ConnectionDetailsSelection: "Service Connection"
+          AnalysisService: "AppSec - Veracode-iModelTechnologies"
+          veracodeAppProfile: "Presentation Rules Editor - WebApp ($(SHORT_CODE) - $(GPRID))"
+          filepath: "rules-editor-veracode.zip"
+          version: $(Build.BuildNumber)
