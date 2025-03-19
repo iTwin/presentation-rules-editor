@@ -179,7 +179,7 @@ jobs:
       - task: Veracode@3
         inputs:
           ConnectionDetailsSelection: "Service Connection"
-          AnalysisService: "AppSec - Veracode-iModelTechnologies"
+          AnalysisService: "AppSec - Veracode"
           veracodeAppProfile: "Presentation Rules Editor - WebApp ($(SHORT_CODE) - $(GPRID))"
           filepath: "rules-editor-veracode.zip"
           version: $(Build.BuildNumber)
