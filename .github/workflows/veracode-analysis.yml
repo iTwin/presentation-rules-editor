@@ -1,0 +1,70 @@
+name: Veracode Static Analysis
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  schedule:
+    - cron: "39 3 * * 6"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-pipeline-scan:
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Zip files for Veracode
+      shell: bash
+      run: |
+        sourceDirs=("presentation-rules-editor-react" "app")
+        outputFile="rules-editor-veracode.zip"
+        excludedPaths=(".git/*")
+
+        zipCommand="zip -r $outputFile"
+
+        for dir in "${sourceDirs[@]}"; do
+          zipCommand+=" $dir"
+        done
+
+        for path in "${excludedPaths[@]}"; do
+          zipCommand+=" -x \"$path\""
+        done
+
+        eval $zipCommand
+
+        if [[ $? -eq 0 ]]; then
+          echo "Zip file created successfully"
+        else
+          echo "An error occurred while creating the zip file"
+          exit 1
+        fi
+
+    - run: curl --silent --show-error --fail -O https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
+    - run: unzip -o pipeline-scan-LATEST.zip
+
+    - uses: actions/setup-java@v4
+      with:
+        java-version: 8
+        distribution: 'temurin'
+
+    - run: java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_API_ID}}" --veracode_api_key "${{secrets.VERACODE_API_KEY}}" --fail_on_severity="Very High, High" --file rules-editor-veracode.zip
+      continue-on-error: true
+
+    - name: Convert pipeline scan output to SARIF format
+      id: convert
+      uses: veracode/veracode-pipeline-scan-results-to-sarif@ff08ae5b45d5384cb4679932f184c013d34da9be
+      with:
+        pipeline-results-json: results.json
+
+    - uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: veracode-results.sarif
