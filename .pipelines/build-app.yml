@@ -101,7 +101,7 @@ jobs:
       - name: ThreagileModelFilename
         value: "threagile.yaml"
       - name: ThreagileVersion
-        value: "1.4.0"
+        value: "1.5.0"
     steps:
       - task: UniversalPackages@0
         displayName: Download threagile image
