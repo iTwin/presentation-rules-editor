@@ -211,8 +211,6 @@ export function SignInCallback(): React.ReactElement {
     const errorCode = params.get("error");
     const errorDescription = params.get("error_description");
     if (isOAuthErrorCode(errorCode)) {
-      // eslint-disable-next-line no-console
-      console.error(`Authorization error (${errorCode}): ${errorDescription ?? ""}`);
       setAuthError({ code: errorCode, description: errorDescription ?? undefined });
       return;
     }
