@@ -200,5 +200,5 @@ jobs:
       - template: MendScan.yml@MendScan
         parameters:
           MendProductName: "Presentation Rules Editor - WebApp ($(SHORT_CODE) - $(GPRID))"
-          MendPathToScan: $(Pipeline.Workspace)/app
-          MendConfigPath: $(Pipeline.Workspace)/mend/PRRE_config.json
+          MendPathToScan: $(Build.SourcesDirectory)/app
+          MendConfigPath: $(Build.SourcesDirectory)/mend/PRRE_config.json
