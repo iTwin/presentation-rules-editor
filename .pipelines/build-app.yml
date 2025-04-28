@@ -10,6 +10,10 @@ variables:
     value: 22.x
   - name: pnpm_config_cache
     value: $(Pipeline.Workspace)/.pnpm-store
+  - name: GPRID
+    value: 3258
+  - name: SHORT_CODE
+    value: PRRE
 
 resources:
   repositories:
@@ -148,11 +152,6 @@ jobs:
       clean: all
     pool:
       vmImage: ubuntu-latest
-    variables:
-      - name: GPRID
-        value: 3258
-      - name: SHORT_CODE
-        value: PRRE
     steps:
       - checkout: self
         fetchDepth: 1
