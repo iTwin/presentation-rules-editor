@@ -194,6 +194,8 @@ jobs:
     displayName: Mend scan
     pool:
       vmImage: ubuntu-latest
+    variables:
+      - group: ExternalServiceSecrets
     steps:
       - template: MendScan.yml@MendScan
         parameters:
