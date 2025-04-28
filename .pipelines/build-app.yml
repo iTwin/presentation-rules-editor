@@ -11,6 +11,13 @@ variables:
   - name: pnpm_config_cache
     value: $(Pipeline.Workspace)/.pnpm-store
 
+resources:
+  repositories:
+    - repository: MendScan # Needed to access Mend scan template
+      type: git
+      name: ReleaseServices/MendScan
+      ref: refs/heads/main
+
 jobs:
   - job: publish_repo_content
     displayName: Publish repo content
@@ -183,3 +190,14 @@ jobs:
           veracodeAppProfile: "Presentation Rules Editor - WebApp ($(SHORT_CODE) - $(GPRID))"
           filepath: "rules-editor-veracode.zip"
           version: $(Build.BuildNumber)
+
+  - job: mend
+    displayName: Mend scan
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - template: MendScan.yml@MendScan
+        parameters:
+          MendProductName: "Presentation Rules Editor - WebApp ($(SHORT_CODE) - $(GPRID))"
+          MendPathToScan: $(Pipeline.Workspace)/app
+          MendConfigPath: $(Pipeline.Workspace)/mend/PRRE_config.json
