@@ -10,6 +10,17 @@ variables:
     value: 22.x
   - name: pnpm_config_cache
     value: $(Pipeline.Workspace)/.pnpm-store
+  - name: GPRID
+    value: 3258
+  - name: SHORT_CODE
+    value: PRRE
+
+resources:
+  repositories:
+    - repository: MendScan # Needed to access Mend scan template
+      type: git
+      name: ReleaseServices/MendScan
+      ref: refs/heads/main
 
 jobs:
   - job: publish_repo_content
@@ -141,11 +152,6 @@ jobs:
       clean: all
     pool:
       vmImage: ubuntu-latest
-    variables:
-      - name: GPRID
-        value: 3258
-      - name: SHORT_CODE
-        value: PRRE
     steps:
       - checkout: self
         fetchDepth: 1
@@ -183,3 +189,16 @@ jobs:
           veracodeAppProfile: "Presentation Rules Editor - WebApp ($(SHORT_CODE) - $(GPRID))"
           filepath: "rules-editor-veracode.zip"
           version: $(Build.BuildNumber)
+
+  - job: mend
+    displayName: Mend scan
+    pool:
+      vmImage: ubuntu-latest
+    variables:
+      - group: ExternalServiceSecrets
+    steps:
+      - template: MendScan.yml@MendScan
+        parameters:
+          MendProductName: "Presentation Rules Editor - WebApp ($(SHORT_CODE) - $(GPRID))"
+          MendPathToScan: $(Build.SourcesDirectory)/app
+          MendConfigPath: $(Build.SourcesDirectory)/mend/PRRE_config.json

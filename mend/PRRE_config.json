@@ -1,0 +1,9 @@
+{
+  "config": {
+    "productType": "Cloud Service",
+    "retentionPolicy": {
+      "type": "lastProjectsNumber",
+      "value": 5
+    }
+  }
+}
