@@ -14,6 +14,8 @@ import { Presentation, PresentationBackendLoggerCategory, PresentationBackendNat
 import { PresentationRulesEditorRpcImpl } from "./PresentationRulesEditorRpcImpl.js";
 import { initialize } from "./web/BackendServer.js";
 
+// cspell:words Mmap
+
 dotenv.config({ path: "../../.env" });
 
 void (async () => {

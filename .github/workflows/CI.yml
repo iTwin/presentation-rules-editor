@@ -37,6 +37,9 @@ jobs:
       - name: Prettier
         run: npm run prettier
 
+      - name: cspell
+        run: npm run cspell
+
       - name: Build app/common
         run: npm run build --prefix ./app/common
 
