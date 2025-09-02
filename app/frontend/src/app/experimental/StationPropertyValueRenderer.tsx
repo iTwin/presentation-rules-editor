@@ -266,6 +266,7 @@ function createStationValueReader(imodel: IModelConnection, elementId: Id64Strin
     }
   }
 
+  // cspell:disable
   const ecsql = `
     SELECT
       linearlyLocated.DistanceAlongFromStart DistanceAlong,
@@ -282,6 +283,7 @@ function createStationValueReader(imodel: IModelConnection, elementId: Id64Strin
     LIMIT
       1
   `;
+  // cspell:enable
   const bindings = new QueryBinder().bindId("elementId", elementId);
   return imodel.createQueryReader(ecsql, bindings, { rowFormat: QueryRowFormat.UseECSqlPropertyIndexes });
 }

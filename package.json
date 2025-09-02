@@ -9,6 +9,7 @@
     "build:components": "npm run build --prefix ./presentation-rules-editor-react",
     "build:frontend": "npm run build --prefix ./app/frontend",
     "build:common": "npm run build --prefix ./app/common",
+    "cspell": "cspell .",
     "start:frontend": "npm run start --prefix ./app/frontend -- --open",
     "link": "npm run link --prefix ./scripts --",
     "unlink": "npm run unlink --prefix ./scripts --",
@@ -42,9 +43,10 @@
   },
   "dependencies": {
     "cross-env": "^7.0.3",
+    "cspell": "^9.2.0",
     "eslint-config-prettier": "^9.1.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^3.4.2"
+    "prettier": "^3.6.2"
   },
   "pnpm": {
     "overrides": {

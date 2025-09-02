@@ -1,0 +1,39 @@
+{
+  "words": [
+    "appui",
+    "Autosizer",
+    "baytown",
+    "cooldown",
+    "ecschema",
+    "ecsql",
+    "Exton",
+    "frontstage",
+    "frontstages",
+    "ibim",
+    "imodel",
+    "imodeljs",
+    "imodels",
+    "itwin",
+    "itwinjs",
+    "itwins",
+    "itwinui",
+    "npmjs",
+    "Metrostation",
+    "rpcinterface",
+    "threagile",
+    "unstringified",
+    "widgetid"
+  ],
+  "ignorePaths": [
+    "package.json",
+    "dist",
+    "scripts",
+    "coverage",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "pnpm-lock.yaml",
+    "**/*.d.ts",
+    "**/*.config.*",
+    "playwright-report"
+  ]
+}
