@@ -8,7 +8,8 @@ import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import { IModelMetadata, PresentationRulesEditorRpcInterface } from "@app/common";
-import { RpcManager } from "@itwin/core-common";
+import { SnapshotDb } from "@itwin/core-backend";
+import { IModelConnectionProps, RpcManager } from "@itwin/core-common";
 import { SnapshotFileNameResolver } from "./SnapshotFileNameResolver.js";
 
 /** The backend implementation of PresentationRulesEditorRpcInterface. */
@@ -70,5 +71,15 @@ export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcIn
     }
 
     execFileSync(command, args, { shell: true });
+  }
+
+  public override async getConnectionProps(imodelPath: string): Promise<IModelConnectionProps> {
+    const db = SnapshotDb.openFile(imodelPath);
+    // eslint-disable-next-line @itwin/no-internal
+    return db.getConnectionProps();
+  }
+
+  public override async closeConnection(imodelPath: string): Promise<void> {
+    SnapshotDb.findByFilename(imodelPath)?.close();
   }
 }
