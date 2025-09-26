@@ -3,7 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { BeEvent, IDisposable } from "@itwin/core-bentley";
+import { BeEvent } from "@itwin/core-bentley";
 import { RegisteredRuleset, Ruleset } from "@itwin/presentation-common";
 import { Presentation } from "@itwin/presentation-frontend";
 
@@ -16,7 +16,7 @@ export interface EditableRulesetParams {
  * Represents a ruleset with dynamic content. Instances of this class hold global resources until {@linkcode dispose}
  * method is called.
  */
-export class EditableRuleset implements IDisposable {
+export class EditableRuleset implements Disposable {
   private static _numCreatedRulesets = 0;
 
   private _registeredRulesetPromise: Promise<RegisteredRuleset>;
@@ -47,13 +47,13 @@ export class EditableRuleset implements IDisposable {
     return this._rulesetContent;
   }
 
-  public dispose(): void {
+  public [Symbol.dispose](): void {
     if (this._disposed) {
       return;
     }
 
     this._disposed = true;
-    void (async () => (await this._registeredRulesetPromise).dispose())();
+    void (async () => (await this._registeredRulesetPromise)[Symbol.dispose]())();
   }
 
   /**

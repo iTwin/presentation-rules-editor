@@ -35,47 +35,47 @@ describe("EditableRuleset", () => {
 
       expect(editableRuleset1.id).not.to.be.equal(editableRuleset2.id);
 
-      editableRuleset1.dispose();
-      editableRuleset2.dispose();
+      editableRuleset1[Symbol.dispose]();
+      editableRuleset2[Symbol.dispose]();
     });
 
     it("sets initial ruleset content", () => {
       const editableRuleset = new EditableRuleset({ initialRuleset });
       expect(editableRuleset.rulesetContent).to.be.equal(initialRuleset);
 
-      editableRuleset.dispose();
+      editableRuleset[Symbol.dispose]();
     });
 
     it("registers Presentation ruleset", () => {
       const editableRuleset = new EditableRuleset({ initialRuleset });
       expect(Presentation.presentation.rulesets().add).to.have.been.calledOnce.and.calledWithMatch(sinon.match({ id: editableRuleset.id }));
 
-      editableRuleset.dispose();
+      editableRuleset[Symbol.dispose]();
     });
   });
 
   describe("dispose", () => {
     it("unregisters Presentation ruleset", async () => {
       const editableRuleset = new EditableRuleset({ initialRuleset });
-      editableRuleset.dispose();
+      editableRuleset[Symbol.dispose]();
       const registeredRuleset = await Presentation.presentation.rulesets().add({} as any);
-      expect(registeredRuleset.dispose).to.have.been.calledOnce;
+      expect(registeredRuleset[Symbol.dispose]).to.have.been.calledOnce;
     });
 
     it("does nothing when called again", async () => {
       const editableRuleset = new EditableRuleset({ initialRuleset });
       expect(editableRuleset.disposed).to.be.false;
-      editableRuleset.dispose();
+      editableRuleset[Symbol.dispose]();
       expect(editableRuleset.disposed).to.be.true;
 
       // Call again synchronously
-      editableRuleset.dispose();
+      editableRuleset[Symbol.dispose]();
       const registeredRuleset = await Presentation.presentation.rulesets().add({} as any);
-      expect(registeredRuleset.dispose).to.have.been.calledOnce;
+      expect(registeredRuleset[Symbol.dispose]).to.have.been.calledOnce;
 
       // Call again in another task
-      editableRuleset.dispose();
-      expect(registeredRuleset.dispose).to.have.been.calledOnce;
+      editableRuleset[Symbol.dispose]();
+      expect(registeredRuleset[Symbol.dispose]).to.have.been.calledOnce;
     });
   });
 
@@ -87,12 +87,12 @@ describe("EditableRuleset", () => {
       const modifySpy = Presentation.presentation.rulesets().modify;
       expect(modifySpy).to.have.been.calledOnceWithExactly(registeredRuleset, initialRuleset);
 
-      editableRuleset.dispose();
+      editableRuleset[Symbol.dispose]();
     });
 
     it("does nothing when disposed before call", async () => {
       const editableRuleset = new EditableRuleset({ initialRuleset });
-      editableRuleset.dispose();
+      editableRuleset[Symbol.dispose]();
       await editableRuleset.updateRuleset(initialRuleset);
       expect(Presentation.presentation.rulesets().modify).to.not.have.been.called;
     });
@@ -100,7 +100,7 @@ describe("EditableRuleset", () => {
     it("does nothing when disposed immediately after the call", () => {
       const editableRuleset = new EditableRuleset({ initialRuleset });
       void editableRuleset.updateRuleset(initialRuleset);
-      editableRuleset.dispose();
+      editableRuleset[Symbol.dispose]();
       expect(Presentation.presentation.rulesets().modify).to.not.have.been.called;
     });
 
@@ -113,7 +113,7 @@ describe("EditableRuleset", () => {
       await editableRuleset.updateRuleset(initialRuleset);
       expect(fakeEventListener).to.have.been.calledOnce;
 
-      editableRuleset.dispose();
+      editableRuleset[Symbol.dispose]();
     });
   });
 });

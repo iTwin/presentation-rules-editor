@@ -5,7 +5,7 @@
 
 import "./SoloRulesetEditor.scss";
 import * as React from "react";
-import { assert, IDisposable } from "@itwin/core-bentley";
+import { assert } from "@itwin/core-bentley";
 import { Button } from "@itwin/itwinui-react";
 import { Ruleset } from "@itwin/presentation-common";
 import { EditableRuleset } from "../EditableRuleset.js";
@@ -37,7 +37,7 @@ export interface ContributionSettings {
  * Represents a single monaco editor instance that is used to edit an associated ruleset. Instances of this class hold
  * global resources until {@linkcode dispose} method is called.
  */
-export class SoloRulesetEditor implements IDisposable {
+export class SoloRulesetEditor implements Disposable {
   private sharedData: SoloRulesetEditorSharedData = { savedViewState: undefined };
 
   /** Underlying monaco model used by the editor. */
@@ -59,11 +59,11 @@ export class SoloRulesetEditor implements IDisposable {
   /** React component that renders a monaco editor for the associated {@linkcode EditableRuleset}. */
   public Component: (props: SoloRulesetEditorProps) => React.ReactElement;
 
-  public dispose(): void {
+  public [Symbol.dispose](): void {
     this.model.dispose();
   }
 
-  /** Tells whether {@linkcode dispose} method has been called on this object. */
+  /** Tells whether object was disposed. */
   public get disposed() {
     return this.model.isDisposed();
   }
