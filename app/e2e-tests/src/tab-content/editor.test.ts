@@ -24,11 +24,11 @@ test.describe("editor #local", () => {
       .dblclick();
     await editor.press("Backspace");
     await editor.press("Control+Space");
-    const options = editor.locator(".suggest-widget");
+    const options = editor.getByRole("listbox", { name: "Suggest" });
     await options.waitFor();
-    await expect(options.locator("[role=option]")).toHaveCount(2);
-    expect(await options.locator("[role=option]", { hasText: "false" }).elementHandle()).not.toBeNull();
-    expect(await options.locator("[role=option]", { hasText: "true" }).elementHandle()).not.toBeNull();
+    await expect(options.locator("[role=listitem]")).toHaveCount(2);
+    expect(await options.locator("[role=listitem]", { hasText: "false" }).elementHandle()).not.toBeNull();
+    expect(await options.locator("[role=listitem]", { hasText: "true" }).elementHandle()).not.toBeNull();
   });
 
   test.describe("ruleset submission", () => {

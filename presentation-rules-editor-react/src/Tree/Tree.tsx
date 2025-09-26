@@ -14,6 +14,8 @@ import {
 } from "@itwin/presentation-components";
 import { EditableRuleset } from "../EditableRuleset.js";
 
+/* eslint-disable @typescript-eslint/no-deprecated */
+
 export interface TreeProps {
   /** Width of the tree element. */
   width: number;

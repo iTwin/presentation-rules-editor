@@ -19,7 +19,7 @@ describe("SoloRulesetEditor", () => {
   });
 
   after(() => {
-    editableRuleset.dispose();
+    editableRuleset[Symbol.dispose]();
     sinon.reset();
   });
 
@@ -81,7 +81,7 @@ describe("SoloRulesetEditor", () => {
       expect(rulesetEditor.disposed).to.be.false;
       expect(stubModel.dispose).not.to.have.been.called;
 
-      rulesetEditor.dispose();
+      rulesetEditor[Symbol.dispose]();
       expect(rulesetEditor.disposed).to.be.true;
       expect(stubModel.dispose).to.have.been.calledOnce;
     });

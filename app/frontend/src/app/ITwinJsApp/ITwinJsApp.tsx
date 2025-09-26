@@ -63,7 +63,7 @@ export async function initializeApp(): Promise<BackendApi> {
   RpcConfiguration.disableRoutingValidation = import.meta.env.DEPLOYMENT_TYPE !== "web";
   const rpcParams =
     import.meta.env.DEPLOYMENT_TYPE === "web"
-      ? { info: { title: "imodel/rpc", version: "v4" } }
+      ? { info: { title: "imodel/rpc", version: "v5" } }
       : {
           info: { title: "presentation-rules-editor", version: "v1.0" },
           uriPrefix: "http://localhost:3001",
@@ -96,6 +96,7 @@ async function initializePresentation(appFrontend: BackendApi): Promise<void> {
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   Presentation.selection.scopes.activeScope = "top-assembly";
 }
 

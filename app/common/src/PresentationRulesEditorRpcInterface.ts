@@ -3,7 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { RpcInterface, RpcManager, RpcOperation, RpcRequestTokenSupplier_T } from "@itwin/core-common";
+import { IModelConnectionProps, RpcInterface, RpcManager, RpcOperation, RpcRequestTokenSupplier_T } from "@itwin/core-common";
 
 const localDeploymentOnly: RpcRequestTokenSupplier_T = () => ({ iModelId: "none", key: "" });
 
@@ -30,6 +30,16 @@ export abstract class PresentationRulesEditorRpcInterface extends RpcInterface {
 
   @RpcOperation.setRoutingProps(localDeploymentOnly)
   public async openIModelsDirectory(): Promise<void> {
+    return this.forward(arguments);
+  }
+
+  @RpcOperation.setRoutingProps(localDeploymentOnly)
+  public async getConnectionProps(_imodelName: string): Promise<IModelConnectionProps> {
+    return this.forward(arguments);
+  }
+
+  @RpcOperation.setRoutingProps(localDeploymentOnly)
+  public async closeConnection(_imodelName: string): Promise<void> {
     return this.forward(arguments);
   }
 }

@@ -5,7 +5,6 @@
 
 import * as React from "react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { UnifiedSelectionContextProvider } from "@itwin/presentation-components";
 import { EditableRuleset, Tree } from "@itwin/presentation-rules-editor-react";
 import { AutoSizer } from "../common/AutoSizer.js";
 import { LoadingHint } from "../common/LoadingHint.js";
@@ -27,9 +26,5 @@ export function TreeWidget(props: TreeWidgetProps): React.ReactElement {
     return <LoadingHint />;
   }
 
-  return (
-    <UnifiedSelectionContextProvider imodel={imodel} selectionLevel={0}>
-      <AutoSizer>{({ width, height }) => <Tree width={width} height={height} iModel={imodel} editableRuleset={ruleset} />}</AutoSizer>
-    </UnifiedSelectionContextProvider>
-  );
+  return <AutoSizer>{({ width, height }) => <Tree width={width} height={height} iModel={imodel} editableRuleset={ruleset} />}</AutoSizer>;
 }

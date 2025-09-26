@@ -3,7 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { IModelReadRpcInterface, IModelTileRpcInterface, SnapshotIModelRpcInterface } from "@itwin/core-common";
+import { IModelReadRpcInterface, IModelTileRpcInterface } from "@itwin/core-common";
 import { ECSchemaRpcInterface } from "@itwin/ecschema-rpcinterface-common";
 import { PresentationRpcInterface } from "@itwin/presentation-common";
 import { PresentationRulesEditorRpcInterface } from "./PresentationRulesEditorRpcInterface.js";
@@ -12,7 +12,6 @@ export const rpcInterfaces = [
   ECSchemaRpcInterface,
   IModelTileRpcInterface,
   IModelReadRpcInterface,
-  SnapshotIModelRpcInterface,
   PresentationRpcInterface,
   PresentationRulesEditorRpcInterface,
 ];

@@ -83,6 +83,8 @@ function StationValueSkeleton() {
 function useIModelSelectedElementIds() {
   // Ideally, we's like to get element id a the raw property value for this renderer. Sadly, that's
   // currently not possible, so we use unified selection context.
+  // TODO: replace with unified selection storage https://github.com/iTwin/presentation-rules-editor/issues/205
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   const selectionContext = useUnifiedSelectionContext();
   // The context changes on every selection, but we don't want to re-load property value on selection
   // change. Instead, we want to reload it only when the component is re-mounted (generally, when property
@@ -153,7 +155,7 @@ function useComputedStationValue(props: { imodel?: IModelConnection; elementId?:
         console.error(`Failed to find "Formats" schema.`);
         return undefined;
       }
-      const schemaFormat = await formatsSchema.getItem<SchemaFormat>("StationZ_1000_3");
+      const schemaFormat = await formatsSchema.getItem("StationZ_1000_3", SchemaFormat);
       if (!schemaFormat) {
         // eslint-disable-next-line no-console
         console.error(`Failed to find the "StationZ_1000_3" format in "Formats" schema.`);

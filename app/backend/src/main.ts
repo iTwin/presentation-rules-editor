@@ -26,7 +26,6 @@ void (async () => {
   Logger.setLevel(PresentationBackendLoggerCategory.Package, LogLevel.Info);
 
   const config = new IModelHostConfiguration();
-  // eslint-disable-next-line @itwin/no-internal
   config.hubAccess = new BackendIModelsAccess();
   await IModelHost.startup(config);
 

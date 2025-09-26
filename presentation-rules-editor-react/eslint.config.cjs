@@ -18,5 +18,11 @@ module.exports = [
       ...reactPlugin.configs["jsx-runtime"].rules,
     },
   },
+  {
+    files: ["**/*.test.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/unbound-method": "off",
+    },
+  },
   ...eslintBaseConfig,
 ];

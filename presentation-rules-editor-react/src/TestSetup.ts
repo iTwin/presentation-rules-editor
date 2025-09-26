@@ -11,5 +11,6 @@ import sinonChai from "sinon-chai";
 chai.use(sinonChai);
 
 globalJsdom(undefined, {
-  virtualConsole: new jsdom.VirtualConsole().sendTo(console, { omitJSDOMErrors: true }),
+  // @ts-expect-error types are outdated
+  virtualConsole: new jsdom.VirtualConsole().forwardTo(console, { omitJSDOMErrors: true }),
 });

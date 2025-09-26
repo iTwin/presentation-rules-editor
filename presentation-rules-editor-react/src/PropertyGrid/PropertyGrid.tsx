@@ -170,7 +170,7 @@ function useDataProvider(
     setProvider(newProvider);
 
     return () => {
-      newProvider.dispose();
+      newProvider[Symbol.dispose]();
     };
   }, [iModel, editableRuleset.id]);
 

@@ -5,11 +5,12 @@
 
 import { IModelMetadata, PresentationRulesEditorRpcInterface } from "@app/common";
 import { Guid, Id64, Id64String, Logger } from "@itwin/core-bentley";
-import { BentleyCloudRpcProtocol, IModelVersion } from "@itwin/core-common";
-import { CheckpointConnection, IModelConnection, SnapshotConnection } from "@itwin/core-frontend";
+import { BentleyCloudRpcProtocol, IModelConnectionProps, IModelVersion } from "@itwin/core-common";
+import { CheckpointConnection, IModelConnection } from "@itwin/core-frontend";
 import { IModelIdentifier, isDemoIModel, isSnapshotIModel } from "../IModelIdentifier.js";
 
 export class BackendApi {
+  // eslint-disable-next-line @itwin/no-internal
   constructor(public protocol: BentleyCloudRpcProtocol) {}
 
   public async getAvailableIModels(): Promise<IModelMetadata[]> {
@@ -23,7 +24,7 @@ export class BackendApi {
   public async openIModel(iModelIdentifier: IModelIdentifier): Promise<IModelConnection> {
     if (isSnapshotIModel(iModelIdentifier)) {
       Logger.logInfo("presentation", `Opening snapshot: ${iModelIdentifier}`);
-      return SnapshotConnection.openFile(`assets/imodels/${iModelIdentifier}`);
+      return this.openLocalImodel(`assets/imodels/${iModelIdentifier}`);
     }
 
     if (isDemoIModel(iModelIdentifier)) {
@@ -53,5 +54,34 @@ export class BackendApi {
 
     const viewDefinitionProps = await imodel.views.queryProps({ wantPrivate: false, limit: 1 });
     return viewDefinitionProps[0].id ?? Id64.invalid;
+  }
+
+  private async openLocalImodel(path: string) {
+    const connectionsProps = await PresentationRulesEditorRpcInterface.getClient().getConnectionProps(path);
+    const close = async () => {
+      await PresentationRulesEditorRpcInterface.getClient().closeConnection(path);
+    };
+    const imodel = new LocalIModelConnection(connectionsProps, close);
+    return imodel;
+  }
+}
+
+class LocalIModelConnection extends IModelConnection {
+  #isClosed = false;
+  #close: () => Promise<void>;
+
+  constructor(connectionsProps: IModelConnectionProps, close: () => Promise<void>) {
+    // eslint-disable-next-line @itwin/no-internal
+    super(connectionsProps);
+    this.#close = close;
+  }
+
+  public override get isClosed(): boolean {
+    return this.#isClosed;
+  }
+
+  public override async close(): Promise<void> {
+    this.#isClosed = true;
+    await this.#close();
   }
 }

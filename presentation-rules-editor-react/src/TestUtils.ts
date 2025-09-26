@@ -13,7 +13,7 @@ export type SinonStub<T extends (...args: any) => any> = sinon.SinonStub<Paramet
 export function stubPresentationManager(): void {
   const rulesetManager = {
     add: sinon.stub().resolves({
-      dispose: sinon.spy(),
+      [Symbol.dispose]: sinon.spy(),
     }),
     modify: sinon.stub().resolves(Promise.resolve({})),
   };

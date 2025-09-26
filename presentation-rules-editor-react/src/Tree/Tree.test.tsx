@@ -15,6 +15,8 @@ import { TreeProps } from "./Tree.js";
 
 const presentationComponentsModulePath = import.meta.resolve("@itwin/presentation-components");
 
+/* eslint-disable @typescript-eslint/no-deprecated */
+
 describe("Tree", () => {
   let Tree: (props: TreeProps) => React.JSX.Element | null;
   const usePresentationTreeStateStub = sinon.stub<

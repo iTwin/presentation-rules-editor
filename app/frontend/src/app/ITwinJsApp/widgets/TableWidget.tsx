@@ -7,9 +7,8 @@ import "./TableWidget.scss";
 import * as React from "react";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 import { IModelApp, IModelConnection } from "@itwin/core-frontend";
-import { SvgError, SvgTimedOut } from "@itwin/itwinui-illustrations-react";
+import { SvgError } from "@itwin/itwinui-illustrations-react";
 import { Button, NonIdealState } from "@itwin/itwinui-react";
-import { PresentationError, PresentationStatus } from "@itwin/presentation-common";
 import { UnifiedSelectionContextProvider } from "@itwin/presentation-components";
 import { EditableRuleset, Table } from "@itwin/presentation-rules-editor-react";
 import { VerticalStack } from "../../common/CenteredStack.js";
@@ -34,6 +33,8 @@ export function TableWidget(props: TableProps) {
   }
 
   return (
+    // TODO: replace with unified selection storage https://github.com/iTwin/presentation-rules-editor/issues/205
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     <UnifiedSelectionContextProvider imodel={props.imodel} selectionLevel={0}>
       <LoadedTable iModel={props.imodel} ruleset={props.ruleset} />
     </UnifiedSelectionContextProvider>
@@ -101,19 +102,13 @@ function LoadingPropertiesState(props: LoadingPropertiesStateProps): React.React
 }
 
 function TableErrorState(props: { error: Error; resetErrorBoundary: () => void; ruleset: EditableRuleset }) {
-  const { error, resetErrorBoundary, ruleset } = props;
-
-  let svg = <SvgError />;
-  if (error instanceof PresentationError && error.errorNumber === PresentationStatus.BackendTimeout.valueOf()) {
-    svg = <SvgTimedOut />;
-  }
-
+  const { resetErrorBoundary, ruleset } = props;
   React.useEffect(() => ruleset.onAfterRulesetUpdated.addListener(() => resetErrorBoundary()), [ruleset, resetErrorBoundary]);
 
   return (
     <div style={{ position: "relative" }}>
       <NonIdealState
-        svg={svg}
+        svg={<SvgError />}
         heading={IModelApp.localization.getLocalizedString("App:table.error")}
         description={IModelApp.localization.getLocalizedString("App:table.generic-error-description")}
         actions={

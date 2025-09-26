@@ -31,6 +31,8 @@ function ViewportForIModel(props: ViewportForIModelProps): React.ReactElement | 
   }
 
   return (
+    // TODO: replace with unified selection storage https://github.com/iTwin/presentation-rules-editor/issues/205
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     <UnifiedSelectionContextProvider imodel={props.imodel} selectionLevel={0}>
       <ViewportWithUnifiedSelection imodel={props.imodel} viewDefinitionId={viewDefinitionId} />
     </UnifiedSelectionContextProvider>
@@ -59,4 +61,6 @@ function useViewDefinitionId(imodel: IModelConnection): Id64String | undefined {
   return viewDefinitionId;
 }
 
+// TODO: replace with unified selection storage https://github.com/iTwin/presentation-rules-editor/issues/205
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 const ViewportWithUnifiedSelection = viewWithUnifiedSelection(ViewportComponent);

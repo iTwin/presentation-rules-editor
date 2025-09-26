@@ -12,8 +12,8 @@ import { App } from "./app/App.js";
 
 // setup environment for monaco editor
 // loading only json and default workers as other languages are not used.
-self.MonacoEnvironment = {
-  getWorker(_, label) {
+(self as any).MonacoEnvironment = {
+  getWorker(_: any, label: string) {
     if (label === "json") {
       return new jsonWorker();
     }
