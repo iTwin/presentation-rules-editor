@@ -27,6 +27,7 @@
   "ignorePaths": [
     "package.json",
     "dist",
+    "lib",
     "scripts",
     "coverage",
     "**/*.test.ts",
@@ -34,6 +35,7 @@
     "pnpm-lock.yaml",
     "**/*.d.ts",
     "**/*.config.*",
-    "playwright-report"
+    "playwright-report",
+    "pnpm-workspace.yaml"
   ]
 }
