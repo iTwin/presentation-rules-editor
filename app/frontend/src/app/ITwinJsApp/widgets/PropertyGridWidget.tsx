@@ -8,9 +8,8 @@ import * as React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { IModelApp, IModelConnection } from "@itwin/core-frontend";
 import { SvgCollapseAll, SvgExpandAll } from "@itwin/itwinui-icons-react";
-import { SvgError, SvgTimedOut } from "@itwin/itwinui-illustrations-react";
+import { SvgError } from "@itwin/itwinui-illustrations-react";
 import { Button, IconButton, NonIdealState } from "@itwin/itwinui-react";
-import { PresentationError, PresentationStatus } from "@itwin/presentation-common";
 import { UnifiedSelectionContextProvider } from "@itwin/presentation-components";
 import { EditableRuleset, PropertyGrid, PropertyGridAttributes } from "@itwin/presentation-rules-editor-react";
 import { VerticalStack } from "../../common/CenteredStack.js";
@@ -36,6 +35,8 @@ export function PropertyGridWidget(props: PropertyGridProps): React.ReactElement
 
   return (
     <ErrorBoundary FallbackComponent={PropertyGridErrorState}>
+      {/*  TODO: replace with unified selection storage */}
+      {/* eslint-disable-next-line @typescript-eslint/no-deprecated */}
       <UnifiedSelectionContextProvider imodel={props.imodel} selectionLevel={0}>
         <LoadedPropertyGrid iModel={props.imodel} ruleset={props.ruleset} />
       </UnifiedSelectionContextProvider>
@@ -177,14 +178,10 @@ function useSuppressControls(setSuppressControls: (value: boolean) => void): voi
 }
 
 function PropertyGridErrorState(props: { error: Error; resetErrorBoundary: () => void }) {
-  let svg = <SvgError />;
-  if (props.error instanceof PresentationError && props.error.errorNumber === PresentationStatus.BackendTimeout.valueOf()) {
-    svg = <SvgTimedOut />;
-  }
   return (
     <div style={{ position: "relative" }}>
       <NonIdealState
-        svg={svg}
+        svg={<SvgError />}
         heading={IModelApp.localization.getLocalizedString("App:property-grid.error")}
         description={IModelApp.localization.getLocalizedString("App:property-grid.generic-error-description")}
         actions={

@@ -33,6 +33,8 @@ export function TableWidget(props: TableProps) {
   }
 
   return (
+    // TODO: replace with unified selection storage
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     <UnifiedSelectionContextProvider imodel={props.imodel} selectionLevel={0}>
       <LoadedTable iModel={props.imodel} ruleset={props.ruleset} />
     </UnifiedSelectionContextProvider>

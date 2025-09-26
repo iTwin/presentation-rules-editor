@@ -83,6 +83,8 @@ function StationValueSkeleton() {
 function useIModelSelectedElementIds() {
   // Ideally, we's like to get element id a the raw property value for this renderer. Sadly, that's
   // currently not possible, so we use unified selection context.
+  // TODO: replace with unified selection storage
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   const selectionContext = useUnifiedSelectionContext();
   // The context changes on every selection, but we don't want to re-load property value on selection
   // change. Instead, we want to reload it only when the component is re-mounted (generally, when property

@@ -96,6 +96,7 @@ async function initializePresentation(appFrontend: BackendApi): Promise<void> {
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   Presentation.selection.scopes.activeScope = "top-assembly";
 }
 
