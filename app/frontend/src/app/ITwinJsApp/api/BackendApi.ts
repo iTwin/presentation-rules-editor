@@ -67,21 +67,21 @@ export class BackendApi {
 }
 
 class LocalIModelConnection extends IModelConnection {
-  private _isClosed = false;
-  constructor(
-    connectionsProps: IModelConnectionProps,
-    private _close: () => Promise<void>,
-  ) {
+  #isClosed = false;
+  #close: () => Promise<void>;
+
+  constructor(connectionsProps: IModelConnectionProps, close: () => Promise<void>) {
     // eslint-disable-next-line @itwin/no-internal
     super(connectionsProps);
+    this.#close = close;
   }
 
   public override get isClosed(): boolean {
-    return this._isClosed;
+    return this.#isClosed;
   }
 
   public override async close(): Promise<void> {
-    this._isClosed = true;
-    await this._close();
+    this.#isClosed = true;
+    await this.#close();
   }
 }
