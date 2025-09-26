@@ -35,7 +35,7 @@ export function PropertyGridWidget(props: PropertyGridProps): React.ReactElement
 
   return (
     <ErrorBoundary FallbackComponent={PropertyGridErrorState}>
-      {/*  TODO: replace with unified selection storage */}
+      {/*  TODO: replace with unified selection storage https://github.com/iTwin/presentation-rules-editor/issues/205 */}
       {/* eslint-disable-next-line @typescript-eslint/no-deprecated */}
       <UnifiedSelectionContextProvider imodel={props.imodel} selectionLevel={0}>
         <LoadedPropertyGrid iModel={props.imodel} ruleset={props.ruleset} />
