@@ -29,16 +29,6 @@ export default defineConfig(({ mode }) => {
       port: 3000,
       strictPort: true,
     },
-    build: {
-      target: "es2022",
-    },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          silenceDeprecations: ["mixed-decls", "color-functions", "global-builtin", "import"],
-        },
-      },
-    },
     envPrefix: ["DEPLOYMENT_", "OAUTH_", "IMJS_", "APPLICATION_"],
     resolve: {
       alias: [
