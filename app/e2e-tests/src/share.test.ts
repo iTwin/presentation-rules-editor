@@ -44,8 +44,7 @@ test.describe("opening shared link #local #web", () => {
     ? `${getServiceUrl()}/open-imodel?iTwinId=b27dc251-0e53-4a36-9a38-182fc309be07&iModelId=f30566da-8fdf-4cba-b09a-fd39f5397ae6`
     : `${getServiceUrl()}/open-imodel?snapshot=Baytown.bim`;
 
-  // TODO: enable this test when demo imodels work in all environments.
-  test.skip("populates editor with ruleset and loads widget data when link is valid", async ({ page }) => {
+  test("populates editor with ruleset and loads widget data when link is valid", async ({ page }) => {
     await page.goto(
       /* cspell: disable-next-line */
       `${baseAddress}#editor/N4IgTgrgNgpgzjALiAXCYAdAdgAhxkASwBMCV8RF5EB9SWBRAgGmzwPvjJwG028cmXAPbhoMACoBPAA4xuBAEoB7ZYgByy4lxCthIgnDkBjQgDNCxgIaJCyrHG599Iwf1cDDJ6XIUgAwhBwiMoAtpraLO4eFIiy8qix1FEuHgRQVgBGMFB+VME0WFoJ0SIAvqU4ALrRFcI1WGUgZUA`,
