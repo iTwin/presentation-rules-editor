@@ -153,7 +153,7 @@ function useComputedStationValue(props: { imodel?: IModelConnection; elementId?:
         console.error(`Failed to find "Formats" schema.`);
         return undefined;
       }
-      const schemaFormat = await formatsSchema.getItem<SchemaFormat>("StationZ_1000_3");
+      const schemaFormat = await formatsSchema.getItem("StationZ_1000_3", SchemaFormat);
       if (!schemaFormat) {
         // eslint-disable-next-line no-console
         console.error(`Failed to find the "StationZ_1000_3" format in "Formats" schema.`);

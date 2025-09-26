@@ -81,8 +81,8 @@ catalogs:
       specifier: ^6.0.1
       version: 6.0.1
     '@itwin/presentation-components':
-      specifier: ^5.12.8
-      version: 5.12.8
+      specifier: ^5.12.9
+      version: 5.12.9
     '@microsoft/applicationinsights-web':
       specifier: ^3.3.10
       version: 3.3.10
@@ -421,7 +421,7 @@ importers:
         version: 5.1.9(@itwin/core-bentley@5.1.9)(@itwin/core-common@5.1.9(@itwin/core-bentley@5.1.9)(@itwin/core-geometry@5.1.9))(@itwin/core-quantity@5.1.9(@itwin/core-bentley@5.1.9))(@itwin/ecschema-metadata@5.1.9(@itwin/core-bentley@5.1.9)(@itwin/core-quantity@5.1.9(@itwin/core-bentley@5.1.9)))
       '@itwin/presentation-components':
         specifier: 'catalog:'
-        version: 5.12.8(df4ae7579f710a3bb7b77c01e7bf91d0)
+        version: 5.12.9(df4ae7579f710a3bb7b77c01e7bf91d0)
       '@itwin/presentation-frontend':
         specifier: catalog:itwinjs-core
         version: 5.1.9(5a91a5d60762ed692d56986ddbd56b05)
@@ -553,7 +553,7 @@ importers:
         version: 5.1.9(@itwin/core-bentley@5.1.9)(@itwin/core-common@5.1.9(@itwin/core-bentley@5.1.9)(@itwin/core-geometry@5.1.9))(@itwin/core-quantity@5.1.9(@itwin/core-bentley@5.1.9))(@itwin/ecschema-metadata@5.1.9(@itwin/core-bentley@5.1.9)(@itwin/core-quantity@5.1.9(@itwin/core-bentley@5.1.9)))
       '@itwin/presentation-components':
         specifier: 'catalog:'
-        version: 5.12.8(df4ae7579f710a3bb7b77c01e7bf91d0)
+        version: 5.12.9(df4ae7579f710a3bb7b77c01e7bf91d0)
       '@itwin/presentation-frontend':
         specifier: catalog:itwinjs-core
         version: 5.1.9(5a91a5d60762ed692d56986ddbd56b05)
@@ -1746,8 +1746,8 @@ packages:
       '@itwin/core-quantity': 5.1.9
       '@itwin/ecschema-metadata': 5.1.9
 
-  '@itwin/presentation-components@5.12.8':
-    resolution: {integrity: sha512-9pqa9xsumHQNe9OUxv7Wi8+z3T2xfGZ+lpEeOAV2rPnLH6jQ02D2j05Itne+htqlfnuS5R7A+CpEJ+R8yvhUWA==}
+  '@itwin/presentation-components@5.12.9':
+    resolution: {integrity: sha512-S97xsGaTtUecJuLo/tMz3obcBYTL2rrBPOihVm1Rj4F1lVcZvZ77gkZPvVeTKN+LE7Ybd1ZxTC1iZNdIQuRQnw==}
     peerDependencies:
       '@itwin/appui-abstract': ^4.4.0 || ^5.0.0
       '@itwin/components-react': ^4.9.0 || ^5.0.0
@@ -6541,7 +6541,7 @@ snapshots:
       '@itwin/ecschema-metadata': 5.1.9(@itwin/core-bentley@5.1.9)(@itwin/core-quantity@5.1.9(@itwin/core-bentley@5.1.9))
       '@itwin/presentation-shared': 1.2.3
 
-  '@itwin/presentation-components@5.12.8(df4ae7579f710a3bb7b77c01e7bf91d0)':
+  '@itwin/presentation-components@5.12.9(df4ae7579f710a3bb7b77c01e7bf91d0)':
     dependencies:
       '@itwin/appui-abstract': 5.1.9(@itwin/core-bentley@5.1.9)
       '@itwin/components-react': 5.15.1(@itwin/appui-abstract@5.1.9(@itwin/core-bentley@5.1.9))(@itwin/core-bentley@5.1.9)(@itwin/core-react@5.15.1(@itwin/appui-abstract@5.1.9(@itwin/core-bentley@5.1.9))(@itwin/core-bentley@5.1.9)(@itwin/itwinui-react@3.19.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@itwin/itwinui-react@3.19.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

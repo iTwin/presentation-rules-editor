@@ -70,7 +70,7 @@ describe("PropertyGrid", () => {
     // React cleanup hooks need to run first before we restore stubs
     cleanup();
 
-    editableRuleset.dispose();
+    editableRuleset[Symbol.dispose]();
     sinon.reset();
     td.reset();
   });

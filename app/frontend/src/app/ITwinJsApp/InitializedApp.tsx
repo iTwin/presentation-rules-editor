@@ -203,8 +203,8 @@ function useSoloRulesetEditor(initialRuleset: Ruleset): UseSoloRulesetEditorRetu
     setResult({ editableRuleset, rulesetEditor });
 
     return () => {
-      rulesetEditor.dispose();
-      editableRuleset.dispose();
+      rulesetEditor[Symbol.dispose]();
+      editableRuleset[Symbol.dispose]();
     };
   }, [initialRuleset]);
 
