@@ -37,8 +37,6 @@
     "@types/node": "catalog:build-tools",
     "dotenv": "catalog:build-tools",
     "eslint": "catalog:build-tools",
-    "inversify": "^7.10.1",
-    "reflect-metadata": "^0.2.2",
     "tsx": "catalog:build-tools",
     "typescript": "catalog:build-tools"
   }
