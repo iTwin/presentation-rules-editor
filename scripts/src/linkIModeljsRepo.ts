@@ -55,6 +55,7 @@ for (const packageName of packagesToLink) {
     console.log(`Symlinking ${packageName} => ${sourceLocation}`);
     linkPackage(packageName, sourceLocation, destinationLocation);
   } else {
+    // cspell: disable-next-line
     console.log(`Unsymlinking ${packageName} => ${sourceLocation}`);
     unlinkPackage(packageName, sourceLocation, destinationLocation);
   }

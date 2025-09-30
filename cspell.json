@@ -21,21 +21,9 @@
     "Metrostation",
     "rpcinterface",
     "threagile",
+    "unregisters",
     "unstringified",
     "widgetid"
   ],
-  "ignorePaths": [
-    "package.json",
-    "dist",
-    "lib",
-    "scripts",
-    "coverage",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "pnpm-lock.yaml",
-    "**/*.d.ts",
-    "**/*.config.*",
-    "playwright-report",
-    "pnpm-workspace.yaml"
-  ]
+  "ignorePaths": ["package.json", "dist", "lib", "coverage", "pnpm-lock.yaml", "**/*.d.ts", "**/*.config.*", "playwright-report", "pnpm-workspace.yaml"]
 }
