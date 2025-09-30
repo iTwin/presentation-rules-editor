@@ -19,7 +19,7 @@
     "typecheck:watch": "tsc --noEmit --watch",
     "prepare": "playwright install chromium"
   },
-  "dependencies": {
+  "devDependencies": {
     "@itwin/eslint-plugin": "catalog:build-tools",
     "@playwright/test": "^1.55.1",
     "@types/node": "catalog:build-tools",
