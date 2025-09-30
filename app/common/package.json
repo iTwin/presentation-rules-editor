@@ -26,7 +26,9 @@
     "@itwin/ecschema-metadata": "catalog:itwinjs-core",
     "@itwin/ecschema-rpcinterface-common": "catalog:itwinjs-core",
     "@itwin/eslint-plugin": "catalog:build-tools",
-    "@itwin/presentation-common": "catalog:itwinjs-core",
+    "@itwin/presentation-common": "catalog:itwinjs-core"
+  },
+  "devDependencies": {
     "eslint": "catalog:build-tools",
     "typescript": "catalog:build-tools"
   }

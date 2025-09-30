@@ -41,7 +41,7 @@
     "npm": "<0",
     "node": ">=20"
   },
-  "dependencies": {
+  "devDependencies": {
     "cross-env": "^7.0.3",
     "cspell": "^9.2.1",
     "eslint-config-prettier": "^9.1.2",

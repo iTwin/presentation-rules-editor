@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch"
   },
-  "dependencies": {
+  "devDependencies": {
     "@itwin/eslint-plugin": "catalog:build-tools",
     "@types/node": "catalog:build-tools",
     "@types/yargs": "^17.0.33",
