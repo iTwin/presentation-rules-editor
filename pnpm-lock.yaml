@@ -62,8 +62,8 @@ catalogs:
       specifier: ^5.9.2
       version: 5.9.2
     vite:
-      specifier: ^7.1.7
-      version: 7.1.7
+      specifier: ^7.1.11
+      version: 7.1.11
     vite-plugin-static-copy:
       specifier: ^3.1.2
       version: 3.1.2
@@ -487,7 +487,7 @@ importers:
         version: 7.1.34
       '@vitejs/plugin-react':
         specifier: catalog:build-tools
-        version: 5.0.3(vite@7.1.7(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1))
+        version: 5.0.3(vite@7.1.11(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1))
       cpx2:
         specifier: catalog:build-tools
         version: 8.0.0
@@ -511,10 +511,10 @@ importers:
         version: 5.9.2
       vite:
         specifier: catalog:build-tools
-        version: 7.1.7(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1)
+        version: 7.1.11(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1)
       vite-plugin-static-copy:
         specifier: catalog:build-tools
-        version: 3.1.2(vite@7.1.7(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.1.2(vite@7.1.11(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1))
 
   presentation-rules-editor-react:
     devDependencies:
@@ -5009,8 +5009,8 @@ packages:
     peerDependencies:
       vite: ^5.0.0 || ^6.0.0 || ^7.0.0
 
-  vite@7.1.7:
-    resolution: {integrity: sha512-VbA8ScMvAISJNJVbRDTJdCwqQoAareR/wutevKanhR2/1EkoXVZVkkORaYm/tNVCjP/UDTKtcw3bAkwOUdedmA==}
+  vite@7.1.11:
+    resolution: {integrity: sha512-uzcxnSDVjAopEUjljkWh8EIrg6tlzrjFUfMcR1EVsRDGwf/ccef0qQPRyOrROwhrTDaApueq+ja+KLPlzR/zdg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -7051,7 +7051,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@5.0.3(vite@7.1.7(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1))':
+  '@vitejs/plugin-react@5.0.3(vite@7.1.11(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
       '@babel/core': 7.28.4
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.4)
@@ -7059,7 +7059,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.35
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 7.1.7(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1)
+      vite: 7.1.11(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -10129,16 +10129,16 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite-plugin-static-copy@3.1.2(vite@7.1.7(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1)):
+  vite-plugin-static-copy@3.1.2(vite@7.1.11(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1)):
     dependencies:
       chokidar: 3.6.0
       fs-extra: 11.3.2
       p-map: 7.0.3
       picocolors: 1.1.1
       tinyglobby: 0.2.15
-      vite: 7.1.7(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1)
+      vite: 7.1.11(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1)
 
-  vite@7.1.7(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1):
+  vite@7.1.11(@types/node@22.18.6)(lightningcss@1.30.1)(sass@1.93.2)(tsx@4.20.6)(yaml@2.8.1):
     dependencies:
       esbuild: 0.25.10
       fdir: 6.5.0(picomatch@4.0.3)
