@@ -25,6 +25,7 @@
     "@itwin/core-common": "catalog:itwinjs-core",
     "@itwin/core-frontend": "catalog:itwinjs-core",
     "@itwin/core-i18n": "catalog:itwinjs-core",
+    "@itwin/core-react": "catalog:appui",
     "@itwin/core-quantity": "catalog:itwinjs-core",
     "@itwin/ecschema-metadata": "catalog:itwinjs-core",
     "@itwin/ecschema-rpcinterface-common": "catalog:itwinjs-core",

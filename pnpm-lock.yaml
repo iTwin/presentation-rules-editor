@@ -12,6 +12,9 @@ catalogs:
     '@itwin/components-react':
       specifier: ^5.24.0
       version: 5.24.0
+    '@itwin/core-react':
+      specifier: ^5.24.0
+      version: 5.24.0
     '@itwin/imodel-components-react':
       specifier: ^5.24.0
       version: 5.24.0
@@ -333,6 +336,9 @@ importers:
       '@itwin/core-quantity':
         specifier: catalog:itwinjs-core
         version: 5.5.2(@itwin/core-bentley@5.5.2)
+      '@itwin/core-react':
+        specifier: catalog:appui
+        version: 5.24.0(@itwin/appui-abstract@5.5.2(@itwin/core-bentley@5.5.2))(@itwin/core-bentley@5.5.2)(@itwin/itwinui-react@3.20.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@itwin/ecschema-metadata':
         specifier: catalog:itwinjs-core
         version: 5.5.2(@itwin/core-bentley@5.5.2)(@itwin/core-quantity@5.5.2(@itwin/core-bentley@5.5.2))
