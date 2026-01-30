@@ -39,6 +39,13 @@ export default defineConfig(({ mode }) => {
         },
       ],
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          silenceDeprecations: ["if-function"],
+        },
+      },
+    },
   };
 });
 
