@@ -5,7 +5,7 @@
 
 import { Page } from "playwright";
 import { test } from "@playwright/test";
-import { getEditor, getWidget, openTestIModel } from "../utils.js";
+import { getEditor, getPropertiesWidget, getTreeWidget, openTestIModel } from "../utils.js";
 
 test.describe("properties widget #local", () => {
   const contentUrlIdentifier = (url: URL) => {
@@ -21,7 +21,7 @@ test.describe("properties widget #local", () => {
   });
 
   test("displays properties", async ({ page }) => {
-    const propertiesWidget = getWidget(page, "Properties");
+    const propertiesWidget = getPropertiesWidget(page);
     await propertiesWidget.locator("text=Select element(s) to view properties.").waitFor();
 
     await selectAnyTreeNode(page);
@@ -42,12 +42,12 @@ test.describe("properties widget #local", () => {
 "propertyCategories": [{ "id": "custom", "label": "custom_category" }]`);
     await editor.press("Alt+Enter");
 
-    const propertiesWidget = getWidget(page, "Properties");
+    const propertiesWidget = getPropertiesWidget(page);
     await propertiesWidget.locator("text=custom_category").waitFor();
   });
 
   test("renders error status on error", async ({ page }) => {
-    const propertiesWidget = getWidget(page, "Properties");
+    const propertiesWidget = getPropertiesWidget(page);
     await propertiesWidget.locator("text=Select element(s) to view properties.").waitFor();
 
     // simulate network error
@@ -58,7 +58,7 @@ test.describe("properties widget #local", () => {
   });
 
   async function selectAnyTreeNode(page: Page): Promise<void> {
-    const treeWidget = getWidget(page, "Tree");
+    const treeWidget = getTreeWidget(page);
     await treeWidget.locator(".core-tree-node").first().click();
   }
 });

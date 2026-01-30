@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { expect, test } from "@playwright/test";
-import { getEditor, getWidget, openTestIModel } from "../utils.js";
+import { getEditor, getTreeWidget, openTestIModel } from "../utils.js";
 
 test.describe("editor #local", () => {
   test.beforeEach(async ({ page }) => {
@@ -38,7 +38,7 @@ test.describe("editor #local", () => {
       await editor.press("Backspace");
 
       await editor.locator("text=Submit ruleset").click();
-      await getWidget(page, "Tree").locator("text=The data required for this tree layout is not available in this iModel.").waitFor();
+      await getTreeWidget(page).locator("text=The data required for this tree layout is not available in this iModel.").waitFor();
     });
 
     test("submits ruleset when keyboard shortcut is pressed", async ({ page }) => {
@@ -47,7 +47,7 @@ test.describe("editor #local", () => {
       await editor.press("Backspace");
 
       await editor.press("Alt+Enter");
-      await getWidget(page, "Tree").locator("text=The data required for this tree layout is not available in this iModel.").waitFor();
+      await getTreeWidget(page).locator("text=The data required for this tree layout is not available in this iModel.").waitFor();
     });
 
     test("submits ruleset when command is invoked from the command palette", async ({ page }) => {
@@ -58,7 +58,7 @@ test.describe("editor #local", () => {
       await editor.press("F1");
       await page.keyboard.type("Submit ruleset");
       await editor.press("Enter");
-      await getWidget(page, "Tree").locator("text=The data required for this tree layout is not available in this iModel.").waitFor();
+      await getTreeWidget(page).locator("text=The data required for this tree layout is not available in this iModel.").waitFor();
     });
   });
 });

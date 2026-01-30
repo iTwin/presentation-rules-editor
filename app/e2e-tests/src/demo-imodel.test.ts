@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { test } from "@playwright/test";
-import { getWidget, openDemoIModel } from "./utils.js";
+import { getTreeWidget, openDemoIModel } from "./utils.js";
 
 test.describe("demo iModel #web", () => {
   test("opens", async ({ page }) => {
     await openDemoIModel(page);
-    const treeWidget = getWidget(page, "Tree");
-    await treeWidget.locator(".core-tree-node").first().waitFor();
+    const treeWidget = getTreeWidget(page);
+    await treeWidget.getByRole("treeitem", { name: "Expand 2D Display Style" }).waitFor();
   });
 });

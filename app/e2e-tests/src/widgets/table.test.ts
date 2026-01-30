@@ -5,7 +5,7 @@
 
 import { Page } from "playwright";
 import { test } from "@playwright/test";
-import { getEditor, getStagePanelGrip, getWidget, openTestIModel } from "../utils.js";
+import { getEditor, getStagePanelGrip, getTableWidget, getTreeWidget, openTestIModel } from "../utils.js";
 
 test.describe("table widget #local", () => {
   const contentDescriptorUrlIdentifier = (url: URL) => {
@@ -25,7 +25,7 @@ test.describe("table widget #local", () => {
   });
 
   test("displays properties", async ({ page }) => {
-    const tableWidget = getWidget(page, "Table");
+    const tableWidget = getTableWidget(page);
     await tableWidget.locator("text=Select element(s) to view properties.").waitFor();
 
     await selectAnyTreeNode(page);
@@ -44,12 +44,12 @@ test.describe("table widget #local", () => {
 "propertyOverrides": [{ "name": "Model", "labelOverride": "Custom Property Label" }]`);
     await editor.press("Alt+Enter");
 
-    const tableWidget = getWidget(page, "Table");
+    const tableWidget = getTableWidget(page);
     await tableWidget.locator(`text="Custom Property Label"`).waitFor();
   });
 
   test("renders error status on error", async ({ page }) => {
-    const tableWidget = getWidget(page, "Table");
+    const tableWidget = getTableWidget(page);
     await tableWidget.locator("text=Select element(s) to view properties.").waitFor();
 
     // simulate network error
@@ -60,7 +60,7 @@ test.describe("table widget #local", () => {
   });
 
   async function selectAnyTreeNode(page: Page): Promise<void> {
-    const treeWidget = getWidget(page, "Tree");
+    const treeWidget = getTreeWidget(page);
     await treeWidget.locator(".core-tree-node").first().click();
   }
 });
