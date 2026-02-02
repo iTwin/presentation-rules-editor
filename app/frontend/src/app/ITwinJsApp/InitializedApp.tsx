@@ -9,7 +9,7 @@ import * as React from "react";
 import { StagePanelState, WidgetState } from "@itwin/appui-react";
 import { AuthorizationClient } from "@itwin/core-common";
 import { IModelApp, IModelConnection, OutputMessagePriority } from "@itwin/core-frontend";
-import { ChildNodeSpecificationTypes, ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
+import { ContentSpecificationTypes, Ruleset, RuleTypes } from "@itwin/presentation-common";
 import { EditableRuleset, SoloRulesetEditor } from "@itwin/presentation-rules-editor-react";
 import { useIModelBrowserSettings } from "../IModelBrowser/IModelBrowser.js";
 import { applyUrlPrefix } from "../utils/Environment.js";
@@ -95,7 +95,7 @@ const defaultRuleset: Ruleset = {
       ruleType: RuleTypes.RootNodes,
       specifications: [
         {
-          specType: ChildNodeSpecificationTypes.InstanceNodesOfSpecificClasses,
+          specType: "InstanceNodesOfSpecificClasses",
           classes: {
             schemaName: "BisCore",
             classNames: ["Element"],

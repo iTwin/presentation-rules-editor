@@ -31,8 +31,20 @@ export async function openDemoIModel(page: Page): Promise<void> {
   await page.locator("id=app-loader").waitFor({ state: "detached" });
 }
 
+export function getTreeWidget(page: Page): Locator {
+  return getWidget(page, "TreeWidget");
+}
+
+export function getPropertiesWidget(page: Page): Locator {
+  return getWidget(page, "PropertyGridWidget");
+}
+
+export function getTableWidget(page: Page): Locator {
+  return getWidget(page, "TableWidget");
+}
+
 export function getWidget(page: Page, widget: string): Locator {
-  return page.locator(`.nz-widget-widget:has([role=tab][title=${widget}]) .nz-widget-content`);
+  return page.locator(`.nz-widget-widget:has([id="content-container:${widget}"]) .nz-widget-content`);
 }
 
 export function getStagePanelGrip(page: Page, location: "bottom" | "right"): Locator {

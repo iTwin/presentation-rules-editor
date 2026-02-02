@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { test } from "@playwright/test";
-import { getEditor, getWidget, openTestIModel } from "../utils.js";
+import { getEditor, getTreeWidget, openTestIModel } from "../utils.js";
 
 test.describe("tree widget #local", () => {
   test.beforeEach(async ({ page }) => {
@@ -12,7 +12,7 @@ test.describe("tree widget #local", () => {
   });
 
   test("displays tree hierarchy", async ({ page }) => {
-    const treeWidget = getWidget(page, "Tree");
+    const treeWidget = getTreeWidget(page);
     await treeWidget.locator(".core-tree-node").first().waitFor();
   });
 
@@ -23,7 +23,7 @@ test.describe("tree widget #local", () => {
     await page.keyboard.type('{ "ruleType": "CheckBox" },');
     await editor.press("Alt+Enter");
 
-    const treeWidget = getWidget(page, "Tree");
+    const treeWidget = getTreeWidget(page);
     await treeWidget.locator("input[type=checkbox]").first().waitFor({ state: "attached" });
   });
 });

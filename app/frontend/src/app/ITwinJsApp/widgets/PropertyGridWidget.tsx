@@ -5,7 +5,7 @@
 
 import "./PropertyGridWidget.scss";
 import * as React from "react";
-import { ErrorBoundary } from "react-error-boundary";
+import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 import { IModelApp, IModelConnection } from "@itwin/core-frontend";
 import { SvgCollapseAll, SvgExpandAll } from "@itwin/itwinui-icons-react";
 import { SvgError } from "@itwin/itwinui-illustrations-react";
@@ -177,7 +177,7 @@ function useSuppressControls(setSuppressControls: (value: boolean) => void): voi
   }, [setSuppressControls]);
 }
 
-function PropertyGridErrorState(props: { error: Error; resetErrorBoundary: () => void }) {
+function PropertyGridErrorState(props: FallbackProps) {
   return (
     <div style={{ position: "relative" }}>
       <NonIdealState

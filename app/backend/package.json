@@ -20,7 +20,6 @@
     "@itwin/core-backend": "catalog:itwinjs-core",
     "@itwin/core-bentley": "catalog:itwinjs-core",
     "@itwin/core-common": "catalog:itwinjs-core",
-    "@itwin/core-geometry": "catalog:itwinjs-core",
     "@itwin/core-quantity": "catalog:itwinjs-core",
     "@itwin/ecschema-metadata": "catalog:itwinjs-core",
     "@itwin/ecschema-rpcinterface-common": "catalog:itwinjs-core",
@@ -30,7 +29,7 @@
     "@itwin/imodels-access-backend": "catalog:",
     "@itwin/presentation-backend": "catalog:itwinjs-core",
     "@itwin/presentation-common": "catalog:itwinjs-core",
-    "inversify": "^7.10.1",
+    "inversify": "^7.11.0",
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {

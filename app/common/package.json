@@ -21,7 +21,6 @@
   "dependencies": {
     "@itwin/core-bentley": "catalog:itwinjs-core",
     "@itwin/core-common": "catalog:itwinjs-core",
-    "@itwin/core-geometry": "catalog:itwinjs-core",
     "@itwin/core-quantity": "catalog:itwinjs-core",
     "@itwin/ecschema-metadata": "catalog:itwinjs-core",
     "@itwin/ecschema-rpcinterface-common": "catalog:itwinjs-core",

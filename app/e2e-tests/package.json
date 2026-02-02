@@ -21,11 +21,11 @@
   },
   "devDependencies": {
     "@itwin/eslint-plugin": "catalog:build-tools",
-    "@playwright/test": "^1.55.1",
+    "@playwright/test": "^1.58.0",
     "@types/node": "catalog:build-tools",
     "cross-env": "catalog:build-tools",
     "eslint": "catalog:build-tools",
-    "playwright": "^1.55.1",
+    "playwright": "^1.58.0",
     "typescript": "catalog:build-tools"
   }
 }

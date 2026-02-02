@@ -101,7 +101,7 @@ function LoadingPropertiesState(props: LoadingPropertiesStateProps): React.React
   return <LoadingIndicator style={{ height: props.height }}>{IModelApp.localization.getLocalizedString("App:table.loading-properties")}</LoadingIndicator>;
 }
 
-function TableErrorState(props: { error: Error; resetErrorBoundary: () => void; ruleset: EditableRuleset }) {
+function TableErrorState(props: FallbackProps & { ruleset: EditableRuleset }) {
   const { resetErrorBoundary, ruleset } = props;
   React.useEffect(() => ruleset.onAfterRulesetUpdated.addListener(() => resetErrorBoundary()), [ruleset, resetErrorBoundary]);
 

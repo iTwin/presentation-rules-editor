@@ -171,7 +171,7 @@ const SubmitRulesetWidget = React.forwardRef<HTMLDivElement, SubmitRulesetWidget
 
 function contributeToMonacoEditor(monacoModule: typeof monaco, editor: monaco.editor.IStandaloneCodeEditor, submitRuleset: (ruleset: Ruleset) => void): void {
   if (!initialized) {
-    monacoModule.languages.json.jsonDefaults.setDiagnosticsOptions({
+    monacoModule.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
       schemas: [
         {

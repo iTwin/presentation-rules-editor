@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { expect, test } from "@playwright/test";
-import { getEditor, getServiceUrl, getWidget, openDemoIModel, openTestIModel } from "./utils.js";
+import { getEditor, getServiceUrl, getTreeWidget, openDemoIModel, openTestIModel } from "./utils.js";
 
 test.describe("share button #local #web", () => {
   const testConfiguration = process.env.WEB_TEST
@@ -55,8 +55,8 @@ test.describe("opening shared link #local #web", () => {
     const editor = getEditor(page);
     await editor.locator("text=test_ruleset").waitFor();
 
-    const treeWidget = getWidget(page, "Tree");
-    await treeWidget.locator("text=test_node").waitFor();
+    const treeWidget = getTreeWidget(page);
+    await treeWidget.getByRole("treeitem", { name: "test_node" }).waitFor();
   });
 
   test("populates editor with ruleset when shared ruleset is invalid", async ({ page }) => {
