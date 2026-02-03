@@ -6,7 +6,7 @@
 import { Locator, Page } from "playwright";
 
 export function getServiceUrl(): string {
-  return process.env.SERVICE_URL ?? "http://localhost:3000";
+  return process.env.SERVICE_URL ?? "http://localhost:8081";
 }
 
 export async function loadHomepage(page: Page): Promise<void> {

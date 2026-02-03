@@ -11,7 +11,7 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "preview": "vite preview --port 3000",
+    "preview": "vite preview --port 8081",
     "lint": "eslint ./src/**/*.{ts,tsx}",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch"
