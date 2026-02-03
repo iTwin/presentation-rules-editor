@@ -30,7 +30,7 @@ jobs:
         run: pnpm install
 
       - name: Audit
-        run: pnpm audit
+        run: pnpm audit --audit-level high
 
       - name: ESLint
         run: npm run lint
