@@ -52,7 +52,7 @@ We have two sets of tests:
 ### Frontend
 
 1. Launch Presentation Rules Editor application like you normally would.
-2. In Visual Studio Code, execute `Debug: Open Link` command and enter `http://localhost:3000`.
+2. In Visual Studio Code, execute `Debug: Open Link` command and enter `http://localhost:8081`.
 
 ### Backend
 
