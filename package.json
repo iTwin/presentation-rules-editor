@@ -49,6 +49,9 @@
     "prettier": "^3.8.1"
   },
   "pnpm": {
+    "overrides": {
+      "@google-cloud/storage>fast-xml-parser": "^5.3.4"
+    },
     "onlyBuiltDependencies": [
       "@bentley/imodeljs-native",
       "esbuild"
