@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
       injectAppMetadata(mode),
     ],
     server: {
-      port: 8081,
+      port: 3000,
       strictPort: true,
     },
     envPrefix: ["DEPLOYMENT_", "OAUTH_", "IMJS_", "APPLICATION_"],
