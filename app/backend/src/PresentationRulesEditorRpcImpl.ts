@@ -22,7 +22,7 @@ export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcIn
     const dir = SnapshotFileNameResolver.getIModelsDirectory();
     return fs
       .readdirSync(dir, { withFileTypes: true })
-      .filter((entry) => entry.isFile() && (entry.name.endsWith(".ibim") || entry.name.endsWith(".bim")))
+      .filter((entry) => entry.isFile() && entry.name.endsWith(".bim"))
       .map((file) => {
         const entry = fs.statSync(path.join(dir, file.name));
         return { name: file.name, dateModified: entry.mtime, size: this.formatBytes(entry.size) };
@@ -73,13 +73,13 @@ export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcIn
     execFileSync(command, args, { shell: true });
   }
 
-  public override async getConnectionProps(imodelPath: string): Promise<IModelConnectionProps> {
-    const db = SnapshotDb.openFile(imodelPath);
+  public override async getConnectionProps(imodelName: string): Promise<IModelConnectionProps> {
+    const db = SnapshotDb.openFile(SnapshotFileNameResolver.resolveFileName(imodelName));
     // eslint-disable-next-line @itwin/no-internal
     return db.getConnectionProps();
   }
 
-  public override async closeConnection(imodelPath: string): Promise<void> {
-    SnapshotDb.findByFilename(imodelPath)?.close();
+  public override async closeConnection(imodelName: string): Promise<void> {
+    SnapshotDb.findByFilename(SnapshotFileNameResolver.resolveFileName(imodelName))?.close();
   }
 }

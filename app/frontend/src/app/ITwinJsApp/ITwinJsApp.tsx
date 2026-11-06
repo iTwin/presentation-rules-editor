@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import { rpcInterfaces } from "@app/common";
+import { localRpcConfiguration, rpcInterfaces } from "@app/common";
 import { AppNotificationManager, UiFramework } from "@itwin/appui-react";
 import { Logger, LogLevel } from "@itwin/core-bentley";
 import { AuthorizationClient, BentleyCloudRpcManager, ChangesetIndexAndId, IModelVersion, RpcConfiguration } from "@itwin/core-common";
@@ -66,7 +66,7 @@ export async function initializeApp(): Promise<BackendApi> {
       ? { info: { title: "imodel/rpc", version: "v5" } }
       : {
           info: { title: "presentation-rules-editor", version: "v1.0" },
-          uriPrefix: "http://localhost:3001",
+          uriPrefix: localRpcConfiguration.backendUrl,
         };
 
   await IModelApp.startup({
@@ -81,7 +81,30 @@ export async function initializeApp(): Promise<BackendApi> {
   });
   const configuration = BentleyCloudRpcManager.initializeClient(rpcParams, rpcInterfaces);
   // eslint-disable-next-line @itwin/no-internal
-  const backendApi = new BackendApi(configuration.protocol);
+  const protocol = configuration.protocol;
+  if (import.meta.env.DEPLOYMENT_TYPE !== "web") {
+    const response = await fetch(`${localRpcConfiguration.backendUrl}${localRpcConfiguration.sessionPath}`, { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error(`Failed to initialize the local RPC session: HTTP ${response.status}.`);
+    }
+    const sessionToken = await response.text();
+    if (!/^[a-f0-9]{64}$/.test(sessionToken)) {
+      throw new Error("The backend returned an invalid local RPC session.");
+    }
+
+    /* eslint-disable @itwin/no-internal -- RPC exposes custom headers through its request context. */
+    const requestContext = RpcConfiguration.requestContext;
+    const serialize = requestContext.serialize;
+    requestContext.serialize = async (request) => {
+      const context = await serialize(request);
+      if (request.protocol === protocol) {
+        context.csrfToken = { headerName: localRpcConfiguration.sessionHeader, headerValue: sessionToken };
+      }
+      return context;
+    };
+    /* eslint-enable @itwin/no-internal */
+  }
+  const backendApi = new BackendApi(protocol);
   await Promise.all([IModelApp.localization.registerNamespace("App"), initializePresentation(backendApi), initializeUIFramework()]);
 
   return backendApi;

@@ -25,7 +25,13 @@ To summarize, we only do string localization inside `ITwinJsApp/` subdirectory.
 
 ## Testing
 
-We have two sets of tests:
+We have three sets of tests:
+
+- Local backend tests cover RPC session authorization and snapshot file boundaries. Build `app/common` first, then run:
+
+  ```bash
+  pnpm --filter @app/backend test
+  ```
 
 - Unit tests for `presentation-rules-editor` package, which require 100% test coverage.
   - To run these tests navigate to `presentation-rules-editor-react/` and execute:
