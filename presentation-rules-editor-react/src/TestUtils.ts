@@ -3,22 +3,22 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import * as sinon from "sinon";
+import { type Mock, vi } from "vitest";
 import { Presentation } from "@itwin/presentation-frontend";
 
-export type SinonSpy<T extends (...args: any) => any> = sinon.SinonSpy<Parameters<T>, ReturnType<T>>;
-export type SinonStub<T extends (...args: any) => any> = sinon.SinonStub<Parameters<T>, ReturnType<T>>;
+export type MockFunction<T extends (...args: any[]) => any> = Mock<T>;
 
 /** Stubs all {@linkcode Presentation.presentation} methods. */
 export function stubPresentationManager(): void {
+  const registeredRuleset = {
+    [Symbol.dispose]: vi.fn(),
+  };
   const rulesetManager = {
-    add: sinon.stub().resolves({
-      [Symbol.dispose]: sinon.spy(),
-    }),
-    modify: sinon.stub().resolves(Promise.resolve({})),
+    add: vi.fn().mockResolvedValue(registeredRuleset),
+    modify: vi.fn().mockResolvedValue(registeredRuleset),
   };
 
-  sinon.stub(Presentation, "presentation").get(() => ({
+  vi.spyOn(Presentation, "presentation", "get").mockReturnValue({
     rulesets: () => rulesetManager,
-  }));
+  } as any);
 }
