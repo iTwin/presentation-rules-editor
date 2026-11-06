@@ -39,7 +39,7 @@ To start editing rulesets, you will need to build the editor application:
 
 ### Local backend access
 
-Open the local application at `http://localhost:3000`. The backend listens only on `127.0.0.1:3001` and accepts browser requests only from that frontend origin. The frontend obtains a temporary session capability at startup and sends it with every local RPC request, including generic iModel reads. Reload the frontend after restarting the backend.
+Open the local application at `http://localhost:3000`. The backend listens only on `127.0.0.1:3001` and accepts browser requests only from that frontend origin. The frontend obtains a temporary session capability on its first local RPC request and sends it with every later one, including generic iModel reads. Reload the frontend after restarting the backend.
 
 Local snapshot RPCs accept filenames, not paths. Files must end in `.bim` and resolve to regular files within `app/backend/assets/imodels`, or the `imodels` directory under a configured `IModelHost.appAssetsDir`. Symlinks cannot grant access outside that directory. Copy snapshots into the directory rather than linking to files elsewhere.
 
