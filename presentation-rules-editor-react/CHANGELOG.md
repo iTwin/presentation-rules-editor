@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All other `@itwin` peer dependencies have been upgraded to `^5.0.0`.
 - `@itwin/components-react`, `@itwin/core-react` and `@itwin/imodel-components-react` peer dependencies have been upgraded to `^5.0.0`
 - `react` and `react-dom` peer dependencies have been upgraded to `^18.0.0`.
-- `monaco-editor` peer dependency has been upgraded to `^0.53.0`.
+- `monaco-editor` peer dependency has been upgraded to `^0.57.0`.
 - Update package dependencies.
 
 ### Added
