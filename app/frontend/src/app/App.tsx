@@ -166,7 +166,7 @@ export enum AppPage {
   iModelBrowser = "imodel-browser",
 }
 
-export const AppSideNavigation = React.memo<AppSideNavigationProps>(function AppSideNavigation(props) {
+export const AppSideNavigation = React.memo<AppSideNavigationProps>(function AppSideNavigationComponent(props) {
   const navigation = React.useContext(appNavigationContext);
   return (
     <PageLayout.SideNavigation>

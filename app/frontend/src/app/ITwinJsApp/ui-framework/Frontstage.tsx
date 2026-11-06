@@ -41,7 +41,7 @@ export const Frontstage: React.FC<FrontstageProps> = (props) => {
           contentGroup: new ContentGroup({
             id: "root_content_group",
             layout: new ContentLayoutDef({ id: "root_content_group_layout" }),
-            // Remove classId after migrating to appuiV5
+            // eslint-disable-next-line @typescript-eslint/no-deprecated -- Required by the installed AppUI ContentProps type.
             contents: [{ id: "root_content_group_content", classId: "", content: <ContentFromContext /> }],
           }),
         };

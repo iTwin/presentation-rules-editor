@@ -23,7 +23,7 @@ export interface IModelBrowserProps {
   backendApiPromise: Promise<BackendApi> | undefined;
 }
 
-export const IModelBrowser = React.memo(function IModelBrowser(props: IModelBrowserProps): React.ReactElement {
+export const IModelBrowser = React.memo(function IModelBrowserComponent(props: IModelBrowserProps): React.ReactElement {
   const [settings, setSettings] = useIModelBrowserSettings();
   const [intersectionObserver] = React.useState(() => new ViewportIntersectionObserver());
   React.useEffect(() => () => intersectionObserver.dispose(), [intersectionObserver]);
