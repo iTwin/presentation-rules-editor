@@ -60,7 +60,7 @@ export default defineConfig({
             ? [
                 {
                   command: "npm start --prefix ../backend",
-                  url: "http://localhost:3001/",
+                  url: "http://127.0.0.1:3001/ping",
                   reuseExistingServer: true,
                 },
               ]
