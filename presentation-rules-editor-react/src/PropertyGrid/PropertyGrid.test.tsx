@@ -3,67 +3,61 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { expect } from "chai";
-import { ForwardRefExoticComponent, RefAttributes, useRef } from "react";
-import * as sinon from "sinon";
-import * as td from "testdouble";
+import { useRef } from "react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PropertyRecord, PropertyValueFormat, StandardTypeNames } from "@itwin/appui-abstract";
 import * as componentsReact from "@itwin/components-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import * as presentationComponents from "@itwin/presentation-components";
 import { cleanup, render, waitFor } from "@testing-library/react";
 import { EditableRuleset } from "../EditableRuleset.js";
-import { stubPresentationManager } from "../TestUtils.js";
-import { AutoExpandingPropertyDataProvider as AutoExpandingPropertyDataProviderOG, PropertyGridAttributes, PropertyGridProps } from "./PropertyGrid.js";
+import { MockFunction, stubPresentationManager } from "../TestUtils.js";
+import { AutoExpandingPropertyDataProvider, PropertyGrid, PropertyGridAttributes, PropertyGridProps } from "./PropertyGrid.js";
 
-const presentationComponentsModulePath = import.meta.resolve("@itwin/presentation-components");
-const componentsReactModulePath = import.meta.resolve("@itwin/components-react");
+const propertyGridMocks = vi.hoisted(() => ({
+  useTrackedPropertyGridModelSource: vi.fn(),
+  usePropertyDataProvider: vi.fn(),
+  usePropertyGridModel: vi.fn(),
+  virtualizedPropertyGrid: vi.fn(() => null),
+}));
+
+vi.mock("@itwin/components-react", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@itwin/components-react")>()),
+  useTrackedPropertyGridModelSource: propertyGridMocks.useTrackedPropertyGridModelSource,
+  usePropertyGridModel: propertyGridMocks.usePropertyGridModel,
+  VirtualizedPropertyGrid: propertyGridMocks.virtualizedPropertyGrid,
+}));
+
+vi.mock("@itwin/presentation-components", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@itwin/presentation-components")>()),
+  usePropertyDataProviderWithUnifiedSelection: propertyGridMocks.usePropertyDataProvider,
+}));
 
 describe("PropertyGrid", () => {
-  let PropertyGrid: ForwardRefExoticComponent<PropertyGridProps & RefAttributes<PropertyGridAttributes>>;
-  let AutoExpandingPropertyDataProvider: typeof AutoExpandingPropertyDataProviderOG;
   const commonProps: Omit<PropertyGridProps, "editableRuleset"> = {
     width: 100,
     height: 100,
     iModel: {} as IModelConnection,
   };
 
-  const initialAutoExpandingPropertyDataProviderPrototype = Object.getPrototypeOf(AutoExpandingPropertyDataProviderOG);
-
-  const stubUsePropertyGridModelSource = sinon.stub<
-    [props: { dataProvider: componentsReact.IPropertyDataProvider }],
-    { modelSource: componentsReact.PropertyGridModelSource; inProgress: boolean }
-  >();
-  const stubUsePropertyDataProvider = sinon.stub<
-    [presentationComponents.PropertyDataProviderWithUnifiedSelectionProps],
-    presentationComponents.UsePropertyDataProviderWithUnifiedSelectionResult
-  >();
-  const stubUsePropertyGridModel = sinon.stub<
-    [
-      props: {
-        modelSource: componentsReact.IPropertyGridModelSource;
-      },
-    ],
-    componentsReact.IPropertyGridModel | undefined
-  >();
+  const stubUsePropertyGridModelSource = propertyGridMocks.useTrackedPropertyGridModelSource as MockFunction<
+    (props: { dataProvider: componentsReact.IPropertyDataProvider }) => { modelSource: componentsReact.PropertyGridModelSource; inProgress: boolean }
+  >;
+  const stubUsePropertyDataProvider = propertyGridMocks.usePropertyDataProvider as MockFunction<
+    (props: presentationComponents.PropertyDataProviderWithUnifiedSelectionProps) => presentationComponents.UsePropertyDataProviderWithUnifiedSelectionResult
+  >;
+  const stubUsePropertyGridModel = propertyGridMocks.usePropertyGridModel as MockFunction<
+    (props: { modelSource: componentsReact.IPropertyGridModelSource }) => componentsReact.IPropertyGridModel | undefined
+  >;
   let editableRuleset: EditableRuleset;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     stubPresentationManager();
 
-    stubUsePropertyGridModelSource.callsFake(() => ({}) as ReturnType<typeof componentsReact.useTrackedPropertyGridModelSource>);
+    stubUsePropertyGridModelSource.mockImplementation(() => ({}) as ReturnType<typeof componentsReact.useTrackedPropertyGridModelSource>);
+    propertyGridMocks.virtualizedPropertyGrid.mockImplementation(() => null);
 
     editableRuleset = new EditableRuleset({ initialRuleset: { id: "", rules: [] } });
-    await td.replaceEsm(componentsReactModulePath, {
-      ...componentsReact,
-      useTrackedPropertyGridModelSource: stubUsePropertyGridModelSource,
-      usePropertyGridModel: stubUsePropertyGridModel,
-      VirtualizedPropertyGrid: sinon.stub().callsFake(() => null),
-    });
-    await td.replaceEsm(presentationComponentsModulePath, {
-      ...presentationComponents,
-      usePropertyDataProviderWithUnifiedSelection: stubUsePropertyDataProvider,
-    });
   });
 
   afterEach(() => {
@@ -71,82 +65,72 @@ describe("PropertyGrid", () => {
     cleanup();
 
     editableRuleset[Symbol.dispose]();
-    sinon.reset();
-    td.reset();
+    vi.restoreAllMocks();
+    vi.resetAllMocks();
   });
 
   describe("normal state", () => {
-    beforeEach(async () => {
-      stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: false, numSelectedElements: 1 }));
-      stubUsePropertyGridModel.callsFake(() => ({}) as componentsReact.IPropertyGridModel);
-      const propertyGridImport = await import("./PropertyGrid.js");
-      PropertyGrid = propertyGridImport.PropertyGrid;
-      AutoExpandingPropertyDataProvider = propertyGridImport.AutoExpandingPropertyDataProvider;
-      sinon.stub(AutoExpandingPropertyDataProvider.prototype, "dispose");
-    });
-    afterEach(() => {
-      Object.setPrototypeOf(AutoExpandingPropertyDataProvider, initialAutoExpandingPropertyDataProviderPrototype);
+    beforeEach(() => {
+      stubUsePropertyDataProvider.mockImplementation(() => ({ isOverLimit: false, numSelectedElements: 1 }));
+      stubUsePropertyGridModel.mockImplementation(() => ({}) as componentsReact.IPropertyGridModel);
+      vi.spyOn(AutoExpandingPropertyDataProvider.prototype, "dispose").mockImplementation(() => {});
     });
 
     it("renders with AutoExpandingPropertyDataProvider", () => {
       render(<PropertyGrid {...commonProps} editableRuleset={editableRuleset} />);
-      expect(stubUsePropertyGridModelSource).to.have.been.calledOnce.and.calledWithMatch(
-        sinon.match(({ dataProvider }) => dataProvider instanceof AutoExpandingPropertyDataProvider),
-      );
+      expect(stubUsePropertyGridModelSource).toHaveBeenCalledOnce();
+      expect(stubUsePropertyGridModelSource.mock.calls[0][0].dataProvider).toBeInstanceOf(AutoExpandingPropertyDataProvider);
     });
   });
 
   describe("no elements selected state", () => {
-    beforeEach(async () => {
-      stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: false, numSelectedElements: 0 }));
-      PropertyGrid = (await import("./PropertyGrid.js")).PropertyGrid;
+    beforeEach(() => {
+      stubUsePropertyDataProvider.mockImplementation(() => ({ isOverLimit: false, numSelectedElements: 0 }));
     });
 
     it("renders supplied component", () => {
       const { getByText } = render(<PropertyGrid {...commonProps} editableRuleset={editableRuleset} noElementsSelectedState={() => <>Test Component</>} />);
-      expect(getByText("Test Component")).not.to.be.null;
+      expect(getByText("Test Component")).not.toBeNull();
     });
 
     it("renders default message when component is not supplied", () => {
       const { getByText } = render(<PropertyGrid {...commonProps} editableRuleset={editableRuleset} />);
-      expect(getByText("No elements selected.")).not.to.be.null;
+      expect(getByText("No elements selected.")).not.toBeNull();
     });
   });
 
   describe("too many elements selected state", () => {
-    beforeEach(async () => {
-      stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: true, numSelectedElements: 1 }));
-      PropertyGrid = (await import("./PropertyGrid.js")).PropertyGrid;
+    beforeEach(() => {
+      stubUsePropertyDataProvider.mockImplementation(() => ({ isOverLimit: true, numSelectedElements: 1 }));
     });
 
     it("renders supplied component", () => {
       const { getByText } = render(
         <PropertyGrid {...commonProps} editableRuleset={editableRuleset} tooManyElementsSelectedState={() => <>Test Component</>} />,
       );
-      expect(getByText("Test Component")).not.to.be.null;
+      expect(getByText("Test Component")).not.toBeNull();
     });
 
     it("renders default message when too many elements are selected", () => {
       const { getByText } = render(<PropertyGrid {...commonProps} editableRuleset={editableRuleset} />);
-      expect(getByText("Too many elements selected.")).not.to.be.null;
+      expect(getByText("Too many elements selected.")).not.toBeNull();
     });
   });
 
   describe("undefined property grid model state", () => {
-    beforeEach(async () => {
-      stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: false, numSelectedElements: 1 }));
-      stubUsePropertyGridModel.callsFake(() => undefined);
-      PropertyGrid = (await import("./PropertyGrid.js")).PropertyGrid;
+    beforeEach(() => {
+      stubUsePropertyDataProvider.mockImplementation(() => ({ isOverLimit: false, numSelectedElements: 1 }));
+      stubUsePropertyGridModel.mockImplementation(() => undefined);
     });
 
     it("renders supplied component", () => {
       const { getByText } = render(<PropertyGrid {...commonProps} editableRuleset={editableRuleset} loadingPropertiesState={() => <>Test Component</>} />);
-      expect(getByText("Test Component")).not.to.be.null;
+      expect(getByText("Test Component")).not.toBeNull();
     });
 
     it("renders default message while property grid model is undefined", () => {
       const { getByText } = render(<PropertyGrid {...commonProps} editableRuleset={editableRuleset} />);
-      expect(getByText("Loading properties...")).not.to.be.null;
+      expect(getByText("Loading properties...")).not.toBeNull();
     });
   });
 
@@ -154,13 +138,12 @@ describe("PropertyGrid", () => {
     let propertyGridModel: componentsReact.MutablePropertyGridModel;
 
     beforeEach(async () => {
-      stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: false, numSelectedElements: 1 }));
+      stubUsePropertyDataProvider.mockImplementation(() => ({ isOverLimit: false, numSelectedElements: 1 }));
 
       const stubModelSource = {
-        modifyModel: sinon.fake((callback: any) => callback(propertyGridModel)),
+        modifyModel: vi.fn((callback: any) => callback(propertyGridModel)),
       } as unknown as componentsReact.PropertyGridModelSource;
-      stubUsePropertyGridModelSource.callsFake(() => ({ modelSource: stubModelSource, inProgress: false }));
-      PropertyGrid = (await import("./PropertyGrid.js")).PropertyGrid;
+      stubUsePropertyGridModelSource.mockImplementation(() => ({ modelSource: stubModelSource, inProgress: false }));
 
       const propertyData: componentsReact.PropertyData = {
         label: new PropertyRecord({ valueFormat: PropertyValueFormat.Primitive }, { name: "test", displayLabel: "test", typename: StandardTypeNames.String }),
@@ -195,8 +178,8 @@ describe("PropertyGrid", () => {
         const button = await waitFor(() => getByText("Expand"));
         button.click();
         await waitFor(() => {
-          expect(propertyGridModel.getItem("root").isExpanded).to.be.true;
-          expect(propertyGridModel.getItem("root_child").isExpanded).to.be.true;
+          expect(propertyGridModel.getItem("root").isExpanded).toBe(true);
+          expect(propertyGridModel.getItem("root_child").isExpanded).toBe(true);
         });
       });
     });
@@ -218,8 +201,8 @@ describe("PropertyGrid", () => {
         const button = await waitFor(() => getByText("Collapse"));
         button.click();
         await waitFor(() => {
-          expect(propertyGridModel.getItem("root").isExpanded).to.be.false;
-          expect(propertyGridModel.getItem("root_child").isExpanded).to.be.false;
+          expect(propertyGridModel.getItem("root").isExpanded).toBe(false);
+          expect(propertyGridModel.getItem("root_child").isExpanded).toBe(false);
         });
       });
     });
@@ -228,9 +211,8 @@ describe("PropertyGrid", () => {
   describe("keepCategoriesExpanded", () => {
     let propertyData: componentsReact.PropertyData;
 
-    beforeEach(async () => {
-      stubUsePropertyDataProvider.callsFake(() => ({ isOverLimit: false, numSelectedElements: 1 }));
-      PropertyGrid = (await import("./PropertyGrid.js")).PropertyGrid;
+    beforeEach(() => {
+      stubUsePropertyDataProvider.mockImplementation(() => ({ isOverLimit: false, numSelectedElements: 1 }));
       propertyData = {
         label: new PropertyRecord({ valueFormat: PropertyValueFormat.Primitive }, { name: "test", displayLabel: "test", typename: StandardTypeNames.String }),
         categories: [
@@ -247,26 +229,26 @@ describe("PropertyGrid", () => {
 
     it("expands all nested categories when true", async () => {
       render(<PropertyGrid {...commonProps} editableRuleset={editableRuleset} keepCategoriesExpanded={true} />);
-      expect(stubUsePropertyDataProvider).to.have.been.calledOnce;
+      expect(stubUsePropertyDataProvider).toHaveBeenCalledOnce();
 
-      const { dataProvider } = stubUsePropertyDataProvider.firstCall.args[0];
+      const { dataProvider } = stubUsePropertyDataProvider.mock.calls[0][0];
       (dataProvider as any).getMemoizedData = async () => propertyData;
 
       const data = await dataProvider.getData();
-      expect(data.categories[0].expand).to.be.true;
-      expect(data.categories[0].childCategories?.[0].expand).to.be.true;
+      expect(data.categories[0].expand).toBe(true);
+      expect(data.categories[0].childCategories?.[0].expand).toBe(true);
     });
 
     it("does not modify category expansion when false", async () => {
       render(<PropertyGrid {...commonProps} editableRuleset={editableRuleset} keepCategoriesExpanded={false} />);
-      expect(stubUsePropertyDataProvider).to.have.been.calledOnce;
+      expect(stubUsePropertyDataProvider).toHaveBeenCalledOnce();
 
-      const { dataProvider } = stubUsePropertyDataProvider.firstCall.args[0];
+      const { dataProvider } = stubUsePropertyDataProvider.mock.calls[0][0];
       (dataProvider as any).getMemoizedData = async () => propertyData;
 
       const data = await dataProvider.getData();
-      expect(data.categories[0].expand).to.be.true;
-      expect(data.categories[0].childCategories?.[0].expand).to.be.false;
+      expect(data.categories[0].expand).toBe(true);
+      expect(data.categories[0].childCategories?.[0].expand).toBe(false);
     });
   });
 });

@@ -1,4 +1,0 @@
-{
-  "require": ["ignore-styles", "./lib/src/TestSetup.js"],
-  "spec": ["./lib/src/**/*.test.js"]
-}

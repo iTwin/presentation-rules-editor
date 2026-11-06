@@ -62,7 +62,7 @@ export interface PropertyGridAttributes {
  * Displays properties of selected elements. This component updates itself when {@linkcode EditableRuleset} content
  * changes.
  */
-export const PropertyGrid = React.forwardRef<PropertyGridAttributes, PropertyGridProps>(function PropertyGrid(props, ref): React.ReactElement | null {
+export const PropertyGrid = React.forwardRef<PropertyGridAttributes, PropertyGridProps>(function PropertyGridComponent(props, ref): React.ReactElement | null {
   const { iModel, editableRuleset, keepCategoriesExpanded, ...restProps } = props;
   const dataProvider = useDataProvider(iModel, editableRuleset, !!keepCategoriesExpanded);
   if (!dataProvider) {
@@ -77,7 +77,7 @@ type PropertyGridWithProviderProps = Omit<PropertyGridProps, "iModel" | "editabl
 };
 
 const PropertyGridWithProvider = React.forwardRef<PropertyGridAttributes, PropertyGridWithProviderProps>(
-  function PropertyGridWithProvider(props, ref): React.ReactElement {
+  function PropertyGridWithProviderComponent(props, ref): React.ReactElement {
     const dataProvider = props.dataProvider;
     const { modelSource, inProgress } = useTrackedPropertyGridModelSource({ dataProvider });
     const propertyGridModel = usePropertyGridModel({ modelSource });
@@ -102,6 +102,7 @@ const PropertyGridWithProvider = React.forwardRef<PropertyGridAttributes, Proper
       [modelSource],
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-deprecated -- Unified selection storage migration is tracked in issue #205.
     const { isOverLimit, numSelectedElements } = usePropertyDataProviderWithUnifiedSelection({ dataProvider });
     if (numSelectedElements === 0) {
       return (
@@ -141,6 +142,7 @@ const PropertyGridWithProvider = React.forwardRef<PropertyGridAttributes, Proper
         dataProvider={dataProvider}
         model={propertyGridModel}
         eventHandler={eventHandler}
+        editorSystem="new"
         orientation={Orientation.Horizontal}
         horizontalOrientationMinWidth={400}
         minLabelWidth={150}

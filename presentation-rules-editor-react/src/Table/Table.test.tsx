@@ -3,9 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { expect } from "chai";
-import * as sinon from "sinon";
-import * as td from "testdouble";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PropertyRecord } from "@itwin/appui-abstract";
 import { IModelConnection } from "@itwin/core-frontend";
 import * as itwinuiReact from "@itwin/itwinui-react";
@@ -13,11 +11,25 @@ import { Field } from "@itwin/presentation-common";
 import * as presentationComponents from "@itwin/presentation-components";
 import { cleanup, render, waitFor } from "@testing-library/react";
 import { EditableRuleset } from "../EditableRuleset.js";
-import { SinonStub, stubPresentationManager } from "../TestUtils.js";
+import { MockFunction, stubPresentationManager } from "../TestUtils.js";
 import { TableProps } from "./Table.js";
 
-const presentationComponentsModulePath = import.meta.resolve("@itwin/presentation-components");
-const iTwinUIReactModulePath = import.meta.resolve("@itwin/itwinui-react");
+const tableMocks = vi.hoisted(() => ({
+  uiTable: vi.fn(),
+  cellRenderer: vi.fn(),
+  usePresentationTable: vi.fn(),
+}));
+
+vi.mock("@itwin/itwinui-react", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@itwin/itwinui-react")>()),
+  Table: tableMocks.uiTable,
+}));
+
+vi.mock("@itwin/presentation-components", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@itwin/presentation-components")>()),
+  TableCellRenderer: tableMocks.cellRenderer,
+  usePresentationTableWithUnifiedSelection: tableMocks.usePresentationTable,
+}));
 
 describe("Table", () => {
   interface ColumnType {
@@ -34,23 +46,16 @@ describe("Table", () => {
   };
 
   let Table: (props: TableProps) => React.JSX.Element;
-  const stubITwinUiTable = sinon.stub();
-  const stubPresentationTableCellRenderer: SinonStub<typeof presentationComponents.TableCellRenderer> = sinon.stub();
-  const stubUsePresentationTable: SinonStub<typeof presentationComponents.usePresentationTableWithUnifiedSelection<ColumnType, RowType>> = sinon.stub();
+  const stubITwinUiTable = tableMocks.uiTable as MockFunction<typeof itwinuiReact.Table>;
+  const stubPresentationTableCellRenderer = tableMocks.cellRenderer as MockFunction<typeof presentationComponents.TableCellRenderer>;
+  const stubUsePresentationTable = tableMocks.usePresentationTable as MockFunction<
+    typeof presentationComponents.usePresentationTableWithUnifiedSelection<ColumnType, RowType>
+  >;
   let editableRuleset: EditableRuleset;
 
   beforeEach(async () => {
     stubPresentationManager();
-    stubITwinUiTable.callsFake(() => <></>);
-    await td.replaceEsm(iTwinUIReactModulePath, {
-      ...itwinuiReact,
-      Table: stubITwinUiTable,
-    });
-    await td.replaceEsm(presentationComponentsModulePath, {
-      ...presentationComponents,
-      TableCellRenderer: stubPresentationTableCellRenderer,
-      usePresentationTableWithUnifiedSelection: stubUsePresentationTable,
-    });
+    stubITwinUiTable.mockImplementation(() => <></>);
     Table = (await import("./Table.js")).Table;
     editableRuleset = new EditableRuleset({ initialRuleset: { id: "", rules: [] } });
   });
@@ -60,13 +65,13 @@ describe("Table", () => {
     cleanup();
 
     editableRuleset[Symbol.dispose]();
-    sinon.reset();
-    td.reset();
+    vi.restoreAllMocks();
+    vi.resetAllMocks();
   });
 
   describe("normal state", () => {
     beforeEach(() => {
-      stubUsePresentationTable.callsFake(() => ({
+      stubUsePresentationTable.mockImplementation(() => ({
         isLoading: false,
         columns: [
           {
@@ -79,24 +84,24 @@ describe("Table", () => {
           },
         ],
         selectedRows: [],
-        onSelect: sinon.stub(),
-        loadMoreRows: sinon.stub(),
-        filter: sinon.stub(),
-        sort: sinon.stub(),
+        onSelect: vi.fn(),
+        loadMoreRows: vi.fn(),
+        filter: vi.fn(),
+        sort: vi.fn(),
       }));
     });
 
     it("renders iTwinUi Table", () => {
       render(<Table {...commonProps} editableRuleset={editableRuleset} />);
-      expect(stubITwinUiTable).to.have.been.calledOnce;
-      const args = stubITwinUiTable.args[0][0];
-      expect(args.isLoading).to.be.false;
-      expect(args.columns).to.deep.eq([
+      expect(stubITwinUiTable).toHaveBeenCalledOnce();
+      const args = stubITwinUiTable.mock.calls[0][0];
+      expect(args.isLoading).toBe(false);
+      expect(args.columns).toEqual([
         {
           id: "test-column",
         },
       ]);
-      expect(args.data).to.deep.eq([
+      expect(args.data).toEqual([
         {
           "test-column": "test value",
         },
@@ -107,28 +112,28 @@ describe("Table", () => {
       render(<Table {...commonProps} editableRuleset={editableRuleset} />);
       await editableRuleset.updateRuleset({ id: "", rules: [] });
       await waitFor(() => {
-        expect(stubUsePresentationTable).to.have.been.calledTwice;
-        expect(stubUsePresentationTable.firstCall.args[0].ruleset).not.to.equal(stubUsePresentationTable.secondCall.args[0].ruleset);
+        expect(stubUsePresentationTable).toHaveBeenCalledTimes(2);
+        expect(stubUsePresentationTable.mock.calls[0][0].ruleset).not.toBe(stubUsePresentationTable.mock.calls[1][0].ruleset);
       });
     });
 
     it("maps Presentation defs to iTwinUi Table defs", () => {
-      stubPresentationTableCellRenderer.callsFake(() => <></>);
+      stubPresentationTableCellRenderer.mockImplementation(() => <></>);
       render(<Table {...commonProps} editableRuleset={editableRuleset} />);
-      expect(stubUsePresentationTable).to.have.been.calledOnce;
-      const args = stubUsePresentationTable.args[0][0];
+      expect(stubUsePresentationTable).toHaveBeenCalledOnce();
+      const args = stubUsePresentationTable.mock.calls[0][0];
 
       const { Cell, ...columnMapperResult } = args.columnMapper({
         name: "test-column",
         label: "Test Column",
-        field: sinon.createStubInstance(Field),
+        field: {} as Field,
       });
-      expect(columnMapperResult).to.deep.eq({
+      expect(columnMapperResult).toEqual({
         id: "test-column",
         accessor: "test-column",
         Header: "Test Column",
       });
-      expect(Cell).to.not.be.undefined;
+      expect(Cell).toBeDefined();
 
       const record = PropertyRecord.fromString("test value");
       const rowsMapperResult = args.rowMapper({
@@ -140,30 +145,31 @@ describe("Table", () => {
           },
         ],
       });
-      expect(rowsMapperResult).to.deep.eq({
+      expect(rowsMapperResult).toEqual({
         "test-column": record,
       });
 
       const { container } = render(<Cell value={undefined} />);
-      expect(stubPresentationTableCellRenderer).to.not.be.called;
-      expect(container.innerHTML).to.be.empty;
+      expect(stubPresentationTableCellRenderer).not.toHaveBeenCalled();
+      expect(container.innerHTML).toBe("");
 
       render(<Cell value={record} />);
-      expect(stubPresentationTableCellRenderer).to.be.calledOnceWith({ record });
+      expect(stubPresentationTableCellRenderer).toHaveBeenCalledOnce();
+      expect(stubPresentationTableCellRenderer.mock.calls[0][0]).toEqual({ record });
     });
   });
 
   describe("loading content state", () => {
     beforeEach(() => {
-      stubUsePresentationTable.callsFake(() => ({
+      stubUsePresentationTable.mockImplementation(() => ({
         isLoading: true,
         columns: undefined,
         rows: [],
         selectedRows: [],
-        onSelect: sinon.stub(),
-        loadMoreRows: sinon.stub(),
-        filter: sinon.stub(),
-        sort: sinon.stub(),
+        onSelect: vi.fn(),
+        loadMoreRows: vi.fn(),
+        filter: vi.fn(),
+        sort: vi.fn(),
       }));
     });
 
@@ -180,15 +186,15 @@ describe("Table", () => {
 
   describe("no content state", () => {
     beforeEach(() => {
-      stubUsePresentationTable.callsFake(() => ({
+      stubUsePresentationTable.mockImplementation(() => ({
         isLoading: false,
         columns: [],
         rows: [],
         selectedRows: [],
-        onSelect: sinon.stub(),
-        loadMoreRows: sinon.stub(),
-        filter: sinon.stub(),
-        sort: sinon.stub(),
+        onSelect: vi.fn(),
+        loadMoreRows: vi.fn(),
+        filter: vi.fn(),
+        sort: vi.fn(),
       }));
     });
 
@@ -205,7 +211,7 @@ describe("Table", () => {
 
   describe("no rows state", () => {
     beforeEach(() => {
-      stubUsePresentationTable.callsFake(() => ({
+      stubUsePresentationTable.mockImplementation(() => ({
         isLoading: false,
         columns: [
           {
@@ -214,31 +220,27 @@ describe("Table", () => {
         ],
         rows: [],
         selectedRows: [],
-        onSelect: sinon.stub(),
-        loadMoreRows: sinon.stub(),
-        filter: sinon.stub(),
-        sort: sinon.stub(),
+        onSelect: vi.fn(),
+        loadMoreRows: vi.fn(),
+        filter: vi.fn(),
+        sort: vi.fn(),
       }));
     });
 
     it("passes supplied component to iTwinUi Table", () => {
       render(<Table {...commonProps} editableRuleset={editableRuleset} noRowsState={() => <>Test Component</>} />);
-      expect(stubITwinUiTable).to.have.been.calledOnceWith(
-        sinon.match(({ emptyTableContent }) => {
-          const { getByText } = render(emptyTableContent);
-          return !!getByText("Test Component");
-        }),
-      );
+      expect(stubITwinUiTable).toHaveBeenCalledOnce();
+      const { emptyTableContent } = stubITwinUiTable.mock.calls[0][0];
+      const { getByText } = render(emptyTableContent);
+      getByText("Test Component");
     });
 
     it("passes default message to iTwinUi Table when component is not supplied", () => {
       render(<Table {...commonProps} editableRuleset={editableRuleset} />);
-      expect(stubITwinUiTable).to.have.been.calledOnceWith(
-        sinon.match(({ emptyTableContent }) => {
-          const { getByText } = render(emptyTableContent);
-          return !!getByText("No rows.");
-        }),
-      );
+      expect(stubITwinUiTable).toHaveBeenCalledOnce();
+      const { emptyTableContent } = stubITwinUiTable.mock.calls[0][0];
+      const { getByText } = render(emptyTableContent);
+      getByText("No rows.");
     });
   });
 });

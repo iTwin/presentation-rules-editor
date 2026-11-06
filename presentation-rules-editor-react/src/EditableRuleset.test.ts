@@ -3,24 +3,23 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { expect } from "chai";
-import * as sinon from "sinon";
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { Ruleset } from "@itwin/presentation-common";
 import { Presentation } from "@itwin/presentation-frontend";
 import { EditableRuleset } from "./EditableRuleset.js";
 import { stubPresentationManager } from "./TestUtils.js";
 
 describe("EditableRuleset", () => {
-  before(() => {
+  beforeAll(() => {
     stubPresentationManager();
   });
 
-  after(() => {
-    sinon.reset();
+  afterAll(() => {
+    vi.restoreAllMocks();
   });
 
   beforeEach(() => {
-    sinon.resetHistory();
+    vi.clearAllMocks();
   });
 
   const initialRuleset: Ruleset = {
@@ -33,7 +32,7 @@ describe("EditableRuleset", () => {
       const editableRuleset1 = new EditableRuleset({ initialRuleset });
       const editableRuleset2 = new EditableRuleset({ initialRuleset });
 
-      expect(editableRuleset1.id).not.to.be.equal(editableRuleset2.id);
+      expect(editableRuleset1.id).not.toBe(editableRuleset2.id);
 
       editableRuleset1[Symbol.dispose]();
       editableRuleset2[Symbol.dispose]();
@@ -41,14 +40,16 @@ describe("EditableRuleset", () => {
 
     it("sets initial ruleset content", () => {
       const editableRuleset = new EditableRuleset({ initialRuleset });
-      expect(editableRuleset.rulesetContent).to.be.equal(initialRuleset);
+      expect(editableRuleset.rulesetContent).toBe(initialRuleset);
 
       editableRuleset[Symbol.dispose]();
     });
 
     it("registers Presentation ruleset", () => {
       const editableRuleset = new EditableRuleset({ initialRuleset });
-      expect(Presentation.presentation.rulesets().add).to.have.been.calledOnce.and.calledWithMatch(sinon.match({ id: editableRuleset.id }));
+      const addRuleset = Presentation.presentation.rulesets().add;
+      expect(addRuleset).toHaveBeenCalledOnce();
+      expect(addRuleset).toHaveBeenCalledWith(expect.objectContaining({ id: editableRuleset.id }));
 
       editableRuleset[Symbol.dispose]();
     });
@@ -59,23 +60,23 @@ describe("EditableRuleset", () => {
       const editableRuleset = new EditableRuleset({ initialRuleset });
       editableRuleset[Symbol.dispose]();
       const registeredRuleset = await Presentation.presentation.rulesets().add({} as any);
-      expect(registeredRuleset[Symbol.dispose]).to.have.been.calledOnce;
+      expect(registeredRuleset[Symbol.dispose]).toHaveBeenCalledOnce();
     });
 
     it("does nothing when called again", async () => {
       const editableRuleset = new EditableRuleset({ initialRuleset });
-      expect(editableRuleset.disposed).to.be.false;
+      expect(editableRuleset.disposed).toBe(false);
       editableRuleset[Symbol.dispose]();
-      expect(editableRuleset.disposed).to.be.true;
+      expect(editableRuleset.disposed).toBe(true);
 
       // Call again synchronously
       editableRuleset[Symbol.dispose]();
       const registeredRuleset = await Presentation.presentation.rulesets().add({} as any);
-      expect(registeredRuleset[Symbol.dispose]).to.have.been.calledOnce;
+      expect(registeredRuleset[Symbol.dispose]).toHaveBeenCalledOnce();
 
       // Call again in another task
       editableRuleset[Symbol.dispose]();
-      expect(registeredRuleset[Symbol.dispose]).to.have.been.calledOnce;
+      expect(registeredRuleset[Symbol.dispose]).toHaveBeenCalledOnce();
     });
   });
 
@@ -85,7 +86,8 @@ describe("EditableRuleset", () => {
       await editableRuleset.updateRuleset(initialRuleset);
       const registeredRuleset = await Presentation.presentation.rulesets().add({} as any);
       const modifySpy = Presentation.presentation.rulesets().modify;
-      expect(modifySpy).to.have.been.calledOnceWithExactly(registeredRuleset, initialRuleset);
+      expect(modifySpy).toHaveBeenCalledOnce();
+      expect(modifySpy).toHaveBeenCalledWith(registeredRuleset, initialRuleset);
 
       editableRuleset[Symbol.dispose]();
     });
@@ -94,24 +96,24 @@ describe("EditableRuleset", () => {
       const editableRuleset = new EditableRuleset({ initialRuleset });
       editableRuleset[Symbol.dispose]();
       await editableRuleset.updateRuleset(initialRuleset);
-      expect(Presentation.presentation.rulesets().modify).to.not.have.been.called;
+      expect(Presentation.presentation.rulesets().modify).not.toHaveBeenCalled();
     });
 
     it("does nothing when disposed immediately after the call", () => {
       const editableRuleset = new EditableRuleset({ initialRuleset });
       void editableRuleset.updateRuleset(initialRuleset);
       editableRuleset[Symbol.dispose]();
-      expect(Presentation.presentation.rulesets().modify).to.not.have.been.called;
+      expect(Presentation.presentation.rulesets().modify).not.toHaveBeenCalled();
     });
 
     it("fires onAfterRulesetUpdated event", async () => {
       const editableRuleset = new EditableRuleset({ initialRuleset });
-      const fakeEventListener = sinon.fake();
+      const fakeEventListener = vi.fn();
       editableRuleset.onAfterRulesetUpdated.addListener(fakeEventListener);
-      expect(fakeEventListener).not.to.have.been.called;
+      expect(fakeEventListener).not.toHaveBeenCalled();
 
       await editableRuleset.updateRuleset(initialRuleset);
-      expect(fakeEventListener).to.have.been.calledOnce;
+      expect(fakeEventListener).toHaveBeenCalledOnce();
 
       editableRuleset[Symbol.dispose]();
     });

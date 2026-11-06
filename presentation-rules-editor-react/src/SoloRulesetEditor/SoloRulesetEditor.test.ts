@@ -3,35 +3,34 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { expect } from "chai";
 import * as monaco from "monaco-editor";
-import * as sinon from "sinon";
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { EditableRuleset } from "../EditableRuleset.js";
-import { SinonStub, stubPresentationManager } from "../TestUtils.js";
+import { MockFunction, stubPresentationManager } from "../TestUtils.js";
 import { SoloRulesetEditor } from "./SoloRulesetEditor.js";
 
 describe("SoloRulesetEditor", () => {
   let editableRuleset: EditableRuleset;
 
-  before(() => {
+  beforeAll(() => {
     stubPresentationManager();
     editableRuleset = new EditableRuleset({ initialRuleset: { id: "", rules: [] } });
   });
 
-  after(() => {
+  afterAll(() => {
     editableRuleset[Symbol.dispose]();
-    sinon.reset();
+    vi.restoreAllMocks();
   });
 
-  let stubGetModel: SinonStub<(typeof monaco.editor)["getModel"]>;
-  let stubCreateModel: SinonStub<(typeof monaco.editor)["createModel"]>;
+  let stubGetModel: MockFunction<(typeof monaco.editor)["getModel"]>;
+  let stubCreateModel: MockFunction<(typeof monaco.editor)["createModel"]>;
   let monacoModule: DeepPartial<typeof monaco>;
 
   type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
 
   beforeEach(() => {
-    stubGetModel = sinon.stub();
-    stubCreateModel = sinon.stub();
+    stubGetModel = vi.fn();
+    stubCreateModel = vi.fn();
 
     monacoModule = {
       Uri: {
@@ -48,25 +47,27 @@ describe("SoloRulesetEditor", () => {
 
   describe("constructor", () => {
     it("grabs existing model if one exists", () => {
-      stubGetModel.callsFake(() => ({}) as any);
+      stubGetModel.mockImplementation(() => ({}) as any);
 
       new SoloRulesetEditor({ editableRuleset, monaco: monacoModule as typeof monaco });
 
-      expect(monacoModule.editor?.getModel).to.have.been.calledOnceWithExactly(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
-      expect(monacoModule.editor?.createModel).not.to.have.been.called;
+      expect(monacoModule.editor?.getModel).toHaveBeenCalledOnce();
+      expect(monacoModule.editor?.getModel).toHaveBeenCalledWith(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
+      expect(monacoModule.editor?.createModel).not.toHaveBeenCalled();
     });
 
     it("creates new model of one doesn't exist", () => {
       new SoloRulesetEditor({ editableRuleset, monaco: monacoModule as typeof monaco });
 
-      expect(monacoModule.editor?.getModel).to.have.been.calledOnceWithExactly(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
-      expect(monacoModule.editor?.createModel).to.have.been.calledOnce;
+      expect(monacoModule.editor?.getModel).toHaveBeenCalledOnce();
+      expect(monacoModule.editor?.getModel).toHaveBeenCalledWith(`presentation-rules-editor://rulesets/${editableRuleset.id}.ruleset.json`);
+      expect(monacoModule.editor?.createModel).toHaveBeenCalledOnce();
     });
   });
 
   describe("dispose", () => {
     it("disposes underlying model", () => {
-      const stubModel = sinon.spy({
+      const stubModel = {
         disposed: false,
         dispose() {
           this.disposed = true;
@@ -74,16 +75,17 @@ describe("SoloRulesetEditor", () => {
         isDisposed() {
           return this.disposed;
         },
-      });
-      stubGetModel.callsFake(() => stubModel as any);
+      };
+      const disposeSpy = vi.spyOn(stubModel, "dispose");
+      stubGetModel.mockImplementation(() => stubModel as any);
 
       const rulesetEditor = new SoloRulesetEditor({ editableRuleset, monaco: monacoModule as typeof monaco });
-      expect(rulesetEditor.disposed).to.be.false;
-      expect(stubModel.dispose).not.to.have.been.called;
+      expect(rulesetEditor.disposed).toBe(false);
+      expect(disposeSpy).not.toHaveBeenCalled();
 
       rulesetEditor[Symbol.dispose]();
-      expect(rulesetEditor.disposed).to.be.true;
-      expect(stubModel.dispose).to.have.been.calledOnce;
+      expect(rulesetEditor.disposed).toBe(true);
+      expect(disposeSpy).toHaveBeenCalledOnce();
     });
   });
 });
