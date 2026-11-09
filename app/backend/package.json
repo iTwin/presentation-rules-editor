@@ -40,6 +40,6 @@
     "eslint": "catalog:build-tools",
     "tsx": "catalog:build-tools",
     "typescript": "catalog:build-tools",
-    "vitest": "^5.1.0"
+    "vitest": "catalog:build-tools"
   }
 }
