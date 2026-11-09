@@ -94,17 +94,15 @@ describe("Local RPC server", () => {
     expect(await response.text()).toMatch(/^[a-f0-9]{64}$/);
   });
 
-  for (const origin of untrustedOrigins) {
-    it(`rejects session bootstrap and preflight with origin ${String(origin)}`, async () => {
-      // Check both token retrieval and preflight; neither should disclose a token or advertise wildcard CORS.
-      for (const method of ["GET", "OPTIONS"]) {
-        const response = await fetch(`${baseUrl}${localRpcConfiguration.sessionPath}`, { method, headers: origin ? { origin } : {} });
-        expect(response.status).toBe(403);
-        expect(response.headers.get("Access-Control-Allow-Origin")).not.toBe("*");
-        expect(await response.text()).not.toContain(sessionToken);
-      }
-    });
-  }
+  it.each(untrustedOrigins)("rejects session bootstrap and preflight with origin %s", async (origin) => {
+    // Check both token retrieval and preflight; neither should disclose a token or advertise wildcard CORS.
+    for (const method of ["GET", "OPTIONS"]) {
+      const response = await fetch(`${baseUrl}${localRpcConfiguration.sessionPath}`, { method, headers: origin ? { origin } : {} });
+      expect(response.status).toBe(403);
+      expect(response.headers.get("Access-Control-Allow-Origin")).not.toBe("*");
+      expect(await response.text()).not.toContain(sessionToken);
+    }
+  });
 
   it("rejects a DNS rebinding host even with the correct origin and capability", async () => {
     // Keep origin and capability valid so the hostile Host header is the reason for rejection.
@@ -138,8 +136,9 @@ describe("Local RPC server", () => {
     }
   });
 
-  for (const operation of ["getAvailableIModels", "getConnectionProps", "closeConnection", "openIModelsDirectory", "queryRows"]) {
-    it(`requires a valid capability for ${operation}`, async () => {
+  it.each(["getAvailableIModels", "getConnectionProps", "closeConnection", "openIModelsDirectory", "queryRows"])(
+    "requires a valid capability for %s",
+    async (operation) => {
       const definition = operation === "queryRows" ? IModelReadRpcInterface : PresentationRulesEditorRpcInterface;
       // Exercise missing, empty, and incorrect credentials on every exposed operation.
       for (const token of [undefined, "", "invalid-session"]) {
@@ -152,8 +151,8 @@ describe("Local RPC server", () => {
         const response = await fetch(rpcUrl(definition, operation), { method: "POST", headers, body: "[]" });
         expect(response.status).toBe(401);
       }
-    });
-  }
+    },
+  );
 
   it("protects GET RPCs and the API description as well as POST RPCs", async () => {
     // RPCs and API metadata are separate routes, so both need the same authentication guard.

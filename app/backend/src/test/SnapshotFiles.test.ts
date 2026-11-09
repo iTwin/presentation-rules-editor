@@ -62,18 +62,16 @@ describe("Local snapshot files", () => {
     expect(SnapshotDb.findByFilename(outsidePath)).toBe(db);
   });
 
-  for (const name of ["allowed.bim", "inside-link.bim"]) {
-    it(`opens and closes ${name} using its canonical path`, async () => {
-      const props = await rpc.getConnectionProps(name);
-      // The in-directory symlink is valid, but the database itself is keyed by its resolved path.
-      const filename = fs.realpathSync(path.join(imodelsDirectory, name));
-      expect(SnapshotDb.findByFilename(filename)?.key).toBe(props.key);
-      await rpc.closeConnection(name);
-      expect(SnapshotDb.findByFilename(filename)).toBeUndefined();
-    });
-  }
+  it.each(["allowed.bim", "inside-link.bim"])("opens and closes %s using its canonical path", async (name) => {
+    const props = await rpc.getConnectionProps(name);
+    // The in-directory symlink is valid, but the database itself is keyed by its resolved path.
+    const filename = fs.realpathSync(path.join(imodelsDirectory, name));
+    expect(SnapshotDb.findByFilename(filename)?.key).toBe(props.key);
+    await rpc.closeConnection(name);
+    expect(SnapshotDb.findByFilename(filename)).toBeUndefined();
+  });
 
-  for (const name of [
+  it.each([
     "../imodels-outside/outside.bim",
     "..\\imodels-outside\\outside.bim",
     "outside-link.bim",
@@ -81,12 +79,10 @@ describe("Local snapshot files", () => {
     "directory.bim",
     "other.txt",
     "",
-  ]) {
-    it(`rejects invalid snapshot name ${JSON.stringify(name)} for open and close`, async () => {
-      await expect(rpc.getConnectionProps(name)).rejects.toThrow(/iModel/);
-      await expect(rpc.closeConnection(name)).rejects.toThrow(/iModel/);
-    });
-  }
+  ])("rejects invalid snapshot name %j for open and close", async (name) => {
+    await expect(rpc.getConnectionProps(name)).rejects.toThrow(/iModel/);
+    await expect(rpc.closeConnection(name)).rejects.toThrow(/iModel/);
+  });
 
   it("lists only regular snapshot files", async () => {
     const imodels = await rpc.getAvailableIModels();
