@@ -152,7 +152,7 @@ function createEditor(
   };
 }
 
-const SubmitRulesetWidget = React.forwardRef<HTMLDivElement, SubmitRulesetWidgetProps>(function SubmitRulesetWidget(props, ref) {
+const SubmitRulesetWidget = React.forwardRef<HTMLDivElement, SubmitRulesetWidgetProps>(function SubmitRulesetWidgetComponent(props, ref) {
   const handleSubmitButtonClick = () => {
     assert(props.editor !== undefined);
     props.editor.trigger(undefined, "presentation-rules-editor:submit-ruleset", {});

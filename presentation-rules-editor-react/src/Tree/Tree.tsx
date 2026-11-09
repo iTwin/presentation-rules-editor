@@ -42,7 +42,6 @@ export function Tree(props: TreeProps) {
     eventHandlerFactory,
   });
 
-  /* c8 ignore next 3*/
   if (!state) {
     return null;
   }
@@ -58,7 +57,6 @@ export function Tree(props: TreeProps) {
   );
 }
 
-/* c8 ignore next 3*/
 function eventHandlerFactory(props: PresentationTreeEventHandlerProps) {
   return new UnifiedSelectionTreeEventHandler(props);
 }
