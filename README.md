@@ -43,7 +43,7 @@ Open the local application at `http://localhost:3000`. The backend listens only 
 
 Local snapshot RPCs accept filenames, not paths. Files must end in `.bim` and resolve to regular files within `app/backend/assets/imodels`, or the `imodels` directory under a configured `IModelHost.appAssetsDir`. Symlinks cannot grant access outside that directory. Copy snapshots into the directory rather than linking to files elsewhere.
 
-The local backend is for a trusted developer workstation, not a shared or publicly accessible service. Processes running as the same local user remain trusted.
+The local backend is for a trusted developer workstation, not a shared or publicly accessible service. Its origin checks only stop browsers, so any local process, including those of other users and any other server on port 3000, can obtain a session.
 
 ## Contributing
 

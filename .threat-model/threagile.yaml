@@ -14,8 +14,8 @@ business_overview:
 technical_overview:
   description: |
     The Presentation rules editor is a React static site. It uses iTwins and iModels APIs to query datasets available for the user, including the demo ones that are available for all users. The iModels visualization service is used to evaluate provided Presentation rules against the selected iModel.
-    Local development also runs an RPC backend on IPv4 loopback. Only http://localhost:3000 can bootstrap a random, in-memory session capability. All RPC operations, including generic iModel reads, require that capability. The backend validates Host and Origin before dispatch and does not allow wildcard CORS.
-    Snapshot operations accept filenames only and resolve their canonical paths. The final target must be a regular .bim file within the configured imodels directory, including after resolving symlinks or junctions. Local processes running as the same user and the configured model directory are trusted.
+    Local development also runs an RPC backend on IPv4 loopback. Only browser pages from http://localhost:3000 can bootstrap a random, in-memory session capability. All RPC operations, including generic iModel reads, require that capability. The backend validates Host and Origin before dispatch and does not allow wildcard CORS.
+    Snapshot operations accept filenames only and resolve their canonical paths. The final target must be a regular .bim file within the configured imodels directory, including after resolving symlinks or junctions. Origin checks only constrain browsers, so any local process can obtain the capability. All local processes, regardless of user, any other server on port 3000, and the configured model directory are trusted.
 
 data_assets:
   Local iModel files:
@@ -539,7 +539,7 @@ trust_boundaries:
   Developer workstation:
     id: developer-workstation
     description: |
-      The optional local backend and configured snapshot files reside on the developer's workstation. Network peers and unrelated browser origins are untrusted; processes running as the same local user are trusted.
+      The optional local backend and configured snapshot files reside on the developer's workstation. Network peers and unrelated browser origins are untrusted; all local processes, regardless of user, are trusted.
     type: execution-environment
     technical_assets_inside:
       - local-development-backend
