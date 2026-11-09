@@ -84,6 +84,16 @@ describe("Local snapshot files", () => {
     await expect(rpc.closeConnection(name)).rejects.toThrow(/iModel/);
   });
 
+  // Windows does not allow renaming an open snapshot.
+  it.skipIf(process.platform === "win32")("closes a snapshot that was renamed while open", async () => {
+    SnapshotDb.createEmpty(path.join(imodelsDirectory, "renamed.bim"), { rootSubject: { name: "Renamed" } }).close();
+    const filename = fs.realpathSync(path.join(imodelsDirectory, "renamed.bim"));
+    await rpc.getConnectionProps("renamed.bim");
+    fs.renameSync(filename, path.join(directory, "renamed.bim"));
+    await rpc.closeConnection("renamed.bim");
+    expect(SnapshotDb.findByFilename(filename)).toBeUndefined();
+  });
+
   it("lists only regular snapshot files", async () => {
     const imodels = await rpc.getAvailableIModels();
     expect(imodels.map((imodel) => imodel.name)).toEqual(["allowed.bim"]);

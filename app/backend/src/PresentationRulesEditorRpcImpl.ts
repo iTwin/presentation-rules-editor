@@ -12,6 +12,8 @@ import { SnapshotDb } from "@itwin/core-backend";
 import { IModelConnectionProps, RpcManager } from "@itwin/core-common";
 import { SnapshotFileNameResolver } from "./SnapshotFileNameResolver.js";
 
+const openSnapshotPaths = new Map<string, string>();
+
 /** The backend implementation of PresentationRulesEditorRpcInterface. */
 export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcInterface {
   public static register(): void {
@@ -74,12 +76,20 @@ export class PresentationRulesEditorRpcImpl extends PresentationRulesEditorRpcIn
   }
 
   public override async getConnectionProps(imodelName: string): Promise<IModelConnectionProps> {
-    const db = SnapshotDb.openFile(SnapshotFileNameResolver.resolveFileName(imodelName));
+    const filename = SnapshotFileNameResolver.resolveFileName(imodelName);
+    const db = SnapshotDb.openFile(filename);
+    openSnapshotPaths.set(imodelName, filename);
     // eslint-disable-next-line @itwin/no-internal
     return db.getConnectionProps();
   }
 
   public override async closeConnection(imodelName: string): Promise<void> {
-    SnapshotDb.findByFilename(SnapshotFileNameResolver.resolveFileName(imodelName))?.close();
+    // Use the path resolved at open time, as the file may have been renamed or deleted since.
+    const filename = openSnapshotPaths.get(imodelName);
+    if (filename === undefined) {
+      throw new Error("The iModel is not open.");
+    }
+    openSnapshotPaths.delete(imodelName);
+    SnapshotDb.findByFilename(filename)?.close();
   }
 }
