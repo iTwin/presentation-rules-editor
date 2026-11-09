@@ -11,6 +11,7 @@
   "scripts": {
     "start": "tsx src/main.ts",
     "build": "tsc",
+    "test": "vitest run src/test",
     "lint": "eslint ./src/**/*.{ts,tsx}",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch"
@@ -33,10 +34,12 @@
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
+    "@types/express": "^4.17.25",
     "@types/node": "catalog:build-tools",
     "dotenv": "catalog:build-tools",
     "eslint": "catalog:build-tools",
     "tsx": "catalog:build-tools",
-    "typescript": "catalog:build-tools"
+    "typescript": "catalog:build-tools",
+    "vitest": "catalog:build-tools"
   }
 }

@@ -53,6 +53,9 @@ jobs:
       - name: Check unit test coverage
         run: npm run test:cover --prefix ./presentation-rules-editor-react
 
+      - name: Test backend
+        run: npm test --prefix ./app/backend
+
       - name: Run end-to-end tests with local configuration
         run: npm run test:local --prefix ./app/e2e-tests
         timeout-minutes: 5

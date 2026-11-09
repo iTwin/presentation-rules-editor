@@ -24,7 +24,7 @@ export class BackendApi {
   public async openIModel(iModelIdentifier: IModelIdentifier): Promise<IModelConnection> {
     if (isSnapshotIModel(iModelIdentifier)) {
       Logger.logInfo("presentation", `Opening snapshot: ${iModelIdentifier}`);
-      return this.openLocalImodel(`assets/imodels/${iModelIdentifier}`);
+      return this.openLocalImodel(iModelIdentifier);
     }
 
     if (isDemoIModel(iModelIdentifier)) {
@@ -56,10 +56,10 @@ export class BackendApi {
     return viewDefinitionProps[0].id ?? Id64.invalid;
   }
 
-  private async openLocalImodel(path: string) {
-    const connectionsProps = await PresentationRulesEditorRpcInterface.getClient().getConnectionProps(path);
+  private async openLocalImodel(name: string) {
+    const connectionsProps = await PresentationRulesEditorRpcInterface.getClient().getConnectionProps(name);
     const close = async () => {
-      await PresentationRulesEditorRpcInterface.getClient().closeConnection(path);
+      await PresentationRulesEditorRpcInterface.getClient().closeConnection(name);
     };
     const imodel = new LocalIModelConnection(connectionsProps, close);
     return imodel;

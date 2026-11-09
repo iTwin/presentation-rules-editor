@@ -78,7 +78,7 @@
     "@testing-library/react": "^16.3.3",
     "@types/node": "catalog:build-tools",
     "@types/react": "catalog:react",
-    "@vitest/coverage-v8": "^4.1.12",
+    "@vitest/coverage-v8": "catalog:build-tools",
     "cpx2": "catalog:build-tools",
     "cross-env": "catalog:build-tools",
     "eslint": "catalog:build-tools",
@@ -90,6 +90,6 @@
     "react-dom": "catalog:react",
     "ts-node": "^10.9.2",
     "typescript": "catalog:build-tools",
-    "vitest": "^4.1.12"
+    "vitest": "catalog:build-tools"
   }
 }

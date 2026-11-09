@@ -11,6 +11,7 @@ catalogs:
     '@itwin/eslint-plugin': ^6.1.1
     '@types/node': ^25.9.9
     '@vitejs/plugin-react': ^5.2.0
+    '@vitest/coverage-v8': ^4.1.12
     cpx2: ^8.0.2
     cross-env: ^10.1.0
     dotenv: ^17.4.2
@@ -22,6 +23,7 @@ catalogs:
     typescript: ^5.9.3
     vite: 7.3.7
     vite-plugin-static-copy: ^3.4.0
+    vitest: ^4.1.12
   default:
     '@itwin/imodels-access-backend': ^6.1.3
     '@itwin/imodels-access-frontend': ^6.1.3

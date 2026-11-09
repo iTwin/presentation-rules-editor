@@ -2,11 +2,11 @@
 
 # PLEASE SEE REFERENCE DOCUMENTATION (https://github.com/BentleySystems/threagile/blob/master/docs/reference/index.md)
 # FOR GUIDANCE ON ALL AVAILABLE BLOCKS AND ATTRIBUTES.
-title: Presentation rules editor (Web)
+title: Presentation rules editor (Web and local)
 author:
   name: iTwin.js Presentation team
 date: 2022-08-12
-date_of_last_review: 2025-03-17
+date_of_last_review: 2026-11-09
 business_criticality: important
 business_overview:
   description: |
@@ -14,8 +14,30 @@ business_overview:
 technical_overview:
   description: |
     The Presentation rules editor is a React static site. It uses iTwins and iModels APIs to query datasets available for the user, including the demo ones that are available for all users. The iModels visualization service is used to evaluate provided Presentation rules against the selected iModel.
+    Local development also runs an RPC backend on IPv4 loopback. Only browser pages from http://localhost:3000 can bootstrap a random, in-memory session capability. All RPC operations, including generic iModel reads, require that capability. The backend validates Host and Origin before dispatch and does not allow wildcard CORS.
+    Snapshot operations accept filenames only and resolve their canonical paths. The final target must be a regular .bim file within the configured imodels directory, including after resolving symlinks or junctions. Origin checks only constrain browsers, so any local process can obtain the capability. All local processes, regardless of user, any other server on port 3000, and the configured model directory are trusted.
 
 data_assets:
+  Local iModel files:
+    id: local-imodel-files
+    description: Snapshot files explicitly placed in the local backend's configured imodels directory.
+    usage: business
+    origin: User workstation
+    owner: User
+    quantity: many
+    confidentiality: confidential
+    integrity: critical
+    availability: operational
+  Local RPC session capability:
+    id: local-rpc-session-capability
+    description: A random 256-bit capability held in backend and frontend memory, renewed when the backend restarts.
+    usage: business
+    origin: Local development backend
+    owner: User
+    quantity: very-few
+    confidentiality: strictly-confidential
+    integrity: critical
+    availability: operational
   Static assets:
     id: presentation-rules-editor-static-assets
     description: |
@@ -96,6 +118,35 @@ data_assets:
       The GUID associated with an iModel can be used to retrieve information about it. The application allows to query for more information about data inside the iModel.
 
 technical_assets:
+  Local development backend:
+    id: local-development-backend
+    description: |
+      Optional developer-only RPC server bound to 127.0.0.1. Requests must use a loopback Host, browser requests must use the exact frontend Origin, and every
+      RPC requires the local session capability. Only the data-free health check and origin-checked session bootstrap are unauthenticated.
+      Snapshot open and close operations share canonical path validation. The backend is not intended for shared hosting or access by network peers.
+    type: process
+    size: application
+    usage: devops
+    out_of_scope: false
+    technology: web-service-rest
+    internet: false
+    machine: physical
+    encryption: none
+    owner: User
+    confidentiality: confidential
+    integrity: critical
+    availability: operational
+    multi_tenant: false
+    data_assets_processed:
+      - local-imodel-files
+      - local-rpc-session-capability
+    data_assets_stored:
+      - local-imodel-files
+      - local-rpc-session-capability
+    data_formats_accepted:
+      - json
+      - serialization
+    communication_links: {}
   IMS Service:
     id: ims
     description: ims.bentley.com, used for token delegation
@@ -264,9 +315,25 @@ technical_assets:
       - imodels-data
       - oauth-access-token
       - app-insights-connection-string
+      - local-imodel-files
+      - local-rpc-session-capability
     data_assets_stored:
       - presentation-rules-editor-static-assets
     communication_links:
+      app-to-local-development-backend-traffic:
+        target: local-development-backend
+        description: |
+          Local mode only. The frontend bootstraps a session from its exact origin and sends the capability in a custom header on every RPC. The capability is not sent to cloud RPC endpoints.
+        protocol: http
+        authentication: token
+        authorization: technical-user
+        vpn: false
+        ip_filtered: true
+        data_assets_sent:
+          - local-rpc-session-capability
+        data_assets_received:
+          - local-imodel-files
+          - local-rpc-session-capability
       app-to-app-insights-traffic:
         target: app-insights
         description: The app sends custom telemetry events and metrics to Application Insights for monitoring and analytics.
@@ -469,6 +536,13 @@ technical_assets:
           - presentation-rules-editor-static-assets
 
 trust_boundaries:
+  Developer workstation:
+    id: developer-workstation
+    description: |
+      The optional local backend and configured snapshot files reside on the developer's workstation. Network peers and unrelated browser origins are untrusted; all local processes, regardless of user, are trusted.
+    type: execution-environment
+    technical_assets_inside:
+      - local-development-backend
   Azure Front Door and CDN:
     id: azure-front-door-boundary
     description: |
